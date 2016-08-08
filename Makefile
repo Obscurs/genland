@@ -1,0 +1,2 @@
+all: Game.cpp Tile.cpp Player.cpp Main.cpp Chunk.cpp Map.cpp Item.cpp Inventory.cpp Inputs.cpp AnimatedTile.cpp
+	g++ -o all Main.cpp Game.cpp Tile.cpp Player.cpp Chunk.cpp Map.cpp Item.cpp Inventory.cpp Inputs.cpp AnimatedTile.cpp -lsfml-graphics -lsfml-window -lsfml-system -std=c++0x
