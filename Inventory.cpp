@@ -21,8 +21,8 @@ Inventory::Inventory()
 	show_inventory = false;
 	show_tab = true;
 	show_craft_list = false;
-	Item* craft1 = new Item("bed"); 
-	Item* craft2 = new Item("red"); 
+	Item* craft1 = new Item("b");
+	Item* craft2 = new Item("r");
 	craft1->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft2->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft_list [0] = craft1;

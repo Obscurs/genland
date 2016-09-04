@@ -3,7 +3,7 @@
 class Tile
 {
 public:
-	Tile();
+	Tile(int id_temp);
 	~Tile();
 	
 	void Load();
@@ -26,11 +26,14 @@ public:
 	bool IsLoaded() const;
 	sf::Rect<float> GetBoundingRect() const;
 	std::string id; //sha de privatitzar
+    int id_temp;
 
 
 	
 
 private:
+
+
 	sf::Sprite& GetSprite();
 	sf::Sprite  _sprite;
 	sf::Texture _image;

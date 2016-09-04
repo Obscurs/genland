@@ -14,11 +14,10 @@
 #include "Tile.h"
 
 
-Tile::Tile() :
-_isLoaded(false)
-{
-
+Tile::Tile(int id_t){
+    id_temp = id_t;
 	colisionable = false;
+
 }
 
 
@@ -30,8 +29,9 @@ Tile::~Tile()
 void Tile::Load()
 {
 	if(id != "0"){
-		_filename = id;
-		if(_image.loadFromFile(_filename.append(".png")) == false)
+        _filename = "resources/";
+        _filename.append(id);
+		if(!_image.loadFromFile(_filename.append(".png")))
 		{
 			_filename =  "error.png";
 			_isLoaded = false;
@@ -44,10 +44,9 @@ void Tile::Load()
 		}
 	}
 	else{
-		_filename = "no_image";
-		if(_image.loadFromFile("no_image.png") == false)
+		if(!_image.loadFromFile("resources/no_image.png"))
 		{
-			_filename =  "error.png";
+			_filename =  "resources/error.png";
 			_isLoaded = false;
 		}
 		else
@@ -70,7 +69,7 @@ void Tile::Reload(std::string new_id)
 		rigid = false;
 		reach_floor = false;
 	}
-	else if(new_id == "bed"){
+	else if(new_id == "b"){
 		colisionable = true;
 		visible = true;
 		weight = 0;
@@ -78,7 +77,7 @@ void Tile::Reload(std::string new_id)
 		rigid = true;
 		reach_floor = true;
 	}
-	else if(new_id == "cob"){
+	else if(new_id == "c"){
 		colisionable = false;
 		visible = true;
 		weight = 20;
@@ -86,7 +85,7 @@ void Tile::Reload(std::string new_id)
 		rigid = false;
 		reach_floor = false;
 	}
-	else if(new_id == "red"){
+	else if(new_id == "r"){
 		colisionable = true;
 		visible = true;
 		weight = 10;
@@ -110,6 +109,7 @@ void Tile::Draw(sf::RenderWindow & renderWindow)
 	if(_isLoaded)
 	{
 		renderWindow.draw(_sprite);
+
 	}
 }
 

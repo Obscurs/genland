@@ -10,7 +10,7 @@ public:
 	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
 	void Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window);
-
+    int id;
 	void SetPosition(float x, float y);
 	void SetSize(float x);
 	sf::Vector2f GetPosition() const;

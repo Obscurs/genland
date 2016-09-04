@@ -71,11 +71,21 @@ bool Player::Collide(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos2, s
     //If none of the sides from A are outside B
     return true;
 }
+/*
+sf::Vector2f Player::FixColision2(sf::Vector2f pos, sf::Vector2f size, Map& map){
 
-
+    std::vector<Tile*> tiles_col = map.getTilesCol(pos, size);
+    if(tiles_col.empty()) return pos;
+    else {
+        FixColision2()
+    }
+}
+*/
 void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos2, sf::Vector2f size2, Map& map){
-	sf::Vector2f center1((pos1.x + pos1.x + size1.x)/2, (pos1.y + pos1.y + size1.y)/2);
-	sf::Vector2f center2((pos2.x + pos2.x + size2.x)/2, (pos2.y + pos2.y + size2.y)/2);
+    //std::cout << "1x " << pos1.x << " 1y "<< pos1.y << " 2x" << pos2.x << " 2y " << pos2.y  << std::endl;
+	sf::Vector2f center1((pos1.x*2 + size1.x)/2, (pos1.y*2 + size1.y)/2);
+	sf::Vector2f center2((pos2.x*2 + size2.x)/2, (pos2.y*2 + size2.y)/2);
+    //std::cout << "cx " << center1.x << " cy "<< center1.y << " c2x" << center2.x << " c2y " << center2.y  << std::endl;
 	float top1 = pos1.y;
 	float bottom1 = pos1.y+size1.y;
 	float left1 = pos1.x;
@@ -88,7 +98,7 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 
 	//primer quadrant
 
-	
+
 
 	if(center1.x > center2.x && center1.y <= center2.y){
 		//std::cout << "primer quadrant " << std::endl;
@@ -97,11 +107,11 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 		//std::cout << right2 << " "<< left1 << " " << dist_bottom << " " << dist_left << std::endl;
 		//std::cout << "top " << size2.x << " bottom "<< bottom2 << " left" << left2 << " right " << right2 << std::endl;
 		if(dist_left <= dist_bottom){
-			Chunk* c = map.getChunk(center2.x + Chunk::TILE_SIZE, center2.y);
-			Tile* t = c->getTile(center2.x + Chunk::TILE_SIZE, center2.y, 1);
+			//Chunk* c = map.getChunk(center2.x + Chunk::TILE_SIZE, center2.y);
+			Tile* t = map.getTile(center2.x + Chunk::TILE_SIZE, center2.y, 1);
 			if(t->colisionable){		
-				Chunk* c2 = map.getChunk(center2.x, center2.y - Chunk::TILE_SIZE);
-				Tile* t2 = c2->getTile(center2.x, center2.y - Chunk::TILE_SIZE, 1);
+				//Chunk* c2 = map.getChunk(center2.x, center2.y - Chunk::TILE_SIZE);
+				Tile* t2 = map.getTile(center2.x, center2.y - Chunk::TILE_SIZE, 1);
 				if(t2->colisionable){
 					if(col_left_dist < dist_left) col_left_dist = dist_left;
 					if(col_bottom_dist < dist_bottom) col_bottom_dist = dist_bottom;
@@ -119,11 +129,11 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 			
 		}
 		else {
-			Chunk* c = map.getChunk(center2.x, center2.y - Chunk::TILE_SIZE);
-			Tile* t = c->getTile(center2.x, center2.y - Chunk::TILE_SIZE, 1);
+			//Chunk* c = map.getChunk(center2.x, center2.y - Chunk::TILE_SIZE);
+			Tile* t = map.getTile(center2.x, center2.y - Chunk::TILE_SIZE, 1);
 			if(t->colisionable){		
-				Chunk* c2 =  map.getChunk(center2.x + Chunk::TILE_SIZE, center2.y);
-				Tile* t2 = c2->getTile(center2.x + Chunk::TILE_SIZE, center2.y, 1);
+				//Chunk* c2 =  map.getChunk(center2.x + Chunk::TILE_SIZE, center2.y);
+				Tile* t2 = map.getTile(center2.x + Chunk::TILE_SIZE, center2.y, 1);
 				if(t2->colisionable){
 					if(col_left_dist < dist_left) col_left_dist = dist_left;
 					if(col_bottom_dist < dist_bottom) col_bottom_dist = dist_bottom;
@@ -152,11 +162,11 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 		float dist_bottom = bottom1 - top2;
 
 		if(dist_right <= dist_bottom){
-			Chunk* c = map.getChunk(center2.x - Chunk::TILE_SIZE, center2.y);
-			Tile* t = c->getTile(center2.x - Chunk::TILE_SIZE, center2.y, 1);
+			//Chunk* c = map.getChunk(center2.x - Chunk::TILE_SIZE, center2.y);
+			Tile* t = map.getTile(center2.x - Chunk::TILE_SIZE, center2.y, 1);
 			if(t->colisionable){		
-				Chunk* c2 = map.getChunk(center2.x, center2.y - Chunk::TILE_SIZE);
-				Tile* t2 = c2->getTile(center2.x, center2.y - Chunk::TILE_SIZE, 1);
+				//Chunk* c2 = map.getChunk(center2.x, center2.y - Chunk::TILE_SIZE);
+				Tile* t2 = map.getTile(center2.x, center2.y - Chunk::TILE_SIZE, 1);
 				if(t2->colisionable){
 					if(col_right_dist < dist_right) col_right_dist = dist_right;
 					if(col_bottom_dist < dist_bottom) col_bottom_dist = dist_bottom;
@@ -174,11 +184,11 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 			}
 		}
 		else {
-			Chunk* c = map.getChunk(center2.x, center2.y - Chunk::TILE_SIZE);
-			Tile* t = c->getTile(center2.x, center2.y - Chunk::TILE_SIZE, 1);
+			//Chunk* c = map.getChunk(center2.x, center2.y - Chunk::TILE_SIZE);
+			Tile* t = map.getTile(center2.x, center2.y - Chunk::TILE_SIZE, 1);
 			if(t->colisionable){		
-				Chunk* c2 =  map.getChunk(center2.x - Chunk::TILE_SIZE, center2.y);
-				Tile* t2 = c2->getTile(center2.x - Chunk::TILE_SIZE, center2.y, 1);
+				//Chunk* c2 =  map.getChunk(center2.x - Chunk::TILE_SIZE, center2.y);
+				Tile* t2 = map.getTile(center2.x - Chunk::TILE_SIZE, center2.y, 1);
 				if(t2->colisionable){
 					if(col_right_dist < dist_right) col_right_dist = dist_right;
 					if(col_bottom_dist < dist_bottom) col_bottom_dist = dist_bottom;
@@ -204,11 +214,11 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 		float dist_top = bottom2 - top1;
 
 		if(dist_right <= dist_top){
-			Chunk* c = map.getChunk(center2.x - Chunk::TILE_SIZE, center2.y);
-			Tile* t = c->getTile(center2.x - Chunk::TILE_SIZE, center2.y, 1);
+			//Chunk* c = map.getChunk(center2.x - Chunk::TILE_SIZE, center2.y);
+			Tile* t = map.getTile(center2.x - Chunk::TILE_SIZE, center2.y, 1);
 			if(t->colisionable){		
-				Chunk* c2 = map.getChunk(center2.x, center2.y + Chunk::TILE_SIZE);
-				Tile* t2 = c2->getTile(center2.x, center2.y + Chunk::TILE_SIZE, 1);
+				//Chunk* c2 = map.getChunk(center2.x, center2.y + Chunk::TILE_SIZE);
+				Tile* t2 = map.getTile(center2.x, center2.y + Chunk::TILE_SIZE, 1);
 				if(t2->colisionable){
 					if(col_right_dist < dist_right) col_right_dist = dist_right;
 					if(col_top_dist < dist_top) col_top_dist = dist_top;
@@ -228,11 +238,11 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 		}
 		else {
 			
-			Chunk* c = map.getChunk(center2.x, center2.y + Chunk::TILE_SIZE);
-			Tile* t = c->getTile(center2.x, center2.y + Chunk::TILE_SIZE, 1);
+			//Chunk* c = map.getChunk(center2.x, center2.y + Chunk::TILE_SIZE);
+			Tile* t = map.getTile(center2.x, center2.y + Chunk::TILE_SIZE, 1);
 			if(t->colisionable){		
-				Chunk* c2 = map.getChunk(center2.x - Chunk::TILE_SIZE, center2.y);
-				Tile* t2 = c2->getTile(center2.x - Chunk::TILE_SIZE, center2.y, 1);
+				//Chunk* c2 = map.getChunk(center2.x - Chunk::TILE_SIZE, center2.y);
+				Tile* t2 = map.getTile(center2.x - Chunk::TILE_SIZE, center2.y, 1);
 				if(t2->colisionable){
 					if(col_right_dist < dist_right) col_right_dist = dist_right;
 					if(col_top_dist < dist_top) col_top_dist = dist_top;
@@ -256,11 +266,11 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 		float dist_left = right2-left1;
 		float dist_top = bottom2 - top1;
 		if(dist_left <= dist_top){
-			Chunk* c = map.getChunk(center2.x + Chunk::TILE_SIZE, center2.y);
-			Tile* t = c->getTile(center2.x + Chunk::TILE_SIZE, center2.y, 1);
+			//Chunk* c = map.getChunk(center2.x + Chunk::TILE_SIZE, center2.y);
+			Tile* t = map.getTile(center2.x + Chunk::TILE_SIZE, center2.y, 1);
 			if(t->colisionable){		
-				Chunk* c2 = map.getChunk(center2.x, center2.y + Chunk::TILE_SIZE);
-				Tile* t2 = c2->getTile(center2.x, center2.y + Chunk::TILE_SIZE, 1);
+				//Chunk* c2 = map.getChunk(center2.x, center2.y + Chunk::TILE_SIZE);
+				Tile* t2 = map.getTile(center2.x, center2.y + Chunk::TILE_SIZE, 1);
 				if(t2->colisionable){
 					if(col_left_dist < dist_left) col_left_dist = dist_left;
 					if(col_top_dist < dist_top) col_top_dist = dist_top;
@@ -277,11 +287,11 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 			}
 		}
 		else {
-			Chunk* c = map.getChunk(center2.x, center2.y + Chunk::TILE_SIZE);
-			Tile* t = c->getTile(center2.x, center2.y + Chunk::TILE_SIZE, 1);
+			//Chunk* c = map.getChunk(center2.x, center2.y + Chunk::TILE_SIZE);
+			Tile* t = map.getTile(center2.x, center2.y + Chunk::TILE_SIZE, 1);
 			if(t->colisionable){	
-				Chunk* c2 = map.getChunk(center2.x + Chunk::TILE_SIZE, center2.y);
-				Tile* t2 = c2->getTile(center2.x + Chunk::TILE_SIZE, center2.y, 1);	
+				//Chunk* c2 = map.getChunk(center2.x + Chunk::TILE_SIZE, center2.y);
+				Tile* t2 = map.getTile(center2.x + Chunk::TILE_SIZE, center2.y, 1);
 				
 				if(t2->colisionable){
 					if(col_left_dist < dist_left) col_left_dist = dist_left;
@@ -304,14 +314,15 @@ void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos
 
 void Player::Load(std::string filename)
 {
-	if(_image.loadFromFile(filename) == false)
+	_filename = "resources/";
+	_filename.append(filename);
+	if(_image.loadFromFile(_filename) == false)
 	{
 		_filename =  "";
 		_isLoaded = false;
 	}
 	else
 	{
-		_filename = filename;
 		_sprite.setTexture(_image);
 		_isLoaded = true;
 	}
@@ -361,7 +372,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	}
 	else{
 		if (keySpace.x){
-			vy = -500;
+			vy = -400;
 		}
 		else{
 			vy = 0;
@@ -391,7 +402,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	sf::Vector2f size_aux(GetWidth(), GetHeight());
 	
 	std::vector<Tile*> tiles_col = map.getTilesCol(pos_aux, size_aux);
-	//if(tiles_col.size()>3) std::cout << "number of cols" << tiles_col.size() << std::endl;
+	//std::cout << "number of cols" << tiles_col.size() << std::endl;
 	
 	//std::cout << "lel" << std::endl;
 	for(int i = 0; i< tiles_col.size(); ++i){
@@ -399,14 +410,16 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 		Tile* t = tiles_col[i];
 		sf::Vector2f tile_size(t->GetWidth(), t->GetHeight());
 		FixColision(pos_aux, size_aux, t->GetPosition(), tile_size, map);
-		/*if(tiles_col.size()>3){
-			std::cout << "col_bottom " << col_bottom << std::endl;
-			std::cout << "col_top " << col_top << std::endl;
-			std::cout << "col_left " << col_left << std::endl;
-			std::cout << "col_right " << col_right << std::endl;
-		} */
+		//if(tiles_col.size()>3){
+			//std::cout << "col_bottom " << col_bottom << std::endl;
+			//std::cout << "col_top " << col_top << std::endl;
+			//std::cout << "col_left " << col_left << std::endl;
+			//std::cout << "col_right " << col_right << std::endl;
+        //std::cout << std::endl;
+		//}
 	}
-
+    bool valid_move = true;
+    if(col_bottom && col_left && col_right && col_top) valid_move = false;
 	if(col_bottom >= col_top){
 		col_top = 0;
 		y = y - col_bottom_dist;
@@ -429,17 +442,21 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 		Tile* t = c->getTile(pos_aux.x, (pos_aux.y+GetHeight()), 1);
 	} */
 
-	SetPosition(x,y);
+    if(valid_move) SetPosition(x,y);
 
+    //COMPROBA MAP
+    map.checkLoadedChunks(x, y);
+
+
+    //COMPROBA INPUTS
 	if (mouseLeft.x == 1)
 	{
-	    
-	    Chunk* c = map.getChunk(position.x, position.y);
-	    Tile* t = c->getTile(position.x, position.y, 1);
+
+	    Tile* t = map.getTile(position.x, position.y, 1);
 	    int position_tile = 1;
 	    if(t->id =="0"){
 	    	position_tile = 0;
-	    	t = c->getTile(position.x, position.y, 0);
+	    	t = map.getTile(position.x, position.y, 0);
 	    }
 	    sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
 	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
@@ -456,13 +473,12 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	}
 	else if (mouseRight.x == 1)
 	{
-	    
-	    Chunk* c = map.getChunk(position.x, position.y);
-	    Tile* t = c->getTile(position.x, position.y, 1);
+
+	    Tile* t = map.getTile(position.x, position.y, 1);
 	    int position_tile = 1;
 	    if(t->id =="0"){
 	    	position_tile = 0;
-	    	t = c->getTile(position.x, position.y, 0);
+	    	t = map.getTile(position.x, position.y, 0);
 	    }
 	    sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
 	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);

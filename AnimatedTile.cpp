@@ -30,7 +30,8 @@ AnimatedTile::~AnimatedTile()
 void AnimatedTile::Load()
 {
 	if(id != "0"){
-		_filename = id;
+		_filename = "resources/";
+		_filename.append(id);
 		if(_image.loadFromFile(_filename.append(".png")) == false)
 		{
 			_filename =  "error.png";
@@ -44,10 +45,10 @@ void AnimatedTile::Load()
 		}
 	}
 	else{
-		_filename = "no_image";
+		_filename = "resources/no_image";
 		if(_image.loadFromFile(_filename.append(".png")) == false)
 		{
-			_filename =  "error.png";
+			_filename =  "resources/derror.png";
 			_isLoaded = false;
 		}
 		else

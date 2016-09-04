@@ -15,25 +15,112 @@
 
 //#include "Game.h"
 
-Map::Map()
-{
 
-	for(int i = 0; i<N_CHUNKS_Y; ++i){
-		for(int j = 0; j<N_CHUNKS_X; ++j){
-				sf::Vector2i chunk_pos(i,j);
-				Chunk* c = new Chunk(chunk_pos);
-				chunk_mat[i][j] = c;
-				
-			
-		}
-	}
-	
-	
+
+
+Map::Map(int pos)
+{
+    int id_temp = 0;
+    posMap = pos;
+    createMap(0, -1, id_temp);
+    createMap(1, 0, id_temp);
+    createMap(2, 1, id_temp);
+    /*
+    std::string filename = "map/";
+    filename.append(std::to_string(posMap));
+    filename.append(".txt");
+    std::ofstream myfile;
+    myfile.open (filename);
+    generator.seed(52345);
+    for(int i = 0; i<N_CHUNKS_Y; ++i){
+        for(int j = 0; j<N_CHUNKS_X; ++j){
+            std::cout << i << " " << j <<  std::endl;
+            sf::Vector2i chunk_pos(i,j);
+            Chunk* c = new Chunk(chunk_pos, &generator, myfile, posMap);
+            chunk_mat[i][j] = c;
+        }
+    }
+    myfile.close();
+    */
+
 }
+void Map::createMap(int map_index, int chunk_index, int &id_temp){
+    std::string filename = "map/";
+    filename.append(std::to_string(chunk_index));
+    filename.append(".txt");
+
+    if(exists_file(filename)) {
+        std::ifstream myfile(filename);
+        myfile.open (filename);
+
+
+
+                std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
+                sf::Vector2i chunk_pos(chunk_index,0);
+                Chunk* c = new Chunk(chunk_pos, myfile, id_temp);
+                chunk_mat[map_index][0] = c;
+
+        myfile.close();
+    }
+    else{
+
+        std::ofstream myfile;
+        myfile.open (filename);
+        generator.seed(234);
+
+        sf::Vector2i chunk_pos(chunk_index,0);
+        Chunk* c = new Chunk(chunk_pos, &generator, myfile);
+        chunk_mat[map_index][0] = c;
+
+        myfile.close();
+    }
+}
+/*
+void Map::createMap(int map_index){
+    std::string filename = "map/";
+    filename.append(std::to_string(posMap+map_index));
+    filename.append(".txt");
+
+    if(exists_file(filename)) {
+        std::ifstream myfile(filename);
+        myfile.open (filename);
+
+
+
+        for(int i = 0; i<N_CHUNKS_Y; ++i){
+            for(int j = map_index*N_CHUNKS_X/3; j<map_index*N_CHUNKS_X/3+N_CHUNKS_X/3; ++j){
+                std::cout << map_index << " map to " << j << " " << i << std::endl;
+                sf::Vector2i chunk_pos(map_index,i);
+                Chunk* c = new Chunk(chunk_pos, myfile, posMap);
+                chunk_mat[j][i] = c;
+            }
+        }
+        myfile.close();
+    }
+    else{
+
+        std::ofstream myfile;
+        myfile.open (filename);
+        generator.seed(234);
+        for(int i = 0; i<N_CHUNKS_Y; ++i){
+            for(int j = map_index*N_CHUNKS_X/3; j<map_index*N_CHUNKS_X/3+N_CHUNKS_X/3; ++j){
+                std::cout << map_index*N_CHUNKS_X/3 <<" " << i << " " << j << " "<< map_index*N_CHUNKS_X/3+N_CHUNKS_X/3<< std::endl;
+                sf::Vector2i chunk_pos(map_index,i);
+                Chunk* c = new Chunk(chunk_pos, &generator, myfile, posMap);
+                chunk_mat[j][i] = c;
+            }
+        }
+        myfile.close();
+    }
+}*/
 
 Map::~Map()
 {
 	//std::for_each(_gameObjects.begin(),_gameObjects.end(),GameObjectDeallocator());
+}
+inline bool Map::exists_file (const std::string& name) {
+    struct stat buffer;
+    return (stat (name.c_str(), &buffer) == 0);
 }
 
 sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal){
@@ -407,8 +494,8 @@ void Map::removeReachFloorCascade(float x, float y){
 	}
 }
 Chunk* Map::getChunk(float x, float y){
-	if(x<0) x = 0;
-	if(y<0) y = 0;
+	//if(x<0) x = 0;
+	//if(y<0) y = 0;
 	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
 	int size_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE;
 	int chunk_x = x/size_chunk_x;
@@ -418,72 +505,165 @@ Chunk* Map::getChunk(float x, float y){
 
 
 Tile* Map::getTile(float x, float y, int z){
-	if(x<0) x = 0;
+	//if(x<0) x = 0;
 	if(y<0) y = 0;
 	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
 	int size_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE;
-	int chunk_x = x/size_chunk_x;
-	int chunk_y = y/size_chunk_y;
+	int chunk_x = (x-size_chunk_x*posMap)/size_chunk_x;
+	int chunk_y = (y)/size_chunk_y;
+
 	Chunk* c = chunk_mat[chunk_x][chunk_y];
 
 	return c->getTile(x, y, z);
 }
 
-sf::Vector2f Map::getChunkIndex(float x, float y){
+sf::Vector2i Map::getChunkIndex(float x, float y){
 	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
 	int size_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE;
-	int chunk_x = x/size_chunk_x;
-	int chunk_y = y/size_chunk_y;
-	return sf::Vector2f(chunk_x, chunk_y);
+	float chunk_x = x/size_chunk_x;
+	float chunk_y = y/size_chunk_y;
+    if(chunk_x <0) --chunk_x;
+    //if(chunk_y <0) --chunk_y;
+	return sf::Vector2i((int)chunk_x, (int)chunk_y);
+}
+sf::Vector2i Map::getIndexMatChunk(int x, int y){
+    int final_x = -1;
+    int final_y = -1;
+    for(int i = 0 ; i<N_CHUNKS_X ; ++i){
+        for(int j = 0 ; j<N_CHUNKS_Y ; ++j){
+
+            int pos_x = chunk_mat[i][j]->chunk_pos.x;
+            //std::cout << pos_x << std::endl;
+            if(pos_x == x){
+                final_x = i;
+                final_y = j;
+            }
+        }
+    }
+
+    return sf::Vector2i(final_x, final_y);
+}
+void Map::checkLoadedChunks(float x, float y){
+    Chunk* c1 = chunk_mat[0][0];
+    Chunk* c2 = chunk_mat[N_CHUNKS_X-1][0];
+    Tile* t1 = c1->getTileByIndex(0,0,0);
+    Tile* t2 = c2->getTileByIndex(Chunk::N_TILES_X-1,0,0);
+    sf::Vector2f p1 = t1->GetPosition();
+    sf::Vector2f p2 = t2->GetPosition();
+    float distance_1 = sqrt((x-p1.x)*(x-p1.x) + (y-p1.y)*(y-p1.y));
+    float distance_2 = sqrt((x-p2.x)*(x-p2.x) + (y-p2.y)*(y-p2.y));
+
+
+    if(distance_1 < Chunk::N_TILES_X/2*Chunk::TILE_SIZE) {
+
+        int current_pos = c1->chunk_pos.x;
+        int id_temp = 0;
+        Chunk* chunk_mid = chunk_mat[1][0];
+        chunk_mat[2][0] = chunk_mid;
+        chunk_mat[1][0] = c1;
+        delete c2;
+        --posMap;
+        createMap(0, current_pos-1, id_temp);
+
+        //std::cout << distance_1 << " " << distance_2 << std::endl;
+    }
+    if(distance_2 < Chunk::N_TILES_X/2*Chunk::TILE_SIZE) {
+
+        int current_pos = c2->chunk_pos.x;
+        int id_temp = 0;
+        Chunk* chunk_mid = chunk_mat[1][0];
+        chunk_mat[0][0] = chunk_mid;
+        chunk_mat[1][0] = c2;
+        delete c1;
+        ++posMap;
+        createMap(2, current_pos+1, id_temp);
+
+        //std::cout << distance_1 << " " << distance_2 << std::endl;
+    }
+
 }
 
+std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
+    std::vector<Tile*> result;
+    float num_ite_x = size.x/Chunk::TILE_SIZE;
+    float num_ite_y = size.y/Chunk::TILE_SIZE;
+    for(int j = 0; j <= num_ite_y; ++j){
+            for(int i = 0; i <=num_ite_x; i++){
+                Tile* t = getTile(pos.x+i*Chunk::TILE_SIZE, pos.y+j*Chunk::TILE_SIZE, 1);
+                if(t->colisionable) {
+
+                    bool trobat = false;
+                    for(int k = 0; k < result.size(); k++){
+                        if(result[k]==t) trobat = true;
+                    }
+                    if(!trobat)result.push_back(t);
+                }
+            }
+    }
 
 
+    //DEBUG
+    /*
+    for(int i= 0; i<result.size(); i++){
+        sf::Vector2f pos = result[i]->GetPosition();
+        int aux_id = result[i]->id_temp;
+        //std::cout << "pos x " << pos.x << " pos y " << pos.y << std::endl;
+        std::cout << aux_id << " ";
+
+    }
+
+    std::cout << std::endl;
+    */
+
+    return result;
+}
+
+/*
 std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
 	std::vector<Tile*> result;
 	
 	for(int j = pos.y; j < pos.y+size.y; j+=Chunk::TILE_SIZE){
 		if(j+Chunk::TILE_SIZE >=pos.y+size.y){
 			for(int i = pos.x; i < pos.x+size.x; i+=Chunk::TILE_SIZE){
-				Chunk* c = getChunk(i, j);
-				Tile* t = c->getTile(i, j, 1);
-				Chunk* c2 = getChunk(i, pos.y+size.y);
-				Tile* t2 = c2->getTile(i, pos.y+size.y, 1);
+				Tile* t = getTile(i, j, 1);
+				Tile* t2 = getTile(i, pos.y+size.y, 1);
 				if(t2 == t){
 					if(t->colisionable) {
+                        //t->Reload("0");
 						result.push_back(t);
 					}
 				}
 				else{
 					if(t->colisionable) {
+                        //t->Reload("0");
 						result.push_back(t);
 					}
 					if(t2->colisionable) {
+                        //t2->Reload("0");
 						result.push_back(t2);
 					}
 				}
 				
 			}
-			Chunk* c = getChunk(pos.x+size.x , pos.y+size.y);
-			Tile* t = c->getTile(pos.x+size.x, pos.y+size.y, 1);
+			Tile* t = getTile(pos.x+size.x, pos.y+size.y, 1);
 			bool tt = t->colisionable;
 			if((result.size() == 0 || t != result[result.size()-1]) && t->colisionable) {
 				//t->id ="guy";
 				//t->Load();
+                //t->Reload("0");
 				result.push_back(t);
 			} 
 		}
 		else{
 			for(int i = pos.x; i < pos.x+size.x; i+=Chunk::TILE_SIZE){
 				Chunk* c = getChunk(i, j);
-				Tile* t = c->getTile(i, j, 1);
+				Tile* t = getTile(i, j, 1);
 				if(t->colisionable) {
 					result.push_back(t);
 				}
 			}
-			
-			Chunk* c = getChunk(pos.x+size.x , j);
-			Tile* t = c->getTile(pos.x+size.x, j, 1);
+
+			Tile* t = getTile(pos.x+size.x, j, 1);
 			bool tt = t->colisionable;
 			if((result.size() == 0 || t != result[result.size()-1]) && t->colisionable) {
 				//t->id ="guy";
@@ -495,18 +675,23 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
 
 	} 
 
-	/*
+
 	//DEBUG
 	for(int i= 0; i<result.size(); i++){
 		sf::Vector2f pos = result[i]->GetPosition();
-		std::cout << "pos x " << pos.x << " pos y " << pos.y << std::endl;
+        int aux_id = result[i]->id_temp;
+		//std::cout << "pos x " << pos.x << " pos y " << pos.y << std::endl;
+        std::cout << aux_id << " ";
 
 	}
-	*/
+    std::cout << std::endl;
+
 
 	return result;
 }
+*/
 
+/*
 void Map::DrawAll(sf::RenderWindow& renderWindow)
 {
 	sf::View currentView = renderWindow.getView();
@@ -516,12 +701,13 @@ void Map::DrawAll(sf::RenderWindow& renderWindow)
 	float first_y = centerView.y-(sizeView.y/2)-1;
 	float last_x = centerView.x+(sizeView.x/2)+1;
 	float last_y = centerView.y+(sizeView.y/2)+1;
-	if(first_x<0) first_x = 0;
-	if(first_y<0) first_y = 0;
+	//if(first_x<0) first_x = 0;
+	//if(first_y<0) first_y = 0;
 	//std::cout << first_x << " " << first_y << " " << last_x << " " << last_y << std::endl;
 	sf::Vector2f first_chunk = getChunkIndex(first_x, first_y);
 	sf::Vector2f last_chunk = getChunkIndex(last_x, last_y);
-	//std::cout << sizeView.y << " " << first_chunk.y << " " << last_chunk.x << " " << last_chunk.y << std::endl;
+
+	//std::cout << first_chunk.x << " " << first_chunk.y << " " << last_chunk.x << " " << last_chunk.y << std::endl;
 	for(int i = first_chunk.x ; i<=last_chunk.x ; ++i){
 		for(int j = first_chunk.y ; j<=last_chunk.y ; ++j){
 			chunk_mat[i][j]->DrawAll(renderWindow);
@@ -531,14 +717,52 @@ void Map::DrawAll(sf::RenderWindow& renderWindow)
 	for(int i = 0; i<falling_tiles.size(); i++){
 		falling_tiles[i]->Draw(renderWindow);
 	}
-	//vector<int> v
-	/*
-	std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
-	while(itr != _gameObjects.end())
-	{
-		itr->second->Draw(renderWindow);
-		itr++;
-	} */
+
+}
+*/
+void Map::DrawMap(sf::RenderWindow& renderWindow)
+{
+    sf::View currentView = renderWindow.getView();
+    sf::Vector2f centerView = currentView.getCenter();
+    sf::Vector2f sizeView = currentView.getSize();
+    float first_x = centerView.x-(sizeView.x/2)-1;
+    float first_y = centerView.y-(sizeView.y/2)-1;
+    float last_x = centerView.x+(sizeView.x/2)+1;
+    float last_y = centerView.y+(sizeView.y/2)+1;
+    //if(first_x<0) first_x = 0;
+    //if(first_y<0) first_y = 0;
+
+    sf::Vector2f firstPos(first_x, first_y);
+    sf::Vector2f lastPos(last_x+Chunk::TILE_SIZE, last_y+Chunk::TILE_SIZE);
+    //std::cout << first_x << " " << first_y << " " << last_x << " " << last_y << std::endl;
+    sf::Vector2i first_chunk = getChunkIndex(first_x, first_y);
+    sf::Vector2i last_chunk = getChunkIndex(last_x+Chunk::TILE_SIZE, last_y+Chunk::TILE_SIZE);
+    std::cout << "first " << first_chunk.x << "last " << last_chunk.x << std::endl;
+    //std::cout << "last " << last_chunk.x << " " << last_chunk.y << std::endl;
+    //std::cout << first_chunk.x << " " << first_chunk.y << " " << last_chunk.x << " " << last_chunk.y << std::endl;
+    for(int i = first_chunk.x ; i<=last_chunk.x ; ++i){
+
+        for(int j = first_chunk.y ; j<=last_chunk.y ; ++j){
+            //if(i>0) std::cout << "heeyy" << std::endl;
+            sf::Vector2i index_mat = getIndexMatChunk(i,j);
+
+            //std::cout << firstPos.x << " " << firstPos.y << " " << lastPos.x << " " << lastPos.y << std::endl;
+            //std::cout << "draw chunk " << index_mat.x << " " << index_mat.y << std::endl;
+            chunk_mat[index_mat.x][index_mat.y]->DrawChunk(renderWindow, firstPos, lastPos);
+        }
+    }
+
+    for(int i = 0; i<falling_tiles.size(); i++){
+        falling_tiles[i]->Draw(renderWindow);
+    }
+    //vector<int> v
+    /*
+    std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
+    while(itr != _gameObjects.end())
+    {
+        itr->second->Draw(renderWindow);
+        itr++;
+    } */
 }
 
 void Map::UpdateAll(float delta)

@@ -23,7 +23,7 @@ _isLoaded(false)
 	max_stack_amount= 1;
 	Reload(id_item);
 	amount = 0;
-	if (!font.loadFromFile("font1.ttf"))
+	if (!font.loadFromFile("resources/font1.ttf"))
 	{
 		    std::cout << "font error" << std::endl;
 	}
@@ -117,7 +117,8 @@ bool Item::IsLoaded() const
 }
 void Item::Load()
 {
-	_filename = id;
+	_filename = "resources/";
+	_filename.append(id);
 		if(_image.loadFromFile(_filename.append(".png")) == false)
 		{
 			_filename =  "error.png";
@@ -141,20 +142,20 @@ void Item::Reload(std::string new_id)
 		amount=0;
 
 	}
-	else if(new_id == "bed"){
+	else if(new_id == "b"){
 		max_stack_amount= 10;
 		amount=0;
-		craft_cost["red"] = 2;
-		craft_cost["cob"] = 3;
+		craft_cost["r"] = 2;
+		craft_cost["c"] = 3;
 	}
-	else if(new_id == "cob"){
+	else if(new_id == "c"){
 		max_stack_amount= 10;
 		amount = 0;
 	}
-	else if(new_id == "red"){
+	else if(new_id == "r"){
 		max_stack_amount= 5;
 		amount = 0;
-		craft_cost["cob"] = 5;
+		craft_cost["c"] = 5;
 
 	}
 	else{

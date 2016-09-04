@@ -24,7 +24,7 @@ private:
 
 	static GameState _gameState;
 	static sf::RenderWindow window;
-	static Map map;
+	static Map map_curr;
 	static Player player;
 	static Inputs inputs;
 };

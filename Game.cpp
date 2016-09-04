@@ -18,7 +18,7 @@ void Game::Start(void)
 	if(_gameState != Uninitialized)
 		return;
 	
-	window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Pang!");
+	window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
 	sf::View viewPlayer(sf::FloatRect(200, 200, 1024, 768));
 
 	window.setView(viewPlayer);
@@ -43,7 +43,7 @@ void Game::Start(void)
 	sf::String str("no data");
 	text.setString(str);
 
-	if (!font.loadFromFile("font1.ttf"))
+	if (!font.loadFromFile("resources/font1.ttf"))
 	{
 		    std::cout << "font error" << std::endl;
 	}
@@ -55,8 +55,8 @@ void Game::Start(void)
 
 
 	Game::player.Load("blue.png");
-	Game::player.SetPosition(100,100);
-	Game::player.SetSize(64);
+	Game::player.SetPosition(0,0);
+	Game::player.SetSize(32);
 	while(!IsExiting())
 	{	
 		viewPlayer.setCenter(player.GetPosition().x+(player.GetWidth()/2), player.GetPosition().y+(player.GetHeight()/2));
@@ -130,10 +130,10 @@ void Game::GameLoop(double delta)
 				//_gameObjectManager.UpdateAll();
 				//_gameObjectManager.DrawAll(_mainWindow);
 				Game::inputs.Update();
-				Game::map.UpdateAll(delta);
-				Game::player.Update(delta, Game::map, Game::inputs, window);
+				Game::map_curr.UpdateAll(delta);
+				Game::player.Update(delta, Game::map_curr, Game::inputs, window);
 
-				Game::map.DrawAll(window);
+				Game::map_curr.DrawMap(window);
 
 				Game::player.Draw(window);
 
@@ -167,6 +167,6 @@ Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::window;
 //sf::Vector2i v1(0,0);
 //Chunk Game::chunk(v1);
-Map Game::map;
+Map Game::map_curr(-1);
 Player Game::player;
 Inputs Game::inputs;
