@@ -420,6 +420,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	}
     bool valid_move = true;
     if(col_bottom && col_left && col_right && col_top) valid_move = false;
+    if(abs(x-x0) > Chunk::TILE_SIZE*5 || abs(y-y0) > Chunk::TILE_SIZE*5) valid_move = false;
 	if(col_bottom >= col_top){
 		col_top = 0;
 		y = y - col_bottom_dist;
@@ -445,6 +446,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
     if(valid_move) SetPosition(x,y);
 
     //COMPROBA MAP
+
     map.checkLoadedChunks(x, y);
 
 

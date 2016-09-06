@@ -11,7 +11,7 @@
 #include <iostream>
 #include <cassert>
 
-#include "Tile.h"
+#include "Chunk.h"
 
 
 Tile::Tile(int id_t){
@@ -69,7 +69,7 @@ void Tile::Reload(std::string new_id)
 		rigid = false;
 		reach_floor = false;
 	}
-	else if(new_id == "b"){
+	else if(new_id == "D"){
 		colisionable = true;
 		visible = true;
 		weight = 0;
@@ -77,7 +77,7 @@ void Tile::Reload(std::string new_id)
 		rigid = true;
 		reach_floor = true;
 	}
-	else if(new_id == "c"){
+	else if(new_id == "d"){
 		colisionable = false;
 		visible = true;
 		weight = 20;
@@ -104,11 +104,29 @@ void Tile::Remove(){
 }
 
 
-void Tile::Draw(sf::RenderWindow & renderWindow)
+void Tile::Draw(sf::RenderWindow & renderWindow, int layer)
 {
 	if(_isLoaded)
 	{
-		renderWindow.draw(_sprite);
+        if(layer==1){
+            bool drawable=false;
+            for(int i=0; i<8; i++){
+                if(lights[i]==true){
+                    drawable = true;
+                    break;
+                }
+            }
+            if(drawable) renderWindow.draw(_sprite);
+            else {
+
+                sf::RectangleShape rec(sf::Vector2f(Chunk::TILE_SIZE,Chunk::TILE_SIZE));
+                rec.setPosition(GetPosition());
+                rec.setFillColor(sf::Color::Black);
+                renderWindow.draw(rec);
+            }
+        }
+        else renderWindow.draw(_sprite);
+
 
 	}
 }

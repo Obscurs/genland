@@ -22,6 +22,7 @@ Map::Map(int pos)
 {
     int id_temp = 0;
     posMap = pos;
+    map_updated = true;
     createMap(0, -1, id_temp);
     createMap(1, 0, id_temp);
     createMap(2, 1, id_temp);
@@ -355,6 +356,19 @@ bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &c
 }
 
 void Map::removeTile(Tile* r_tile, int z_removed){
+
+    //update lights
+    sf::Vector2f r_pos = r_tile->GetPosition();
+    getTile(r_pos.x-Chunk::TILE_SIZE, r_pos.y-Chunk::TILE_SIZE,1)->lights[0]=true;
+    getTile(r_pos.x, r_pos.y-Chunk::TILE_SIZE,1)->lights[1]=true;
+    getTile(r_pos.x+Chunk::TILE_SIZE, r_pos.y-Chunk::TILE_SIZE,1)->lights[2]=true;
+    getTile(r_pos.x+Chunk::TILE_SIZE, r_pos.y,1)->lights[3]=true;
+    getTile(r_pos.x+Chunk::TILE_SIZE, r_pos.y+Chunk::TILE_SIZE,1)->lights[4]=true;
+    getTile(r_pos.x, r_pos.y+Chunk::TILE_SIZE,1)->lights[5]=true;
+    getTile(r_pos.x-Chunk::TILE_SIZE, r_pos.y+Chunk::TILE_SIZE,1)->lights[6]=true;
+    getTile(r_pos.x-Chunk::TILE_SIZE, r_pos.y,1)->lights[7]=true;
+
+
 	//cas up
 	sf::Vector2f r_tile_pos_global = r_tile->GetPosition();
 	int z_other_tile;
@@ -544,42 +558,58 @@ sf::Vector2i Map::getIndexMatChunk(int x, int y){
     return sf::Vector2i(final_x, final_y);
 }
 void Map::checkLoadedChunks(float x, float y){
-    Chunk* c1 = chunk_mat[0][0];
-    Chunk* c2 = chunk_mat[N_CHUNKS_X-1][0];
-    Tile* t1 = c1->getTileByIndex(0,0,0);
-    Tile* t2 = c2->getTileByIndex(Chunk::N_TILES_X-1,0,0);
-    sf::Vector2f p1 = t1->GetPosition();
-    sf::Vector2f p2 = t2->GetPosition();
-    float distance_1 = sqrt((x-p1.x)*(x-p1.x) + (y-p1.y)*(y-p1.y));
-    float distance_2 = sqrt((x-p2.x)*(x-p2.x) + (y-p2.y)*(y-p2.y));
+
+        Chunk *c1 = chunk_mat[0][0];
+        Chunk *c2 = chunk_mat[N_CHUNKS_X - 1][0];
+        Tile *t1 = c1->getTileByIndex(0, 0, 0);
+        Tile *t2 = c2->getTileByIndex(Chunk::N_TILES_X - 1, 0, 0);
+        sf::Vector2f p1 = t1->GetPosition();
+        sf::Vector2f p2 = t2->GetPosition();
+        float distance_1 = sqrt((x - p1.x) * (x - p1.x));
+        float distance_2 = sqrt((x - p2.x) * (x - p2.x));
 
 
-    if(distance_1 < Chunk::N_TILES_X/2*Chunk::TILE_SIZE) {
+        if (distance_1 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE && map_updated) {
+            //#pragma omp task
+            {
 
-        int current_pos = c1->chunk_pos.x;
-        int id_temp = 0;
-        Chunk* chunk_mid = chunk_mat[1][0];
-        chunk_mat[2][0] = chunk_mid;
-        chunk_mat[1][0] = c1;
-        delete c2;
-        --posMap;
-        createMap(0, current_pos-1, id_temp);
+                c2->saveToFile();
+                int current_pos = c1->chunk_pos.x;
+                int id_temp = 0;
+                Chunk *chunk_mid = chunk_mat[1][0];
 
-        //std::cout << distance_1 << " " << distance_2 << std::endl;
-    }
-    if(distance_2 < Chunk::N_TILES_X/2*Chunk::TILE_SIZE) {
 
-        int current_pos = c2->chunk_pos.x;
-        int id_temp = 0;
-        Chunk* chunk_mid = chunk_mat[1][0];
-        chunk_mat[0][0] = chunk_mid;
-        chunk_mat[1][0] = c2;
-        delete c1;
-        ++posMap;
-        createMap(2, current_pos+1, id_temp);
+                map_updated=false;
+                chunk_mat[2][0] = chunk_mid;
+                chunk_mat[1][0] = c1;
+                --posMap;
+                createMap(0, current_pos - 1, id_temp);
+                delete c2;
+                map_updated =true;
+            }
 
-        //std::cout << distance_1 << " " << distance_2 << std::endl;
-    }
+            //std::cout << distance_1 << " " << distance_2 << std::endl;
+        }
+        if (distance_2 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE & map_updated) {
+            //#pragma omp task
+            {
+
+                c1->saveToFile();
+                int current_pos = c2->chunk_pos.x;
+                int id_temp = 0;
+                Chunk *chunk_mid = chunk_mat[1][0];
+
+                map_updated=false;
+                chunk_mat[0][0] = chunk_mid;
+                chunk_mat[1][0] = c2;
+                ++posMap;
+                createMap(2, current_pos + 1, id_temp);
+                delete c1;
+                map_updated =true;
+            }
+            //std::cout << distance_1 << " " << distance_2 << std::endl;
+        }
+
 
 }
 
@@ -737,11 +767,11 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
     //std::cout << first_x << " " << first_y << " " << last_x << " " << last_y << std::endl;
     sf::Vector2i first_chunk = getChunkIndex(first_x, first_y);
     sf::Vector2i last_chunk = getChunkIndex(last_x+Chunk::TILE_SIZE, last_y+Chunk::TILE_SIZE);
-    std::cout << "first " << first_chunk.x << "last " << last_chunk.x << std::endl;
+    //std::cout << "first " << first_chunk.x << "last " << last_chunk.x << std::endl;
     //std::cout << "last " << last_chunk.x << " " << last_chunk.y << std::endl;
     //std::cout << first_chunk.x << " " << first_chunk.y << " " << last_chunk.x << " " << last_chunk.y << std::endl;
-    for(int i = first_chunk.x ; i<=last_chunk.x ; ++i){
 
+    for(int i = first_chunk.x ; i<=last_chunk.x ; ++i){
         for(int j = first_chunk.y ; j<=last_chunk.y ; ++j){
             //if(i>0) std::cout << "heeyy" << std::endl;
             sf::Vector2i index_mat = getIndexMatChunk(i,j);

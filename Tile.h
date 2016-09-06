@@ -9,7 +9,7 @@ public:
 	void Load();
 	void Reload(std::string id);
 	void Remove();
-	void Draw(sf::RenderWindow & window);
+	void Draw(sf::RenderWindow & window, int layer);
 	void Update(float elapsedTime);
 
 	void SetPosition(float x, float y);
@@ -27,6 +27,7 @@ public:
 	sf::Rect<float> GetBoundingRect() const;
 	std::string id; //sha de privatitzar
     int id_temp;
+	bool lights[8];
 
 
 	

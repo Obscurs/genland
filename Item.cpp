@@ -142,20 +142,20 @@ void Item::Reload(std::string new_id)
 		amount=0;
 
 	}
-	else if(new_id == "b"){
+	else if(new_id == "D"){
 		max_stack_amount= 10;
 		amount=0;
 		craft_cost["r"] = 2;
-		craft_cost["c"] = 3;
+		craft_cost["d"] = 3;
 	}
-	else if(new_id == "c"){
+	else if(new_id == "d"){
 		max_stack_amount= 10;
 		amount = 0;
 	}
 	else if(new_id == "r"){
 		max_stack_amount= 5;
 		amount = 0;
-		craft_cost["c"] = 5;
+		craft_cost["d"] = 5;
 
 	}
 	else{

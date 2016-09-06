@@ -15,9 +15,10 @@
 
 void Game::Start(void)
 {
+
 	if(_gameState != Uninitialized)
 		return;
-	
+
 	window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
 	sf::View viewPlayer(sf::FloatRect(200, 200, 1024, 768));
 
@@ -57,6 +58,7 @@ void Game::Start(void)
 	Game::player.Load("blue.png");
 	Game::player.SetPosition(0,0);
 	Game::player.SetSize(32);
+
 	while(!IsExiting())
 	{	
 		viewPlayer.setCenter(player.GetPosition().x+(player.GetWidth()/2), player.GetPosition().y+(player.GetHeight()/2));

@@ -22,7 +22,8 @@ public:
 	void DrawAll(sf::RenderWindow& renderWindow);
     void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2);
 	sf::Vector2i getTileIndex(float x, float y);
-
+    void saveToFile();
+    void initializeLights();
 	void UpdateAll();
 
 private:
