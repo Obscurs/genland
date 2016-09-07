@@ -42,4 +42,6 @@ private:
 	sf::Vector2i getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal);
 	std::vector<AnimatedTile*> falling_tiles;
 	Chunk* chunk_mat[N_CHUNKS_X][N_CHUNKS_Y];
+    sf::Texture _image;
+    std::map<std::string, sf::Texture> texture_map;
 };

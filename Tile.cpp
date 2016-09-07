@@ -26,8 +26,11 @@ Tile::~Tile()
 	
 }
 
-void Tile::Load()
+void Tile::Load(std::map<std::string, sf::Texture> &texture_map)
 {
+    _sprite.setTexture(texture_map[id]);
+    _isLoaded = true;
+    /*
 	if(id != "0"){
         _filename = "resources/";
         _filename.append(id);
@@ -56,11 +59,12 @@ void Tile::Load()
 			_isLoaded = true;
 		}
 	}
+     */
 }
-void Tile::Reload(std::string new_id)
+void Tile::Reload(std::string new_id, std::map<std::string, sf::Texture> &texture_map)
 {
 	id = new_id;
-	Load();
+	Load(texture_map);
 	if(new_id == "0"){
 		colisionable = false;
 		visible = false;
@@ -94,18 +98,19 @@ void Tile::Reload(std::string new_id)
 		reach_floor = false;
 	}
 	else{
-		Reload("0");
+		Reload("0", texture_map);
 	}
 
 	
 }
-void Tile::Remove(){
-	Reload("0");
-}
+//void Tile::Remove(){
+//	Reload("0");
+//}
 
 
 void Tile::Draw(sf::RenderWindow & renderWindow, int layer)
 {
+    /*
 	if(_isLoaded)
 	{
         if(layer==1){
@@ -129,6 +134,30 @@ void Tile::Draw(sf::RenderWindow & renderWindow, int layer)
 
 
 	}
+     */
+    if(layer==1){
+        bool drawable=false;
+        for(int i=0; i<8; i++){
+            if(lights[i]==true){
+                drawable = true;
+                break;
+            }
+        }
+        if(drawable) {
+
+            renderWindow.draw(_sprite);
+        }
+        else {
+
+            sf::RectangleShape rec(sf::Vector2f(Chunk::TILE_SIZE,Chunk::TILE_SIZE));
+            rec.setPosition(GetPosition());
+            rec.setFillColor(sf::Color::Black);
+            renderWindow.draw(rec);
+        }
+    }
+    else {
+        renderWindow.draw(_sprite);
+    }
 }
 
 

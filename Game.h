@@ -27,5 +27,7 @@ private:
 	static Map map_curr;
 	static Player player;
 	static Inputs inputs;
+
+
 };
 

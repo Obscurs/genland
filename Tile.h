@@ -6,9 +6,9 @@ public:
 	Tile(int id_temp);
 	~Tile();
 	
-	void Load();
-	void Reload(std::string id);
-	void Remove();
+	void Load(std::map<std::string, sf::Texture> &texture_map);
+	void Reload(std::string id, std::map<std::string, sf::Texture> &texture_map);
+	//void Remove();
 	void Draw(sf::RenderWindow & window, int layer);
 	void Update(float elapsedTime);
 

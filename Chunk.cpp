@@ -38,7 +38,7 @@ void Chunk::saveToFile(){
     myfile.close();
 
 }
-Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
+Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile, std::map<std::string, sf::Texture> &texture_map)
 {
 	chunk_pos = pos;
     //std::cout  << chunk_pos.x*N_TILES_X*TILE_SIZE << " " << chunk_pos.y*N_TILES_Y*TILE_SIZE << std::endl;
@@ -63,19 +63,19 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
             Tile* t = new Tile(0);
             Tile* t2 = new Tile(0);
             if(valReal1 >0){
-                t->Reload("d");
+                t->Reload("d", texture_map);
                 t->reach_floor = true;
 
             } else{
-                t->Reload("0");
+                t->Reload("0", texture_map);
             }
 
             if(valReal2 >0){
-                t2->Reload("D");
+                t2->Reload("D", texture_map);
                 t2->reach_floor = true;
 
             } else{
-                t2->Reload("0");
+                t2->Reload("0", texture_map);
 
             }
 
@@ -95,7 +95,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 	
 }
 
-Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
+Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, std::map<std::string, sf::Texture> &texture_map)
 {
     chunk_pos = pos;
     std::cout << "creat" << chunk_pos.x << std::endl;
@@ -114,8 +114,8 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
             ++k;
             //myfile.get(c1);
             //myfile.get(c2);
-            t->Reload(std::string(1, c1));
-            t2->Reload(std::string(1, c2));
+            t->Reload(std::string(1, c1), texture_map);
+            t2->Reload(std::string(1, c2), texture_map);
             t->reach_floor = true;
             t2->reach_floor = true;
 
@@ -250,7 +250,8 @@ void Chunk::DrawAll(sf::RenderWindow& renderWindow)
 	}
 }
 */
-void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2)
+
+void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, sf::Texture> &texture_map)
 {
     //std::cout << "Drawing chunk " << chunk_pos.x<< std::endl;
     sf::Text text;
