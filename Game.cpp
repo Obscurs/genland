@@ -55,6 +55,11 @@ void Game::Start(void)
 
 
 
+
+
+
+
+
 	Game::player.Load("blue.png");
 	Game::player.SetPosition(0,0);
 	Game::player.SetSize(32);
