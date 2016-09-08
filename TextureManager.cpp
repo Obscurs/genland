@@ -14,11 +14,13 @@ TextureManager::~TextureManager()
 void TextureManager::insert_map_value(std::string k, sf::Vector2i v){
     texture_map[k] = v;
 }
-void TextureManager::generateSprite(std::string key, sf::Vector2f sprite_pos, sf::Sprite &s){
+void TextureManager::generateSprite(std::string key, sf::Vector2f sprite_pos, sf::Sprite &s, sf::Vector2f size){
     sf::Vector2i tex_sprite_pos = texture_map[key];
     sf::IntRect r(tex_sprite_pos.x, tex_sprite_pos.y, size_sprite.x, size_sprite.y);
     //sf::Sprite sprite(_image,r);
     s.setTextureRect(r);
     s.setTexture(_image);
     s.setPosition(sprite_pos.x, sprite_pos.y);
+    sf::Vector2f new_scale(size.x/size_sprite.x, size.y/size_sprite.y);
+    s.setScale(new_scale);
 }

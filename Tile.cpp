@@ -146,9 +146,7 @@ void Tile::Draw(sf::RenderWindow & renderWindow, int layer, TextureManager &t)
 			//_sprite.setTexture(t._image);
 			//_sprite.setPosition(position.x, position.y);
 			sf::Sprite s;
-			t.generateSprite(id, position, s);
-			sf::Vector2f new_scale(size.x/t.size_sprite.x, size.y/t.size_sprite.y);
-			s.setScale(new_scale);
+			t.generateSprite(id, position, s, size);
 			renderWindow.draw(s);
 		}
 		else {
@@ -163,9 +161,7 @@ void Tile::Draw(sf::RenderWindow & renderWindow, int layer, TextureManager &t)
 		//sf::Sprite s = t.generateSprite(id, position);
 		sf::Sprite s;
 
-		t.generateSprite(id, position, s);
-		sf::Vector2f new_scale(size.x/t.size_sprite.x, size.y/t.size_sprite.y);
-		s.setScale(new_scale);
+		t.generateSprite(id, position, s, size);
 		renderWindow.draw(s);
 	}
 }
