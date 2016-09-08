@@ -1,5 +1,6 @@
 #pragma once
 #include "Map.h"
+#include "Background.h"
 #include "Inventory.h"
 #include <vector>
 class Player
@@ -10,7 +11,7 @@ public:
 	
 	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
-	void Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window);
+	void Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, Background &back);
     int id;
 	void SetPosition(float x, float y);
 	void SetSize(float x);

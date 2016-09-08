@@ -138,8 +138,8 @@ void Game::GameLoop(double delta)
 				//_gameObjectManager.DrawAll(_mainWindow);
 				Game::inputs.Update();
 				Game::map_curr.UpdateAll(delta);
-				Game::player.Update(delta, Game::map_curr, Game::inputs, window);
-
+				Game::player.Update(delta, Game::map_curr, Game::inputs, window, Game::background1);
+                Game::background1.Draw(window);
 				Game::map_curr.DrawMap(window);
 
 				Game::player.Draw(window);
@@ -177,3 +177,4 @@ sf::RenderWindow Game::window;
 Map Game::map_curr(-1);
 Player Game::player;
 Inputs Game::inputs;
+Background Game::background1("resources/back2.png",1.5, sf::Vector2f(400,200));

@@ -4,6 +4,7 @@
 #include "SFML/Audio.hpp"
 #include "Player.h"
 #include "Map.h"
+#include "Background.h"
 
 class Game
 {
@@ -27,6 +28,7 @@ private:
 	static Map map_curr;
 	static Player player;
 	static Inputs inputs;
+	static Background background1;
 
 
 };

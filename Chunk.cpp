@@ -15,7 +15,6 @@
 #include "Chunk.h"
 
 
-//#include "Game.h"
 
 void Chunk::saveToFile(){
     std::string filename = "map/";
@@ -269,7 +268,53 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
 
             else{
                 Tile* t0 = tile_mat[i][j][0];
+
+
                 if(t0->visible)t0->Draw(renderWindow, 0, t);
+                if(t0->id!="0"){
+                    if(i+1<Chunk::N_TILES_Y){
+                        Tile* t_shadow = tile_mat[i+1][j][1];
+                        if(t_shadow->id !="0") {
+                            sf::Sprite s;
+                            t.generateSprite("s", t0->GetPosition(), s, sf::Vector2f(t0->GetWidth(),t0->GetHeight()));
+                            renderWindow.draw(s);
+                        }
+                    }
+                    if(i-1>=0){
+                        Tile* t_shadow = tile_mat[i-1][j][1];
+                        if(t_shadow->id !="0") {
+                            sf::Sprite s;
+                            sf::Vector2f shadow_pos = t0->GetPosition();
+                            shadow_pos.y += t0->GetHeight();
+                            shadow_pos.x += t0->GetWidth();
+                            t.generateSprite("s", shadow_pos, s, sf::Vector2f(t0->GetWidth(),t0->GetHeight()));
+                            s.setRotation(180);
+                            renderWindow.draw(s);
+                        }
+                    }
+                    if(j+1<Chunk::N_TILES_X){
+                        Tile* t_shadow = tile_mat[i][j+1][1];
+                        if(t_shadow->id !="0") {
+                            sf::Sprite s;
+                            sf::Vector2f shadow_pos = t0->GetPosition();
+                            shadow_pos.y += t0->GetHeight();
+                            t.generateSprite("s", shadow_pos, s, sf::Vector2f(t0->GetWidth(),t0->GetHeight()));
+                            s.setRotation(-90);
+                            renderWindow.draw(s);
+                        }
+                    }
+                    if(j-1>=0){
+                        Tile* t_shadow = tile_mat[i][j-1][1];
+                        if(t_shadow->id !="0") {
+                            sf::Sprite s;
+                            sf::Vector2f shadow_pos = t0->GetPosition();
+                            shadow_pos.x += t0->GetWidth();
+                            t.generateSprite("s", shadow_pos, s, sf::Vector2f(t0->GetWidth(),t0->GetHeight()));
+                            s.setRotation(90);
+                            renderWindow.draw(s);
+                        }
+                    }
+                }
             }
             int test = t1->id_temp;
             sf::Vector2f test_pos = t1->GetPosition();

@@ -6,19 +6,21 @@
       <sourceFolder url="file://$MODULE_DIR$/cmake_modules/FindSFML.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Inputs.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Tile.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Inventory.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Inputs.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Player.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Tile.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Map.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Item.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Item.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/AnimatedTile.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TextureManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simplex2d.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TextureManager.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Item.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Inventory.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Tile.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Game.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Background.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Game.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Background.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Player.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Map.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Chunk.h" isTestSource="false" />

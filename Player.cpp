@@ -338,7 +338,7 @@ void Player::Draw(sf::RenderWindow & renderWindow)
 }
 
 
-void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window)
+void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, Background &back)
 {
 	inventory->Update(inputs, window);
 
@@ -447,7 +447,8 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 
     //COMPROBA MAP
 
-    map.checkLoadedChunks(x, y);
+    map.checkLoadedChunks(GetPosition().x, GetPosition().y);
+    back.updatePosition(GetPosition());
 
 
     //COMPROBA INPUTS
