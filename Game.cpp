@@ -177,4 +177,4 @@ sf::RenderWindow Game::window;
 Map Game::map_curr(-1);
 Player Game::player;
 Inputs Game::inputs;
-Background Game::background1("resources/back2.png",1.5, sf::Vector2f(400,200));
+Background Game::background1("resources/back3.png",1.25, sf::Vector2f(1252,1252));

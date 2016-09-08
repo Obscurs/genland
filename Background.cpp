@@ -17,7 +17,6 @@ Background::~Background()
 {
 }
 
-
 void Background::Draw(sf::RenderWindow & renderWindow)
 {
 
@@ -34,9 +33,9 @@ void Background::Draw(sf::RenderWindow & renderWindow)
     float x_view1 = centerView.x-sizeView.x/2;
     float x_view2 = centerView.x+sizeView.x/2;
     float distance = x_view1-position.x;
-    float first_x = (ceilf(distance/size.x)-1)*size.x;
+    float first_x = (floor(distance/size.x))*size.x+position.x;
     for(int i = first_x; i<x_view2; i= i+size.x){
-        s.setPosition(sf::Vector2f(i, position.y));
+        s.setPosition(sf::Vector2f(i, position.y-600));
         renderWindow.draw(s);
     }
     //std::cout << distance << " " << x_view1 << " "<< first_x << " " << size.x << " "<<  ceilf(distance/size.x)<< std::endl;
