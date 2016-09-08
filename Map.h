@@ -1,4 +1,5 @@
 #pragma once
+#include "TextureManager.h"
 #include "Chunk.h"
 #include <vector>
 #include <list>
@@ -13,7 +14,7 @@
 #include <string>
 class Map
 {
-public:	
+public:
 	Map(int pos);
 	~Map();
 
@@ -25,7 +26,6 @@ public:
 	sf::Vector2i getChunkIndex(float x, float y);
     sf::Vector2i getIndexMatChunk(int x, int y);
 
-	void DrawAll(sf::RenderWindow& renderWindow);
     void DrawMap(sf::RenderWindow& renderWindow);
 	void removeTile(Tile* r_tile, int z);
 	void UpdateAll(float delta);
@@ -42,6 +42,5 @@ private:
 	sf::Vector2i getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal);
 	std::vector<AnimatedTile*> falling_tiles;
 	Chunk* chunk_mat[N_CHUNKS_X][N_CHUNKS_Y];
-    sf::Texture _image;
-    std::map<std::string, sf::Texture> texture_map;
+	TextureManager* texMan;
 };

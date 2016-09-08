@@ -1,12 +1,12 @@
 #pragma once
 #include "Tile.h"
 #include "Simplex2d.h"
-
+#include "TextureManager.h"
 class Chunk
 {
 public:	
-	Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile, std::map<std::string, sf::Texture> &texture_map);
-    Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, std::map<std::string, sf::Texture> &texture_map);
+	Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile);
+    Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp);
 	~Chunk();
 
 
@@ -19,8 +19,7 @@ public:
 
 	Tile* getTile(float x, float y, int z);
     Tile* getTileByIndex(int x, int y, int z);
-	void DrawAll(sf::RenderWindow& renderWindow);
-    void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, sf::Texture> &texture_map);
+    void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t);
 	sf::Vector2i getTileIndex(float x, float y);
     void saveToFile();
     void initializeLights();

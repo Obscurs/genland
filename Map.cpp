@@ -20,25 +20,14 @@
 
 Map::Map(int pos)
 {
-    sf::Texture _image;
-    _image.loadFromFile("resources/c.png");
-    texture_map["c"] = sf::Texture(_image);
-    _image.loadFromFile("resources/d.png");
-    texture_map["d"] = sf::Texture(_image);
-    _image.loadFromFile("resources/D.png");
-    texture_map["D"] = sf::Texture(_image);
-    _image.loadFromFile("resources/b.png");
-    texture_map["b"] = sf::Texture(_image);
-    _image.loadFromFile("resources/blue.png");
-    texture_map["blue"] = sf::Texture(_image);
-    _image.loadFromFile("resources/bed.png");
-    texture_map["bed"] = sf::Texture(_image);
-    _image.loadFromFile("resources/cob.png");
-    texture_map["cob"] = sf::Texture(_image);
-    _image.loadFromFile("resources/r.png");
-    texture_map["r"] = sf::Texture(_image);
-    _image.loadFromFile("resources/no_image.png");
-    texture_map["no_image"] = sf::Texture(_image);
+	texMan = new TextureManager("resources/tiles.png", 16, 16);
+	texMan->insert_map_value("D",sf::Vector2i(0,0));
+	texMan->insert_map_value("d",sf::Vector2i(16,0));
+	texMan->insert_map_value("C",sf::Vector2i(16,0));
+	texMan->insert_map_value("c",sf::Vector2i(16,16));
+	texMan->insert_map_value("r",sf::Vector2i(32,0));
+	texMan->insert_map_value("0",sf::Vector2i(32,16));
+
     int id_temp = 0;
     posMap = pos;
     map_updated = true;
@@ -77,7 +66,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
 
                 std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
                 sf::Vector2i chunk_pos(chunk_index,0);
-                Chunk* c = new Chunk(chunk_pos, myfile, id_temp, texture_map);
+                Chunk* c = new Chunk(chunk_pos, myfile, id_temp);
                 chunk_mat[map_index][0] = c;
 
         myfile.close();
@@ -89,7 +78,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
         generator.seed(234);
 
         sf::Vector2i chunk_pos(chunk_index,0);
-        Chunk* c = new Chunk(chunk_pos, &generator, myfile, texture_map);
+        Chunk* c = new Chunk(chunk_pos, &generator, myfile);
         chunk_mat[map_index][0] = c;
 
         myfile.close();
@@ -398,7 +387,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 	Tile* tile_down1 = getTile(r_tile_pos_global.x, r_tile_pos_global.y-Chunk::TILE_SIZE, 1);
 	if(!other_tile->rigid && !other_tile->reach_floor && r_tile->reach_floor) removeReachFloorCascade(r_tile_pos_global.x, r_tile_pos_global.y - Chunk::TILE_SIZE);
 	if(!other_tile->rigid && r_tile->reach_floor && !tile_down1->reach_floor && !tile_down0->reach_floor) other_tile->reach_floor = false;
-	r_tile->Reload("0", texture_map);
+	r_tile->Reload("0");
 
 	bool conex_dreta = false;
 	bool conex_esquerra = false;
@@ -421,7 +410,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 				falling_t->SetPosition(tpos.x, tpos.y);
 				falling_t->SetSize(t->GetWidth());
 				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
-			t->Reload("0", texture_map);
+			t->Reload("0");
 		}
 		while(!extension_tiles.empty()){
 			Tile* act_ext_tile = extension_tiles.front();
@@ -450,7 +439,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 				falling_t->SetSize(t->GetWidth());
 				
 				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
-				t->Reload("0", texture_map);
+				t->Reload("0");
 			}
 			while(!extension_tiles.empty()){
 				Tile* act_ext_tile = extension_tiles.front();
@@ -475,7 +464,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 				falling_t->SetPosition(tpos.x, tpos.y);
 				falling_t->SetSize(t->GetWidth());
 				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
-				t->Reload("0", texture_map);
+				t->Reload("0");
 			}
 			while(!extension_tiles.empty()){
 				Tile* act_ext_tile = extension_tiles.front();
@@ -499,7 +488,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 				falling_t->SetPosition(tpos.x, tpos.y);
 				falling_t->SetSize(t->GetWidth());
 				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
-				t->Reload("0", texture_map);
+				t->Reload("0");
 			}
 			while(!extension_tiles.empty()){
 				Tile* act_ext_tile = extension_tiles.front();
@@ -740,35 +729,7 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
 }
 */
 
-/*
-void Map::DrawAll(sf::RenderWindow& renderWindow)
-{
-	sf::View currentView = renderWindow.getView();
-	sf::Vector2f centerView = currentView.getCenter();
-	sf::Vector2f sizeView = currentView.getSize();
-	float first_x = centerView.x-(sizeView.x/2)-1;
-	float first_y = centerView.y-(sizeView.y/2)-1;
-	float last_x = centerView.x+(sizeView.x/2)+1;
-	float last_y = centerView.y+(sizeView.y/2)+1;
-	//if(first_x<0) first_x = 0;
-	//if(first_y<0) first_y = 0;
-	//std::cout << first_x << " " << first_y << " " << last_x << " " << last_y << std::endl;
-	sf::Vector2f first_chunk = getChunkIndex(first_x, first_y);
-	sf::Vector2f last_chunk = getChunkIndex(last_x, last_y);
 
-	//std::cout << first_chunk.x << " " << first_chunk.y << " " << last_chunk.x << " " << last_chunk.y << std::endl;
-	for(int i = first_chunk.x ; i<=last_chunk.x ; ++i){
-		for(int j = first_chunk.y ; j<=last_chunk.y ; ++j){
-			chunk_mat[i][j]->DrawAll(renderWindow);
-		}
-	} 
-
-	for(int i = 0; i<falling_tiles.size(); i++){
-		falling_tiles[i]->Draw(renderWindow);
-	}
-
-}
-*/
 void Map::DrawMap(sf::RenderWindow& renderWindow)
 {
     sf::View currentView = renderWindow.getView();
@@ -791,7 +752,6 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
     //std::cout << first_chunk.x << " " << first_chunk.y << " " << last_chunk.x << " " << last_chunk.y << std::endl;
 
     for(int i = first_chunk.x ; i<=last_chunk.x ; ++i) {
-
         for (int j = first_chunk.y; j <= last_chunk.y; ++j) {
             //if(i>0) std::cout << "heeyy" << std::endl;
             sf::Vector2i index_mat = getIndexMatChunk(i, j);
@@ -799,7 +759,7 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
             //std::cout << firstPos.x << " " << firstPos.y << " " << lastPos.x << " " << lastPos.y << std::endl;
             //std::cout << "draw chunk " << index_mat.x << " " << index_mat.y << std::endl;
             //#pragma omp task shared(renderWindow)
-            chunk_mat[index_mat.x][index_mat.y]->DrawChunk(renderWindow, firstPos, lastPos, texture_map);
+            chunk_mat[index_mat.x][index_mat.y]->DrawChunk(renderWindow, firstPos, lastPos, *texMan);
         }
 
     }

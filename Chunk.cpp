@@ -38,7 +38,7 @@ void Chunk::saveToFile(){
     myfile.close();
 
 }
-Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile, std::map<std::string, sf::Texture> &texture_map)
+Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 {
 	chunk_pos = pos;
     //std::cout  << chunk_pos.x*N_TILES_X*TILE_SIZE << " " << chunk_pos.y*N_TILES_Y*TILE_SIZE << std::endl;
@@ -63,19 +63,19 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile, s
             Tile* t = new Tile(0);
             Tile* t2 = new Tile(0);
             if(valReal1 >0){
-                t->Reload("d", texture_map);
+                t->Reload("d");
                 t->reach_floor = true;
 
             } else{
-                t->Reload("0", texture_map);
+                t->Reload("0");
             }
 
             if(valReal2 >0){
-                t2->Reload("D", texture_map);
+                t2->Reload("D");
                 t2->reach_floor = true;
 
             } else{
-                t2->Reload("0", texture_map);
+                t2->Reload("0");
 
             }
 
@@ -95,7 +95,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile, s
 	
 }
 
-Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, std::map<std::string, sf::Texture> &texture_map)
+Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
 {
     chunk_pos = pos;
     std::cout << "creat" << chunk_pos.x << std::endl;
@@ -114,8 +114,8 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, std::map<std
             ++k;
             //myfile.get(c1);
             //myfile.get(c2);
-            t->Reload(std::string(1, c1), texture_map);
-            t2->Reload(std::string(1, c2), texture_map);
+            t->Reload(std::string(1, c1));
+            t2->Reload(std::string(1, c2));
             t->reach_floor = true;
             t2->reach_floor = true;
 
@@ -229,29 +229,9 @@ void Chunk::initializeLights(){
         }
     }
 }
-/*
-void Chunk::DrawAll(sf::RenderWindow& renderWindow)
-{
-	for(int i = 0; i<N_TILES_Y; ++i){
-		for(int j = 0; j<N_TILES_X; ++j){
-			for(int k = 0; k<N_TILES_Z; ++k){
-				Tile* t = tile_mat[i][j][k];
-				if(t->visible)t->Draw(renderWindow);
-			}
-		}
-	}
-	//vector<int> v
 
-	std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
-	while(itr != _gameObjects.end())
-	{
-		itr->second->Draw(renderWindow);
-		itr++;
-	}
-}
-*/
 
-void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, sf::Texture> &texture_map)
+void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t)
 {
     //std::cout << "Drawing chunk " << chunk_pos.x<< std::endl;
     sf::Text text;
@@ -285,11 +265,11 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
     for(int i = first_index.x; i<=last_index.x; ++i){
         for(int j = first_index.y; j<=last_index.y; ++j){
             Tile* t1 = tile_mat[i][j][1];
-            if(t1->visible)t1->Draw(renderWindow, 1);
+            if(t1->visible)t1->Draw(renderWindow, 1, t);
 
             else{
                 Tile* t0 = tile_mat[i][j][0];
-                if(t0->visible)t0->Draw(renderWindow, 0);
+                if(t0->visible)t0->Draw(renderWindow, 0, t);
             }
             int test = t1->id_temp;
             sf::Vector2f test_pos = t1->GetPosition();

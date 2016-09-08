@@ -26,9 +26,8 @@ Tile::~Tile()
 	
 }
 
-void Tile::Load(std::map<std::string, sf::Texture> &texture_map)
+void Tile::Load()
 {
-    _sprite.setTexture(texture_map[id]);
     _isLoaded = true;
     /*
 	if(id != "0"){
@@ -61,10 +60,10 @@ void Tile::Load(std::map<std::string, sf::Texture> &texture_map)
 	}
      */
 }
-void Tile::Reload(std::string new_id, std::map<std::string, sf::Texture> &texture_map)
+void Tile::Reload(std::string new_id)
 {
 	id = new_id;
-	Load(texture_map);
+	Load();
 	if(new_id == "0"){
 		colisionable = false;
 		visible = false;
@@ -98,7 +97,7 @@ void Tile::Reload(std::string new_id, std::map<std::string, sf::Texture> &textur
 		reach_floor = false;
 	}
 	else{
-		Reload("0", texture_map);
+		Reload("0");
 	}
 
 	
@@ -108,33 +107,9 @@ void Tile::Reload(std::string new_id, std::map<std::string, sf::Texture> &textur
 //}
 
 
-void Tile::Draw(sf::RenderWindow & renderWindow, int layer)
+void Tile::Draw(sf::RenderWindow & renderWindow, int layer, TextureManager &t)
 {
-    /*
-	if(_isLoaded)
-	{
-        if(layer==1){
-            bool drawable=false;
-            for(int i=0; i<8; i++){
-                if(lights[i]==true){
-                    drawable = true;
-                    break;
-                }
-            }
-            if(drawable) renderWindow.draw(_sprite);
-            else {
-
-                sf::RectangleShape rec(sf::Vector2f(Chunk::TILE_SIZE,Chunk::TILE_SIZE));
-                rec.setPosition(GetPosition());
-                rec.setFillColor(sf::Color::Black);
-                renderWindow.draw(rec);
-            }
-        }
-        else renderWindow.draw(_sprite);
-
-
-	}
-     */
+ 	/*
     if(layer==1){
         bool drawable=false;
         for(int i=0; i<8; i++){
@@ -157,7 +132,42 @@ void Tile::Draw(sf::RenderWindow & renderWindow, int layer)
     }
     else {
         renderWindow.draw(_sprite);
-    }
+    }*/
+	if(layer==1){
+		bool drawable=false;
+		for(int i=0; i<8; i++){
+			if(lights[i]==true){
+				drawable = true;
+				break;
+			}
+		}
+		if(drawable) {
+			//sf::Sprite s = t.generateSprite(id, position);
+			//_sprite.setTexture(t._image);
+			//_sprite.setPosition(position.x, position.y);
+			sf::Sprite s;
+			t.generateSprite(id, position, s);
+			sf::Vector2f new_scale(size.x/t.size_sprite.x, size.y/t.size_sprite.y);
+			s.setScale(new_scale);
+			renderWindow.draw(s);
+		}
+		else {
+
+			sf::RectangleShape rec(sf::Vector2f(Chunk::TILE_SIZE,Chunk::TILE_SIZE));
+			rec.setPosition(GetPosition());
+			rec.setFillColor(sf::Color::Black);
+			renderWindow.draw(rec);
+		}
+	}
+	else {
+		//sf::Sprite s = t.generateSprite(id, position);
+		sf::Sprite s;
+
+		t.generateSprite(id, position, s);
+		sf::Vector2f new_scale(size.x/t.size_sprite.x, size.y/t.size_sprite.y);
+		s.setScale(new_scale);
+		renderWindow.draw(s);
+	}
 }
 
 
@@ -167,53 +177,40 @@ void Tile::Update(float elapsedTime)
 
 void Tile::SetPosition(float x, float y)
 {
-	if(_isLoaded)
-	{
-		_sprite.setPosition(x,y);
-	}
+
+	position.x=x;
+	position.y=y;
 }
 void Tile::SetSize(float x)
 {
-	sf::Vector2f new_scale(x/_sprite.getTexture()->getSize().x, x/_sprite.getTexture()->getSize().y);
-	_sprite.setScale(new_scale);
+
+	size.x=x;
+	size.y=x;
 }
 
 sf::Vector2f Tile::GetPosition() const
 {
+	/*
 	if(_isLoaded)
 	{
 		return _sprite.getPosition();
-	}
-	return sf::Vector2f();
+	}*/
+	return position;
 }
 
 float Tile::GetHeight() const
 {
-	return _sprite.getTexture()->getSize().y*_sprite.getScale().y;
+	return size.y;
+	//return _sprite.getTexture()->getSize().y*_sprite.getScale().y;
 }
 
 float Tile::GetWidth() const
 {
-	return _sprite.getTexture()->getSize().x*_sprite.getScale().x;
+	return size.x;
+	//return _sprite.getTexture()->getSize().x*_sprite.getScale().x;
 }
 
-sf::Rect<float> Tile::GetBoundingRect() const
-{
-	sf::Vector2f size = _sprite.getScale();
-	sf::Vector2f position = _sprite.getPosition();
 
-	return sf::Rect<float>(
-						position.x - size.x/2,
-						position.y - size.y/2,
-						position.x + size.x/2,
-						position.y + size.y/2
-						);
-}
-
-sf::Sprite& Tile::GetSprite()
-{
-	return _sprite;
-}
 
 bool Tile::IsLoaded() const
 {
