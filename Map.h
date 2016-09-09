@@ -32,7 +32,6 @@ public:
 	void checkLoadedChunks(float x, float y);
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
 private:
-    bool map_updated;
     inline bool exists_file (const std::string& name);
     int posMap;
 	std::mt19937 generator;

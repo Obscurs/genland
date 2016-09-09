@@ -14,9 +14,9 @@
 #include "Chunk.h"
 
 
-Tile::Tile(int id_t){
+Tile::Tile(int id_t, int l){
     id_temp = id_t;
-	colisionable = false;
+    layer = l;
 
 }
 
@@ -26,46 +26,11 @@ Tile::~Tile()
 	
 }
 
-void Tile::Load()
-{
-    _isLoaded = true;
-    /*
-	if(id != "0"){
-        _filename = "resources/";
-        _filename.append(id);
-		if(!_image.loadFromFile(_filename.append(".png")))
-		{
-			_filename =  "error.png";
-			_isLoaded = false;
-		}
-		else
-		{
-			//_filename = id.append(".png");
-			_sprite.setTexture(_image);
-			_isLoaded = true;
-		}
-	}
-	else{
-		if(!_image.loadFromFile("resources/no_image.png"))
-		{
-			_filename =  "resources/error.png";
-			_isLoaded = false;
-		}
-		else
-		{
-			//_filename = id.append(".png");
-			_sprite.setTexture(_image);
-			_isLoaded = true;
-		}
-	}
-     */
-}
+
 void Tile::Reload(std::string new_id)
 {
 	id = new_id;
-	Load();
 	if(new_id == "0"){
-		colisionable = false;
 		visible = false;
 		weight = 0;
 		max_tension = 0;
@@ -73,7 +38,6 @@ void Tile::Reload(std::string new_id)
 		reach_floor = false;
 	}
 	else if(new_id == "D"){
-		colisionable = true;
 		visible = true;
 		weight = 0;
 		max_tension = 500;
@@ -81,7 +45,6 @@ void Tile::Reload(std::string new_id)
 		reach_floor = true;
 	}
 	else if(new_id == "d"){
-		colisionable = false;
 		visible = true;
 		weight = 20;
 		max_tension = 200;
@@ -89,54 +52,41 @@ void Tile::Reload(std::string new_id)
 		reach_floor = false;
 	}
 	else if(new_id == "r"){
-		colisionable = true;
 		visible = true;
 		weight = 10;
 		max_tension = 30;
 		rigid = false;
 		reach_floor = false;
 	}
+    else if(new_id == "C"){
+        visible = true;
+        weight = 10;
+        max_tension = 30;
+        rigid = false;
+        reach_floor = false;
+    }
+    else if(new_id == "c"){
+        visible = true;
+        weight = 10;
+        max_tension = 30;
+        rigid = false;
+        reach_floor = false;
+    }
 	else{
 		Reload("0");
 	}
 
 	
 }
-//void Tile::Remove(){
-//	Reload("0");
-//}
 
 
-void Tile::Draw(sf::RenderWindow & renderWindow, int layer, TextureManager &t)
+void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t)
 {
- 	/*
-    if(layer==1){
-        bool drawable=false;
-        for(int i=0; i<8; i++){
-            if(lights[i]==true){
-                drawable = true;
-                break;
-            }
-        }
-        if(drawable) {
 
-            renderWindow.draw(_sprite);
-        }
-        else {
-
-            sf::RectangleShape rec(sf::Vector2f(Chunk::TILE_SIZE,Chunk::TILE_SIZE));
-            rec.setPosition(GetPosition());
-            rec.setFillColor(sf::Color::Black);
-            renderWindow.draw(rec);
-        }
-    }
-    else {
-        renderWindow.draw(_sprite);
-    }*/
 	if(layer==1){
 		bool drawable=false;
 		for(int i=0; i<8; i++){
-			if(lights[i]==true){
+			if(lights[i]){
 				drawable = true;
 				break;
 			}
@@ -156,11 +106,33 @@ void Tile::Draw(sf::RenderWindow & renderWindow, int layer, TextureManager &t)
 			rec.setFillColor(sf::Color::Black);
 			renderWindow.draw(rec);
 
-            sf::RectangleShape rec2(sf::Vector2f(Chunk::TILE_SIZE,Chunk::TILE_SIZE));
-            rec2.setPosition(sf::Vector2f(0,0));
-            rec2.setFillColor(sf::Color::Red);
-            rec2.setScale(0.5,0.5);
-            renderWindow.draw(rec2);
+            //CONTORNO SOMBREADO
+            sf::Sprite s;
+            sf::Vector2f shadow_pos = GetPosition();
+            shadow_pos.y -= GetHeight();
+            t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+            //s.setRotation(-90);
+            renderWindow.draw(s);
+
+            shadow_pos = GetPosition();
+            shadow_pos.x += GetWidth();
+            t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+            s.setRotation(90);
+            renderWindow.draw(s);
+
+            shadow_pos = GetPosition();
+            shadow_pos.y += GetHeight();
+            shadow_pos.x -= GetWidth();
+            t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+            s.setRotation(-90);
+            renderWindow.draw(s);
+
+            shadow_pos = GetPosition();
+            shadow_pos.y += GetHeight()*3;
+            shadow_pos.x += GetWidth();
+            t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+            s.setRotation(180);
+            renderWindow.draw(s);
 		}
 	}
 	else {
@@ -214,7 +186,3 @@ float Tile::GetWidth() const
 
 
 
-bool Tile::IsLoaded() const
-{
-	return _isLoaded;
-}

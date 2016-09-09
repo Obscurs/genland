@@ -23,7 +23,7 @@ public:
 	sf::Vector2i getTileIndex(float x, float y);
     void saveToFile();
     void initializeLights();
-	void UpdateAll();
+	Chunk* neighbors[2] = { nullptr };
 
 private:
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];

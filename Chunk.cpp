@@ -62,8 +62,8 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
             //float valReal = ((float) current_global_y/3000.0f > valFloor? 1 : 0);
             //std::cout << valFloor << std::endl;
 
-            Tile* t = new Tile(0);
-            Tile* t2 = new Tile(0);
+            Tile* t = new Tile(0, 0);
+            Tile* t2 = new Tile(0, 1);
             if(valReal1 >0){
                 if(valStone > 0.8){
                     t->Reload("c");
@@ -79,8 +79,13 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
             }
 
             if(valReal2 >0){
-                t2->Reload("D");
-                t2->reach_floor = true;
+                if(valStone > 0.8){
+                    t2->Reload("C");
+                    t2->reach_floor = true;
+                } else {
+                    t2->Reload("D");
+                    t2->reach_floor = true;
+                }
 
             } else{
                 t2->Reload("0");
@@ -113,8 +118,8 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
 
-            Tile* t = new Tile(id_temp);
-            Tile* t2 = new Tile(id_temp);
+            Tile* t = new Tile(id_temp, 0);
+            Tile* t2 = new Tile(id_temp, 1);
             id_temp++;
             char c1 = *k;
             ++k;
@@ -273,13 +278,13 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
     for(int i = first_index.x; i<=last_index.x; ++i){
         for(int j = first_index.y; j<=last_index.y; ++j){
             Tile* t1 = tile_mat[i][j][1];
-            if(t1->visible)t1->Draw(renderWindow, 1, t);
+            if(t1->visible)t1->Draw(renderWindow, t);
 
             else{
                 Tile* t0 = tile_mat[i][j][0];
 
 
-                if(t0->visible)t0->Draw(renderWindow, 0, t);
+                if(t0->visible)t0->Draw(renderWindow, t);
                 if(t0->id!="0"){
                     if(i+1<Chunk::N_TILES_Y){
                         Tile* t_shadow = tile_mat[i+1][j][1];
@@ -325,6 +330,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
                     }
                 }
             }
+            //DEBUG
             int test = t1->id_temp;
             sf::Vector2f test_pos = t1->GetPosition();
             sprintf(c, "%i", test);
@@ -334,6 +340,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
             text.setPosition(test_pos.x, test_pos.y);
             text.setScale(sf::Vector2f(1.5,1.5));
             //renderWindow.draw(text);
+            //END DEBUG
         }
     }
 
@@ -342,29 +349,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
 
 
 
-    //vector<int> v
-    /*
-    std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
-    while(itr != _gameObjects.end())
-    {
-        itr->second->Draw(renderWindow);
-        itr++;
-    } */
 }
 
 
 
-void Chunk::UpdateAll()
-{
-	//std::cout << Chunk[0][0] << std::endl;
-	/*
-	std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
-	float timeDelta = Game::GetWindow().GetFrameTime();
-
-	while(itr != _gameObjects.end())
-	{
-		itr->second->Update(timeDelta);
-		itr++;
-	}
-	*/
-}

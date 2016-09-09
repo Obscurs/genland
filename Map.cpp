@@ -23,35 +23,20 @@ Map::Map(int pos)
 	texMan = new TextureManager("resources/tiles.png", 16, 16);
 	texMan->insert_map_value("D",sf::Vector2i(0,0));
 	texMan->insert_map_value("d",sf::Vector2i(16,0));
-	texMan->insert_map_value("C",sf::Vector2i(16,0));
+	texMan->insert_map_value("C",sf::Vector2i(0,16));
 	texMan->insert_map_value("c",sf::Vector2i(16,16));
 	texMan->insert_map_value("r",sf::Vector2i(0,32));
 	texMan->insert_map_value("0",sf::Vector2i(32,32));
     texMan->insert_map_value("s",sf::Vector2i(16,32));
+    texMan->insert_map_value("S",sf::Vector2i(32,32));
+    texMan->insert_map_value("S2",sf::Vector2i(48,32));
 
     int id_temp = 0;
     posMap = pos;
-    map_updated = true;
     createMap(0, -1, id_temp);
     createMap(1, 0, id_temp);
     createMap(2, 1, id_temp);
-    /*
-    std::string filename = "map/";
-    filename.append(std::to_string(posMap));
-    filename.append(".txt");
-    std::ofstream myfile;
-    myfile.open (filename);
-    generator.seed(52345);
-    for(int i = 0; i<N_CHUNKS_Y; ++i){
-        for(int j = 0; j<N_CHUNKS_X; ++j){
-            std::cout << i << " " << j <<  std::endl;
-            sf::Vector2i chunk_pos(i,j);
-            Chunk* c = new Chunk(chunk_pos, &generator, myfile, posMap);
-            chunk_mat[i][j] = c;
-        }
-    }
-    myfile.close();
-    */
+
 
 }
 void Map::createMap(int map_index, int chunk_index, int &id_temp){
@@ -62,21 +47,17 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
     if(exists_file(filename)) {
         std::ifstream myfile(filename);
         myfile.open (filename);
-
-
-
                 std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
                 sf::Vector2i chunk_pos(chunk_index,0);
                 Chunk* c = new Chunk(chunk_pos, myfile, id_temp);
                 chunk_mat[map_index][0] = c;
-
         myfile.close();
     }
     else{
 
         std::ofstream myfile;
         myfile.open (filename);
-        generator.seed(4815162342);
+        generator.seed(234);
 
         sf::Vector2i chunk_pos(chunk_index,0);
         Chunk* c = new Chunk(chunk_pos, &generator, myfile);
@@ -85,44 +66,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
         myfile.close();
     }
 }
-/*
-void Map::createMap(int map_index){
-    std::string filename = "map/";
-    filename.append(std::to_string(posMap+map_index));
-    filename.append(".txt");
 
-    if(exists_file(filename)) {
-        std::ifstream myfile(filename);
-        myfile.open (filename);
-
-
-
-        for(int i = 0; i<N_CHUNKS_Y; ++i){
-            for(int j = map_index*N_CHUNKS_X/3; j<map_index*N_CHUNKS_X/3+N_CHUNKS_X/3; ++j){
-                std::cout << map_index << " map to " << j << " " << i << std::endl;
-                sf::Vector2i chunk_pos(map_index,i);
-                Chunk* c = new Chunk(chunk_pos, myfile, posMap);
-                chunk_mat[j][i] = c;
-            }
-        }
-        myfile.close();
-    }
-    else{
-
-        std::ofstream myfile;
-        myfile.open (filename);
-        generator.seed(234);
-        for(int i = 0; i<N_CHUNKS_Y; ++i){
-            for(int j = map_index*N_CHUNKS_X/3; j<map_index*N_CHUNKS_X/3+N_CHUNKS_X/3; ++j){
-                std::cout << map_index*N_CHUNKS_X/3 <<" " << i << " " << j << " "<< map_index*N_CHUNKS_X/3+N_CHUNKS_X/3<< std::endl;
-                sf::Vector2i chunk_pos(map_index,i);
-                Chunk* c = new Chunk(chunk_pos, &generator, myfile, posMap);
-                chunk_mat[j][i] = c;
-            }
-        }
-        myfile.close();
-    }
-}*/
 
 Map::~Map()
 {
@@ -581,7 +525,7 @@ void Map::checkLoadedChunks(float x, float y){
         float distance_2 = sqrt((x - p2.x) * (x - p2.x));
 
 
-        if (distance_1 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE && map_updated) {
+        if (distance_1 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE) {
             //#pragma omp task
             {
 
@@ -591,18 +535,16 @@ void Map::checkLoadedChunks(float x, float y){
                 Chunk *chunk_mid = chunk_mat[1][0];
 
 
-                map_updated=false;
                 chunk_mat[2][0] = chunk_mid;
                 chunk_mat[1][0] = c1;
                 --posMap;
                 createMap(0, current_pos - 1, id_temp);
                 delete c2;
-                map_updated =true;
             }
 
             //std::cout << distance_1 << " " << distance_2 << std::endl;
         }
-        if (distance_2 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE & map_updated) {
+        if (distance_2 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE) {
             //#pragma omp task
             {
 
@@ -611,13 +553,11 @@ void Map::checkLoadedChunks(float x, float y){
                 int id_temp = 0;
                 Chunk *chunk_mid = chunk_mat[1][0];
 
-                map_updated=false;
                 chunk_mat[0][0] = chunk_mid;
                 chunk_mat[1][0] = c2;
                 ++posMap;
                 createMap(2, current_pos + 1, id_temp);
                 delete c1;
-                map_updated =true;
             }
             //std::cout << distance_1 << " " << distance_2 << std::endl;
         }
@@ -632,7 +572,7 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
     for(int j = 0; j <= num_ite_y; ++j){
             for(int i = 0; i <=num_ite_x; i++){
                 Tile* t = getTile(pos.x+i*Chunk::TILE_SIZE, pos.y+j*Chunk::TILE_SIZE, 1);
-                if(t->colisionable) {
+                if(t->id !="0") {
 
                     bool trobat = false;
                     for(int k = 0; k < result.size(); k++){
@@ -660,78 +600,6 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
     return result;
 }
 
-/*
-std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
-	std::vector<Tile*> result;
-	
-	for(int j = pos.y; j < pos.y+size.y; j+=Chunk::TILE_SIZE){
-		if(j+Chunk::TILE_SIZE >=pos.y+size.y){
-			for(int i = pos.x; i < pos.x+size.x; i+=Chunk::TILE_SIZE){
-				Tile* t = getTile(i, j, 1);
-				Tile* t2 = getTile(i, pos.y+size.y, 1);
-				if(t2 == t){
-					if(t->colisionable) {
-                        //t->Reload("0");
-						result.push_back(t);
-					}
-				}
-				else{
-					if(t->colisionable) {
-                        //t->Reload("0");
-						result.push_back(t);
-					}
-					if(t2->colisionable) {
-                        //t2->Reload("0");
-						result.push_back(t2);
-					}
-				}
-				
-			}
-			Tile* t = getTile(pos.x+size.x, pos.y+size.y, 1);
-			bool tt = t->colisionable;
-			if((result.size() == 0 || t != result[result.size()-1]) && t->colisionable) {
-				//t->id ="guy";
-				//t->Load();
-                //t->Reload("0");
-				result.push_back(t);
-			} 
-		}
-		else{
-			for(int i = pos.x; i < pos.x+size.x; i+=Chunk::TILE_SIZE){
-				Chunk* c = getChunk(i, j);
-				Tile* t = getTile(i, j, 1);
-				if(t->colisionable) {
-					result.push_back(t);
-				}
-			}
-
-			Tile* t = getTile(pos.x+size.x, j, 1);
-			bool tt = t->colisionable;
-			if((result.size() == 0 || t != result[result.size()-1]) && t->colisionable) {
-				//t->id ="guy";
-				//t->Load();
-				result.push_back(t);
-			} 
-		}
-		
-
-	} 
-
-
-	//DEBUG
-	for(int i= 0; i<result.size(); i++){
-		sf::Vector2f pos = result[i]->GetPosition();
-        int aux_id = result[i]->id_temp;
-		//std::cout << "pos x " << pos.x << " pos y " << pos.y << std::endl;
-        std::cout << aux_id << " ";
-
-	}
-    std::cout << std::endl;
-
-
-	return result;
-}
-*/
 
 
 void Map::DrawMap(sf::RenderWindow& renderWindow)
@@ -787,15 +655,5 @@ void Map::UpdateAll(float delta)
 	for(int i=0; i<falling_tiles.size(); ++i){
 		falling_tiles[i]->Update(delta);
 	}
-	//std::cout << Chunk[0][0] << std::endl;
-	/*
-	std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
-	float timeDelta = Game::GetWindow().GetFrameTime();
 
-	while(itr != _gameObjects.end())
-	{
-		itr->second->Update(timeDelta);
-		itr++;
-	}
-	*/
 }

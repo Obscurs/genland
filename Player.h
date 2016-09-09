@@ -18,8 +18,7 @@ public:
 	sf::Vector2f GetPosition() const;
 	float GetWidth() const;
 	float GetHeight() const;
-	
-	bool IsLoaded() const;
+
 
 private:
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
@@ -43,10 +42,10 @@ private:
 	//INVENTORY
 	Inventory* inventory;
 
+
 	//SHOW
-	sf::Sprite  _sprite;
+	sf::Sprite _sprite;
 	sf::Texture _image;
 	std::string _filename;
-	bool _isLoaded;
 };
 
