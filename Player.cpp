@@ -350,13 +350,13 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	sf::Vector2i keyD = inputs.getKey("D");
 	sf::Vector2i keySpace = inputs.getKey("Space");
 
-	sf::Vector2i position = sf::Mouse::getPosition(window);
+    sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 	sf::View currentView = window.getView();
 	sf::Vector2f centerView = currentView.getCenter();
 	sf::Vector2f sizeView = currentView.getSize();
 
-	position.x += centerView.x-sizeView.x/2;
-	position.y += centerView.y-sizeView.y/2;
+	//position.x += centerView.x-sizeView.x/2;
+	//position.y += centerView.y-sizeView.y/2;
 
 	if (keyA.x){
 		vx = -300;
@@ -454,8 +454,9 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
     //COMPROBA INPUTS
 	if (mouseLeft.x == 1)
 	{
-
+		//std::cout << position.x << " " << position.y << std::endl;
 	    Tile* t = map.getTile(position.x, position.y, 1);
+		//std::cout << t->id_temp << " " <<true_position.x << " " << true_position.y << std::endl;
 	    int position_tile = 1;
 	    if(t->id =="0"){
 	    	position_tile = 0;

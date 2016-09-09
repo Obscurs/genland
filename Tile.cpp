@@ -155,6 +155,12 @@ void Tile::Draw(sf::RenderWindow & renderWindow, int layer, TextureManager &t)
 			rec.setPosition(GetPosition());
 			rec.setFillColor(sf::Color::Black);
 			renderWindow.draw(rec);
+
+            sf::RectangleShape rec2(sf::Vector2f(Chunk::TILE_SIZE,Chunk::TILE_SIZE));
+            rec2.setPosition(sf::Vector2f(0,0));
+            rec2.setFillColor(sf::Color::Red);
+            rec2.setScale(0.5,0.5);
+            renderWindow.draw(rec2);
 		}
 	}
 	else {

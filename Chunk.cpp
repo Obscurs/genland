@@ -54,6 +54,9 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
             float valReal1 = ((float) current_global_y/3000.0f > (valFloor+valFloor2)? 1 : 0);
 
             float valCueva = simCueva->valSimplex2D(current_global_y, current_global_x)*2;
+
+            float valStone = simStone->valSimplex2D(current_global_y, current_global_x);
+
             float valReal2 = valReal1 - valCueva;
 
             //float valReal = ((float) current_global_y/3000.0f > valFloor? 1 : 0);
@@ -62,8 +65,14 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
             Tile* t = new Tile(0);
             Tile* t2 = new Tile(0);
             if(valReal1 >0){
-                t->Reload("d");
-                t->reach_floor = true;
+                if(valStone > 0.8){
+                    t->Reload("c");
+                    t->reach_floor = true;
+                } else{
+                    t->Reload("d");
+                    t->reach_floor = true;
+                }
+
 
             } else{
                 t->Reload("0");
@@ -323,6 +332,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
             sf::String str(string);
             text.setString(str);
             text.setPosition(test_pos.x, test_pos.y);
+            text.setScale(sf::Vector2f(1.5,1.5));
             //renderWindow.draw(text);
         }
     }

@@ -607,13 +607,13 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 
 void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
 {
-	sf::Vector2i position = sf::Mouse::getPosition(window);
+	sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 	sf::View currentView = window.getView();
 	sf::Vector2f centerView = currentView.getCenter();
 	sf::Vector2f sizeView = currentView.getSize();
 
-	position.x += centerView.x-sizeView.x/2;
-	position.y += centerView.y-sizeView.y/2;
+	//position.x += centerView.x-sizeView.x/2;
+	//position.y += centerView.y-sizeView.y/2;
 
 	sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
 	sf::Vector2i mouseRight = inputs.getKey("mouseRight");

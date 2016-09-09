@@ -13,7 +13,7 @@ public:
 	const static int N_TILES_X = 100;
 	const static int N_TILES_Y = 200;
 	const static int N_TILES_Z = 2;
-	const static int TILE_SIZE = 16;
+	const static int TILE_SIZE = 32;
 
 	sf::Vector2i chunk_pos;
 

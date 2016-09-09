@@ -76,7 +76,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
 
         std::ofstream myfile;
         myfile.open (filename);
-        generator.seed(234);
+        generator.seed(4815162342);
 
         sf::Vector2i chunk_pos(chunk_index,0);
         Chunk* c = new Chunk(chunk_pos, &generator, myfile);
@@ -410,6 +410,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 				sf::Vector2f tpos = t->GetPosition();
 				falling_t->SetPosition(tpos.x, tpos.y);
 				falling_t->SetSize(t->GetWidth());
+            std::cout << "falling4 " << falling_t->id << std::endl;
 				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
 			t->Reload("0");
 		}
@@ -438,7 +439,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 				sf::Vector2f tpos = t->GetPosition();
 				falling_t->SetPosition(tpos.x, tpos.y);
 				falling_t->SetSize(t->GetWidth());
-				
+                std::cout << "falling3 " << falling_t->id << std::endl;
 				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
 				t->Reload("0");
 			}
@@ -464,6 +465,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 				sf::Vector2f tpos = t->GetPosition();
 				falling_t->SetPosition(tpos.x, tpos.y);
 				falling_t->SetSize(t->GetWidth());
+                std::cout << "falling2 " << falling_t->id << std::endl;
 				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
 				t->Reload("0");
 			}
@@ -488,6 +490,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 				sf::Vector2f tpos = t->GetPosition();
 				falling_t->SetPosition(tpos.x, tpos.y);
 				falling_t->SetSize(t->GetWidth());
+                std::cout << "falling " << falling_t->id << std::endl;
 				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
 				t->Reload("0");
 			}
@@ -766,6 +769,7 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
     }
 
     for(int i = 0; i<falling_tiles.size(); i++){
+
         falling_tiles[i]->Draw(renderWindow);
     }
     //vector<int> v
