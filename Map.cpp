@@ -36,10 +36,15 @@ Map::Map(int pos)
     createMap(0, -1, id_temp);
     createMap(1, 0, id_temp);
     createMap(2, 1, id_temp);
+    chunk_mat[0]->neighbors[1] = chunk_mat[1];
+    chunk_mat[1]->neighbors[0] = chunk_mat[0];
+    chunk_mat[1]->neighbors[1] = chunk_mat[2];
+    chunk_mat[2]->neighbors[0] = chunk_mat[1];
 
 
 }
 void Map::createMap(int map_index, int chunk_index, int &id_temp){
+
     std::string filename = "map/";
     filename.append(std::to_string(chunk_index));
     filename.append(".txt");
@@ -50,7 +55,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
                 std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
                 sf::Vector2i chunk_pos(chunk_index,0);
                 Chunk* c = new Chunk(chunk_pos, myfile, id_temp);
-                chunk_mat[map_index][0] = c;
+                chunk_mat[map_index] = c;
         myfile.close();
     }
     else{
@@ -61,9 +66,25 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
 
         sf::Vector2i chunk_pos(chunk_index,0);
         Chunk* c = new Chunk(chunk_pos, &generator, myfile);
-        chunk_mat[map_index][0] = c;
+        chunk_mat[map_index] = c;
 
         myfile.close();
+    }
+    if(map_index==0 && chunk_mat[1] != nullptr){
+        chunk_mat[0]->neighbors[1] = chunk_mat[1];
+        chunk_mat[1]->neighbors[0] = chunk_mat[0];
+    } else if(map_index==1){
+        if(chunk_mat[0] != nullptr){
+            chunk_mat[0]->neighbors[1] = chunk_mat[1];
+            chunk_mat[1]->neighbors[0] = chunk_mat[0];
+        }
+        if(chunk_mat[2] != nullptr){
+            chunk_mat[1]->neighbors[1] = chunk_mat[2];
+            chunk_mat[2]->neighbors[0] = chunk_mat[1];
+        }
+    } else if(map_index==2 && chunk_mat[1] != nullptr){
+        chunk_mat[2]->neighbors[0] = chunk_mat[1];
+        chunk_mat[1]->neighbors[1] = chunk_mat[2];
     }
 }
 
@@ -464,59 +485,43 @@ void Map::removeReachFloorCascade(float x, float y){
 	}
 }
 Chunk* Map::getChunk(float x, float y){
-	//if(x<0) x = 0;
-	//if(y<0) y = 0;
 	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
-	int size_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE;
 	int chunk_x = x/size_chunk_x;
-	int chunk_y = y/size_chunk_y;
-	return chunk_mat[chunk_x][chunk_y];
+	return chunk_mat[chunk_x];
 }
 
 
 Tile* Map::getTile(float x, float y, int z){
-	//if(x<0) x = 0;
 	if(y<0) y = 0;
 	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
-	int size_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE;
 	int chunk_x = (x-size_chunk_x*posMap)/size_chunk_x;
-	int chunk_y = (y)/size_chunk_y;
 
-	Chunk* c = chunk_mat[chunk_x][chunk_y];
+	Chunk* c = chunk_mat[chunk_x];
 
 	return c->getTile(x, y, z);
 }
 
-sf::Vector2i Map::getChunkIndex(float x, float y){
+int Map::getChunkIndex(float x){
 	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
-	int size_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE;
-	float chunk_x = x/size_chunk_x;
-	float chunk_y = y/size_chunk_y;
-    if(chunk_x <0) --chunk_x;
-    //if(chunk_y <0) --chunk_y;
-	return sf::Vector2i((int)chunk_x, (int)chunk_y);
+	int chunk_x = x/size_chunk_x;
+    if(x <0) --chunk_x;
+	return chunk_x;
 }
-sf::Vector2i Map::getIndexMatChunk(int x, int y){
+int Map::getIndexMatChunk(int x){
     int final_x = -1;
-    int final_y = -1;
     for(int i = 0 ; i<N_CHUNKS_X ; ++i){
-        for(int j = 0 ; j<N_CHUNKS_Y ; ++j){
-
-            int pos_x = chunk_mat[i][j]->chunk_pos.x;
-            //std::cout << pos_x << std::endl;
-            if(pos_x == x){
-                final_x = i;
-                final_y = j;
-            }
+        int pos_x = chunk_mat[i]->chunk_pos.x;
+        if(pos_x == x){
+            final_x = i;
         }
     }
 
-    return sf::Vector2i(final_x, final_y);
+    return final_x;
 }
 void Map::checkLoadedChunks(float x, float y){
 
-        Chunk *c1 = chunk_mat[0][0];
-        Chunk *c2 = chunk_mat[N_CHUNKS_X - 1][0];
+        Chunk *c1 = chunk_mat[0];
+        Chunk *c2 = chunk_mat[N_CHUNKS_X - 1];
         Tile *t1 = c1->getTileByIndex(0, 0, 0);
         Tile *t2 = c2->getTileByIndex(Chunk::N_TILES_X - 1, 0, 0);
         sf::Vector2f p1 = t1->GetPosition();
@@ -532,11 +537,11 @@ void Map::checkLoadedChunks(float x, float y){
                 c2->saveToFile();
                 int current_pos = c1->chunk_pos.x;
                 int id_temp = 0;
-                Chunk *chunk_mid = chunk_mat[1][0];
+                Chunk *chunk_mid = chunk_mat[1];
 
 
-                chunk_mat[2][0] = chunk_mid;
-                chunk_mat[1][0] = c1;
+                chunk_mat[2] = chunk_mid;
+                chunk_mat[1] = c1;
                 --posMap;
                 createMap(0, current_pos - 1, id_temp);
                 delete c2;
@@ -551,10 +556,10 @@ void Map::checkLoadedChunks(float x, float y){
                 c1->saveToFile();
                 int current_pos = c2->chunk_pos.x;
                 int id_temp = 0;
-                Chunk *chunk_mid = chunk_mat[1][0];
+                Chunk *chunk_mid = chunk_mat[1];
 
-                chunk_mat[0][0] = chunk_mid;
-                chunk_mat[1][0] = c2;
+                chunk_mat[0] = chunk_mid;
+                chunk_mat[1] = c2;
                 ++posMap;
                 createMap(2, current_pos + 1, id_temp);
                 delete c1;
@@ -617,23 +622,20 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
     sf::Vector2f firstPos(first_x, first_y);
     sf::Vector2f lastPos(last_x+Chunk::TILE_SIZE, last_y+Chunk::TILE_SIZE);
     //std::cout << first_x << " " << first_y << " " << last_x << " " << last_y << std::endl;
-    sf::Vector2i first_chunk = getChunkIndex(first_x, first_y);
-    sf::Vector2i last_chunk = getChunkIndex(last_x+Chunk::TILE_SIZE, last_y+Chunk::TILE_SIZE);
+    int first_chunk = getChunkIndex(first_x);
+    int last_chunk = getChunkIndex(last_x+Chunk::TILE_SIZE);
     //std::cout << "first " << first_chunk.x << "last " << last_chunk.x << std::endl;
     //std::cout << "last " << last_chunk.x << " " << last_chunk.y << std::endl;
-    //std::cout << first_chunk.x << " " << first_chunk.y << " " << last_chunk.x << " " << last_chunk.y << std::endl;
+    //std::cout << first_chunk <<  " " << last_chunk << " " << first_x << std::endl;
 
-    for(int i = first_chunk.x ; i<=last_chunk.x ; ++i) {
-        for (int j = first_chunk.y; j <= last_chunk.y; ++j) {
+    for(int i = first_chunk ; i<=last_chunk ; ++i) {
             //if(i>0) std::cout << "heeyy" << std::endl;
-            sf::Vector2i index_mat = getIndexMatChunk(i, j);
+        int index_mat = getIndexMatChunk(i);
 
             //std::cout << firstPos.x << " " << firstPos.y << " " << lastPos.x << " " << lastPos.y << std::endl;
             //std::cout << "draw chunk " << index_mat.x << " " << index_mat.y << std::endl;
             //#pragma omp task shared(renderWindow)
-            chunk_mat[index_mat.x][index_mat.y]->DrawChunk(renderWindow, firstPos, lastPos, *texMan);
-        }
-
+        chunk_mat[index_mat]->DrawChunk(renderWindow, firstPos, lastPos, *texMan);
     }
 
     for(int i = 0; i<falling_tiles.size(); i++){

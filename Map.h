@@ -19,12 +19,11 @@ public:
 	~Map();
 
 	const static int N_CHUNKS_X = 3;
-	const static int N_CHUNKS_Y = 1;
 
 	Chunk* getChunk(float x, float y);
 	Tile* getTile(float x, float y, int z);
-	sf::Vector2i getChunkIndex(float x, float y);
-    sf::Vector2i getIndexMatChunk(int x, int y);
+	int getChunkIndex(float x);
+    int getIndexMatChunk(int x);
 
     void DrawMap(sf::RenderWindow& renderWindow);
 	void removeTile(Tile* r_tile, int z);
@@ -40,6 +39,6 @@ private:
 	void removeReachFloorCascade(float x, float y);
 	sf::Vector2i getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal);
 	std::vector<AnimatedTile*> falling_tiles;
-	Chunk* chunk_mat[N_CHUNKS_X][N_CHUNKS_Y];
+	Chunk* chunk_mat[N_CHUNKS_X] = {nullptr};
 	TextureManager* texMan;
 };
