@@ -335,7 +335,7 @@ void Player::Draw(sf::RenderWindow & renderWindow)
 }
 
 
-void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, Background &back)
+void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, std::vector<Background> &backs)
 {
 	inventory->Update(inputs, window);
 
@@ -444,7 +444,13 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
     //COMPROBA MAP
 
     map.checkLoadedChunks(GetPosition().x, GetPosition().y);
-    back.updatePosition(GetPosition());
+
+	//BACKGROUNDS
+	sf::Vector2f back_pos_ref = GetPosition();
+	for(int i=0; i<backs.size(); i++){
+		backs[i].updatePosition(back_pos_ref);
+	}
+
 
 
     //COMPROBA INPUTS

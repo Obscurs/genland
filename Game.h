@@ -28,7 +28,8 @@ private:
 	static Map map_curr;
 	static Player player;
 	static Inputs inputs;
-	static Background background1;
+	static std::vector<Background> backgrounds;
+
 
 
 };

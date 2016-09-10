@@ -47,5 +47,5 @@ void Background::Draw(sf::RenderWindow & renderWindow)
 
 void Background::updatePosition(sf::Vector2f playerPos){
     position.x = playerPos.x/distance;
-    position.y = playerPos.y/distance+150;
+    position.y = playerPos.y/distance;
 }

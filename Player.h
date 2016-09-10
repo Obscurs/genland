@@ -11,7 +11,7 @@ public:
 	
 	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
-	void Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, Background &back);
+	void Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, std::vector<Background> &backs);
     int id;
 	void SetPosition(float x, float y);
 	void SetSize(float x);
