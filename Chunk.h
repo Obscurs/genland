@@ -21,6 +21,8 @@ public:
     Tile* getTileByIndex(int x, int y, int z);
     void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t);
 	sf::Vector2i getTileIndex(float x, float y);
+	void setTileNeighbors(int index_x, int index_y);
+	void calcLateralNeighborsTiles(int latelal);
     void saveToFile();
     void initializeLights();
 	Chunk* neighbors[2] = { nullptr };

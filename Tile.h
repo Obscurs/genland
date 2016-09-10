@@ -24,8 +24,8 @@ public:
 	int weight;
 	std::string id; //sha de privatitzar
     int id_temp;
-	bool lights[8];
-	Tile* neighbors[8];
+	Tile* neighbors[9] = {nullptr};
+	bool drawable();
 
 
 	

@@ -41,6 +41,14 @@ Map::Map(int pos)
     chunk_mat[1]->neighbors[1] = chunk_mat[2];
     chunk_mat[2]->neighbors[0] = chunk_mat[1];
 
+    std::cout << "chunk 00000000000000" << std::endl;
+    chunk_mat[0]->calcLateralNeighborsTiles(1);
+    std::cout << "chunk 111111111111111" << std::endl;
+    chunk_mat[1]->calcLateralNeighborsTiles(0);
+    chunk_mat[1]->calcLateralNeighborsTiles(1);
+    std::cout << "chunk 222222222222222" << std::endl;
+    chunk_mat[2]->calcLateralNeighborsTiles(0);
+
 
 }
 void Map::createMap(int map_index, int chunk_index, int &id_temp){
@@ -73,18 +81,26 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
     if(map_index==0 && chunk_mat[1] != nullptr){
         chunk_mat[0]->neighbors[1] = chunk_mat[1];
         chunk_mat[1]->neighbors[0] = chunk_mat[0];
+        chunk_mat[0]->calcLateralNeighborsTiles(1);
+        chunk_mat[1]->calcLateralNeighborsTiles(0);
     } else if(map_index==1){
         if(chunk_mat[0] != nullptr){
             chunk_mat[0]->neighbors[1] = chunk_mat[1];
             chunk_mat[1]->neighbors[0] = chunk_mat[0];
+            chunk_mat[0]->calcLateralNeighborsTiles(1);
+            chunk_mat[1]->calcLateralNeighborsTiles(0);
         }
         if(chunk_mat[2] != nullptr){
             chunk_mat[1]->neighbors[1] = chunk_mat[2];
             chunk_mat[2]->neighbors[0] = chunk_mat[1];
+            chunk_mat[1]->calcLateralNeighborsTiles(1);
+            chunk_mat[2]->calcLateralNeighborsTiles(0);
         }
     } else if(map_index==2 && chunk_mat[1] != nullptr){
         chunk_mat[2]->neighbors[0] = chunk_mat[1];
         chunk_mat[1]->neighbors[1] = chunk_mat[2];
+        chunk_mat[1]->calcLateralNeighborsTiles(1);
+        chunk_mat[2]->calcLateralNeighborsTiles(0);
     }
 }
 
@@ -333,14 +349,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 
     //update lights
     sf::Vector2f r_pos = r_tile->GetPosition();
-    getTile(r_pos.x-Chunk::TILE_SIZE, r_pos.y-Chunk::TILE_SIZE,1)->lights[0]=true;
-    getTile(r_pos.x, r_pos.y-Chunk::TILE_SIZE,1)->lights[1]=true;
-    getTile(r_pos.x+Chunk::TILE_SIZE, r_pos.y-Chunk::TILE_SIZE,1)->lights[2]=true;
-    getTile(r_pos.x+Chunk::TILE_SIZE, r_pos.y,1)->lights[3]=true;
-    getTile(r_pos.x+Chunk::TILE_SIZE, r_pos.y+Chunk::TILE_SIZE,1)->lights[4]=true;
-    getTile(r_pos.x, r_pos.y+Chunk::TILE_SIZE,1)->lights[5]=true;
-    getTile(r_pos.x-Chunk::TILE_SIZE, r_pos.y+Chunk::TILE_SIZE,1)->lights[6]=true;
-    getTile(r_pos.x-Chunk::TILE_SIZE, r_pos.y,1)->lights[7]=true;
+
 
 
 	//cas up
@@ -544,6 +553,8 @@ void Map::checkLoadedChunks(float x, float y){
                 chunk_mat[1] = c1;
                 --posMap;
                 createMap(0, current_pos - 1, id_temp);
+                chunk_mat[2]->neighbors[1] = nullptr;
+                chunk_mat[2]->calcLateralNeighborsTiles(1);
                 delete c2;
             }
 
@@ -562,6 +573,8 @@ void Map::checkLoadedChunks(float x, float y){
                 chunk_mat[1] = c2;
                 ++posMap;
                 createMap(2, current_pos + 1, id_temp);
+                chunk_mat[0]->neighbors[1] = nullptr;
+                chunk_mat[0]->calcLateralNeighborsTiles(0);
                 delete c1;
             }
             //std::cout << distance_1 << " " << distance_2 << std::endl;

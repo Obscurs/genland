@@ -78,26 +78,95 @@ void Tile::Reload(std::string new_id)
 
 	
 }
-
+bool Tile::drawable(){
+	bool res =false;
+	for(int i=0; i<8; i++){
+		if(neighbors[i] !=nullptr && neighbors[i]->id=="0"){
+			res=true;
+			break;
+		}
+	}
+	return res;
+}
 
 void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t)
 {
 
 	if(layer==1){
-		bool drawable=false;
-		for(int i=0; i<8; i++){
-			if(lights[i]){
-				drawable = true;
-				break;
-			}
-		}
-		if(drawable) {
+		if(drawable()) {
 			//sf::Sprite s = t.generateSprite(id, position);
 			//_sprite.setTexture(t._image);
 			//_sprite.setPosition(position.x, position.y);
-			sf::Sprite s;
-			t.generateSprite(id, position, s, size);
-			renderWindow.draw(s);
+			sf::Sprite sp;
+			t.generateSprite(id, position, sp, size);
+			renderWindow.draw(sp);
+
+			//CONTORNO SOMBREADO
+			if(neighbors[0] != nullptr && !neighbors[0]->drawable() && neighbors[7]->drawable() && neighbors[1]->drawable()){
+				sf::Sprite s;
+				sf::Vector2f shadow_pos = GetPosition();
+				shadow_pos.x += GetWidth();
+				t.generateSprite("S2", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+				s.setRotation(90);
+				renderWindow.draw(s);
+			}
+			if(neighbors[1] != nullptr && !neighbors[1]->drawable()){
+				sf::Sprite s;
+				sf::Vector2f shadow_pos = GetPosition();
+				shadow_pos.y += GetHeight();
+				shadow_pos.x += GetWidth();
+				t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+				s.setRotation(180);
+				renderWindow.draw(s);
+			}
+			if(neighbors[2] != nullptr && !neighbors[2]->drawable() && neighbors[3]->drawable() && neighbors[1]->drawable()){
+				sf::Sprite s;
+				sf::Vector2f shadow_pos = GetPosition();
+				shadow_pos.y += GetHeight();
+				shadow_pos.x += GetWidth();
+				t.generateSprite("S2", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+				s.setRotation(180);
+				renderWindow.draw(s);
+
+			}
+			if(neighbors[3] != nullptr && !neighbors[3]->drawable()){
+				sf::Sprite s;
+				sf::Vector2f shadow_pos = GetPosition();
+				shadow_pos.y += GetHeight();
+				t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+				s.setRotation(-90);
+				renderWindow.draw(s);
+			}
+			if(neighbors[4] != nullptr && !neighbors[4]->drawable() && neighbors[3]->drawable() && neighbors[5]->drawable()){
+				sf::Sprite s;
+				sf::Vector2f shadow_pos = GetPosition();
+				shadow_pos.y += GetHeight();
+				t.generateSprite("S2", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+				s.setRotation(-90);
+				renderWindow.draw(s);
+			}
+			if(neighbors[5] != nullptr && !neighbors[5]->drawable()){
+				sf::Sprite s;
+				sf::Vector2f shadow_pos = GetPosition();
+				t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+				renderWindow.draw(s);
+
+			}
+			if(neighbors[6] != nullptr && !neighbors[6]->drawable() && neighbors[5]->drawable() && neighbors[7]->drawable()){
+				sf::Sprite s;
+				sf::Vector2f shadow_pos = GetPosition();
+				t.generateSprite("S2", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+				renderWindow.draw(s);
+
+			}
+			if(neighbors[7] != nullptr && !neighbors[7]->drawable()){
+				sf::Sprite s;
+				sf::Vector2f shadow_pos = GetPosition();
+				shadow_pos.x += GetWidth();
+				t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+				s.setRotation(90);
+				renderWindow.draw(s);
+			}
 		}
 		else {
 
@@ -106,41 +175,62 @@ void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t)
 			rec.setFillColor(sf::Color::Black);
 			renderWindow.draw(rec);
 
-            //CONTORNO SOMBREADO
-            sf::Sprite s;
-            sf::Vector2f shadow_pos = GetPosition();
-            shadow_pos.y -= GetHeight();
-            t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-            //s.setRotation(-90);
-            renderWindow.draw(s);
-
-            shadow_pos = GetPosition();
-            shadow_pos.x += GetWidth();
-            t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-            s.setRotation(90);
-            renderWindow.draw(s);
-
-            shadow_pos = GetPosition();
-            shadow_pos.y += GetHeight();
-            shadow_pos.x -= GetWidth();
-            t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-            s.setRotation(-90);
-            renderWindow.draw(s);
-
-            shadow_pos = GetPosition();
-            shadow_pos.y += GetHeight()*3;
-            shadow_pos.x += GetWidth();
-            t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-            s.setRotation(180);
-            renderWindow.draw(s);
 		}
 	}
 	else {
 		//sf::Sprite s = t.generateSprite(id, position);
-		sf::Sprite s;
+		sf::Sprite sp;
 
-		t.generateSprite(id, position, s, size);
-		renderWindow.draw(s);
+		t.generateSprite(id, position, sp, size);
+		renderWindow.draw(sp);
+
+		//CONTORNO SOMBREADO
+		if(neighbors[0] != nullptr && !neighbors[0]->drawable() && neighbors[7]->drawable() && neighbors[1]->drawable()){
+
+		}
+		if(neighbors[1] != nullptr && neighbors[1]->neighbors[8]->id!="0"){
+			sf::Sprite s;
+			sf::Vector2f shadow_pos = GetPosition();
+			shadow_pos.y += GetHeight();
+			shadow_pos.x += GetWidth();
+			t.generateSprite("s", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+			s.setRotation(180);
+			renderWindow.draw(s);
+		}
+		if(neighbors[2] != nullptr && !neighbors[2]->drawable() && neighbors[3]->drawable() && neighbors[1]->drawable()){
+
+
+		}
+		if(neighbors[3] != nullptr && neighbors[3]->neighbors[8]->id!="0"){
+			sf::Sprite s;
+			sf::Vector2f shadow_pos = GetPosition();
+			shadow_pos.y += GetHeight();
+			t.generateSprite("s", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+			s.setRotation(-90);
+			renderWindow.draw(s);
+		}
+		if(neighbors[4] != nullptr && !neighbors[4]->drawable() && neighbors[3]->drawable() && neighbors[5]->drawable()){
+
+		}
+		if(neighbors[5] != nullptr && neighbors[5]->neighbors[8]->id!="0"){
+			sf::Sprite s;
+			sf::Vector2f shadow_pos = GetPosition();
+			t.generateSprite("s", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+			renderWindow.draw(s);
+
+		}
+		if(neighbors[6] != nullptr && !neighbors[6]->drawable() && neighbors[5]->drawable() && neighbors[7]->drawable()){
+
+
+		}
+		if(neighbors[7] != nullptr && neighbors[7]->neighbors[8]->id!="0"){
+			sf::Sprite s;
+			sf::Vector2f shadow_pos = GetPosition();
+			shadow_pos.x += GetWidth();
+			t.generateSprite("s", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+			s.setRotation(90);
+			renderWindow.draw(s);
+		}
 	}
 }
 

@@ -32,10 +32,10 @@ void Background::Draw(sf::RenderWindow & renderWindow)
     sf::Vector2f sizeView = currentView.getSize();
     float x_view1 = centerView.x-sizeView.x/2;
     float x_view2 = centerView.x+sizeView.x/2;
-    float distance = x_view1-position.x;
-    float first_x = (floor(distance/size.x))*size.x+position.x;
+    float dist = x_view1-position.x;
+    float first_x = (floor(dist/size.x))*size.x+position.x;
     for(int i = first_x; i<x_view2; i= i+size.x){
-        s.setPosition(sf::Vector2f(i, position.y-600));
+        s.setPosition(sf::Vector2f(i, position.y-600*pow(distance,-1)));
         renderWindow.draw(s);
     }
     //std::cout << distance << " " << x_view1 << " "<< first_x << " " << size.x << " "<<  ceilf(distance/size.x)<< std::endl;

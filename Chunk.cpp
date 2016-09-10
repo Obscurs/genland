@@ -37,6 +37,160 @@ void Chunk::saveToFile(){
     myfile.close();
 
 }
+void Chunk::setTileNeighbors(int index_x, int index_y){
+    Tile* t0 = tile_mat[index_y][index_x][0];
+    Tile* t1 = tile_mat[index_y][index_x][1];
+
+    t0->neighbors[8] = t1;
+    t1->neighbors[8] = t0;
+    if(index_x-1<0){
+        //ESQUERRA
+        if(neighbors[0] != nullptr){
+            if(index_y-1<0){
+                t0->neighbors[0] = nullptr;
+                t1->neighbors[0] = nullptr;
+            } else {
+                t0->neighbors[0] = neighbors[0]->tile_mat[index_y-1][Chunk::N_TILES_X-1][0];
+                t1->neighbors[0] = neighbors[0]->tile_mat[index_y-1][Chunk::N_TILES_X-1][1];
+            }
+            if(index_y+1>=Chunk::N_TILES_Y){
+                t0->neighbors[6] = nullptr;
+                t1->neighbors[6] = nullptr;
+            }
+            else{
+                t0->neighbors[6] = neighbors[0]->tile_mat[index_y+1][Chunk::N_TILES_X-1][0];
+                t1->neighbors[6] = neighbors[0]->tile_mat[index_y+1][Chunk::N_TILES_X-1][1];
+            }
+            t0->neighbors[7] = neighbors[0]->tile_mat[index_y][Chunk::N_TILES_X-1][0];
+            t1->neighbors[7] = neighbors[0]->tile_mat[index_y][Chunk::N_TILES_X-1][1];
+        } else{
+            t0->neighbors[0] = nullptr;
+            t0->neighbors[6] = nullptr;
+            t0->neighbors[7] = nullptr;
+            t1->neighbors[0] = nullptr;
+            t1->neighbors[6] = nullptr;
+            t1->neighbors[7] = nullptr;
+        }
+        //CENTRE I DRETA
+        if(index_y-1<0){
+            t0->neighbors[1] = nullptr;
+            t1->neighbors[1] = nullptr;
+            t0->neighbors[2] = nullptr;
+            t1->neighbors[2] = nullptr;
+        } else {
+            t0->neighbors[1] = tile_mat[index_y-1][index_x][0];
+            t1->neighbors[1] = tile_mat[index_y-1][index_x][1];
+            t0->neighbors[2] = tile_mat[index_y-1][index_x+1][0];
+            t1->neighbors[2] = tile_mat[index_y-1][index_x+1][1];
+        }
+        if(index_y+1>=Chunk::N_TILES_Y){
+            t0->neighbors[4] = nullptr;
+            t1->neighbors[4] = nullptr;
+            t0->neighbors[5] = nullptr;
+            t1->neighbors[5] = nullptr;
+        }
+        else{
+            t0->neighbors[4] = tile_mat[index_y+1][index_x+1][0];
+            t1->neighbors[4] = tile_mat[index_y+1][index_x+1][1];
+            t0->neighbors[5] = tile_mat[index_y+1][index_x][0];
+            t1->neighbors[5] = tile_mat[index_y+1][index_x][1];
+        }
+        t0->neighbors[3] = tile_mat[index_y][index_x+1][0];
+        t1->neighbors[3] = tile_mat[index_y][index_x+1][1];
+
+    } else if(index_x+1>=Chunk::N_TILES_X){
+        //DRETA
+        if(neighbors[1] != nullptr){
+            if(index_y-1<0){
+                t0->neighbors[2] = nullptr;
+                t1->neighbors[2] = nullptr;
+            } else {
+                t0->neighbors[2] = neighbors[1]->tile_mat[index_y-1][0][0];
+                t1->neighbors[2] = neighbors[1]->tile_mat[index_y-1][0][1];
+            }
+            if(index_y+1>=Chunk::N_TILES_Y){
+                t0->neighbors[4] = nullptr;
+                t1->neighbors[4] = nullptr;
+            }
+            else{
+                t0->neighbors[4] = neighbors[1]->tile_mat[index_y+1][0][0];
+                t1->neighbors[4] = neighbors[1]->tile_mat[index_y+1][0][1];
+            }
+            t0->neighbors[3] = neighbors[1]->tile_mat[index_y][0][0];
+            t1->neighbors[3] = neighbors[1]->tile_mat[index_y][0][1];
+        } else{
+            t0->neighbors[2] = nullptr;
+            t0->neighbors[3] = nullptr;
+            t0->neighbors[4] = nullptr;
+            t1->neighbors[2] = nullptr;
+            t1->neighbors[3] = nullptr;
+            t1->neighbors[4] = nullptr;
+        }
+        //CENTRE I ESQUERRA
+        if(index_y-1<0){
+            t0->neighbors[1] = nullptr;
+            t1->neighbors[1] = nullptr;
+            t0->neighbors[0] = nullptr;
+            t1->neighbors[0] = nullptr;
+        } else {
+            t0->neighbors[1] = tile_mat[index_y-1][index_x][0];
+            t1->neighbors[1] = tile_mat[index_y-1][index_x][1];
+            t0->neighbors[0] = tile_mat[index_y-1][index_x-1][0];
+            t1->neighbors[0] = tile_mat[index_y-1][index_x-1][1];
+        }
+        if(index_y+1>=Chunk::N_TILES_Y){
+            t0->neighbors[6] = nullptr;
+            t1->neighbors[6] = nullptr;
+            t0->neighbors[5] = nullptr;
+            t1->neighbors[5] = nullptr;
+        }
+        else{
+            t0->neighbors[6] = tile_mat[index_y+1][index_x-1][0];
+            t1->neighbors[6] = tile_mat[index_y+1][index_x-1][1];
+            t0->neighbors[5] = tile_mat[index_y+1][index_x][0];
+            t1->neighbors[5] = tile_mat[index_y+1][index_x][1];
+        }
+        t0->neighbors[7] = tile_mat[index_y][index_x-1][0];
+        t1->neighbors[7] = tile_mat[index_y][index_x-1][1];
+    } else {
+
+        if(index_y-1<0){
+            t0->neighbors[2] = nullptr;
+            t1->neighbors[2] = nullptr;
+            t0->neighbors[1] = nullptr;
+            t1->neighbors[1] = nullptr;
+            t0->neighbors[0] = nullptr;
+            t1->neighbors[0] = nullptr;
+        } else {
+            t0->neighbors[2] = tile_mat[index_y-1][index_x+1][0];
+            t1->neighbors[2] = tile_mat[index_y-1][index_x+1][1];
+            t0->neighbors[1] = tile_mat[index_y-1][index_x][0];
+            t1->neighbors[1] = tile_mat[index_y-1][index_x][1];
+            t0->neighbors[0] = tile_mat[index_y-1][index_x-1][0];
+            t1->neighbors[0] = tile_mat[index_y-1][index_x-1][1];
+        }
+        if(index_y+1>=Chunk::N_TILES_Y){
+            t0->neighbors[6] = nullptr;
+            t1->neighbors[6] = nullptr;
+            t0->neighbors[5] = nullptr;
+            t1->neighbors[5] = nullptr;
+            t0->neighbors[4] = nullptr;
+            t1->neighbors[4] = nullptr;
+        }
+        else{
+            t0->neighbors[6] = tile_mat[index_y+1][index_x-1][0];
+            t1->neighbors[6] = tile_mat[index_y+1][index_x-1][1];
+            t0->neighbors[5] = tile_mat[index_y+1][index_x][0];
+            t1->neighbors[5] = tile_mat[index_y+1][index_x][1];
+            t0->neighbors[4] = tile_mat[index_y+1][index_x+1][0];
+            t1->neighbors[4] = tile_mat[index_y+1][index_x+1][1];
+        }
+        t0->neighbors[7] = tile_mat[index_y][index_x-1][0];
+        t1->neighbors[7] = tile_mat[index_y][index_x-1][1];
+        t0->neighbors[3] = tile_mat[index_y][index_x+1][0];
+        t1->neighbors[3] = tile_mat[index_y][index_x+1][1];
+    }
+}
 Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 {
 	chunk_pos = pos;
@@ -102,9 +256,15 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
             myfile << t->id;
             myfile << t2->id;
             //std::cout << (valReal > 0 ? "X " : "  ");
+            //SETEJEM ELS VEINS DE CADA TILE DEL CHUNK MENYS LES COLUMNES EXTERIORS
+            if(j > 1 && i > 0){
+                setTileNeighbors(j-1,i-1);
+            }
+            if(i==Chunk::N_TILES_Y-1){
+                setTileNeighbors(j-1,i);
+            }
         }
     }
-    initializeLights();
 	
 }
 
@@ -141,16 +301,30 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
             tile_mat[i][j][0] = t;
             tile_mat[i][j][1] = t2;
             //std::cout << (valReal > 0 ? "X " : "  ");
+            //SETEJEM ELS VEINS DE CADA TILE DEL CHUNK MENYS LES COLUMNES EXTERIORS
+            if(j > 1 && i > 0){
+                setTileNeighbors(j-1,i-1);
+            }
+            if(i==Chunk::N_TILES_Y-1){
+                setTileNeighbors(j-1,i);
+            }
         }
     }
-    initializeLights();
 
 }
 Chunk::~Chunk()
 {
 	//std::for_each(_gameObjects.begin(),_gameObjects.end(),GameObjectDeallocator());
 }
-
+void Chunk::calcLateralNeighborsTiles(int lateral){
+    int x;
+    if(lateral==1) x=Chunk::N_TILES_X-1;
+    else x = 0;
+    for(int y=0; y<Chunk::N_TILES_Y; y++){
+        std::cout << tile_mat[y][x][1]->id_temp << " set"<< std::endl;
+        setTileNeighbors(x,y);
+    }
+}
 
 Tile* Chunk::getTile(float x, float y, int z){
 	//std::cout << 100.0 /64.0 << std::endl;
@@ -209,39 +383,7 @@ sf::Vector2i Chunk::getTileIndex(float x, float y){
     }
 
 }
-void Chunk::initializeLights(){
-    for(int i = 0; i<Chunk::N_TILES_Y; i++){
-        for(int j = 0; j < Chunk::N_TILES_X; j++){
-            bool is_light = tile_mat[i][j][1]->id=="0";
-            //if(is_light){
-                if(i-1>=0 && j-1>=0){
-                    tile_mat[i-1][j-1][1]->lights[0]=is_light;
-                }
-                if(i-1>=0){
-                    tile_mat[i-1][j][1]->lights[1]=is_light;
-                }
-                if(i-1>=0 && j+1<Chunk::N_TILES_X){
-                    tile_mat[i-1][j+1][1]->lights[2]=is_light;
-                }
-                if(j+1<Chunk::N_TILES_X){
-                    tile_mat[i][j+1][1]->lights[3]=is_light;
-                }
-                if(i+1<Chunk::N_TILES_Y && j+1<Chunk::N_TILES_X){
-                    tile_mat[i+1][j+1][1]->lights[4]=is_light;
-                }
-                if(i+1<Chunk::N_TILES_Y){
-                    tile_mat[i+1][j][1]->lights[5]=is_light;
-                }
-                if(i+1<Chunk::N_TILES_Y && j-1>=0){
-                    tile_mat[i+1][j-1][1]->lights[6]=is_light;
-                }
-                if(j-1>=0){
-                    tile_mat[i][j-1][1]->lights[7]=is_light;
-                }
-            //}
-        }
-    }
-}
+
 
 
 void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t)
@@ -285,6 +427,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
 
 
                 if(t0->visible)t0->Draw(renderWindow, t);
+                /*
                 if(t0->id!="0"){
                     if(i+1<Chunk::N_TILES_Y){
                         Tile* t_shadow = tile_mat[i+1][j][1];
@@ -329,6 +472,8 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
                         }
                     }
                 }
+                 */
+
             }
             //DEBUG
             int test = t1->id_temp;
