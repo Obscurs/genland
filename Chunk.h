@@ -20,6 +20,7 @@ public:
 	Tile* getTile(float x, float y, int z);
     Tile* getTileByIndex(int x, int y, int z);
     void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t);
+    void DrawGrassTiles(sf::RenderWindow& renderWindow,TextureManager &t);
 	sf::Vector2i getTileIndex(float x, float y);
 	void setTileNeighbors(int index_x, int index_y);
 	void calcLateralNeighborsTiles(int latelal);
@@ -29,6 +30,7 @@ public:
 
 private:
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];
+    std::vector<Tile*> grass_tiles;
 
 
 };

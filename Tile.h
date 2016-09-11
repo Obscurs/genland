@@ -9,6 +9,8 @@ public:
 
 	void Reload(std::string id);
 	void Draw(sf::RenderWindow & window, TextureManager &t);
+    void DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t);
+    void DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t);
 	void Update(float elapsedTime);
 
 	void SetPosition(float x, float y);
@@ -32,6 +34,9 @@ public:
 
 private:
 
+    void DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t);
+    void DrawIns(sf::RenderWindow & renderWindow, TextureManager &t);
+    void DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &t);
 	sf::Vector2f position;
 	sf::Vector2f size;
 };

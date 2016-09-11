@@ -26,6 +26,7 @@ public:
     int getIndexMatChunk(int x);
 
     void DrawMap(sf::RenderWindow& renderWindow);
+    void DrawFrontItems(sf::RenderWindow& renderWindow);
 	void removeTile(Tile* r_tile, int z);
 	void UpdateAll(float delta);
 	void checkLoadedChunks(float x, float y);

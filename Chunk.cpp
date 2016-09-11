@@ -384,10 +384,15 @@ sf::Vector2i Chunk::getTileIndex(float x, float y){
 
 }
 
-
-
+void Chunk::DrawGrassTiles(sf::RenderWindow& renderWindow,  TextureManager &t)
+{
+    for(int i=0; i<grass_tiles.size(); i++){
+        grass_tiles[i]->DrawGrass(renderWindow, t);
+    }
+}
 void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t)
 {
+    grass_tiles.clear();
     //std::cout << "Drawing chunk " << chunk_pos.x<< std::endl;
     sf::Text text;
     sf::Font font;
@@ -420,59 +425,21 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
     for(int i = first_index.x; i<=last_index.x; ++i){
         for(int j = first_index.y; j<=last_index.y; ++j){
             Tile* t1 = tile_mat[i][j][1];
-            if(t1->visible)t1->Draw(renderWindow, t);
+            if(t1->visible){
+                t1->Draw(renderWindow, t);
+                if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
+                    if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && t1->id=="D") grass_tiles.push_back(t1);
+                }
+            }
 
             else{
                 Tile* t0 = tile_mat[i][j][0];
 
 
                 if(t0->visible)t0->Draw(renderWindow, t);
-                /*
-                if(t0->id!="0"){
-                    if(i+1<Chunk::N_TILES_Y){
-                        Tile* t_shadow = tile_mat[i+1][j][1];
-                        if(t_shadow->id !="0") {
-                            sf::Sprite s;
-                            t.generateSprite("s", t0->GetPosition(), s, sf::Vector2f(t0->GetWidth(),t0->GetHeight()));
-                            renderWindow.draw(s);
-                        }
-                    }
-                    if(i-1>=0){
-                        Tile* t_shadow = tile_mat[i-1][j][1];
-                        if(t_shadow->id !="0") {
-                            sf::Sprite s;
-                            sf::Vector2f shadow_pos = t0->GetPosition();
-                            shadow_pos.y += t0->GetHeight();
-                            shadow_pos.x += t0->GetWidth();
-                            t.generateSprite("s", shadow_pos, s, sf::Vector2f(t0->GetWidth(),t0->GetHeight()));
-                            s.setRotation(180);
-                            renderWindow.draw(s);
-                        }
-                    }
-                    if(j+1<Chunk::N_TILES_X){
-                        Tile* t_shadow = tile_mat[i][j+1][1];
-                        if(t_shadow->id !="0") {
-                            sf::Sprite s;
-                            sf::Vector2f shadow_pos = t0->GetPosition();
-                            shadow_pos.y += t0->GetHeight();
-                            t.generateSprite("s", shadow_pos, s, sf::Vector2f(t0->GetWidth(),t0->GetHeight()));
-                            s.setRotation(-90);
-                            renderWindow.draw(s);
-                        }
-                    }
-                    if(j-1>=0){
-                        Tile* t_shadow = tile_mat[i][j-1][1];
-                        if(t_shadow->id !="0") {
-                            sf::Sprite s;
-                            sf::Vector2f shadow_pos = t0->GetPosition();
-                            shadow_pos.x += t0->GetWidth();
-                            t.generateSprite("s", shadow_pos, s, sf::Vector2f(t0->GetWidth(),t0->GetHeight()));
-                            s.setRotation(90);
-                            renderWindow.draw(s);
-                        }
-                    }
-                }
-                 */
+                else t0->DrawOuts(renderWindow, t);
+
+                t1->DrawOuts(renderWindow, t);
 
             }
             //DEBUG

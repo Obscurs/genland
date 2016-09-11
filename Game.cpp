@@ -145,6 +145,7 @@ void Game::GameLoop(double delta)
             Game::map_curr.DrawMap(window);
 
             Game::player.Draw(window);
+            Game::map_curr.DrawFrontItems(window);
 
             while(window.pollEvent(currentEvent))
             {
