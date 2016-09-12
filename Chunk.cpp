@@ -218,6 +218,10 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 
             Tile* t = new Tile(0, 0);
             Tile* t2 = new Tile(0, 1);
+            if(i==N_TILES_Y-1){
+                t->rigid=true;
+                t2->rigid=true;
+            }
             if(valReal1 >0){
                 if(valStone > 0.8){
                     t->Reload("c");

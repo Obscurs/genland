@@ -1,15 +1,14 @@
 
-
+#pragma once
+#include "TextureManager.h"
 class AnimatedTile
 {
 public:
 	AnimatedTile();
 	~AnimatedTile();
-	
-	void Load();
+
 	void Reload(std::string id);
-	void Remove();
-	void Draw(sf::RenderWindow & window);
+	void Draw(sf::RenderWindow & window, TextureManager &t);
 	void Update(float elapsedTime);
 
 	void SetPosition(float x, float y);
@@ -18,7 +17,6 @@ public:
 	float GetWidth() const;
 	float GetHeight() const;
 	bool colisionable; //sha de privatitzar
-	bool IsLoaded() const;
 	std::string id; //sha de privatitzar
 
 
@@ -27,10 +25,8 @@ public:
 private:
 	float vx;
 	float vy;
-	sf::Sprite& GetSprite();
-	sf::Sprite  _sprite;
-	sf::Texture _image;
-	std::string _filename;
-	bool _isLoaded;
+
+    sf::Vector2f position;
+    sf::Vector2f size;
 };
 

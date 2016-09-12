@@ -41,7 +41,7 @@ void Tile::Reload(std::string new_id)
 		visible = true;
 		weight = 0;
 		max_tension = 500;
-		rigid = true;
+		rigid = false;
 		reach_floor = true;
 	}
 	else if(new_id == "d"){

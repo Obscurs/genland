@@ -118,6 +118,9 @@ bool Game::IsExiting()
 
 void Game::GameLoop(double delta)
 {
+    if(!(true)) {
+        while(1);
+    }
     sf::Event currentEvent;
     //_mainWindow.GetEvent(currentEvent);
 
@@ -143,7 +146,7 @@ void Game::GameLoop(double delta)
             backgrounds[2].Draw(window);
             backgrounds[3].Draw(window);
             Game::map_curr.DrawMap(window);
-
+            srand(time(NULL));
             Game::player.Draw(window);
             Game::map_curr.DrawFrontItems(window);
             Game::player.DrawInventory(window);

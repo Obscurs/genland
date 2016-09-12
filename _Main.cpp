@@ -6,13 +6,13 @@
 
 
 
-int main(int argc, char** argv)
+int main(int argc, char** argv, char** envp)
 {
 
   {
     Game *g = new Game();
-    #pragma omp parallel
-    #pragma omp single
+    //#pragma omp parallel
+    //#pragma omp single
     g->Start();
   }
   return 0;

@@ -60,7 +60,7 @@ private:
 	float y_tab;
 	float x_craft_list;
 	float y_craft_list;
-	
+
 
 	Item* craft_list[N_CRAFT_ITEMS];
 	Item* inventory[Y_SLOTS][X_SLOTS] = { {nullptr} };

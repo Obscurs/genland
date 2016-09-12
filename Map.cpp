@@ -680,7 +680,7 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
 
     for(int i = 0; i<falling_tiles.size(); i++){
 
-        falling_tiles[i]->Draw(renderWindow);
+        falling_tiles[i]->Draw(renderWindow, *texMan);
     }
     //vector<int> v
     /*

@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "Map.h"
 #include "Background.h"
-
+#define true rand()%20000
 class Game
 {
 public:
