@@ -1,3 +1,5 @@
+#pragma once
+#include "TextureManager.h"
 
 class Item
 {
@@ -5,7 +7,6 @@ public:
 	Item(std::string id_item);
 	~Item();
 
-	void Load();
 	void Reload(std::string filename);
 
 	void SetPosition(float x, float y);
@@ -13,7 +14,6 @@ public:
 	float GetWidth() const;
 	float GetHeight() const;
 	void SetSize(float x);
-	bool IsLoaded() const;
 	void decrement(int amount_dec);
 	Item* getItemCopy();
 	std::map<std::string, int> craft_cost;
@@ -21,7 +21,7 @@ public:
 	int amount; //sha de privatitzar
 	int max_stack_amount; //sha de privatitzar
 
-	void Draw(sf::RenderWindow& renderWindow);
+	void Draw(sf::RenderWindow & window, TextureManager &t, sf::Text &text);
 
 
 
@@ -29,11 +29,6 @@ protected:
 	
 
 private:
-	sf::Sprite& GetSprite();
-	sf::Text text;
-	sf::Font font;
-	sf::Sprite  _sprite;
-	sf::Texture _image;
-	std::string _filename;
-	bool _isLoaded;
+	sf::Vector2f position;
+	sf::Vector2f size;
 };

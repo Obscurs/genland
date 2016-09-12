@@ -18,6 +18,32 @@
 
 Inventory::Inventory()
 {
+	texMan = new TextureManager("resources/tiles2.png", 16, 16);
+	texMan->insert_map_value("D",sf::Vector2i(0,0));
+	texMan->insert_map_value("d",sf::Vector2i(16,0));
+	texMan->insert_map_value("C",sf::Vector2i(0,16));
+	texMan->insert_map_value("c",sf::Vector2i(16,16));
+
+	texMan->insert_map_value("D_in",sf::Vector2i(32,0));
+	texMan->insert_map_value("d_in",sf::Vector2i(64,0));
+	texMan->insert_map_value("C_in",sf::Vector2i(32,16));
+	texMan->insert_map_value("c_in",sf::Vector2i(64,16));
+
+	texMan->insert_map_value("D_out",sf::Vector2i(48,0));
+	texMan->insert_map_value("d_out",sf::Vector2i(80,0));
+	texMan->insert_map_value("C_out",sf::Vector2i(48,16));
+	texMan->insert_map_value("c_out",sf::Vector2i(80,16));
+
+	texMan->insert_map_value("r",sf::Vector2i(0,32));
+	texMan->insert_map_value("0",sf::Vector2i(64,32));
+	texMan->insert_map_value("s",sf::Vector2i(16,32));
+	texMan->insert_map_value("S",sf::Vector2i(32,32));
+	texMan->insert_map_value("S2",sf::Vector2i(48,32));
+
+	texMan->insert_map_value("grass0",sf::Vector2i(0,48));
+	texMan->insert_map_value("grass1",sf::Vector2i(16,48));
+
+
 	show_inventory = false;
 	show_tab = true;
 	show_craft_list = false;
@@ -158,6 +184,7 @@ int Inventory::stackItemInventory(std::string id_item, int amount){
 					if(current_item->id == id_item && current_item->amount < current_item->max_stack_amount){
 						bool residue = incrementItem(current_item, amount);
 						//sobra
+
 						if(residue == 0) return 0;
 						//no sobra
 						else return stackItemInventory(id_item, residue);
@@ -217,7 +244,8 @@ int Inventory::giveItemInventory(std::string id_item, int amount){
 }
 
 int Inventory::stackItem(std::string id, int amount){
-	int residue;
+	int residue = amount;
+
 	if(existItemTabNoFull(id)) residue = stackItemTab(id, amount);
 	if(residue == 0) return 0;
 	else residue = stackItemInventory(id, amount);
@@ -516,6 +544,20 @@ sf::Vector2i Inventory::getInventoryIndex(sf::Vector2f pos){
 } 
 void Inventory::Draw(sf::RenderWindow& renderWindow)
 {
+
+	sf::Text text;
+	sf::Font font;
+	if (!font.loadFromFile("resources/font1.ttf"))
+	{
+		std::cout << "font error" << std::endl;
+	}
+	text.setCharacterSize(13);
+	text.setColor(sf::Color::Red);
+	//text.setStyle(sf::Text::Bold);
+	text.setFont(font); // font is a sf::Font
+	char c[10];
+
+
 	//std::cout << x_inventory << " " << y_inventory << std:: endl;
 	sf::View currentView = renderWindow.getView();
 	sf::Vector2f centerView = currentView.getCenter();
@@ -547,7 +589,17 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 				Item* item = inventory[i][j];
 				if(item != nullptr){
 					item->SetPosition(j*SLOT_SIZE+x_inventory, i*SLOT_SIZE+y_inventory);
-					item->Draw(renderWindow);
+
+					int test = item->amount;
+					sprintf(c, "%i", test);
+					std::string string(c);
+					sf::String str(string);
+					text.setString(str);
+					item->Draw(renderWindow, *texMan, text);
+
+
+
+
 				}
 				
 			}
@@ -565,7 +617,13 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 			if(item != nullptr) {
 				//std::cout << "haha" << std::endl;
 				item->SetPosition(i*SLOT_SIZE+x_tab, y_tab);
-				item->Draw(renderWindow);
+				int test = item->amount;
+				sprintf(c, "%i", test);
+				std::string string(c);
+				sf::String str(string);
+				text.setString(str);
+				item->Draw(renderWindow, *texMan, text);
+
 			}
 		}
 	}
@@ -576,30 +634,47 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 			rectangle.setPosition(sf::Vector2f(x_craft_list, i*SLOT_SIZE+y_craft_list));
 			renderWindow.draw(rectangle);
 			item->SetPosition(x_craft_list, i*SLOT_SIZE+y_craft_list);
-			item->Draw(renderWindow);
+
+			int test = 1;
+			sprintf(c, "%i", test);
+			std::string string(c);
+			sf::String str(string);
+			text.setString(str);
+			item->Draw(renderWindow, *texMan, text);
+
+
 			int j=0;
 			for(auto const &it : item->craft_cost) {
 				Item* item2 = new Item(it.first);
 				item2->amount = it.second;
 				item2->SetPosition(x_craft_list+SLOT_SIZE+GRID_THICKNESS+j*SLOT_SIZE/2+j*GRID_THICKNESS, i*SLOT_SIZE+y_craft_list);
 				item2->SetSize(SLOT_SIZE/2);
-				item2->Draw(renderWindow);
+
+				int test = item2->amount;
+				sprintf(c, "%i", test);
+				std::string string(c);
+				sf::String str(string);
+				text.setString(str);
+				item2->Draw(renderWindow, *texMan, text);
 				++j;
+
+
 			}
 						
 		}
 		
 	}
 	if(mouseItem != nullptr){
-		sf::Vector2i position = sf::Mouse::getPosition(renderWindow);
-	    sf::View currentView = renderWindow.getView();
-		sf::Vector2f centerView = currentView.getCenter();
-		sf::Vector2f sizeView = currentView.getSize();
-		//sf::Vector2f position_screen = position;
-		position.x += centerView.x-sizeView.x/2-SLOT_SIZE/2;
-		position.y += centerView.y-sizeView.y/2-SLOT_SIZE/2;
-		mouseItem->SetPosition(position.x, position.y);
-		mouseItem->Draw(renderWindow);
+		sf::Vector2f position = renderWindow.mapPixelToCoords(sf::Mouse::getPosition(renderWindow));
+		mouseItem->SetPosition(position.x-SLOT_SIZE/2, position.y-SLOT_SIZE/2);
+
+
+		int test = mouseItem->amount;
+		sprintf(c, "%i", test);
+		std::string string(c);
+		sf::String str(string);
+		text.setString(str);
+		mouseItem->Draw(renderWindow, *texMan, text);
 	}
 }
 

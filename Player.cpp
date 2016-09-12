@@ -36,50 +36,8 @@ Player::~Player()
 	
 }
 
-bool Player::Collide(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos2, sf::Vector2f size2){
-	float top1 = pos1.y;
-	float bottom1 = pos1.y+size1.y;
-	float left1 = pos1.x;
-	float right1 = pos1.x+ size1.x;
 
-	float top2 = pos2.y;
-	float bottom2 = pos2.y+size2.y;
-	float left2 = pos2.x;
-	float right2 = pos2.x+ size2.x;
 
-	if( bottom1 <= top2)
-    {
-        return false;
-    }
-    
-    if( top1 >= bottom2)
-    {
-        return false;
-    }
-    
-    if( right1 <= left2)
-    {
-        return false;
-    }
-    
-    if( left1 >= right2)
-    {
-        return false;
-    }
-    
-    //If none of the sides from A are outside B
-    return true;
-}
-/*
-sf::Vector2f Player::FixColision2(sf::Vector2f pos, sf::Vector2f size, Map& map){
-
-    std::vector<Tile*> tiles_col = map.getTilesCol(pos, size);
-    if(tiles_col.empty()) return pos;
-    else {
-        FixColision2()
-    }
-}
-*/
 void Player::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos2, sf::Vector2f size2, Map& map){
     //std::cout << "1x " << pos1.x << " 1y "<< pos1.y << " 2x" << pos2.x << " 2y " << pos2.y  << std::endl;
 	sf::Vector2f center1((pos1.x*2 + size1.x)/2, (pos1.y*2 + size1.y)/2);
@@ -328,18 +286,17 @@ void Player::Load(std::string filename)
 
 void Player::Draw(sf::RenderWindow & renderWindow)
 {
-
 		renderWindow.draw(_sprite);
-		inventory->Draw(renderWindow);
-
+}
+void Player::DrawInventory(sf::RenderWindow & renderWindow)
+{
+	inventory->Draw(renderWindow);
 }
 
 
 void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, std::vector<Background> &backs)
 {
 	inventory->Update(inputs, window);
-
-
 	sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
 	sf::Vector2i mouseRight = inputs.getKey("mouseRight");
 	sf::Vector2i keyA = inputs.getKey("A");
@@ -406,13 +363,6 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 		Tile* t = tiles_col[i];
 		sf::Vector2f tile_size(t->GetWidth(), t->GetHeight());
 		FixColision(pos_aux, size_aux, t->GetPosition(), tile_size, map);
-		//if(tiles_col.size()>3){
-			//std::cout << "col_bottom " << col_bottom << std::endl;
-			//std::cout << "col_top " << col_top << std::endl;
-			//std::cout << "col_left " << col_left << std::endl;
-			//std::cout << "col_right " << col_right << std::endl;
-        //std::cout << std::endl;
-		//}
 	}
     bool valid_move = true;
     if(col_bottom && col_left && col_right && col_top) valid_move = false;
@@ -454,7 +404,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 
 
     //COMPROBA INPUTS
-	if (mouseLeft.x == 1)
+	if (mouseLeft.x == 1 && !inventory->show_inventory)
 	{
 		//std::cout << position.x << " " << position.y << std::endl;
 	    Tile* t = map.getTile(position.x, position.y, 1);
@@ -471,13 +421,13 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    if(dist<Chunk::TILE_SIZE*2 && position_tile == 1 && t->visible) {
 
 	    	if(giveItem(t->id, 1)){
-	    		//t->Remove();
+
 	    		map.removeTile(t,1);
 	    	}
 	    }
 
 	}
-	else if (mouseRight.x == 1)
+	else if (mouseRight.x == 1 && !inventory->show_inventory)
 	{
 
 	    Tile* t = map.getTile(position.x, position.y, 1);

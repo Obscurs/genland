@@ -20,7 +20,9 @@ public:
 	void Draw(sf::RenderWindow& renderWindow);
 	void Update(Inputs &inputs, sf::RenderWindow &window);
 	int stackItem(std::string id, int amount);
-	
+	bool show_inventory;
+	bool show_tab;
+	bool show_craft_list;
 
 
 private:
@@ -59,13 +61,12 @@ private:
 	float x_craft_list;
 	float y_craft_list;
 	
-	bool show_inventory;
-	bool show_tab;
-	bool show_craft_list;
 
 	Item* craft_list[N_CRAFT_ITEMS];
 	Item* inventory[Y_SLOTS][X_SLOTS] = { {nullptr} };
 	Item* tab[TAB_SLOTS] = { nullptr };
 	Item* mouseItem = nullptr;
+
+	TextureManager* texMan;
 
 };

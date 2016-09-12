@@ -146,7 +146,7 @@ void Game::GameLoop(double delta)
 
             Game::player.Draw(window);
             Game::map_curr.DrawFrontItems(window);
-
+            Game::player.DrawInventory(window);
             while(window.pollEvent(currentEvent))
             {
                 if (currentEvent.type == sf::Event::Closed ||

@@ -11,6 +11,7 @@ public:
 	
 	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
+	void DrawInventory(sf::RenderWindow & window);
 	void Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, std::vector<Background> &backs);
     int id;
 	void SetPosition(float x, float y);
@@ -21,8 +22,6 @@ public:
 
 
 private:
-	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
-	bool Collide(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos2, sf::Vector2f size2);
 	void FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos2, sf::Vector2f size2, Map& map);
 	sf::Sprite& GetSprite();
 	bool giveItem(std::string id, int amount);

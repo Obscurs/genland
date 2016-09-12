@@ -15,14 +15,14 @@
 #include "Item.h"
 
 
-Item::Item(std::string id_item) :
-_isLoaded(false)
+Item::Item(std::string id_item)
 {
 	//std::cout << id_item << std::endl;
 	id = id_item;
 	max_stack_amount= 1;
 	Reload(id_item);
 	amount = 0;
+	/*
 	if (!font.loadFromFile("resources/font1.ttf"))
 	{
 		    std::cout << "font error" << std::endl;
@@ -30,7 +30,7 @@ _isLoaded(false)
 	text.setCharacterSize(18); 
 	text.setColor(sf::Color::Red);
 	text.setStyle(sf::Text::Bold);
-	text.setFont(font); // font is a sf::Font
+	text.setFont(font); // font is a sf::Font */
 }
 
 
@@ -47,12 +47,21 @@ Item* Item::getItemCopy(){
 }
 
 
-void Item::Draw(sf::RenderWindow& renderWindow)
+void Item::Draw(sf::RenderWindow& renderWindow, TextureManager &t, sf::Text &text)
 {
-if(_isLoaded)
-	{
-		renderWindow.draw(_sprite);
-		if(amount >0){
+		sf::Sprite s;
+		sf::Vector2f item_pos = GetPosition();
+		t.generateSprite(id, item_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+		renderWindow.draw(s);
+
+
+
+	sf::Vector2f test_pos = GetPosition();
+	text.setPosition(test_pos.x, test_pos.y);
+	text.setScale(sf::Vector2f(1.5,1.5));
+	renderWindow.draw(text);
+		//renderWindow.draw(_sprite);
+		/*if(amount >0){
 			char c[10];
 			sprintf(c, "%i", amount);
 			std::string string(c);
@@ -60,10 +69,7 @@ if(_isLoaded)
 			text.setString(str);
 			text.setPosition(GetPosition().x, GetPosition().y);
 			renderWindow.draw(text);	
-		}
-		
-	}
-
+		}*/
 
 }
 
@@ -74,69 +80,40 @@ void Item::decrement(int amount_dec){
 	amount -= amount_dec;
 	//delete this;
 }
+
 void Item::SetPosition(float x, float y)
 {
-	if(_isLoaded)
-	{
-		_sprite.setPosition(x,y);
-	}
+	position.x=x;
+	position.y=y;
 }
 void Item::SetSize(float x)
 {
-	sf::Vector2f new_scale(x/_sprite.getTexture()->getSize().x, x/_sprite.getTexture()->getSize().y);
-	_sprite.setScale(new_scale);
+
+	size.x=x;
+	size.y=x;
 }
 
 sf::Vector2f Item::GetPosition() const
 {
-	if(_isLoaded)
-	{
-		return _sprite.getPosition();
-	}
-	return sf::Vector2f();
+		return position;
 }
 
 float Item::GetHeight() const
 {
-	return _sprite.getTexture()->getSize().y*_sprite.getScale().y;
+	return size.y;
+	//return _sprite.getTexture()->getSize().y*_sprite.getScale().y;
 }
 
 float Item::GetWidth() const
 {
-	return _sprite.getTexture()->getSize().x*_sprite.getScale().x;
+	return size.x;
+	//return _sprite.getTexture()->getSize().x*_sprite.getScale().x;
 }
 
-sf::Sprite& Item::GetSprite()
-{
-	return _sprite;
-}
 
-bool Item::IsLoaded() const
-{
-	return _isLoaded;
-}
-void Item::Load()
-{
-	_filename = "resources/";
-	_filename.append(id);
-		if(_image.loadFromFile(_filename.append(".png")) == false)
-		{
-			_filename =  "error.png";
-			_isLoaded = false;
-		}
-		else
-		{
-			//_filename = _filename.append(".png");
-			//std::cout << _filename << " a" << std::endl;
-			_sprite.setTexture(_image);
-			_isLoaded = true;
-		}
-	
-}
 void Item::Reload(std::string new_id)
 {
 	id = new_id;
-	Load();
 	if(new_id == "0"){
 		max_stack_amount= 10;
 		amount=0;
@@ -150,6 +127,14 @@ void Item::Reload(std::string new_id)
 	}
 	else if(new_id == "d"){
 		max_stack_amount= 10;
+		amount = 0;
+	}
+	else if(new_id == "c"){
+		max_stack_amount= 10;
+		amount = 0;
+	}
+	else if(new_id == "C"){
+		max_stack_amount= 5;
 		amount = 0;
 	}
 	else if(new_id == "r"){
