@@ -322,10 +322,13 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	}
 	if(col_bottom==0){
 		vy = (float)9.8*delta*100 + vy;
+		if (keySpace.x){
+			vy = -200;
+		}
 	}
 	else{
 		if (keySpace.x){
-			vy = -400;
+			vy = -200;
 		}
 		else{
 			vy = 0;
@@ -418,7 +421,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
 	    float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
    
-	    if(dist<Chunk::TILE_SIZE*2 && position_tile == 1 && t->visible) {
+	    if(position_tile == 1 && t->visible) {
 
 	    	if(giveItem(t->id, 1)){
 
@@ -440,7 +443,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
 	    float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
    
-	    if(dist<Chunk::TILE_SIZE*2 && position_tile == 0 && t->visible) {
+	    if(position_tile == 0 && t->visible) {
 
 	    	if(giveItem(t->id, 1)){
 	    		//t->Remove();

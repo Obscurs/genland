@@ -41,6 +41,18 @@ void AnimatedTile::Reload(std::string new_id)
 		colisionable = false;
 		
 	}
+	else if(new_id == "C"){
+		colisionable = true;
+
+	}
+	else if(new_id == "c"){
+		colisionable = false;
+
+	}
+	else if(new_id == "r"){
+		colisionable = false;
+
+	}
 	else if(new_id == "red"){
 		colisionable = true;
 		
@@ -63,7 +75,7 @@ void AnimatedTile::Draw(sf::RenderWindow & renderWindow, TextureManager &t)
 
 void AnimatedTile::Update(float elapsedTime)
 {
-	vy = 9.8*elapsedTime*100 + vy;
+	vy = 0.5*elapsedTime*100 + vy;
 	float x0 = position.x;
 	float y0 = position.y;
 

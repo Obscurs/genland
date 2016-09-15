@@ -56,12 +56,19 @@ Map::Map(int pos)
     chunk_mat[2]->neighbors[0] = chunk_mat[1];
 
     std::cout << "chunk 00000000000000" << std::endl;
+    chunk_mat[0]->calcLateralNeighborsTiles(0);
     chunk_mat[0]->calcLateralNeighborsTiles(1);
+
     std::cout << "chunk 111111111111111" << std::endl;
     chunk_mat[1]->calcLateralNeighborsTiles(0);
     chunk_mat[1]->calcLateralNeighborsTiles(1);
     std::cout << "chunk 222222222222222" << std::endl;
     chunk_mat[2]->calcLateralNeighborsTiles(0);
+    chunk_mat[2]->calcLateralNeighborsTiles(1);
+
+    chunk_mat[0]->recalcReachFloor();
+    chunk_mat[1]->recalcReachFloor();
+    chunk_mat[2]->recalcReachFloor();
 
 
 }
@@ -116,6 +123,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
         chunk_mat[1]->calcLateralNeighborsTiles(1);
         chunk_mat[2]->calcLateralNeighborsTiles(0);
     }
+
 }
 
 
@@ -196,7 +204,7 @@ bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &c
 		
 
 		queue_final_tiles.push(first_tile0); //fem push a laltre queue (interior)
-		queue_final_tiles.push(first_tile1); //fem push a laltre queue (exterior)
+		//queue_final_tiles.push(first_tile1); //fem push a laltre queue (exterior)
 		bool end_left = false;
 		bool end_right = false;
 		bool first_it =true;
@@ -233,7 +241,7 @@ bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &c
 				}
 				if(tile_actual1->visible){
 					total_weight += tile_actual1->weight; //sumem el pes
-					queue_final_tiles.push(tile_actual1); //fem push a laltre queue (exterior)
+					//queue_final_tiles.push(tile_actual1); //fem push a laltre queue (exterior)
 
 				}
 				
@@ -262,7 +270,7 @@ bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &c
 					
 					if(coord_respect.x >=0){
 						int j=0;
-						while(j<visitats_dreta[coord_respect.x].size() && visitat==false){
+						while(j<visitats_dreta[coord_respect.x].size() && !visitat){
 							//std::cout << "visitor_it_dreta " << coord_respect.x << " "<<  coord_respect.y << std::endl;
 							if(visitats_dreta[coord_respect.x][j] == coord_respect.y) visitat = true;
 							++j;
@@ -270,7 +278,7 @@ bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &c
 					}
 					else {
 						int j=0;
-						while(j<visitats_esquerra[coord_respect.x*(-1)-1].size() && visitat==false){
+						while(j<visitats_esquerra[coord_respect.x*(-1)-1].size() && !visitat){
 							//std::cout << "visitor_it_esq " << coord_respect.x << " "<<  coord_respect.y << std::endl;
 							if(visitats_esquerra[coord_respect.x*(-1)-1][j] == coord_respect.y) visitat = true;
 							++j;
@@ -392,15 +400,28 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 	if(falls1){
 		while(!queue_final_tiles1.empty()){
 			Tile* t = queue_final_tiles1.front();
+            Tile* t1 = t->neighbors[8];
 			queue_final_tiles1.pop();
-			AnimatedTile* falling_t = new AnimatedTile();
-				falling_t->Reload(t->id);
-				sf::Vector2f tpos = t->GetPosition();
-				falling_t->SetPosition(tpos.x, tpos.y);
-				falling_t->SetSize(t->GetWidth());
-            std::cout << "falling4 " << falling_t->id << std::endl;
-				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
-			t->Reload("0");
+            if(t->id != "0" && t1->id=="0"){
+                AnimatedTile* falling_t = new AnimatedTile();
+                falling_t->Reload(t->id);
+                sf::Vector2f tpos = t->GetPosition();
+                falling_t->SetPosition(tpos.x, tpos.y);
+                falling_t->SetSize(t->GetWidth());
+                falling_tiles.push_back(falling_t);
+            } else if(t1->id !="0") {
+                AnimatedTile* falling_t = new AnimatedTile();
+                falling_t->Reload(t1->id);
+                sf::Vector2f tpos = t1->GetPosition();
+                falling_t->SetPosition(tpos.x, tpos.y);
+                falling_t->SetSize(t1->GetWidth());
+                falling_tiles.push_back(falling_t);
+            }
+            else{
+                std::cout <<"WHHHHHHHHHHHHAAAAAAAAAAAAT" << std::endl;
+            }
+            t->Reload("0");
+            t1->Reload("0");
 		}
 		while(!extension_tiles.empty()){
 			Tile* act_ext_tile = extension_tiles.front();
@@ -409,9 +430,7 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 		}
 	}
 	//right
-	bool falls2= false;
-	bool falls3= false;
-	bool falls4= false;
+
 
 	if(!conex_dreta){
 		std::queue<Tile*> queue_final_tiles2;
@@ -420,16 +439,29 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 		bool falls2 = calcPhysics(r_tile_pos_global, conex_dreta, conex_esquerra, conex_abaix, eval_tile_pos, queue_final_tiles2, 1, extension_tiles);
 		if(falls2){
 			while(!queue_final_tiles2.empty()){
-				Tile* t = queue_final_tiles2.front();
-				queue_final_tiles2.pop();
-				AnimatedTile* falling_t = new AnimatedTile();
-				falling_t->Reload(t->id);
-				sf::Vector2f tpos = t->GetPosition();
-				falling_t->SetPosition(tpos.x, tpos.y);
-				falling_t->SetSize(t->GetWidth());
-                std::cout << "falling3 " << falling_t->id << std::endl;
-				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
-				t->Reload("0");
+                Tile* t = queue_final_tiles2.front();
+                Tile* t1 = t->neighbors[8];
+                queue_final_tiles2.pop();
+                if(t->id != "0" && t1->id=="0"){
+                    AnimatedTile* falling_t = new AnimatedTile();
+                    falling_t->Reload(t->id);
+                    sf::Vector2f tpos = t->GetPosition();
+                    falling_t->SetPosition(tpos.x, tpos.y);
+                    falling_t->SetSize(t->GetWidth());
+                    falling_tiles.push_back(falling_t);
+                } else if(t1->id !="0") {
+                    AnimatedTile* falling_t = new AnimatedTile();
+                    falling_t->Reload(t1->id);
+                    sf::Vector2f tpos = t1->GetPosition();
+                    falling_t->SetPosition(tpos.x, tpos.y);
+                    falling_t->SetSize(t1->GetWidth());
+                    falling_tiles.push_back(falling_t);
+                }
+                else{
+                    std::cout <<"WHHHHHHHHHHHHAAAAAAAAAAAAT" << std::endl;
+                }
+                t->Reload("0");
+                t1->Reload("0");
 			}
 			while(!extension_tiles.empty()){
 				Tile* act_ext_tile = extension_tiles.front();
@@ -446,16 +478,29 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 		bool falls3 = calcPhysics(r_tile_pos_global, conex_dreta, conex_esquerra, conex_abaix, eval_tile_pos, queue_final_tiles3, 2, extension_tiles);
 		if(falls3){
 			while(!queue_final_tiles3.empty()){
-				Tile* t = queue_final_tiles3.front();
-				queue_final_tiles3.pop();
-				AnimatedTile* falling_t = new AnimatedTile();
-				falling_t->Reload(t->id);
-				sf::Vector2f tpos = t->GetPosition();
-				falling_t->SetPosition(tpos.x, tpos.y);
-				falling_t->SetSize(t->GetWidth());
-                std::cout << "falling2 " << falling_t->id << std::endl;
-				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
-				t->Reload("0");
+                Tile* t = queue_final_tiles3.front();
+                Tile* t1 = t->neighbors[8];
+                queue_final_tiles3.pop();
+                if(t->id != "0" && t1->id=="0"){
+                    AnimatedTile* falling_t = new AnimatedTile();
+                    falling_t->Reload(t->id);
+                    sf::Vector2f tpos = t->GetPosition();
+                    falling_t->SetPosition(tpos.x, tpos.y);
+                    falling_t->SetSize(t->GetWidth());
+                    falling_tiles.push_back(falling_t);
+                } else if(t1->id !="0") {
+                    AnimatedTile* falling_t = new AnimatedTile();
+                    falling_t->Reload(t1->id);
+                    sf::Vector2f tpos = t1->GetPosition();
+                    falling_t->SetPosition(tpos.x, tpos.y);
+                    falling_t->SetSize(t1->GetWidth());
+                    falling_tiles.push_back(falling_t);
+                }
+                else{
+                    std::cout <<"WHHHHHHHHHHHHAAAAAAAAAAAAT" << std::endl;
+                }
+                t->Reload("0");
+                t1->Reload("0");
 			}
 			while(!extension_tiles.empty()){
 				Tile* act_ext_tile = extension_tiles.front();
@@ -471,16 +516,31 @@ void Map::removeTile(Tile* r_tile, int z_removed){
 		bool falls4 = calcPhysics(r_tile_pos_global, conex_dreta, conex_esquerra, conex_abaix, eval_tile_pos, queue_final_tiles4, 3, extension_tiles);
 		if(falls4){
 			while(!queue_final_tiles4.empty()){
-				Tile* t = queue_final_tiles4.front();
-				queue_final_tiles4.pop();
-				AnimatedTile* falling_t = new AnimatedTile();
-				falling_t->Reload(t->id);
-				sf::Vector2f tpos = t->GetPosition();
-				falling_t->SetPosition(tpos.x, tpos.y);
-				falling_t->SetSize(t->GetWidth());
-                std::cout << "falling " << falling_t->id << std::endl;
-				if(falling_t->id != "0")falling_tiles.push_back(falling_t);
-				t->Reload("0");
+                Tile* t = queue_final_tiles4.front();
+                Tile* t1 = t->neighbors[8];
+                queue_final_tiles4.pop();
+                if(t->id != "0" && t1->id=="0"){
+                    AnimatedTile* falling_t = new AnimatedTile();
+                    falling_t->Reload(t->id);
+                    sf::Vector2f tpos = t->GetPosition();
+                    falling_t->SetPosition(tpos.x, tpos.y);
+                    falling_t->SetSize(t->GetWidth());
+                    falling_tiles.push_back(falling_t);
+                } else if(t1->id !="0") {
+                    AnimatedTile* falling_t = new AnimatedTile();
+                    falling_t->Reload(t1->id);
+                    sf::Vector2f tpos = t1->GetPosition();
+                    falling_t->SetPosition(tpos.x, tpos.y);
+                    falling_t->SetSize(t1->GetWidth());
+                    falling_tiles.push_back(falling_t);
+                }
+                else{
+                    int aaa=0;
+                    std::cout <<"WHHHHHHHHHHHHAAAAAAAAAAAAT" << t->id <<" & " << t1->id << std::endl;
+                    int jj;
+                }
+                t->Reload("0");
+                t1->Reload("0");
 			}
 			while(!extension_tiles.empty()){
 				Tile* act_ext_tile = extension_tiles.front();
@@ -569,6 +629,7 @@ void Map::checkLoadedChunks(float x, float y){
                 createMap(0, current_pos - 1, id_temp);
                 chunk_mat[2]->neighbors[1] = nullptr;
                 chunk_mat[2]->calcLateralNeighborsTiles(1);
+                chunk_mat[2]->recalcReachFloor();
                 delete c2;
             }
 
@@ -589,6 +650,7 @@ void Map::checkLoadedChunks(float x, float y){
                 createMap(2, current_pos + 1, id_temp);
                 chunk_mat[0]->neighbors[1] = nullptr;
                 chunk_mat[0]->calcLateralNeighborsTiles(0);
+                chunk_mat[0]->recalcReachFloor();
                 delete c1;
             }
             //std::cout << distance_1 << " " << distance_2 << std::endl;

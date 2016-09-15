@@ -118,9 +118,6 @@ bool Game::IsExiting()
 
 void Game::GameLoop(double delta)
 {
-    if(!(true)) {
-        while(1);
-    }
     sf::Event currentEvent;
     //_mainWindow.GetEvent(currentEvent);
 

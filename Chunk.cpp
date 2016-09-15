@@ -40,7 +40,10 @@ void Chunk::saveToFile(){
 void Chunk::setTileNeighbors(int index_x, int index_y){
     Tile* t0 = tile_mat[index_y][index_x][0];
     Tile* t1 = tile_mat[index_y][index_x][1];
+    if(t0->id_temp==19900){
+        int cactus = 3;
 
+    }
     t0->neighbors[8] = t1;
     t1->neighbors[8] = t0;
     if(index_x-1<0){
@@ -193,6 +196,7 @@ void Chunk::setTileNeighbors(int index_x, int index_y){
 }
 Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 {
+
 	chunk_pos = pos;
     //std::cout  << chunk_pos.x*N_TILES_X*TILE_SIZE << " " << chunk_pos.y*N_TILES_Y*TILE_SIZE << std::endl;
     Simplex2d* sim1 = new Simplex2d(generator, 1000.0f, 0.0f, 0.1f);
@@ -221,6 +225,8 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
             if(i==N_TILES_Y-1){
                 t->rigid=true;
                 t2->rigid=true;
+                t->reach_floor = true;
+                t2->reach_floor = true;
             }
             if(valReal1 >0){
                 if(valStone > 0.8){
@@ -234,6 +240,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 
             } else{
                 t->Reload("0");
+                t->reach_floor = false;
             }
 
             if(valReal2 >0){
@@ -247,6 +254,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 
             } else{
                 t2->Reload("0");
+                t2->reach_floor = false;
 
             }
 
@@ -315,10 +323,30 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
         }
     }
 
+
 }
 Chunk::~Chunk()
 {
 	//std::for_each(_gameObjects.begin(),_gameObjects.end(),GameObjectDeallocator());
+}
+void Chunk::recalcReachFloor(){
+    for(int i= N_TILES_Y-1; i>=0; --i){
+        for(int j=0; j<N_TILES_X; j++){
+            if(i == (N_TILES_Y-1)){
+                tile_mat[i][j][0]->rigid=true;
+                tile_mat[i][j][1]->rigid=true;
+                tile_mat[i][j][0]->reach_floor=true;
+                tile_mat[i][j][1]->reach_floor=true;
+            } else {
+                Tile* t0 = tile_mat[i][j][0];
+                Tile* t1 = tile_mat[i][j][1];
+
+                t0->reach_floor = (t0->id!="0" &&(t0->neighbors[5]->reach_floor || t0->neighbors[8]->reach_floor));
+                t1->reach_floor = (t1->id!="0" &&(t1->neighbors[5]->reach_floor || t1->neighbors[8]->reach_floor));
+
+            }
+        }
+    }
 }
 void Chunk::calcLateralNeighborsTiles(int lateral){
     int x;
@@ -448,6 +476,12 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
             }
             //DEBUG
             int test = t1->id_temp;
+            Tile* t0 = tile_mat[i][j][0];
+            //int test = -1;
+            //if(t0->reach_floor & t1->reach_floor) test=11;
+            //else if(!t0->reach_floor & t1->reach_floor) test = 1;
+            //else if(t0->reach_floor & !t1->reach_floor) test = 10;
+            //else test =0;
             sf::Vector2f test_pos = t1->GetPosition();
             sprintf(c, "%i", test);
             std::string string(c);

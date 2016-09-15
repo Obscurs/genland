@@ -27,6 +27,7 @@ public:
     void saveToFile();
     void initializeLights();
 	Chunk* neighbors[2] = { nullptr };
+	void recalcReachFloor();
 
 private:
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];
