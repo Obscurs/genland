@@ -149,6 +149,7 @@ sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f
 	return result;
 }
 
+
 bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &conex_esquerra, bool &conex_abaix, sf::Vector2f eval_tile_pos, std::queue<Tile*> &queue_final_tiles, int position_case, std::queue<Tile*> &extension_tiles){
 	int left = 0;
 	int right = 0;
@@ -366,12 +367,42 @@ bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &c
 	}
 	return limit_tension_reached;
 }
+void Map::removeTile2(Tile* removed_tile){
+    Tile* otherLayerRemovedTile= removed_tile->neighbors[8];
+    if(!otherLayerRemovedTile->reach_floor) removeReachFloorCascade2(removed_tile->neighbors[1]);
+    removed_tile->Reload("0");
 
+    std::map<Tile*,bool> leftUpRight_evaluatedTiles;
+    leftUpRight_evaluatedTiles[removed_tile->neighbors[7]] = (removed_tile->neighbors[7] == nullptr);
+    leftUpRight_evaluatedTiles[removed_tile->neighbors[1]] = (removed_tile->neighbors[1] == nullptr);
+    leftUpRight_evaluatedTiles[removed_tile->neighbors[3]] = (removed_tile->neighbors[3] == nullptr);
+
+
+    std::queue<Tile*> extension_tiles;
+    std::queue<Tile*> queue_final_tilesTotal;
+    std::queue<Tile*> queue_final_tilesUp;
+    std::queue<Tile*> queue_final_tilesLeft;
+    std::queue<Tile*> queue_final_tilesRight;
+    /*
+    for (auto& m : leftUpRight_evaluatedTiles) {
+        if(!m.second){
+
+        }
+        k = m.first;
+        v = m.second;
+    }
+    while(!queue_final_tiles1.empty()) {
+        Tile *t = queue_final_tiles1.front();
+        Tile *t1 = t->neighbors[8];
+        queue_final_tiles1.pop();
+    }
+
+    if(!leftUpRight_evaluatedTiles[removed_tile->neighbors[7]]){
+
+    }
+     */
+}
 void Map::removeTile(Tile* r_tile, int z_removed){
-
-    //update lights
-    sf::Vector2f r_pos = r_tile->GetPosition();
-
 
 
 	//cas up
@@ -566,6 +597,15 @@ void Map::removeReachFloorCascade(float x, float y){
 		}
 		else finished = true;
 	}
+}
+void Map::removeReachFloorCascade2(Tile* t_first){
+    if(t_first == nullptr || (t_first->neighbors[8]->id=="0" && t_first->id=="0") || t_first->neighbors[8]->rigid || t_first->rigid) return;
+    else {
+        Tile* tB = t_first->neighbors[8];
+        t_first->reach_floor = false;
+        tB->reach_floor = false;
+        removeReachFloorCascade2(t_first->neighbors[1]);
+    }
 }
 Chunk* Map::getChunk(float x, float y){
 	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
