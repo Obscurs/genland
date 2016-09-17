@@ -17,6 +17,8 @@
 AnimatedTile::AnimatedTile(){
 
 	colisionable = false;
+    vx=0;
+    vy=0;
 }
 
 

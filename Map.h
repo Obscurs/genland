@@ -38,6 +38,7 @@ private:
     int posMap;
 	std::mt19937 generator;
 	void createMap(int map_index, int chunk_index, int &id_temp);
+    void calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs);
 	bool calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &conex_esquerra, bool &conex_abaix, sf::Vector2f eval_tile_pos, std::queue<Tile*> &queue_final_tiles, int position_case, std::queue<Tile*> &extension_tiles);
 	void removeReachFloorCascade(float x, float y);
     void removeReachFloorCascade2(Tile* t_first);

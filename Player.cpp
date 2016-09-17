@@ -425,7 +425,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 
 	    	if(giveItem(t->id, 1)){
 
-	    		map.removeTile(t,1);
+	    		map.removeTile2(t);
 	    	}
 	    }
 
@@ -447,7 +447,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 
 	    	if(giveItem(t->id, 1)){
 	    		//t->Remove();
-	    		map.removeTile(t,0);
+	    		map.removeTile2(t);
 	    	}
 	    }
 

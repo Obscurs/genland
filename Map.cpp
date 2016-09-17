@@ -149,7 +149,286 @@ sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f
 	return result;
 }
 
+void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
+    std::cout << "calculating removed tile " <<  first_tile->id_temp << std::endl;
+    int max_left = 0;
+    int max_right = 0;
+    int max_up = 0;
+    int total_weight = 0;
+    int total_tension_no_rigid_left = 0;
+    int total_tension_no_rigid_right = 0;
+    int total_tension_no_rigid_top = 0;
+    int total_tension_rigid = 0;
+    bool limit_tension_reached = false;
+    std::vector<std::vector<int> > visitats_dreta;
+    std::vector<std::vector<int> > visitats_esquerra;
+    std::queue<sf::Vector2i> queue_bfs;
+    std::queue<sf::Vector2i> queue_bfs_next_left;
+    std::queue<sf::Vector2i> queue_bfs_next_right;
+    std::queue<sf::Vector2i> queue_bfs_next_top;
+    Tile* first_tile0;
+    Tile* first_tile1;
+    if(first_tile->layer==1){
+        first_tile1=first_tile;
+        first_tile0=first_tile->neighbors[8];
+    } else {
+        first_tile0=first_tile;
+        first_tile1=first_tile->neighbors[8];
+    }
 
+
+    if((first_tile0->id !="0" || first_tile1->id !="0") && !first_tile1->reach_floor && !first_tile0->reach_floor){
+
+        sf::Vector2f first_tile_global_position = first_tile0->GetPosition();
+        std::vector<int> esquerra0;
+        std::vector<int> dreta0;
+        std::vector<int> dreta1;
+        dreta0.push_back(0);
+        std::queue<Tile*> queue_final_tiles;
+
+        visitats_dreta.push_back(dreta0);	//hem afegit com a visitat el primer node.
+        visitats_dreta.push_back(dreta1);	//donem espai per mirar els adjacents
+        visitats_esquerra.push_back(esquerra0);	//donem espai per mirar els adjacents
+        queue_bfs.push(sf::Vector2i(0,0));	//push del primer node del bfs
+        //bool end_left = false;
+        //bool end_right = false;
+        bool first_iteration =true;
+        int turn = 0;
+        while(first_iteration || (!limit_tension_reached && (!queue_bfs_next_left.empty() || !queue_bfs_next_right.empty() || !queue_bfs_next_top.empty()))){
+            first_iteration = false;
+            //std::cout << "happening " <<  (!queue_bfs_next_left.empty()) << std::endl;
+            //std::cout << "happening " <<  (!queue_bfs_next_right.empty()) << std::endl;
+            //std::cout << "happening " <<  (!queue_bfs_next_top.empty()) << std::endl;
+
+            if(turn == 0 && queue_bfs_next_left.empty()) turn =1;
+            if(turn == 1 && queue_bfs_next_right.empty()) turn =2;
+            if(turn == 2 && queue_bfs_next_top.empty()) turn =0;
+            if(turn == 0 && queue_bfs_next_left.empty()) turn =1;
+            if(turn == 1 && queue_bfs_next_right.empty()) turn =2;
+            if(turn == 2 && queue_bfs_next_top.empty()) turn =0;
+
+            if(turn == 2 && total_tension_no_rigid_top < total_tension_no_rigid_left && !queue_bfs_next_left.empty()) turn = 0;
+            else if(turn == 2 && total_tension_no_rigid_top < total_tension_no_rigid_right && !queue_bfs_next_right.empty()) turn = 1;
+            if(turn == 0){	//si es el turn de l'esquerra
+                while(!queue_bfs_next_left.empty()){
+                    queue_bfs.push(queue_bfs_next_left.front());
+                    queue_bfs_next_left.pop();
+                    std::vector<int> new_list;
+                    visitats_esquerra.push_back(new_list);	//hem afegit una nova columna a l'esquerra de visitats.
+                    --max_left;
+                    total_tension_no_rigid_left = 0;
+                }
+                turn = 1;
+            }
+            else if(turn == 1){	//si es el turn de la dreta
+                while(!queue_bfs_next_right.empty()){
+                    queue_bfs.push(queue_bfs_next_right.front());
+                    queue_bfs_next_right.pop();
+                    std::vector<int> new_list;
+                    visitats_dreta.push_back(new_list);	//hem afegit una nova columna a la dreta de visitats.
+                    ++max_right;
+                    total_tension_no_rigid_right = 0;
+                }
+                turn =2;
+            }
+            else if(turn == 2){	//si es el turn de amunt
+                while(!queue_bfs_next_top.empty()){
+                    queue_bfs.push(queue_bfs_next_top.front());
+                    queue_bfs_next_top.pop();
+                    ++max_up;
+                    total_tension_no_rigid_top = 0;
+                }
+                turn = 0;
+            }
+
+            while(!queue_bfs.empty()){
+
+                sf::Vector2i u = queue_bfs.front();
+                queue_bfs.pop();
+                //std::cout << "bfs_it " << u.x << " " << u.y << std::endl;
+                Tile* tile_actual0 = getTile(first_tile_global_position.x + u.x*Chunk::TILE_SIZE, first_tile_global_position.y + u.y*Chunk::TILE_SIZE, 0);
+                Tile* tile_actual1 = tile_actual0->neighbors[8];
+
+                if(tile_actual0->id !="0"){
+
+                    total_weight += tile_actual0->weight; //sumem el pes
+                    queue_final_tiles.push(tile_actual0); //fem push a laltre queue (interior)
+                    //std::cout << "sumem pes back" << tile_actual0->id_temp << std::endl;
+                }
+                if(tile_actual1->id !="0"){
+                    total_weight += tile_actual1->weight; //sumem el pes
+                    //std::cout << "sumem pes front " << tile_actual1->id_temp << std::endl;
+
+                }
+
+
+
+                Tile* adj_0[4];
+                adj_0[0] = tile_actual0->neighbors[3];
+                adj_0[1] = tile_actual0->neighbors[5];
+                adj_0[2] = tile_actual0->neighbors[7];
+                adj_0[3] = tile_actual0->neighbors[1];
+                Tile* adj_1[4];
+                adj_1[0] = tile_actual1->neighbors[3];
+                adj_1[1] = tile_actual1->neighbors[5];
+                adj_1[2] = tile_actual1->neighbors[7];
+                adj_1[3] = tile_actual1->neighbors[1];
+                for(int i = 0; i<4; i++){
+
+                    //std::cout << "adj_it" << std::endl;
+                    //agafem els dos tiles adjacents
+                    Tile* tile_adj0 = adj_0[i];
+                    Tile* tile_adj1 = adj_1[i];
+
+                    if(tile_adj0 != nullptr && tile_adj1 != nullptr) {
+                        //comprobacio de si es visitat
+                        bool visitat = false;
+                        sf::Vector2i coord_respect = getCordinatesRespectTile(first_tile_global_position,
+                                                                              tile_adj0->GetPosition());
+
+                        if (coord_respect.x >= 0) {
+                            int j = 0;
+                            while (j < visitats_dreta[coord_respect.x].size() && !visitat) {
+                                //std::cout << "visitor_it_dreta " << coord_respect.x << " "<<  coord_respect.y << std::endl;
+                                if (visitats_dreta[coord_respect.x][j] == coord_respect.y) visitat = true;
+                                ++j;
+                            }
+                        } else {
+                            int j = 0;
+                            while (j < visitats_esquerra[coord_respect.x * (-1) - 1].size() && !visitat) {
+                                //std::cout << "visitor_it_esq " << coord_respect.x << " "<<  coord_respect.y << std::endl;
+                                if (visitats_esquerra[coord_respect.x * (-1) - 1][j] == coord_respect.y) visitat = true;
+                                ++j;
+                            }
+                        }
+                        //std::cout << "coordenades adj " << coord_respect.x << " "<<  coord_respect.y << " visitat "<< visitat << " visible " << tile_adj0->visible << " " << tile_adj1->visible << std::endl;
+                        //si existeix una tile i no l'hem visitat
+                        if ((tile_adj0->id != "0" || tile_adj1->id != "0") && !visitat) {
+                            //afageix a visitats
+                            if (coord_respect.x >= 0) visitats_dreta[coord_respect.x].push_back(coord_respect.y);
+                            else visitats_esquerra[coord_respect.x * (-1) - 1].push_back(coord_respect.y);
+                            //mirem si ex conex amb la dreta o esquerra del inici
+                            /*
+                            if (coord_respect.x <= 2 && coord_respect.x >= -2 && coord_respect.y <= 2 &&
+                                coord_respect.y >= -2) {
+                                if (!(conected_bfs.find(tile_adj0) == conected_bfs.end())) {
+                                    conected_bfs[tile_actual0] = true;
+                                }
+                            }
+                            */
+
+                            //calculem la tensio
+                            int t0 = std::min(tile_actual0->max_tension, tile_adj0->max_tension);
+                            int t1 = std::min(tile_actual1->max_tension, tile_adj1->max_tension);
+                            int tension = t0 + t1;
+
+                            //si arriba al terra guardem en tension_rigid i no fem push
+                            if (tile_adj0->reach_floor || tile_adj0->rigid || tile_adj1->reach_floor ||
+                                tile_adj1->rigid)
+                                total_tension_rigid += tension;
+                            else {
+                                //si estem al limit per la dreta posem tensio no rigida i fem push al next dreta
+                                if (coord_respect.x > max_right) {
+                                    //std::cout << "toca dreta" << std::endl;
+                                    total_tension_no_rigid_right += tension;
+                                    queue_bfs_next_right.push(coord_respect);
+                                }
+
+                                    //si estem al limit per la esquerra posem tensio no rigida i fem push al next esquerra
+                                else if (coord_respect.x < max_left) {
+                                    //std::cout << "toca esquerra" << std::endl;
+                                    total_tension_no_rigid_left += tension;
+                                    queue_bfs_next_left.push(coord_respect);
+                                }
+                                    //si estem al limit per amunt posem tensio no rigida i fem push al next amunt
+                                else if (coord_respect.y < max_up) {
+                                    //std::cout << "toca up" << std::endl;
+                                    total_tension_no_rigid_top += tension;
+                                    queue_bfs_next_top.push(coord_respect);
+                                }
+
+                                    //en el cas contrari, el node no esta en un extrem i fem push en el bfs actual
+                                else {
+                                    //std::cout << "bfs_push " << coord_respect.x << " " << coord_respect.y << std::endl;
+                                    queue_bfs.push(coord_respect);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            std::cout << "weight " << total_weight << " tension no " << total_tension_no_rigid_left <<" " <<total_tension_no_rigid_right << " " << total_tension_no_rigid_top << " si " << total_tension_rigid << " left/right/top " << max_left << " " << max_right << " " << max_up << std::endl;
+            if(total_weight > total_tension_no_rigid_left + total_tension_no_rigid_right + total_tension_no_rigid_top + total_tension_rigid) {
+                limit_tension_reached = true;
+                std::queue<Tile*> border_tiles;
+                while(!queue_bfs_next_right.empty()){
+
+                    sf::Vector2i act_pos_ext = queue_bfs_next_right.front();
+                    queue_bfs_next_right.pop();
+                    Tile* ext_tile0 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+first_tile_global_position.x - Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+first_tile_global_position.y, 0);
+
+                    //Tile* ext_tile1 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+r_tile_pos_global.x - Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+r_tile_pos_global.y, 1);
+                    border_tiles.push( ext_tile0);
+                    //extension_tiles.push(ext_tile1);
+                }
+                while(!queue_bfs_next_left.empty()){
+                    sf::Vector2i act_pos_ext = queue_bfs_next_left.front();
+                    queue_bfs_next_left.pop();
+                    Tile* ext_tile0 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+first_tile_global_position.x + Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+first_tile_global_position.y, 0);
+                    //Tile* ext_tile1 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+r_tile_pos_global.x + Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+r_tile_pos_global.y, 1);
+                    border_tiles.push(ext_tile0);
+                    //extension_tiles.push(ext_tile1);
+                }
+                while(!queue_bfs_next_top.empty()){
+                    sf::Vector2i act_pos_ext = queue_bfs_next_top.front();
+                    queue_bfs_next_top.pop();
+                    Tile* ext_tile0 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+first_tile_global_position.x ,act_pos_ext.y*Chunk::TILE_SIZE+first_tile_global_position.y + Chunk::TILE_SIZE, 0);
+                    //Tile* ext_tile1 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+r_tile_pos_global.x + Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+r_tile_pos_global.y, 1);
+                    border_tiles.push(ext_tile0);
+                    //extension_tiles.push(ext_tile1);
+                }
+                //add falling tiles and remove tiles
+                while(!queue_final_tiles.empty()){
+                    Tile* t = queue_final_tiles.front();
+                    Tile* t1 = t->neighbors[8];
+                    queue_final_tiles.pop();
+                    if(t->id != "0" && t1->id=="0"){
+                        AnimatedTile* falling_t = new AnimatedTile();
+                        falling_t->Reload(t->id);
+                        sf::Vector2f tpos = t->GetPosition();
+                        falling_t->SetPosition(tpos.x, tpos.y+Chunk::TILE_SIZE/2);
+                        falling_t->SetSize(t->GetWidth());
+                        falling_tiles.push_back(falling_t);
+                    } else if(t1->id !="0") {
+                        AnimatedTile* falling_t = new AnimatedTile();
+                        falling_t->Reload(t1->id);
+                        sf::Vector2f tpos = t1->GetPosition();
+                        falling_t->SetPosition(tpos.x, tpos.y+Chunk::TILE_SIZE/2);
+                        falling_t->SetSize(t1->GetWidth());
+                        falling_tiles.push_back(falling_t);
+                    }
+                    else{
+                        std::cout <<"WHHHHHHHHHHHHAAAAAAAAAAAAT" << std::endl;
+                    }
+                    t->Reload("0");
+                    t1->Reload("0");
+                }
+
+                //compute border tiles
+
+                while(!border_tiles.empty()){
+                    Tile* act_ext_tile = border_tiles.front();
+                    border_tiles.pop();
+                    removeTile2(act_ext_tile);
+                }
+
+            }
+        }
+    }
+
+}
 bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &conex_esquerra, bool &conex_abaix, sf::Vector2f eval_tile_pos, std::queue<Tile*> &queue_final_tiles, int position_case, std::queue<Tile*> &extension_tiles){
 	int left = 0;
 	int right = 0;
@@ -367,40 +646,30 @@ bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &c
 	}
 	return limit_tension_reached;
 }
+
 void Map::removeTile2(Tile* removed_tile){
     Tile* otherLayerRemovedTile= removed_tile->neighbors[8];
     if(!otherLayerRemovedTile->reach_floor) removeReachFloorCascade2(removed_tile->neighbors[1]);
     removed_tile->Reload("0");
 
+    Tile* removed_tile0;
+    if(removed_tile->layer==0) removed_tile0 = removed_tile;
+    else removed_tile0 = removed_tile->neighbors[8];
+
+
     std::map<Tile*,bool> leftUpRight_evaluatedTiles;
-    leftUpRight_evaluatedTiles[removed_tile->neighbors[7]] = (removed_tile->neighbors[7] == nullptr);
-    leftUpRight_evaluatedTiles[removed_tile->neighbors[1]] = (removed_tile->neighbors[1] == nullptr);
-    leftUpRight_evaluatedTiles[removed_tile->neighbors[3]] = (removed_tile->neighbors[3] == nullptr);
+    leftUpRight_evaluatedTiles[removed_tile0->neighbors[7]] = (removed_tile0->neighbors[7] == nullptr);
+    leftUpRight_evaluatedTiles[removed_tile0->neighbors[1]] = (removed_tile0->neighbors[1] == nullptr);
+    leftUpRight_evaluatedTiles[removed_tile0->neighbors[3]] = (removed_tile0->neighbors[3] == nullptr);
+    leftUpRight_evaluatedTiles[removed_tile0->neighbors[5]] = (removed_tile0->neighbors[5] == nullptr);
 
 
-    std::queue<Tile*> extension_tiles;
-    std::queue<Tile*> queue_final_tilesTotal;
-    std::queue<Tile*> queue_final_tilesUp;
-    std::queue<Tile*> queue_final_tilesLeft;
-    std::queue<Tile*> queue_final_tilesRight;
-    /*
     for (auto& m : leftUpRight_evaluatedTiles) {
         if(!m.second){
-
+            calcPhysics2(m.first, leftUpRight_evaluatedTiles);
         }
-        k = m.first;
-        v = m.second;
-    }
-    while(!queue_final_tiles1.empty()) {
-        Tile *t = queue_final_tiles1.front();
-        Tile *t1 = t->neighbors[8];
-        queue_final_tiles1.pop();
     }
 
-    if(!leftUpRight_evaluatedTiles[removed_tile->neighbors[7]]){
-
-    }
-     */
 }
 void Map::removeTile(Tile* r_tile, int z_removed){
 

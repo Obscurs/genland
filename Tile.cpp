@@ -39,35 +39,35 @@ void Tile::Reload(std::string new_id)
 	}
 	else if(new_id == "D"){
 		visible = true;
-		weight = 0;
-		max_tension = 500;
+		weight = 20;
+		max_tension = 50;
 		rigid = false;
 		reach_floor = true;
 	}
 	else if(new_id == "d"){
 		visible = true;
 		weight = 20;
-		max_tension = 200;
+		max_tension = 50;
 		rigid = false;
 		reach_floor = false;
 	}
 	else if(new_id == "r"){
 		visible = true;
 		weight = 10;
-		max_tension = 30;
+		max_tension = 200;
 		rigid = false;
 		reach_floor = false;
 	}
     else if(new_id == "C"){
         visible = true;
-        weight = 10;
-        max_tension = 30;
+        weight = 20;
+        max_tension = 200;
         rigid = false;
         reach_floor = false;
     }
     else if(new_id == "c"){
         visible = true;
-        weight = 10;
+        weight = 20;
         max_tension = 30;
         rigid = false;
         reach_floor = false;
