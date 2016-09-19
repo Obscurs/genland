@@ -132,7 +132,7 @@ void AnimatedTile::Update(float elapsedTime, Chunk* c1,Chunk* c2,Chunk* c3, int 
 {
     if(deleted==0){
         vx =disp_factor/10;
-        vy = 0.5*elapsedTime*100 + vy;
+        vy = 1*elapsedTime*100 + vy;
         rotation += elapsedTime*disp_factor;
         float x0 = position.x;
         float y0 = position.y;
@@ -141,7 +141,7 @@ void AnimatedTile::Update(float elapsedTime, Chunk* c1,Chunk* c2,Chunk* c3, int 
         float y = y0+vy*elapsedTime;
         SetPosition(x, y);
         if(ColideWorld(c1,c2,c3, posMap)){
-            std::cout << "YAY" << std::endl;
+            //std::cout << "YAY" << std::endl;
             deleted = 1;
         }
     }

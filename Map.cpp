@@ -380,7 +380,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
 
 
             std::cout << "weight " << total_weight << " tension no " << total_tension_no_rigid_left <<" " <<total_tension_no_rigid_right << " " << total_tension_no_rigid_top << " si " << total_tension_rigid << " left/right/top " << max_left << " " << max_right << " " << max_up << std::endl;
-            if(total_weight > total_tension_no_rigid_left + total_tension_no_rigid_right + total_tension_no_rigid_top + total_tension_rigid) {
+            if(total_weight > pow((total_tension_no_rigid_left + total_tension_no_rigid_right + total_tension_no_rigid_top + total_tension_rigid),1.1)) {
                 limit_tension_reached = true;
                 std::queue<Tile*> border_tiles;
                 while(!queue_bfs_next_right.empty()){
