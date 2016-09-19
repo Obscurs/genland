@@ -40,14 +40,14 @@ void Tile::Reload(std::string new_id)
 	else if(new_id == "D"){
 		visible = true;
 		weight = 20;
-		max_tension = 50;
+		max_tension = 100;
 		rigid = false;
 		reach_floor = true;
 	}
 	else if(new_id == "d"){
 		visible = true;
 		weight = 20;
-		max_tension = 50;
+		max_tension = 100;
 		rigid = false;
 		reach_floor = false;
 	}
@@ -61,14 +61,14 @@ void Tile::Reload(std::string new_id)
     else if(new_id == "C"){
         visible = true;
         weight = 20;
-        max_tension = 200;
+        max_tension = 500;
         rigid = false;
         reach_floor = false;
     }
     else if(new_id == "c"){
         visible = true;
         weight = 20;
-        max_tension = 30;
+        max_tension = 500;
         rigid = false;
         reach_floor = false;
     }

@@ -340,9 +340,8 @@ void Chunk::recalcReachFloor(){
             } else {
                 Tile* t0 = tile_mat[i][j][0];
                 Tile* t1 = tile_mat[i][j][1];
-
-                t0->reach_floor = (t0->id!="0" &&(t0->neighbors[5]->reach_floor || t0->neighbors[8]->reach_floor));
-                t1->reach_floor = (t1->id!="0" &&(t1->neighbors[5]->reach_floor || t1->neighbors[8]->reach_floor));
+                tile_mat[i][j][0]->reach_floor = (t0->id!="0" &&(t0->neighbors[5]->reach_floor || t0->neighbors[8]->reach_floor));
+                tile_mat[i][j][1]->reach_floor = (t1->id!="0" &&(t1->neighbors[5]->reach_floor || t1->neighbors[8]->reach_floor));
 
             }
         }
@@ -475,13 +474,13 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
 
             }
             //DEBUG
-            int test = t1->id_temp;
+            //int test = t1->id_temp;
             Tile* t0 = tile_mat[i][j][0];
-            //int test = -1;
-            //if(t0->reach_floor & t1->reach_floor) test=11;
-            //else if(!t0->reach_floor & t1->reach_floor) test = 1;
-            //else if(t0->reach_floor & !t1->reach_floor) test = 10;
-            //else test =0;
+            int test = -1;
+            if(t0->reach_floor & t1->reach_floor) test=11;
+            else if(!t0->reach_floor & t1->reach_floor) test = 1;
+            else if(t0->reach_floor & !t1->reach_floor) test = 10;
+            else test =0;
             sf::Vector2f test_pos = t1->GetPosition();
             sprintf(c, "%i", test);
             std::string string(c);

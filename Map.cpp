@@ -66,8 +66,12 @@ Map::Map(int pos)
     chunk_mat[2]->calcLateralNeighborsTiles(0);
     chunk_mat[2]->calcLateralNeighborsTiles(1);
 
+
+    std::cout << "chunk 0 recalc" << std::endl;
     chunk_mat[0]->recalcReachFloor();
+    std::cout << "chunk 1 recalc" << std::endl;
     chunk_mat[1]->recalcReachFloor();
+    std::cout << "chunk 2 recalc" << std::endl;
     chunk_mat[2]->recalcReachFloor();
 
 
@@ -180,6 +184,8 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
     if((first_tile0->id !="0" || first_tile1->id !="0") && !first_tile1->reach_floor && !first_tile0->reach_floor){
 
         sf::Vector2f first_tile_global_position = first_tile0->GetPosition();
+        sf::Vector2f min_pos = first_tile_global_position;
+        sf::Vector2f max_pos = first_tile_global_position;
         std::vector<int> esquerra0;
         std::vector<int> dreta0;
         std::vector<int> dreta1;
@@ -196,6 +202,8 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
         int turn = 0;
         while(first_iteration || (!limit_tension_reached && (!queue_bfs_next_left.empty() || !queue_bfs_next_right.empty() || !queue_bfs_next_top.empty()))){
             first_iteration = false;
+            bool wall_left =false;
+            bool wall_right = false;
             //std::cout << "happening " <<  (!queue_bfs_next_left.empty()) << std::endl;
             //std::cout << "happening " <<  (!queue_bfs_next_right.empty()) << std::endl;
             //std::cout << "happening " <<  (!queue_bfs_next_top.empty()) << std::endl;
@@ -235,7 +243,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
                 while(!queue_bfs_next_top.empty()){
                     queue_bfs.push(queue_bfs_next_top.front());
                     queue_bfs_next_top.pop();
-                    ++max_up;
+                    --max_up;
                     total_tension_no_rigid_top = 0;
                 }
                 turn = 0;
@@ -248,7 +256,11 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
                 //std::cout << "bfs_it " << u.x << " " << u.y << std::endl;
                 Tile* tile_actual0 = getTile(first_tile_global_position.x + u.x*Chunk::TILE_SIZE, first_tile_global_position.y + u.y*Chunk::TILE_SIZE, 0);
                 Tile* tile_actual1 = tile_actual0->neighbors[8];
-
+                sf::Vector2f tile_actual_global_position = tile_actual0->GetPosition();
+                if(tile_actual_global_position.x > max_pos.x) max_pos.x = tile_actual_global_position.x;
+                if(tile_actual_global_position.y > max_pos.y) max_pos.y = tile_actual_global_position.y;
+                if(tile_actual_global_position.x < min_pos.x) min_pos.x = tile_actual_global_position.x;
+                if(tile_actual_global_position.y < min_pos.y) min_pos.y = tile_actual_global_position.y;
                 if(tile_actual0->id !="0"){
 
                     total_weight += tile_actual0->weight; //sumem el pes
@@ -323,9 +335,17 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
                             int tension = t0 + t1;
 
                             //si arriba al terra guardem en tension_rigid i no fem push
-                            if (tile_adj0->reach_floor || tile_adj0->rigid || tile_adj1->reach_floor ||
-                                tile_adj1->rigid)
+                            if (tile_adj0->reach_floor || tile_adj0->rigid || tile_adj1->reach_floor || tile_adj1->rigid){
                                 total_tension_rigid += tension;
+                                if (coord_respect.x > 0) {
+                                    wall_right=true;
+                                }
+                                else if(coord_respect.x < 0){
+                                    wall_left = true;
+                                }
+
+                            }
+
                             else {
                                 //si estem al limit per la dreta posem tensio no rigida i fem push al next dreta
                                 if (coord_respect.x > max_right) {
@@ -364,7 +384,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
                 limit_tension_reached = true;
                 std::queue<Tile*> border_tiles;
                 while(!queue_bfs_next_right.empty()){
-
+                    wall_right=true;
                     sf::Vector2i act_pos_ext = queue_bfs_next_right.front();
                     queue_bfs_next_right.pop();
                     Tile* ext_tile0 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+first_tile_global_position.x - Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+first_tile_global_position.y, 0);
@@ -374,6 +394,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
                     //extension_tiles.push(ext_tile1);
                 }
                 while(!queue_bfs_next_left.empty()){
+                    wall_left=true;
                     sf::Vector2i act_pos_ext = queue_bfs_next_left.front();
                     queue_bfs_next_left.pop();
                     Tile* ext_tile0 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+first_tile_global_position.x + Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+first_tile_global_position.y, 0);
@@ -390,23 +411,36 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
                     //extension_tiles.push(ext_tile1);
                 }
                 //add falling tiles and remove tiles
+                float center_falling_x = (max_pos.x-min_pos.x)/2+min_pos.x;
                 while(!queue_final_tiles.empty()){
                     Tile* t = queue_final_tiles.front();
                     Tile* t1 = t->neighbors[8];
                     queue_final_tiles.pop();
+
                     if(t->id != "0" && t1->id=="0"){
                         AnimatedTile* falling_t = new AnimatedTile();
                         falling_t->Reload(t->id);
+                        falling_t->wall_left = wall_left;
+                        falling_t->wall_right = wall_right;
                         sf::Vector2f tpos = t->GetPosition();
+                        float dist_x = tpos.x-center_falling_x;
+                        float dist_y = max_pos.y-tpos.y;
                         falling_t->SetPosition(tpos.x, tpos.y+Chunk::TILE_SIZE/2);
                         falling_t->SetSize(t->GetWidth());
+                        falling_t->setFactor(dist_x, dist_y);
+
                         falling_tiles.push_back(falling_t);
                     } else if(t1->id !="0") {
                         AnimatedTile* falling_t = new AnimatedTile();
                         falling_t->Reload(t1->id);
+                        falling_t->wall_left = wall_left;
+                        falling_t->wall_right = wall_right;
                         sf::Vector2f tpos = t1->GetPosition();
+                        float dist_x = tpos.x-center_falling_x;
+                        float dist_y = max_pos.y-tpos.y;
                         falling_t->SetPosition(tpos.x, tpos.y+Chunk::TILE_SIZE/2);
                         falling_t->SetSize(t1->GetWidth());
+                        falling_t->setFactor(dist_x, dist_y);
                         falling_tiles.push_back(falling_t);
                     }
                     else{
@@ -938,7 +972,8 @@ void Map::checkLoadedChunks(float x, float y){
                 createMap(0, current_pos - 1, id_temp);
                 chunk_mat[2]->neighbors[1] = nullptr;
                 chunk_mat[2]->calcLateralNeighborsTiles(1);
-                chunk_mat[2]->recalcReachFloor();
+                chunk_mat[0]->calcLateralNeighborsTiles(0);
+                chunk_mat[0]->recalcReachFloor();
                 delete c2;
             }
 
@@ -959,7 +994,8 @@ void Map::checkLoadedChunks(float x, float y){
                 createMap(2, current_pos + 1, id_temp);
                 chunk_mat[0]->neighbors[1] = nullptr;
                 chunk_mat[0]->calcLateralNeighborsTiles(0);
-                chunk_mat[0]->recalcReachFloor();
+                chunk_mat[2]->calcLateralNeighborsTiles(1);
+                chunk_mat[2]->recalcReachFloor();
                 delete c1;
             }
             //std::cout << distance_1 << " " << distance_2 << std::endl;
@@ -1066,7 +1102,11 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
 void Map::UpdateAll(float delta)
 {
 	for(int i=0; i<falling_tiles.size(); ++i){
-		falling_tiles[i]->Update(delta);
+		falling_tiles[i]->Update(delta, chunk_mat[0], chunk_mat[1], chunk_mat[2], posMap);
+        if(falling_tiles[i]->deleted==1){
+            delete falling_tiles[i];
+            falling_tiles.erase(falling_tiles.begin()+i);
+        }
 	}
 
 }
