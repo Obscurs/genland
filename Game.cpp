@@ -121,9 +121,6 @@ void Game::GameLoop(double delta)
     sf::Event currentEvent;
     //_mainWindow.GetEvent(currentEvent);
     
-    if (!rand()%10000)
-        exit();
-
 
     switch(_gameState)
     {
