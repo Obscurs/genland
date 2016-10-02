@@ -20,6 +20,41 @@
 
 Map::Map(int pos)
 {
+    temp_mouse_pos.x =0;
+    temp_mouse_pos.y =0;
+    m_text.setString("Praesent suscipit augue in velit pulvinar hendrerit varius purus aliquam.\n"
+                             "Mauris mi odio, bibendum quis fringilla a, laoreet vel orci. Proin vitae vulputate tortor.\n"
+                             "Praesent cursus ultrices justo, ut feugiat ante vehicula quis.\n"
+                             "Donec fringilla scelerisque mauris et viverra.\n"
+                             "Maecenas adipiscing ornare scelerisque. Nullam at libero elit.\n"
+                             "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.\n"
+                             "Nullam leo urna, tincidunt id semper eget, ultricies sed mi.\n"
+                             "Morbi mauris massa, commodo id dignissim vel, lobortis et elit.\n"
+                             "Fusce vel libero sed neque scelerisque venenatis.\n"
+                             "Integer mattis tincidunt quam vitae iaculis.\n"
+                             "Vivamus fringilla sem non velit venenatis fermentum.\n"
+                             "Vivamus varius tincidunt nisi id vehicula.\n"
+                             "Integer ullamcorper, enim vitae euismod rutrum, massa nisl semper ipsum,\n"
+                             "vestibulum sodales sem ante in massa.\n"
+                             "Vestibulum in augue non felis convallis viverra.\n"
+                             "Mauris ultricies dolor sed massa convallis sed aliquet augue fringilla.\n"
+                             "Duis erat eros, porta in accumsan in, blandit quis sem.\n"
+                             "In hac habitasse platea dictumst. Etiam fringilla est id odio dapibus sit amet semper dui laoreet.\n");
+
+    if (!font.loadFromFile("resources/font1.ttf"))
+    {
+        std::cout << "font error" << std::endl;
+    }
+
+    //text.setStyle(sf::Text::Bold);
+    m_text.setColor(sf::Color::Red);
+    m_text.setFont(font); // font is a sf::Font
+    m_text.setCharacterSize(22);
+    m_text.setPosition(30, 20);
+
+    // Load the shader
+    if (!m_shader.loadFromFile("resources/wave.vert", "resources/blur.frag")) std::cout<< "el shader no va" << std::endl;
+
 	texMan = new TextureManager("resources/tiles2.png", 16, 16);
 	texMan->insert_map_value("D",sf::Vector2i(0,0));
 	texMan->insert_map_value("d",sf::Vector2i(16,0));
@@ -1056,6 +1091,12 @@ void Map::DrawFrontItems(sf::RenderWindow& renderWindow)
 }
 void Map::DrawMap(sf::RenderWindow& renderWindow)
 {
+    //temp_mouse_pos = renderWindow.mapPixelToCoords(sf::Mouse::getPosition(renderWindow));
+
+    sf::RenderStates states;
+    states.shader = &m_shader;
+    renderWindow.draw(m_text, states);
+
     sf::View currentView = renderWindow.getView();
     sf::Vector2f centerView = currentView.getCenter();
     sf::Vector2f sizeView = currentView.getSize();
@@ -1101,6 +1142,14 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
 
 void Map::UpdateAll(float delta)
 {
+    temp_mouse_pos.x +=delta;
+    temp_mouse_pos.y +=delta;
+    if(temp_mouse_pos.x> 1.5) temp_mouse_pos.x=0;
+    if(temp_mouse_pos.y > 1.5) temp_mouse_pos.y=0;
+
+    m_shader.setParameter("wave_phase", delta);
+    m_shader.setParameter("wave_amplitude", sf::Vector2f(temp_mouse_pos.x * 40, temp_mouse_pos.y * 40));
+    m_shader.setParameter("blur_radius", (temp_mouse_pos.x + temp_mouse_pos.y) * 0.008f);
 	for(int i=0; i<falling_tiles.size(); ++i){
 		falling_tiles[i]->Update(delta, chunk_mat[0], chunk_mat[1], chunk_mat[2], posMap);
         if(falling_tiles[i]->deleted==1){

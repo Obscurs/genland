@@ -46,4 +46,10 @@ private:
 	std::vector<AnimatedTile*> falling_tiles;
 	Chunk* chunk_mat[N_CHUNKS_X] = {nullptr};
 	TextureManager* texMan;
+
+    sf::Text m_text;
+    sf::Shader m_shader;
+    sf::Font font;
+
+    sf::Vector2f temp_mouse_pos;
 };
