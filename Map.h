@@ -48,7 +48,7 @@ private:
 	TextureManager* texMan;
 
     sf::Text m_text;
-    sf::Shader m_shader;
+    sf::Shader tile_shader;
     sf::Font font;
 
     sf::Vector2f temp_mouse_pos;

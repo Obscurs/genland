@@ -8,7 +8,7 @@ public:
 	~Tile();
 
 	void Reload(std::string id);
-	void Draw(sf::RenderWindow & window, TextureManager &t);
+	void Draw(sf::RenderWindow & window, TextureManager &t, sf::Shader &tile_shader);
     void DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t);
     void DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t);
 	void Update(float elapsedTime);
@@ -18,7 +18,7 @@ public:
 	sf::Vector2f GetPosition() const;
 	float GetWidth() const;
 	float GetHeight() const;
-	bool visible; //sha de privatitzar
+	bool reach_sun; //sha de privatitzar
 	bool rigid;
 	bool reach_floor;
 	int layer;
@@ -35,9 +35,10 @@ public:
 private:
 
     void DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t);
-    void DrawIns(sf::RenderWindow & renderWindow, TextureManager &t);
+    void DrawIns(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader);
     void DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &t);
 	sf::Vector2f position;
 	sf::Vector2f size;
+
 };
 

@@ -19,7 +19,7 @@ public:
 
 	Tile* getTile(float x, float y, int z);
     Tile* getTileByIndex(int x, int y, int z);
-    void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t);
+    void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader);
     void DrawGrassTiles(sf::RenderWindow& renderWindow,TextureManager &t);
 	sf::Vector2i getTileIndex(float x, float y);
 	void setTileNeighbors(int index_x, int index_y);
@@ -28,6 +28,7 @@ public:
     void initializeLights();
 	Chunk* neighbors[2] = { nullptr };
 	void recalcReachFloor();
+	void recalcReachSun();
 
 private:
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];

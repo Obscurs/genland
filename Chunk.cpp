@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <queue>
 #include "Chunk.h"
 
 
@@ -193,6 +194,14 @@ void Chunk::setTileNeighbors(int index_x, int index_y){
         t0->neighbors[3] = tile_mat[index_y][index_x+1][0];
         t1->neighbors[3] = tile_mat[index_y][index_x+1][1];
     }
+    //posem a visible els bordes de la llum
+    if(t0->id=="0" && t1->id=="0"){
+        for(int i = 0; i<9; i++){
+            if(t0->neighbors[i] != nullptr && t0->neighbors[i]->id != "0") t0->neighbors[i]->reach_sun=true;
+            if(t1->neighbors[i] != nullptr && t1->neighbors[i]->id != "0") t1->neighbors[i]->reach_sun=true;
+        }
+    }
+
 }
 Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 {
@@ -240,6 +249,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 
             } else{
                 t->Reload("0");
+                t->reach_sun=true;
                 t->reach_floor = false;
             }
 
@@ -303,7 +313,7 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
             t2->Reload(std::string(1, c2));
             t->reach_floor = true;
             t2->reach_floor = true;
-
+            if(t->id == "0") t->reach_sun=true;
 
 
             t->SetPosition(chunk_pos.x*TILE_SIZE*N_TILES_X+j*TILE_SIZE, chunk_pos.y*TILE_SIZE*N_TILES_Y+i*TILE_SIZE);
@@ -345,6 +355,34 @@ void Chunk::recalcReachFloor(){
 
             }
         }
+    }
+}
+void Chunk::recalcReachSun(){
+    std::queue<Tile*> queue_bfs;
+    for(int i= 0; i<N_TILES_Y; ++i){
+        for(int j=0; j<N_TILES_X; j++){
+            //std::cout << i << " " << j << std::endl;
+            if(tile_mat[i][j][0]->id != "0" && tile_mat[i][j][0]->reach_sun){
+                if(tile_mat[i][j][1]->id=="0") queue_bfs.push(tile_mat[i][j][0]);
+            }
+        }
+    }
+    while(!queue_bfs.empty()){
+        Tile* t0 = queue_bfs.front();
+        Tile* t1 = t0->neighbors[8];
+        queue_bfs.pop();
+        for(int i = 0; i<8; i++){
+            if(t0->neighbors[i] !=nullptr){
+                Tile* t0_aux = t0->neighbors[i];
+                Tile* t1_aux = t1->neighbors[i];
+                if(!t0_aux->reach_sun && t0_aux->id != "0" && t1_aux->id == "0"){
+                    queue_bfs.push(t0_aux);
+                }
+                t0_aux->reach_sun=true;
+                t1_aux->reach_sun=true;
+            }
+        }
+
     }
 }
 void Chunk::calcLateralNeighborsTiles(int lateral){
@@ -421,7 +459,7 @@ void Chunk::DrawGrassTiles(sf::RenderWindow& renderWindow,  TextureManager &t)
         grass_tiles[i]->DrawGrass(renderWindow, t);
     }
 }
-void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t)
+void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader)
 {
     grass_tiles.clear();
     //std::cout << "Drawing chunk " << chunk_pos.x<< std::endl;
@@ -456,8 +494,8 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
     for(int i = first_index.x; i<=last_index.x; ++i){
         for(int j = first_index.y; j<=last_index.y; ++j){
             Tile* t1 = tile_mat[i][j][1];
-            if(t1->visible){
-                t1->Draw(renderWindow, t);
+            if(t1->id !="0"){
+                t1->Draw(renderWindow, t, tile_shader);
                 if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
                     if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && t1->id=="D") grass_tiles.push_back(t1);
                 }
@@ -467,20 +505,21 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
                 Tile* t0 = tile_mat[i][j][0];
 
 
-                if(t0->visible)t0->Draw(renderWindow, t);
-                else t0->DrawOuts(renderWindow, t);
+                if(t0->id != "0")t0->Draw(renderWindow, t, tile_shader);
+                else if(t0->reach_sun)t0->DrawOuts(renderWindow, t);
 
-                t1->DrawOuts(renderWindow, t);
+                if(t1->reach_sun)t1->DrawOuts(renderWindow, t);
 
             }
             //DEBUG
-            //int test = t1->id_temp;
+
             Tile* t0 = tile_mat[i][j][0];
-            int test = -1;
-            if(t0->reach_floor & t1->reach_floor) test=11;
-            else if(!t0->reach_floor & t1->reach_floor) test = 1;
-            else if(t0->reach_floor & !t1->reach_floor) test = 10;
-            else test =0;
+            int test = t0->reach_sun;
+            //int test = -1;
+            //if(t0->reach_floor & t1->reach_floor) test=11;
+            //else if(!t0->reach_floor & t1->reach_floor) test = 1;
+            //else if(t0->reach_floor & !t1->reach_floor) test = 10;
+            //else test =0;
             sf::Vector2f test_pos = t1->GetPosition();
             sprintf(c, "%i", test);
             std::string string(c);

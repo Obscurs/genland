@@ -421,7 +421,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
 	    float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
    
-	    if(position_tile == 1 && t->visible) {
+	    if(position_tile == 1 && t->id != "0") {
 
 	    	if(giveItem(t->id, 1)){
 
@@ -443,7 +443,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
 	    float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
    
-	    if(position_tile == 0 && t->visible) {
+	    if(position_tile == 0 && t->id != "0") {
 
 	    	if(giveItem(t->id, 1)){
 	    		//t->Remove();

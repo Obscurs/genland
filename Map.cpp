@@ -22,6 +22,7 @@ Map::Map(int pos)
 {
     temp_mouse_pos.x =0;
     temp_mouse_pos.y =0;
+
     m_text.setString("Praesent suscipit augue in velit pulvinar hendrerit varius purus aliquam.\n"
                              "Mauris mi odio, bibendum quis fringilla a, laoreet vel orci. Proin vitae vulputate tortor.\n"
                              "Praesent cursus ultrices justo, ut feugiat ante vehicula quis.\n"
@@ -53,7 +54,7 @@ Map::Map(int pos)
     m_text.setPosition(30, 20);
 
     // Load the shader
-    if (!m_shader.loadFromFile("resources/wave.vert", "resources/blur.frag")) std::cout<< "el shader no va" << std::endl;
+    if (!tile_shader.loadFromFile("resources/blur.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
 
 	texMan = new TextureManager("resources/tiles2.png", 16, 16);
 	texMan->insert_map_value("D",sf::Vector2i(0,0));
@@ -109,6 +110,10 @@ Map::Map(int pos)
     std::cout << "chunk 2 recalc" << std::endl;
     chunk_mat[2]->recalcReachFloor();
 
+    chunk_mat[0]->recalcReachSun();
+    chunk_mat[1]->recalcReachSun();
+    chunk_mat[2]->recalcReachSun();
+
 
 }
 void Map::createMap(int map_index, int chunk_index, int &id_temp){
@@ -143,6 +148,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
         chunk_mat[1]->neighbors[0] = chunk_mat[0];
         chunk_mat[0]->calcLateralNeighborsTiles(1);
         chunk_mat[1]->calcLateralNeighborsTiles(0);
+        chunk_mat[0]->recalcReachSun();
     } else if(map_index==1){
         if(chunk_mat[0] != nullptr){
             chunk_mat[0]->neighbors[1] = chunk_mat[1];
@@ -156,11 +162,13 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
             chunk_mat[1]->calcLateralNeighborsTiles(1);
             chunk_mat[2]->calcLateralNeighborsTiles(0);
         }
+        chunk_mat[1]->recalcReachSun();
     } else if(map_index==2 && chunk_mat[1] != nullptr){
         chunk_mat[2]->neighbors[0] = chunk_mat[1];
         chunk_mat[1]->neighbors[1] = chunk_mat[2];
         chunk_mat[1]->calcLateralNeighborsTiles(1);
         chunk_mat[2]->calcLateralNeighborsTiles(0);
+        chunk_mat[2]->recalcReachSun();
     }
 
 }
@@ -498,6 +506,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
     }
 
 }
+/*
 bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &conex_esquerra, bool &conex_abaix, sf::Vector2f eval_tile_pos, std::queue<Tile*> &queue_final_tiles, int position_case, std::queue<Tile*> &extension_tiles){
 	int left = 0;
 	int right = 0;
@@ -715,16 +724,47 @@ bool Map::calcPhysics(sf::Vector2f r_tile_pos_global, bool &conex_dreta, bool &c
 	}
 	return limit_tension_reached;
 }
-
+*/
 void Map::removeTile2(Tile* removed_tile){
+    bool removed_reach_sun=removed_tile->reach_sun;
+    if(removed_tile->layer==0) removed_reach_sun = true;
     Tile* otherLayerRemovedTile= removed_tile->neighbors[8];
     if(!otherLayerRemovedTile->reach_floor) removeReachFloorCascade2(removed_tile->neighbors[1]);
     removed_tile->Reload("0");
-
+    if(removed_reach_sun) removed_tile->reach_sun = true;
     Tile* removed_tile0;
     if(removed_tile->layer==0) removed_tile0 = removed_tile;
     else removed_tile0 = removed_tile->neighbors[8];
 
+    if(removed_reach_sun){
+        std::queue<Tile*> queue_bfs;
+        for(int i = 0; i< 8; i++){
+            if(removed_tile0->neighbors[i] != nullptr){
+                Tile* t0_aux_sun = removed_tile0->neighbors[i];
+                Tile* t1_aux_sun = t0_aux_sun->neighbors[8];
+                if(!t0_aux_sun->reach_sun && t0_aux_sun->id !="0" && t1_aux_sun->id == "0") queue_bfs.push(t0_aux_sun);
+                t0_aux_sun->reach_sun=true;
+                t1_aux_sun->reach_sun=true;
+            }
+        }
+        while(!queue_bfs.empty()){
+            Tile* t0 = queue_bfs.front();
+            Tile* t1 = t0->neighbors[8];
+            queue_bfs.pop();
+            for(int i = 0; i<8; i++){
+                if(t0->neighbors[i] !=nullptr){
+                    Tile* t0_aux = t0->neighbors[i];
+                    Tile* t1_aux = t1->neighbors[i];
+                    if(!t0_aux->reach_sun && t0_aux->id != "0" && t1_aux->id == "0"){
+                        queue_bfs.push(t0_aux);
+                    }
+                    t0_aux->reach_sun=true;
+                    t1_aux->reach_sun=true;
+                }
+            }
+
+        }
+    }
 
     std::map<Tile*,bool> leftUpRight_evaluatedTiles;
     leftUpRight_evaluatedTiles[removed_tile0->neighbors[7]] = (removed_tile0->neighbors[7] == nullptr);
@@ -740,6 +780,7 @@ void Map::removeTile2(Tile* removed_tile){
     }
 
 }
+/*
 void Map::removeTile(Tile* r_tile, int z_removed){
 
 
@@ -936,6 +977,7 @@ void Map::removeReachFloorCascade(float x, float y){
 		else finished = true;
 	}
 }
+ */
 void Map::removeReachFloorCascade2(Tile* t_first){
     if(t_first == nullptr || (t_first->neighbors[8]->id=="0" && t_first->id=="0") || t_first->neighbors[8]->rigid || t_first->rigid) return;
     else {
@@ -1093,9 +1135,9 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
 {
     //temp_mouse_pos = renderWindow.mapPixelToCoords(sf::Mouse::getPosition(renderWindow));
 
-    sf::RenderStates states;
-    states.shader = &m_shader;
-    renderWindow.draw(m_text, states);
+    //sf::RenderStates states;
+    //states.shader = &m_shader;
+    renderWindow.draw(m_text);
 
     sf::View currentView = renderWindow.getView();
     sf::Vector2f centerView = currentView.getCenter();
@@ -1123,7 +1165,7 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
             //std::cout << firstPos.x << " " << firstPos.y << " " << lastPos.x << " " << lastPos.y << std::endl;
             //std::cout << "draw chunk " << index_mat.x << " " << index_mat.y << std::endl;
             //#pragma omp task shared(renderWindow)
-        chunk_mat[index_mat]->DrawChunk(renderWindow, firstPos, lastPos, *texMan);
+        chunk_mat[index_mat]->DrawChunk(renderWindow, firstPos, lastPos, *texMan, tile_shader);
     }
 
     for(int i = 0; i<falling_tiles.size(); i++){
@@ -1142,14 +1184,14 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
 
 void Map::UpdateAll(float delta)
 {
-    temp_mouse_pos.x +=delta;
-    temp_mouse_pos.y +=delta;
-    if(temp_mouse_pos.x> 1.5) temp_mouse_pos.x=0;
-    if(temp_mouse_pos.y > 1.5) temp_mouse_pos.y=0;
+    //temp_mouse_pos.x +=delta;
+    //temp_mouse_pos.y +=delta;
+    //if(temp_mouse_pos.x> 1.5) temp_mouse_pos.x=0;
+    //if(temp_mouse_pos.y > 1.5) temp_mouse_pos.y=0;
 
-    m_shader.setParameter("wave_phase", delta);
-    m_shader.setParameter("wave_amplitude", sf::Vector2f(temp_mouse_pos.x * 40, temp_mouse_pos.y * 40));
-    m_shader.setParameter("blur_radius", (temp_mouse_pos.x + temp_mouse_pos.y) * 0.008f);
+    //m_shader.setParameter("wave_phase", delta);
+    //m_shader.setParameter("wave_amplitude", sf::Vector2f(temp_mouse_pos.x * 40, temp_mouse_pos.y * 40));
+    //m_shader.setParameter("blur_radius", (temp_mouse_pos.x + temp_mouse_pos.y) * 0.008f);
 	for(int i=0; i<falling_tiles.size(); ++i){
 		falling_tiles[i]->Update(delta, chunk_mat[0], chunk_mat[1], chunk_mat[2], posMap);
         if(falling_tiles[i]->deleted==1){
