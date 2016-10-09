@@ -8,9 +8,9 @@ public:
 	~Tile();
 
 	void Reload(std::string id);
-	void Draw(sf::RenderWindow & window, TextureManager &t, sf::Shader &tile_shader);
-    void DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t);
-    void DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t);
+	void Draw(sf::RenderWindow & window, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray);
+    void DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
+    void DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
 	void Update(float elapsedTime);
 
 	void SetPosition(float x, float y);
@@ -28,15 +28,15 @@ public:
     int id_temp;
 	Tile* neighbors[9] = {nullptr};
 	bool drawable();
-
+	void appendSpriteToArray(TextureManager &t, sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex, int rotation);
 
 	
 
 private:
 
-    void DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t);
-    void DrawIns(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader);
-    void DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &t);
+    void DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
+    void DrawIns(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray);
+    void DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
 	sf::Vector2f position;
 	sf::Vector2f size;
 

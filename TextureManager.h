@@ -17,6 +17,7 @@ class TextureManager {
     sf::Vector2i size_sprite;
     std::map<std::string, sf::Vector2i> texture_map;
     sf::Texture _image;
+    const sf::Texture* getTexture();
     //sf::Shader tile_shader;
     private:
 

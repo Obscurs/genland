@@ -453,13 +453,13 @@ sf::Vector2i Chunk::getTileIndex(float x, float y){
 
 }
 
-void Chunk::DrawGrassTiles(sf::RenderWindow& renderWindow,  TextureManager &t)
+void Chunk::DrawGrassTiles(sf::RenderWindow& renderWindow,  TextureManager &t, sf::VertexArray &vertexArray)
 {
     for(int i=0; i<grass_tiles.size(); i++){
-        grass_tiles[i]->DrawGrass(renderWindow, t);
+        grass_tiles[i]->DrawGrass(renderWindow, t,vertexArray);
     }
 }
-void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader)
+void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray)
 {
     grass_tiles.clear();
     //std::cout << "Drawing chunk " << chunk_pos.x<< std::endl;
@@ -495,7 +495,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
         for(int j = first_index.y; j<=last_index.y; ++j){
             Tile* t1 = tile_mat[i][j][1];
             if(t1->id !="0"){
-                t1->Draw(renderWindow, t, tile_shader);
+                t1->Draw(renderWindow, t, tile_shader,vertexArray);
                 if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
                     if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && t1->id=="D") grass_tiles.push_back(t1);
                 }
@@ -505,10 +505,10 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
                 Tile* t0 = tile_mat[i][j][0];
 
 
-                if(t0->id != "0")t0->Draw(renderWindow, t, tile_shader);
-                else if(t0->reach_sun)t0->DrawOuts(renderWindow, t);
+                if(t0->id != "0")t0->Draw(renderWindow, t, tile_shader,vertexArray);
+                else if(t0->reach_sun)t0->DrawOuts(renderWindow, t,vertexArray);
 
-                if(t1->reach_sun)t1->DrawOuts(renderWindow, t);
+                if(t1->reach_sun)t1->DrawOuts(renderWindow, t,vertexArray);
 
             }
             //DEBUG

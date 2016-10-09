@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 // TODO: reference additional headers your program requires here
+#include <SFML/OpenGL.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -27,7 +28,6 @@ void Game::Start(void)
 
     //PlayerPaddle *player1 = new PlayerPaddle();
     //player1->SetPosition((SCREEN_WIDTH/2),700);
-
     _gameState= Game::Playing;
     sf::Clock clock;
     sf::Clock clock2;

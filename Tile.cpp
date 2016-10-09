@@ -89,122 +89,62 @@ bool Tile::drawable(){
 	}
 	return res;
 }
-void Tile::DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t){
+void Tile::DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && neighbors[0]->neighbors[8]->id != "0" && !neighbors[0]->drawable()  && neighbors[7]->drawable() && neighbors[1]->drawable()){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.x += GetWidth();
-        t.generateSprite("S2", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(90);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "S2", 90);
     }
     if(neighbors[1] != nullptr && neighbors[1]->neighbors[8]->id != "0" && !neighbors[1]->drawable() ){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.y += GetHeight();
-        shadow_pos.x += GetWidth();
-        t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(180);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "S", 180);
     }
     if(neighbors[2] != nullptr && neighbors[2]->neighbors[8]->id != "0" && !neighbors[2]->drawable() && neighbors[3]->drawable() && neighbors[1]->drawable()){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.y += GetHeight();
-        shadow_pos.x += GetWidth();
-        t.generateSprite("S2", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(180);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "S2", 180);
 
     }
     if(neighbors[3] != nullptr && neighbors[3]->neighbors[8]->id != "0" && !neighbors[3]->drawable()){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.y += GetHeight();
-        t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(-90);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "S", -90);
     }
     if(neighbors[4] != nullptr && neighbors[4]->neighbors[8]->id != "0" && !neighbors[4]->drawable() && neighbors[3]->drawable() && neighbors[5]->drawable()){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.y += GetHeight();
-        t.generateSprite("S2", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(-90);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "S2", -90);
     }
     if(neighbors[5] != nullptr && neighbors[5]->neighbors[8]->id != "0" && !neighbors[5]->drawable()){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "S", 0);
 
     }
     if(neighbors[6] != nullptr && neighbors[6]->neighbors[8]->id != "0" && !neighbors[6]->drawable() && neighbors[5]->drawable() && neighbors[7]->drawable() ){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        t.generateSprite("S2", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "S2", 0);
 
     }
     if(neighbors[7] != nullptr && (neighbors[7]->neighbors[8]->id != "0") && !neighbors[7]->drawable() ){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.x += GetWidth();
-        t.generateSprite("S", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(90);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "S", 90);
     }
 }
-void Tile::DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &t){
+void Tile::DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && !neighbors[0]->drawable() && neighbors[7]->drawable() && neighbors[1]->drawable()){
 
     }
     if(neighbors[1] != nullptr && neighbors[1]->neighbors[8]->id!="0"){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.y += GetHeight();
-        shadow_pos.x += GetWidth();
-        t.generateSprite("s", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(180);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "s", 180);
     }
     if(neighbors[2] != nullptr && !neighbors[2]->drawable() && neighbors[3]->drawable() && neighbors[1]->drawable()){
 
-
     }
     if(neighbors[3] != nullptr && neighbors[3]->neighbors[8]->id!="0"){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.y += GetHeight();
-        t.generateSprite("s", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(-90);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "s", -90);
     }
     if(neighbors[4] != nullptr && !neighbors[4]->drawable() && neighbors[3]->drawable() && neighbors[5]->drawable()){
 
     }
     if(neighbors[5] != nullptr && neighbors[5]->neighbors[8]->id!="0"){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        t.generateSprite("s", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        renderWindow.draw(s);
-
+        appendSpriteToArray(t, vertexArray, -1, "s", 0);
     }
     if(neighbors[6] != nullptr && !neighbors[6]->drawable() && neighbors[5]->drawable() && neighbors[7]->drawable()){
 
-
     }
     if(neighbors[7] != nullptr && neighbors[7]->neighbors[8]->id!="0"){
-        sf::Sprite s;
-        sf::Vector2f shadow_pos = GetPosition();
-        shadow_pos.x += GetWidth();
-        t.generateSprite("s", shadow_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
-        s.setRotation(90);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, -1, "s", 90);
     }
 }
-void Tile::DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t)
+void Tile::DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray)
 {
     Tile* t1 = neighbors[1];
     Tile* t3 = neighbors[3];
@@ -217,161 +157,172 @@ void Tile::DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t)
     if(valid_t1 && valid_t3 && t1->id==t3->id){
         std::string id_mini = t1->id;
         id_mini.append("_out");
-        sf::Sprite s;
-        t.generateMiniSprite(id_mini, position, s, sf::Vector2f(GetWidth(),GetHeight()),1);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, 1, id_mini, 0);
     }
     if(valid_t1 && valid_t7 && t1->id==t7->id){
         std::string id_mini = t1->id;
         id_mini.append("_out");
-        sf::Sprite s;
-        t.generateMiniSprite(id_mini, position, s, sf::Vector2f(GetWidth(),GetHeight()),0);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, 0, id_mini, 0);
     }
     if(valid_t3 && valid_t5 && t3->id==t5->id){
         std::string id_mini = t3->id;
         id_mini.append("_out");
-        sf::Sprite s;
-        t.generateMiniSprite(id_mini, position, s, sf::Vector2f(GetWidth(),GetHeight()),3);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, 3, id_mini, 0);
     }
     if(valid_t7 && valid_t5 && t5->id==t7->id){
         std::string id_mini = t5->id;
         id_mini.append("_out");
-        sf::Sprite s;
-        t.generateMiniSprite(id_mini, position, s, sf::Vector2f(GetWidth(),GetHeight()),2);
-        renderWindow.draw(s);
+        appendSpriteToArray(t, vertexArray, 2, id_mini, 0);
     }
 }
-void Tile::DrawIns(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader){
-    bool is_mini[4] ={0,0,0,0};
-    //std::cout << "happening" << std::endl;
-    sf::RenderStates states;
-    /*
-    sf::Vector2i sprite_position_in_texture = t.getPositionSprite(id);
-    sf::Vector2i size_sprite = t.size_sprite;
-    sf::Vector2u texture_size = t.getSizeTex();
-    float min= (float)sprite_position_in_texture.y/(float)texture_size.y;
-    float mult = texture_size.y/size_sprite.y;
-    tile_shader.setParameter("min", min);
-    tile_shader.setParameter("mult", mult);
-    states.shader = &tile_shader;
-    */
-    //sf::Shader* shader = t.getTileShader();
-    //shader->setParameter("min", 1.0);
-    //shader->setParameter("mult", 1.0);
-    //states.shader = shader;
-    if(neighbors[1] != nullptr && neighbors[1]->id=="0" && neighbors[2] != nullptr && neighbors[2]->id=="0" && neighbors[3] != nullptr && neighbors[3]->id=="0"){
+void Tile::appendSpriteToArray(TextureManager &t, sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex,int rotation){
+    float increment_x=0;
+    float increment_y=0;
+    float increment_x_tex=0;
+    float increment_y_tex=0;
+    int divisor=2;
+    if(mini_pos==1) {
+        increment_x+=Chunk::TILE_SIZE/2;
+        increment_x_tex+=t.size_sprite.x/2;
+    }
+    else if(mini_pos==2) {
+        increment_y+=Chunk::TILE_SIZE/2;
+        increment_y_tex+=t.size_sprite.y/2;
+    }
+    else if(mini_pos==3){
+        increment_x+=Chunk::TILE_SIZE/2;
+        increment_y+=Chunk::TILE_SIZE/2;
+        increment_y_tex+=t.size_sprite.y/2;
+        increment_x_tex+=t.size_sprite.x/2;
+    }
+    if(mini_pos==-1) divisor=1;
+    sf::Vector2i position_sprite = t.getPositionSprite(id_in_tex);
+    sf::Vector2f pos_tex1, pos_tex2, pos_tex3, pos_tex4;
+    if(rotation==0){
+        pos_tex1 = sf::Vector2f(position_sprite.x+increment_x_tex, position_sprite.y+increment_y_tex);
+        pos_tex2 = sf::Vector2f(position_sprite.x+t.size_sprite.x/divisor+increment_x_tex, position_sprite.y+increment_y_tex);
+        pos_tex3 = sf::Vector2f(position_sprite.x+t.size_sprite.x/divisor+increment_x_tex, position_sprite.y+t.size_sprite.y/divisor+increment_y_tex);
+        pos_tex4 = sf::Vector2f(position_sprite.x+increment_x_tex, position_sprite.y+t.size_sprite.y/divisor+increment_y_tex);
+    } else if(rotation==90){
+        pos_tex2 = sf::Vector2f(position_sprite.x+increment_x_tex, position_sprite.y+increment_y_tex);
+        pos_tex3 = sf::Vector2f(position_sprite.x+t.size_sprite.x/divisor+increment_x_tex, position_sprite.y+increment_y_tex);
+        pos_tex4 = sf::Vector2f(position_sprite.x+t.size_sprite.x/divisor+increment_x_tex, position_sprite.y+t.size_sprite.y/divisor+increment_y_tex);
+        pos_tex1 = sf::Vector2f(position_sprite.x+increment_x_tex, position_sprite.y+t.size_sprite.y/divisor+increment_y_tex);
+    }
+    else if(rotation==-90){
+        pos_tex4 = sf::Vector2f(position_sprite.x+increment_x_tex, position_sprite.y+increment_y_tex);
+        pos_tex1 = sf::Vector2f(position_sprite.x+t.size_sprite.x/divisor+increment_x_tex, position_sprite.y+increment_y_tex);
+        pos_tex2 = sf::Vector2f(position_sprite.x+t.size_sprite.x/divisor+increment_x_tex, position_sprite.y+t.size_sprite.y/divisor+increment_y_tex);
+        pos_tex3 = sf::Vector2f(position_sprite.x+increment_x_tex, position_sprite.y+t.size_sprite.y/divisor+increment_y_tex);
+    }
+    else if(rotation==180){
+        pos_tex3 = sf::Vector2f(position_sprite.x+increment_x_tex, position_sprite.y+increment_y_tex);
+        pos_tex4 = sf::Vector2f(position_sprite.x+t.size_sprite.x/divisor+increment_x_tex, position_sprite.y+increment_y_tex);
+        pos_tex1 = sf::Vector2f(position_sprite.x+t.size_sprite.x/divisor+increment_x_tex, position_sprite.y+t.size_sprite.y/divisor+increment_y_tex);
+        pos_tex2 = sf::Vector2f(position_sprite.x+increment_x_tex, position_sprite.y+t.size_sprite.y/divisor+increment_y_tex);
+    }
 
+
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x,position.y+increment_y), pos_tex1));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+Chunk::TILE_SIZE/divisor,position.y+increment_y), pos_tex2));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+Chunk::TILE_SIZE/divisor,position.y+increment_y+Chunk::TILE_SIZE/divisor), pos_tex3));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x,position.y+Chunk::TILE_SIZE/divisor+increment_y), pos_tex4));
+}
+void Tile::DrawIns(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray){
+    bool is_mini[4] ={0,0,0,0};
+    if(neighbors[1] != nullptr && neighbors[1]->id=="0" && neighbors[2] != nullptr && neighbors[2]->id=="0" && neighbors[3] != nullptr && neighbors[3]->id=="0"){
         std::string id_mini = id;
         id_mini.append("_in");
-        sf::Sprite s;
-        t.generateMiniSprite(id_mini, position, s, sf::Vector2f(GetWidth(),GetHeight()),1);
-        renderWindow.draw(s, states);
         is_mini[0]=true;
+        appendSpriteToArray(t, vertexArray, 1, id_mini, 0);
     }
     if(neighbors[3] != nullptr && neighbors[3]->id=="0" && neighbors[4] != nullptr && neighbors[4]->id=="0" && neighbors[5] != nullptr && neighbors[5]->id=="0"){
-
         std::string id_mini = id;
         id_mini.append("_in");
-        sf::Sprite s;
-        t.generateMiniSprite(id_mini, position, s, sf::Vector2f(GetWidth(),GetHeight()),3);
-        renderWindow.draw(s, states);
         is_mini[1]=true;
+        appendSpriteToArray(t, vertexArray, 3, id_mini, 0);
     }
     if(neighbors[5] != nullptr && neighbors[5]->id=="0" && neighbors[6] != nullptr && neighbors[6]->id=="0" && neighbors[7] != nullptr && neighbors[7]->id=="0"){
-
         std::string id_mini = id;
         id_mini.append("_in");
-        sf::Sprite s;
-        t.generateMiniSprite(id_mini, position, s, sf::Vector2f(GetWidth(),GetHeight()),2);
-        renderWindow.draw(s, states);
         is_mini[2]=true;
+        appendSpriteToArray(t, vertexArray, 2, id_mini, 0);
     }
     if(neighbors[7] != nullptr && neighbors[7]->id=="0" && neighbors[1] != nullptr && neighbors[1]->id=="0" && neighbors[0] != nullptr && neighbors[0]->id=="0"){
-
         std::string id_mini = id;
         id_mini.append("_in");
-        sf::Sprite s;
-        t.generateMiniSprite(id_mini, position, s, sf::Vector2f(GetWidth(),GetHeight()),0);
-        renderWindow.draw(s, states);
         is_mini[3]=true;
+        appendSpriteToArray(t, vertexArray, 0, id_mini, 0);
     }
     if(!is_mini[0] && !is_mini[1] && !is_mini[2] && !is_mini[3]){
-        sf::Sprite s;
-
-        t.generateSprite(id, position, s, size);
-        renderWindow.draw(s, states);
+        appendSpriteToArray(t, vertexArray, -1, id, 0);
     } else{
-        if(!is_mini[0]){
-            sf::Sprite s;
-            t.generateMiniSprite(id, position, s, sf::Vector2f(GetWidth(),GetHeight()),1);
-            renderWindow.draw(s, states);
-        }
-        if(!is_mini[1]){
-            sf::Sprite s;
-            t.generateMiniSprite(id, position, s, sf::Vector2f(GetWidth(),GetHeight()),3);
-            renderWindow.draw(s, states);
-        }
-        if(!is_mini[2]){
-            sf::Sprite s;
-            t.generateMiniSprite(id, position, s, sf::Vector2f(GetWidth(),GetHeight()),2);
-            renderWindow.draw(s, states);
-        }
-        if(!is_mini[3]){
-            sf::Sprite s;
-            t.generateMiniSprite(id, position, s, sf::Vector2f(GetWidth(),GetHeight()),0);
-            renderWindow.draw(s, states);
-        }
+        if(!is_mini[0]) appendSpriteToArray(t, vertexArray, 1, id, 0);
+        if(!is_mini[1]) appendSpriteToArray(t, vertexArray, 3, id, 0);
+        if(!is_mini[2]) appendSpriteToArray(t, vertexArray, 2, id, 0);
+        if(!is_mini[3]) appendSpriteToArray(t, vertexArray, 0, id, 0);
     }
 }
 
-void Tile::DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t){
-    sf::Sprite s;
-    sf::Vector2f pos_grass(position.x,position.y-GetHeight()/2);
-    t.generateSprite("grass0", pos_grass, s, sf::Vector2f(GetWidth(),GetHeight()));
-    renderWindow.draw(s);
+void Tile::DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray){
+    sf::Vector2f pos_tex1, pos_tex2, pos_tex3, pos_tex4;
+    sf::Vector2i position_sprite = t.getPositionSprite("grass0");
+    pos_tex1 = sf::Vector2f(position_sprite.x, position_sprite.y);
+    pos_tex2 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y);
+    pos_tex3 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y+t.size_sprite.y);
+    pos_tex4 = sf::Vector2f(position_sprite.x, position_sprite.y+t.size_sprite.y);
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y-GetHeight()/2), pos_tex1));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Chunk::TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Chunk::TILE_SIZE,position.y-GetHeight()/2+Chunk::TILE_SIZE), pos_tex3));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Chunk::TILE_SIZE-GetHeight()/2),
+                                  pos_tex4));
     if(neighbors[3]!=nullptr && (neighbors[3]->id !="D" || (neighbors[2] !=nullptr && neighbors[2]->neighbors[8]->id !="0"))){
-        sf::Sprite s2;
-        sf::Vector2f pos_grass2(position.x+GetWidth(),position.y-GetHeight()/2);
-        t.generateSprite("grass1", pos_grass2, s2, sf::Vector2f(GetWidth(),GetHeight()));
-        renderWindow.draw(s2);
+        sf::Vector2i position_sprite = t.getPositionSprite("grass1");
+        pos_tex1 = sf::Vector2f(position_sprite.x, position_sprite.y);
+        pos_tex2 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y);
+        pos_tex3 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y+t.size_sprite.y);
+        pos_tex4 = sf::Vector2f(position_sprite.x, position_sprite.y+t.size_sprite.y);
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y-GetHeight()/2), pos_tex1));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Chunk::TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Chunk::TILE_SIZE,position.y-GetHeight()/2+Chunk::TILE_SIZE), pos_tex3));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y+Chunk::TILE_SIZE-GetHeight()/2), pos_tex4));
     }
     if(neighbors[7]!=nullptr && (neighbors[7]->id !="D"|| (neighbors[0] !=nullptr && neighbors[0]->neighbors[8]->id !="0"))){
-        sf::Sprite s2;
-        sf::Vector2f pos_grass2(position.x,position.y+GetHeight()/2+5);
-        t.generateSprite("grass1", pos_grass2, s2, sf::Vector2f(GetWidth(),GetHeight()));
-        s2.setRotation(180);
-        renderWindow.draw(s2);
+        sf::Vector2i position_sprite = t.getPositionSprite("grass1");
+        pos_tex3 = sf::Vector2f(position_sprite.x, position_sprite.y);
+        pos_tex4 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y);
+        pos_tex1 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y+t.size_sprite.y);
+        pos_tex2 = sf::Vector2f(position_sprite.x, position_sprite.y+t.size_sprite.y);
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth(),position.y-GetHeight()/2+5), pos_tex1));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth()+Chunk::TILE_SIZE,position.y-GetHeight()/2+5), pos_tex2));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth()+Chunk::TILE_SIZE,position.y-GetHeight()/2+5+Chunk::TILE_SIZE), pos_tex3));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth(),position.y+Chunk::TILE_SIZE-GetHeight()/2+5), pos_tex4));
     }
 }
-void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader)
+void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray)
 {
 
     if(reach_sun) {
         if (layer == 1) {
-                //sf::Sprite s = t.generateSprite(id, position);
-                //_sprite.setTexture(t._image);
-                //_sprite.setPosition(position.x, position.y);
-                if (neighbors[8] != nullptr && neighbors[8]->id != "0") neighbors[8]->Draw(renderWindow, t, tile_shader);
-
-                DrawIns(renderWindow, t, tile_shader);
-                DrawFadeOut(renderWindow, t);
+                if (neighbors[8] != nullptr && neighbors[8]->id != "0") neighbors[8]->Draw(renderWindow, t, tile_shader,vertexArray);
+                DrawIns(renderWindow, t, tile_shader,vertexArray);
+                DrawFadeOut(renderWindow, t,vertexArray);
 
 
 
 
         }
         else {
-            DrawIns(renderWindow, t, tile_shader);
-            DrawAmbientOclusion(renderWindow, t);
+            DrawIns(renderWindow, t, tile_shader,vertexArray);
+            DrawAmbientOclusion(renderWindow, t,vertexArray);
         }
     }
     else{
-        sf::RectangleShape rec(sf::Vector2f(Chunk::TILE_SIZE, Chunk::TILE_SIZE));
-        rec.setPosition(GetPosition());
-        rec.setFillColor(sf::Color::Black);
-        renderWindow.draw(rec);
+        sf::Vector2f pos= GetPosition();
+        vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y), sf::Color::Black));
+        vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+Chunk::TILE_SIZE,pos.y), sf::Color::Black));
+        vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+Chunk::TILE_SIZE,pos.y+Chunk::TILE_SIZE), sf::Color::Black));
+        vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y+Chunk::TILE_SIZE), sf::Color::Black));
     }
 }
 

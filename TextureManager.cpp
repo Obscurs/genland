@@ -36,6 +36,9 @@ void TextureManager::generateSprite(std::string key, sf::Vector2f sprite_pos, sf
     sf::Vector2f new_scale(size.x/size_sprite.x, size.y/size_sprite.y);
     s.setScale(new_scale);
 }
+const sf::Texture* TextureManager::getTexture(){
+    return &_image;
+}
 void TextureManager::generateMiniSprite(std::string key, sf::Vector2f sprite_pos, sf::Sprite &s, sf::Vector2f size, int mini_pos){
     sf::Vector2i tex_sprite_pos = texture_map[key];
     //std::cout << tex_sprite_pos.x << " " << tex_sprite_pos.y << std::endl;
