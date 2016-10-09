@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/Map.cpp" line="819" mnemonic="8" />
+    <bookmark url="file://$PROJECT_DIR$/Map.cpp" line="825" mnemonic="8" />
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" assignedExecutableTargets="true" buildAllGenerated="true">
     <generated>
@@ -15,20 +15,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f465ec9c-b195-4793-b1a1-68ed08476bd4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/genland.iml" afterPath="$PROJECT_DIR$/.idea/genland.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Chunk.cpp" afterPath="$PROJECT_DIR$/Chunk.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Chunk.h" afterPath="$PROJECT_DIR$/Chunk.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game.cpp" afterPath="$PROJECT_DIR$/Game.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game.h" afterPath="$PROJECT_DIR$/Game.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Map.cpp" afterPath="$PROJECT_DIR$/Map.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Map.h" afterPath="$PROJECT_DIR$/Map.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TextureManager.cpp" afterPath="$PROJECT_DIR$/TextureManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TextureManager.h" afterPath="$PROJECT_DIR$/TextureManager.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tile.cpp" afterPath="$PROJECT_DIR$/Tile.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tile.h" afterPath="$PROJECT_DIR$/Tile.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/blur.frag" afterPath="$PROJECT_DIR$/resources/blur.frag" />
     </list>
     <ignored path="genland.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Map.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Map.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Map.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="784" column="59" selection-start-line="784" selection-start-column="59" selection-end-line="784" selection-end-column="59" />
+            <state relative-caret-position="308">
+              <caret line="716" column="27" selection-start-line="716" selection-start-column="21" selection-end-line="716" selection-end-column="27" />
               <folding>
                 <element signature="e#86#112#0" expanded="true" />
                 <element signature="e#6257#6387#0" expanded="false" />
@@ -83,11 +70,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="blur.frag" pinned="false" current-in-tab="true">
+      <file leaf-file-name="blur.frag" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/blur.frag">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="643">
-              <caret line="47" column="9" selection-start-line="47" selection-start-column="9" selection-end-line="47" selection-end-column="9" />
+            <state relative-caret-position="304">
+              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -180,8 +167,8 @@
         <option value="$PROJECT_DIR$/TextureManager.h" />
         <option value="$PROJECT_DIR$/Tile.h" />
         <option value="$PROJECT_DIR$/Tile.cpp" />
-        <option value="$PROJECT_DIR$/Map.cpp" />
         <option value="$PROJECT_DIR$/resources/blur.frag" />
+        <option value="$PROJECT_DIR$/Map.cpp" />
       </list>
     </option>
   </component>
@@ -493,12 +480,12 @@
       <workItem from="1475519995288" duration="14781000" />
       <workItem from="1475960849273" duration="6330000" />
       <workItem from="1476009642136" duration="1417000" />
-      <workItem from="1476030994215" duration="13921000" />
+      <workItem from="1476030994215" duration="14337000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="310276000" />
+    <option name="totallyTimeSpent" value="310692000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1215" height="1000" extended-state="6" />
@@ -867,10 +854,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/blur.frag">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Map.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="784" column="59" selection-start-line="784" selection-start-column="59" selection-end-line="784" selection-end-column="59" />
+        <state relative-caret-position="308">
+          <caret line="716" column="27" selection-start-line="716" selection-start-column="21" selection-end-line="716" selection-end-column="27" />
           <folding>
             <element signature="e#86#112#0" expanded="true" />
             <element signature="e#6257#6387#0" expanded="false" />
@@ -885,14 +880,6 @@
             <element signature="e#27531#29566#0" expanded="false" />
             <element signature="e#29568#30583#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/blur.frag">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="643">
-          <caret line="47" column="9" selection-start-line="47" selection-start-column="9" selection-end-line="47" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>

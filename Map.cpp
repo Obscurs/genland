@@ -715,6 +715,12 @@ void Map::DrawFrontItems(sf::RenderWindow& renderWindow)
         chunk_mat[index_mat]->DrawGrassTiles(renderWindow, *texMan,render_array);
     }
     sf::RenderStates states;
+    tile_shader.setParameter("color", sf::Color::White);
+    tile_shader.setParameter("center", sf::Vector2f(500.0,400.0));
+    tile_shader.setParameter("radius", 200.0);
+    tile_shader.setParameter("expand", 0.25f);
+    tile_shader.setParameter("windowHeight", static_cast<float>(renderWindow.getSize().y)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
+    states.shader = &tile_shader;
     states.texture = texMan->getTexture();
     renderWindow.draw(render_array, states);
 }
