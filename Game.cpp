@@ -33,7 +33,7 @@ void Game::Start(void)
     sf::Clock clock2;
     float lastTime = 0;
 
-    char c[10];
+    char c[11];
     sf::Text text;
     sf::Font font;
     text.setCharacterSize(24);
