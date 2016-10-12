@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cassert>
 #include "Map.h"
+#include "Game.h"
 
 
 //#include "Game.h"
@@ -21,7 +22,12 @@
 Map::Map(int pos)
 {
 
-    map_shader.loadFromFile("resources/test.vert", sf::Shader::Vertex);
+
+    texture1.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
+    texture2.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
+    texture3.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
+
+    //map_shader.loadFromFile("resources/test.vert", sf::Shader::Vertex);
     temp_mouse_pos.x =0;
     temp_mouse_pos.y =0;
     vertexArray = new sf::VertexArray(sf::Quads , (uint)8);
@@ -52,9 +58,10 @@ Map::Map(int pos)
     m_text.setPosition(30, 20);
 
     // Load the shader
-    if (!tile_shader.loadFromFile("resources/blur.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!tile_shader.loadFromFile("resources/light.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!map_shader.loadFromFile("resources/blur.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
 
-	texMan = new TextureManager("resources/tiles2.png", 16, 16);
+    texMan = new TextureManager("resources/tiles2.png", 16, 16);
 	texMan->insert_map_value("D",sf::Vector2i(0,0));
 	texMan->insert_map_value("d",sf::Vector2i(16,0));
 	texMan->insert_map_value("C",sf::Vector2i(0,16));
@@ -782,19 +789,80 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
 
         falling_tiles[i]->Draw(renderWindow, *texMan);
     }
-    sf::RenderStates st;
-    st.shader = &map_shader;
-    renderWindow.draw(*vertexArray, st);
-    sf::RenderStates states;
 
-    tile_shader.setParameter("color", sf::Color::White);
-    tile_shader.setParameter("center", sf::Vector2f(500.0,400.0));
+    sf::RenderStates states;
+    tile_shader.setParameter("color", sf::Color(255,227,196,255));
+    tile_shader.setParameter("color2", sf::Color::White);
+    tile_shader.setParameter("center", sf::Vector2f(100.0,400.0));
     tile_shader.setParameter("radius", 200.0);
-    tile_shader.setParameter("expand", 0.25f);
+    tile_shader.setParameter("expand", -5.0f);
     tile_shader.setParameter("windowHeight", static_cast<float>(renderWindow.getSize().y)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
-    states.shader = &tile_shader;
+    //states.shader = &tile_shader;
     states.texture = texMan->getTexture();
-    renderWindow.draw(render_array, states);
+
+    texture1.clear(sf::Color::Red);
+    texture1.setView(currentView);
+    texture1.draw(render_array, states);
+    texture1.display();
+    sf::Vector2f pos_sprite = firstPos;
+    pos_sprite.x+=1;
+    pos_sprite.y+=1;
+    sf::Sprite sprite0(texture1.getTexture());
+    sprite0.setPosition(pos_sprite);
+
+    states.shader = &tile_shader;
+    //states.texture = &texture1.getTexture();
+    texture2.clear(sf::Color::Blue);
+    texture2.setView(currentView);
+    texture2.draw(sprite0, states);
+    texture2.display();
+
+    sf::Sprite sprite1(texture2.getTexture());
+    sprite1.setPosition(pos_sprite);
+
+    tile_shader.setParameter("center", sf::Vector2f(500.0,400.0));
+    states.shader = &tile_shader;
+    //states.texture = &texture2.getTexture();
+    texture3.clear(sf::Color::Blue);
+    texture3.setView(currentView);
+    texture3.draw(sprite1, states);
+    texture3.display();
+
+
+    sf::Sprite sprite3(texture3.getTexture());
+    sprite3.setPosition(pos_sprite);
+
+    map_shader.setParameter("texture2", texture1.getTexture());
+    states.shader = &map_shader;
+    //states.texture = &texture1.getTexture();
+    //texture1.clear(sf::Color::Blue);
+
+    texture2.setView(currentView);
+    texture2.draw(sprite3, states);
+    texture2.display();
+
+
+
+    sf::Sprite sprite(texture2.getTexture());
+    sprite.setPosition(pos_sprite);
+    renderWindow.draw(sprite);
+    /*
+    sf::RenderStates st;
+    sf::VertexArray blackArray(sf::Quads , (uint)4);
+    blackArray.append(sf::Vertex(sf::Vector2f(first_x,first_y), sf::Color::Black));
+    blackArray.append(sf::Vertex(sf::Vector2f(last_x, first_y), sf::Color::Black));
+    blackArray.append(sf::Vertex(sf::Vector2f(last_x,last_y), sf::Color::Black));
+    blackArray.append(sf::Vertex(sf::Vector2f(first_x,last_y), sf::Color::Black));
+    */
+
+    //st.shader = &map_shader;
+
+
+    //renderWindow.draw(blackArray, st);
+
+
+
+    //renderWindow.draw(render_array, states);
     //vector<int> v
     /*
     std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();

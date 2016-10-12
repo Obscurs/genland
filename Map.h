@@ -51,4 +51,8 @@ private:
     sf::Font font;
     sf::Shader map_shader;
     sf::Vector2f temp_mouse_pos;
+
+    sf::RenderTexture texture1;
+    sf::RenderTexture texture2;
+    sf::RenderTexture texture3;
 };
