@@ -55,4 +55,5 @@ private:
     sf::RenderTexture texture1;
     sf::RenderTexture texture2;
     sf::RenderTexture texture3;
+    sf::RenderTexture black_texture;
 };

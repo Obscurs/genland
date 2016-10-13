@@ -27,6 +27,12 @@ Map::Map(int pos)
     texture2.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
     texture3.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
 
+    black_texture.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
+    sf::RectangleShape rectangle(sf::Vector2f(0, 0));
+    rectangle.setSize(sf::Vector2f(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT));
+    rectangle.setFillColor(sf::Color::Black);
+    black_texture.draw(rectangle);
+
     //map_shader.loadFromFile("resources/test.vert", sf::Shader::Vertex);
     temp_mouse_pos.x =0;
     temp_mouse_pos.y =0;
@@ -58,8 +64,8 @@ Map::Map(int pos)
     m_text.setPosition(30, 20);
 
     // Load the shader
-    if (!tile_shader.loadFromFile("resources/light.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    if (!map_shader.loadFromFile("resources/blur.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!tile_shader.loadFromFile("resources/light2.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!map_shader.loadFromFile("resources/mix.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
 
     texMan = new TextureManager("resources/tiles2.png", 16, 16);
 	texMan->insert_map_value("D",sf::Vector2i(0,0));
@@ -789,7 +795,7 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
 
         falling_tiles[i]->Draw(renderWindow, *texMan);
     }
-
+    /*
     sf::RenderStates states;
     tile_shader.setParameter("color", sf::Color(255,227,196,255));
     tile_shader.setParameter("color2", sf::Color::White);
@@ -846,6 +852,74 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
     sf::Sprite sprite(texture2.getTexture());
     sprite.setPosition(pos_sprite);
     renderWindow.draw(sprite);
+     */
+
+
+
+    sf::RenderStates states;
+    states.texture = texMan->getTexture();
+    texture1.clear(sf::Color::Red);
+    texture1.setView(currentView);
+    texture1.draw(render_array, states);
+    texture1.display();
+
+    tile_shader.setParameter("texture2", black_texture.getTexture());
+    tile_shader.setParameter("color", sf::Color::Green);
+    tile_shader.setParameter("color2", sf::Color::White);
+    tile_shader.setParameter("center", sf::Vector2f(100.0,400.0));
+    tile_shader.setParameter("radius", 1.0);
+    tile_shader.setParameter("expand", -500.0f);
+    tile_shader.setParameter("windowHeight", static_cast<float>(renderWindow.getSize().y)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
+    //states.shader = &tile_shader;
+
+
+    sf::Vector2f pos_sprite = firstPos;
+    pos_sprite.x+=1;
+    pos_sprite.y+=1;
+    sf::Sprite sprite0(texture1.getTexture());
+    sprite0.setPosition(pos_sprite);
+
+
+    states.shader = &tile_shader;
+    //states.texture = &texture1.getTexture();
+    texture2.clear(sf::Color::Blue);
+    texture2.setView(currentView);
+    texture2.draw(sprite0, states);
+    texture2.display();
+
+    sf::Sprite sprite1(texture2.getTexture());
+    sprite1.setPosition(pos_sprite);
+
+    tile_shader.setParameter("color", sf::Color::Red);
+    tile_shader.setParameter("texture2", texture2.getTexture());
+    tile_shader.setParameter("center", sf::Vector2f(500.0,400.0));
+    states.shader = &tile_shader;
+    //states.texture = &texture2.getTexture();
+    texture3.clear(sf::Color::Blue);
+    texture3.setView(currentView);
+    texture3.draw(sprite0, states);
+    texture3.display();
+
+    /*
+    sf::Sprite sprite3(texture3.getTexture());
+    sprite3.setPosition(pos_sprite);
+
+    map_shader.setParameter("texture2", texture1.getTexture());
+    states.shader = &map_shader;
+    //states.texture = &texture1.getTexture();
+    //texture1.clear(sf::Color::Blue);
+
+    texture2.setView(currentView);
+    texture2.draw(sprite3, states);
+    texture2.display();
+    */
+
+
+    sf::Sprite sprite(texture3.getTexture());
+    sprite.setPosition(pos_sprite);
+    renderWindow.draw(sprite);
+
+
     /*
     sf::RenderStates st;
     sf::VertexArray blackArray(sf::Quads , (uint)4);
