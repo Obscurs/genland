@@ -4,6 +4,7 @@
 
 #include "Background.h"
 #include <iostream>
+#include <cmath>
 Background::Background(std::string file, float dist, sf::Vector2f s){
     file_path=file;
     distance = dist;
@@ -33,9 +34,9 @@ void Background::Draw(sf::RenderWindow & renderWindow)
     float x_view1 = centerView.x-sizeView.x/2;
     float x_view2 = centerView.x+sizeView.x/2;
     float dist = x_view1-position.x;
-    float first_x = (floor(dist/size.x))*size.x+position.x;
+    float first_x = (std::floor(dist/size.x))*size.x+position.x;
     for(int i = first_x; i<x_view2; i= i+size.x){
-        s.setPosition(sf::Vector2f(i, position.y-600*pow(distance,-1)));
+        s.setPosition(sf::Vector2f(i, position.y-600*std::pow(distance,-1)));
         renderWindow.draw(s);
     }
     //std::cout << distance << " " << x_view1 << " "<< first_x << " " << size.x << " "<<  ceilf(distance/size.x)<< std::endl;
