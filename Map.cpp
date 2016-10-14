@@ -868,7 +868,7 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
     tile_shader.setParameter("color2", sf::Color::White);
     tile_shader.setParameter("center", sf::Vector2f(100.0,400.0));
     tile_shader.setParameter("radius", 1.0);
-    tile_shader.setParameter("expand", -500.0f);
+    tile_shader.setParameter("expand", -200.1f);
     tile_shader.setParameter("windowHeight", static_cast<float>(renderWindow.getSize().y)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
     //states.shader = &tile_shader;
 
