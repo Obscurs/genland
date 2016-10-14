@@ -12,6 +12,7 @@ public:
 	const static int TAB_SLOTS = 8;
 	const static int SLOT_SIZE = 50;
 	const static int GRID_THICKNESS = 2;
+	const static int GRID_SELECTED_THICKNESS = 4;
 	const static int N_CRAFT_ITEMS = 2;
 
 	
@@ -61,6 +62,7 @@ private:
 	float x_craft_list;
 	float y_craft_list;
 
+	int tab_item_selected;
 
 	Item* craft_list[N_CRAFT_ITEMS];
 	Item* inventory[Y_SLOTS][X_SLOTS] = { {nullptr} };
@@ -68,5 +70,4 @@ private:
 	Item* mouseItem = nullptr;
 
 	TextureManager* texMan;
-
 };

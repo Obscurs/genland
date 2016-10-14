@@ -26,6 +26,8 @@ Inputs::Inputs()
 	keys["A"] = sf::Vector2i(0,0);
 	keys["D"] = sf::Vector2i(0,0);
 	keys["Space"] = sf::Vector2i(0,0);
+	keys["wheel"] = sf::Vector2i(0,0);
+	wheelDelta = 0;
 }
 
 
@@ -56,7 +58,14 @@ void Inputs::Update(){
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::A), "A");
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::D), "D");
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Space), "Space");
+	keys["wheel"] = sf::Vector2i(wheelDelta, 0);
+	wheelDelta = 0;
 }
+
+void Inputs::UpdateWheel(int delta) {
+	wheelDelta = delta;
+}
+
 sf::Vector2i Inputs::getKey(std::string s){
 	return keys[s];
 }

@@ -54,6 +54,8 @@ Inventory::Inventory()
 	craft_list [0] = craft1;
 	craft_list [1] = craft2;
 
+	tab_item_selected = 0;
+
 }
 
 Inventory::~Inventory()
@@ -246,12 +248,13 @@ int Inventory::giveItemInventory(std::string id_item, int amount){
 int Inventory::stackItem(std::string id, int amount){
 	int residue = amount;
 
-	if(existItemTabNoFull(id)) residue = stackItemTab(id, amount);
+	if(existItemTabNoFull(id)) residue = stackItemTab(id, residue);
 	if(residue == 0) return 0;
-	else residue = stackItemInventory(id, amount);
+	if(existItemInventoryNoFull(id)) residue = stackItemInventory(id, residue);
 	if(residue == 0) return 0;
-	else residue = giveItemTab(id, amount);
-	return residue;
+	if(!isTabFull()) residue = giveItemTab(id, residue);
+	if(residue == 0) return 0;
+	return giveItemInventory(id, residue);
 	/*
 	if(!giveItemTab(id, amount)){
 		if(!giveItemInventory(id, amount)) return false;
@@ -609,8 +612,8 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 		for(int i = 0; i<TAB_SLOTS; i = ++i){
 			rectangle.setPosition(sf::Vector2f(i*SLOT_SIZE+x_tab, y_tab));
 			renderWindow.draw(rectangle);
-			
 		}
+
 		for(int i = 0; i<TAB_SLOTS; ++i){
 
 			Item* item = tab[i];
@@ -626,6 +629,12 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 
 			}
 		}
+		sf::RectangleShape selected(rectangle);
+		selected.setPosition(sf::Vector2f(tab_item_selected*SLOT_SIZE+x_tab, y_tab));
+		selected.setFillColor(sf::Color::Transparent);
+		selected.setOutlineThickness(GRID_SELECTED_THICKNESS);
+		selected.setOutlineColor(sf::Color(210, 160, 70));
+		renderWindow.draw(selected);
 	}
 	if(show_craft_list){
 		
@@ -713,4 +722,11 @@ void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
 			show_craft_list = true;
 		}
 	}
+
+	int tab_selection_delta = inputs.getKey("wheel").x;
+	tab_item_selected = (tab_item_selected - tab_selection_delta);
+	while (tab_item_selected < 0) {
+		tab_item_selected += TAB_SLOTS;
+	}
+	tab_item_selected %= TAB_SLOTS;
 }
