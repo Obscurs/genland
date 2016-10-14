@@ -149,9 +149,9 @@ void Game::GameLoop(double delta)
             Game::player.DrawInventory(window);
             while(window.pollEvent(currentEvent))
 	    {
-                if(currentEvent.type == sf::Event::MouseWheelScrolled)
+                if(currentEvent.type == sf::Event::MouseWheelMoved)
 		{
-                    Game::inputs.UpdateWheel(currentEvent.mouseWheelScroll.delta);
+                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
                 }
 		else if (currentEvent.type == sf::Event::Closed ||
                     ((currentEvent.type == sf::Event::KeyPressed) &&
