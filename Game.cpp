@@ -148,8 +148,12 @@ void Game::GameLoop(double delta)
             Game::map_curr.DrawFrontItems(window);
             Game::player.DrawInventory(window);
             while(window.pollEvent(currentEvent))
-            {
-                if (currentEvent.type == sf::Event::Closed ||
+	    {
+                if(currentEvent.type == sf::Event::MouseWheelScrolled)
+		{
+                    Game::inputs.UpdateWheel(currentEvent.mouseWheelScroll.delta);
+                }
+		else if (currentEvent.type == sf::Event::Closed ||
                     ((currentEvent.type == sf::Event::KeyPressed) &&
                      (currentEvent.key.code == sf::Keyboard::Escape)))
                 {
@@ -158,10 +162,7 @@ void Game::GameLoop(double delta)
                     //window.close();
                 }
             }
-
-
             break;
-
         }
     }
 }

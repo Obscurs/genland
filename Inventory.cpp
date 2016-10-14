@@ -722,4 +722,11 @@ void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
 			show_craft_list = true;
 		}
 	}
+
+	int tab_selection_delta = inputs.getKey("wheel").x;
+	tab_item_selected = (tab_item_selected - tab_selection_delta);
+	while (tab_item_selected < 0) {
+		tab_item_selected += TAB_SLOTS;
+	}
+	tab_item_selected %= TAB_SLOTS;
 }
