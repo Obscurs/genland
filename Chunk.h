@@ -19,7 +19,7 @@ public:
 
 	Tile* getTile(float x, float y, int z);
     Tile* getTileByIndex(int x, int y, int z);
-    void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray);
+    void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray, sf::VertexArray &skyArray);
     void DrawGrassTiles(sf::RenderWindow& renderWindow,TextureManager &t, sf::VertexArray &vertexArray);
 	sf::Vector2i getTileIndex(float x, float y);
 	void setTileNeighbors(int index_x, int index_y);

@@ -780,7 +780,8 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
     //std::cout << "first " << first_chunk.x << "last " << last_chunk.x << std::endl;
     //std::cout << "last " << last_chunk.x << " " << last_chunk.y << std::endl;
     //std::cout << first_chunk <<  " " << last_chunk << " " << first_x << std::endl;
-    sf::VertexArray render_array(sf::Quads , (uint)((ceil(sizeView.x/Chunk::TILE_SIZE)+1)*(ceil(sizeView.y/Chunk::TILE_SIZE)+1)*4));
+    sf::VertexArray render_array(sf::Quads , (uint)(4));
+    sf::VertexArray sky_array(sf::Quads , (uint)(4));
     for(int i = first_chunk ; i<=last_chunk ; ++i) {
             //if(i>0) std::cout << "heeyy" << std::endl;
         int index_mat = getIndexMatChunk(i);
@@ -788,7 +789,7 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
             //std::cout << firstPos.x << " " << firstPos.y << " " << lastPos.x << " " << lastPos.y << std::endl;
             //std::cout << "draw chunk " << index_mat.x << " " << index_mat.y << std::endl;
             //#pragma omp task shared(renderWindow)
-        chunk_mat[index_mat]->DrawChunk(renderWindow, firstPos, lastPos, *texMan, tile_shader,render_array);
+        chunk_mat[index_mat]->DrawChunk(renderWindow, firstPos, lastPos, *texMan, tile_shader,render_array, sky_array);
     }
 
     for(int i = 0; i<falling_tiles.size(); i++){
