@@ -22,7 +22,7 @@ void Game::Start(void)
 
     window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
     sf::View viewPlayer(sf::FloatRect(200, 200, 1024, 768));
-
+    texture1.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
     window.setView(viewPlayer);
     //Game::window sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML works!");
 
@@ -131,21 +131,21 @@ void Game::GameLoop(double delta)
         }
         case Game::Playing:
         {
-
+            texture1.clear(sf::Color::Red);
 
             //_gameObjectManager.UpdateAll();
             //_gameObjectManager.DrawAll(_mainWindow);
             Game::inputs.Update();
             Game::map_curr.UpdateAll(delta);
             Game::player.Update(delta, Game::map_curr, Game::inputs, window, backgrounds);
-            backgrounds[0].Draw(window);
-            backgrounds[1].Draw(window);
-            backgrounds[2].Draw(window);
-            backgrounds[3].Draw(window);
-            Game::map_curr.DrawMap(window);
+            backgrounds[0].Draw(texture1);
+            backgrounds[1].Draw(texture1);
+            backgrounds[2].Draw(texture1);
+            backgrounds[3].Draw(texture1);
+            Game::map_curr.DrawMap(window, texture1);
             srand(time(NULL));
             Game::player.Draw(window);
-            Game::map_curr.DrawFrontItems(window);
+            //Game::map_curr.DrawFrontItems(window);
             Game::player.DrawInventory(window);
             while(window.pollEvent(currentEvent))
 	    {
@@ -176,6 +176,7 @@ void Game::ExitGame()
 
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::window;
+sf::RenderTexture Game::texture1;
 //sf::Vector2i v1(0,0);
 //Chunk Game::chunk(v1);
 Map Game::map_curr(-1);

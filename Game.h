@@ -29,7 +29,7 @@ private:
 	static Player player;
 	static Inputs inputs;
 	static std::vector<Background> backgrounds;
-
+	static sf::RenderTexture texture1;
 
 
 };

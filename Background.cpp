@@ -18,7 +18,7 @@ Background::~Background()
 {
 }
 
-void Background::Draw(sf::RenderWindow & renderWindow)
+void Background::Draw(sf::RenderTexture &texture1)
 {
 
     sf::Sprite s;
@@ -28,7 +28,7 @@ void Background::Draw(sf::RenderWindow & renderWindow)
     sf::Vector2f new_scale(size.x/s.getTexture()->getSize().x, size.y/s.getTexture()->getSize().y);
     s.setScale(new_scale);
 
-    sf::View currentView = renderWindow.getView();
+    sf::View currentView = texture1.getView();
     sf::Vector2f centerView = currentView.getCenter();
     sf::Vector2f sizeView = currentView.getSize();
     float x_view1 = centerView.x-sizeView.x/2;
@@ -37,7 +37,7 @@ void Background::Draw(sf::RenderWindow & renderWindow)
     float first_x = (std::floor(dist/size.x))*size.x+position.x;
     for(int i = first_x; i<x_view2; i= i+size.x){
         s.setPosition(sf::Vector2f(i, position.y-600*std::pow(distance,-1)));
-        renderWindow.draw(s);
+        texture1.draw(s);
     }
     //std::cout << distance << " " << x_view1 << " "<< first_x << " " << size.x << " "<<  ceilf(distance/size.x)<< std::endl;
 

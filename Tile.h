@@ -12,7 +12,8 @@ public:
     void DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
     void DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
 	void Update(float elapsedTime);
-
+	void drawSkyArray(sf::VertexArray &skyArray);
+	void drawBorderSkyArray(sf::VertexArray &skyArray,TextureManager &t);
 	void SetPosition(float x, float y);
 	void SetSize(float x);
 	sf::Vector2f GetPosition() const;

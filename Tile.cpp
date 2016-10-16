@@ -263,7 +263,25 @@ void Tile::DrawIns(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shade
         if(!is_mini[3]) appendSpriteToArray(t, vertexArray, 0, id, 0);
     }
 }
+void Tile::drawSkyArray(sf::VertexArray &skyArray){
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y), sf::Color(0,0,255,255)));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Chunk::TILE_SIZE,position.y), sf::Color(0,0,255,255)));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Chunk::TILE_SIZE,position.y+Chunk::TILE_SIZE), sf::Color(0,0,255,255)));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Chunk::TILE_SIZE), sf::Color(0,0,255,255)));
 
+}
+void Tile::drawBorderSkyArray(sf::VertexArray &skyArray,TextureManager &t){
+    sf::Vector2f pos_tex1, pos_tex2, pos_tex3, pos_tex4;
+    pos_tex1 = sf::Vector2f(96, 0);
+    pos_tex2 = sf::Vector2f(128, 0);
+    pos_tex3 = sf::Vector2f(128, 32);
+    pos_tex4 = sf::Vector2f(96, 32);
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x-Chunk::TILE_SIZE*3,position.y-Chunk::TILE_SIZE*3), pos_tex1));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Chunk::TILE_SIZE*4,position.y-Chunk::TILE_SIZE*3), pos_tex2));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Chunk::TILE_SIZE*4,position.y+Chunk::TILE_SIZE*4), pos_tex3));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x-Chunk::TILE_SIZE*3,position.y+Chunk::TILE_SIZE*4), pos_tex4));
+
+}
 void Tile::DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray){
     sf::Vector2f pos_tex1, pos_tex2, pos_tex3, pos_tex4;
     sf::Vector2i position_sprite = t.getPositionSprite("grass0");

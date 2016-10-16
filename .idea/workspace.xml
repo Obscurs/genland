@@ -15,10 +15,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f465ec9c-b195-4793-b1a1-68ed08476bd4" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/tiles2.png" afterPath="$PROJECT_DIR$/resources/tiles2.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/genland.iml" afterPath="$PROJECT_DIR$/.idea/genland.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Background.cpp" afterPath="$PROJECT_DIR$/Background.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Background.h" afterPath="$PROJECT_DIR$/Background.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Chunk.cpp" afterPath="$PROJECT_DIR$/Chunk.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Chunk.h" afterPath="$PROJECT_DIR$/Chunk.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game.cpp" afterPath="$PROJECT_DIR$/Game.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Game.h" afterPath="$PROJECT_DIR$/Game.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Map.cpp" afterPath="$PROJECT_DIR$/Map.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Map.h" afterPath="$PROJECT_DIR$/Map.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tile.cpp" afterPath="$PROJECT_DIR$/Tile.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tile.h" afterPath="$PROJECT_DIR$/Tile.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/light2.frag" afterPath="$PROJECT_DIR$/resources/light2.frag" />
     </list>
     <ignored path="genland.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,8 +50,8 @@
       <file leaf-file-name="Map.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Map.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="707">
-              <caret line="58" column="2" selection-start-line="58" selection-start-column="2" selection-end-line="58" selection-end-column="2" />
+            <state relative-caret-position="415">
+              <caret line="52" column="29" selection-start-line="52" selection-start-column="15" selection-end-line="52" selection-end-column="29" />
               <folding>
                 <element signature="e#13#40#0" expanded="true" />
               </folding>
@@ -50,34 +59,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Map.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Map.cpp">
+      <file leaf-file-name="sun_mix.frag" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/sun_mix.frag">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="791" column="117" selection-start-line="791" selection-start-column="117" selection-end-line="791" selection-end-column="117" />
-              <folding>
-                <element signature="e#86#112#0" expanded="true" />
-                <element signature="e#6873#7003#0" expanded="false" />
-                <element signature="e#7005#7606#0" expanded="false" />
-                <element signature="e#7608#24666#0" expanded="false" />
-                <element signature="e#24668#26977#0" expanded="false" />
-                <element signature="e#26979#27359#0" expanded="false" />
-                <element signature="e#27360#27515#0" expanded="false" />
-                <element signature="e#27518#27751#0" expanded="false" />
-                <element signature="e#27753#27914#0" expanded="false" />
-                <element signature="e#27915#28146#0" expanded="false" />
-                <element signature="e#28147#30182#0" expanded="false" />
-                <element signature="e#30184#31199#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="198">
+              <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Chunk.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Chunk.cpp">
+      <file leaf-file-name="light2.frag" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/light2.frag">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="515" column="26" selection-start-line="515" selection-start-column="26" selection-end-line="515" selection-end-column="26" />
+            <state relative-caret-position="144">
+              <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="64" />
               <folding />
             </state>
           </provider>
@@ -87,37 +83,27 @@
         <entry file="file://$PROJECT_DIR$/Chunk.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="342">
-              <caret line="21" column="188" selection-start-line="21" selection-start-column="188" selection-end-line="21" selection-end-column="188" />
+              <caret line="22" column="104" selection-start-line="22" selection-start-column="104" selection-end-line="22" selection-end-column="104" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="light2.frag" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/light2.frag">
+      <file leaf-file-name="Game.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Game.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="455">
-              <caret line="36" column="61" selection-start-line="36" selection-start-column="61" selection-end-line="36" selection-end-column="61" />
+            <state relative-caret-position="493">
+              <caret line="147" column="14" selection-start-line="147" selection-start-column="14" selection-end-line="147" selection-end-column="14" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Makefile" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Makefile">
+      <file leaf-file-name="Chunk.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Chunk.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
-              <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="176" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="5" column="173" selection-start-line="5" selection-start-column="148" selection-end-line="5" selection-end-column="173" />
+            <state relative-caret-position="399">
+              <caret line="511" column="55" selection-start-line="511" selection-start-column="28" selection-end-line="511" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -126,9 +112,32 @@
       <file leaf-file-name="Tile.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Tile.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="347">
-              <caret line="284" column="8" selection-start-line="284" selection-start-column="8" selection-end-line="287" selection-end-column="128" />
+            <state relative-caret-position="509">
+              <caret line="281" column="73" selection-start-line="281" selection-start-column="73" selection-end-line="281" selection-end-column="73" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Map.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Map.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="469">
+              <caret line="863" column="58" selection-start-line="863" selection-start-column="52" selection-end-line="863" selection-end-column="58" />
+              <folding>
+                <element signature="e#86#112#0" expanded="true" />
+                <element signature="e#6941#7071#0" expanded="false" />
+                <element signature="e#7073#7674#0" expanded="false" />
+                <element signature="e#7676#24734#0" expanded="false" />
+                <element signature="e#24736#27045#0" expanded="false" />
+                <element signature="e#27047#27427#0" expanded="false" />
+                <element signature="e#27428#27583#0" expanded="false" />
+                <element signature="e#27586#27819#0" expanded="false" />
+                <element signature="e#27821#27982#0" expanded="false" />
+                <element signature="e#27983#28214#0" expanded="false" />
+                <element signature="e#28215#30250#0" expanded="false" />
+                <element signature="e#30252#31267#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -144,10 +153,8 @@
         <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/Simplex2d.h" />
         <option value="$PROJECT_DIR$/Simplex2d.cpp" />
-        <option value="$PROJECT_DIR$/Background.h" />
         <option value="$PROJECT_DIR$/Background2.cpp" />
         <option value="$PROJECT_DIR$/Game2.cpp" />
-        <option value="$PROJECT_DIR$/Background.cpp" />
         <option value="$PROJECT_DIR$/Player.h" />
         <option value="$PROJECT_DIR$/Item.h" />
         <option value="$PROJECT_DIR$/Inventory.cpp" />
@@ -160,21 +167,25 @@
         <option value="$PROJECT_DIR$/Player.cpp" />
         <option value="$PROJECT_DIR$/resources/test.frag" />
         <option value="$PROJECT_DIR$/resources/test.vert" />
-        <option value="$PROJECT_DIR$/Game.h" />
         <option value="$PROJECT_DIR$/TextureManager.cpp" />
         <option value="$PROJECT_DIR$/TextureManager.h" />
-        <option value="$PROJECT_DIR$/Tile.h" />
-        <option value="$PROJECT_DIR$/Tile.cpp" />
         <option value="$PROJECT_DIR$/resources/blur.frag" />
         <option value="$PROJECT_DIR$/resources/light.frag" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/resources/mix.frag" />
-        <option value="$PROJECT_DIR$/Map.h" />
-        <option value="$PROJECT_DIR$/Game.cpp" />
-        <option value="$PROJECT_DIR$/resources/light2.frag" />
-        <option value="$PROJECT_DIR$/Map.cpp" />
         <option value="$PROJECT_DIR$/Chunk.h" />
+        <option value="$PROJECT_DIR$/Game.h" />
+        <option value="$PROJECT_DIR$/Background.h" />
+        <option value="$PROJECT_DIR$/Background.cpp" />
+        <option value="$PROJECT_DIR$/Tile.h" />
+        <option value="$PROJECT_DIR$/resources/light2.frag" />
+        <option value="$PROJECT_DIR$/Map.h" />
+        <option value="$PROJECT_DIR$/resources/sun.frag" />
         <option value="$PROJECT_DIR$/Chunk.cpp" />
+        <option value="$PROJECT_DIR$/Game.cpp" />
+        <option value="$PROJECT_DIR$/Tile.cpp" />
+        <option value="$PROJECT_DIR$/resources/sun_mix.frag" />
+        <option value="$PROJECT_DIR$/Map.cpp" />
       </list>
     </option>
   </component>
@@ -188,8 +199,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="65" />
     <option name="y" value="24" />
-    <option name="width" value="1855" />
-    <option name="height" value="1056" />
+    <option name="width" value="1215" />
+    <option name="height" value="1000" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -495,23 +506,24 @@
       <workItem from="1476458906820" duration="597000" />
       <workItem from="1476459515142" duration="3102000" />
       <workItem from="1476573047263" duration="2368000" />
+      <workItem from="1476618236619" duration="14608000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="346921000" />
+    <option name="totallyTimeSpent" value="361529000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
+    <frame x="65" y="24" width="1215" height="1000" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21886793" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.218107" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.48318043" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.48216215" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34165367" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30377167" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2854054" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -543,20 +555,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
@@ -580,13 +578,6 @@
     </entry>
     <entry file="file:///usr/include/c++/5/iostream" />
     <entry file="file://$USER_HOME$/torratest/main.cpp" />
-    <entry file="file://$PROJECT_DIR$/Background.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="66" selection-start-line="14" selection-start-column="66" selection-end-line="14" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cmake_modules/FindSFML.cmake">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6606">
@@ -610,13 +601,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Background2.cpp" />
     <entry file="file://$PROJECT_DIR$/Game2.cpp" />
-    <entry file="file://$PROJECT_DIR$/Background.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="37" column="50" selection-start-line="37" selection-start-column="50" selection-end-line="37" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/include/c++/4.8/bits/basic_string.h" />
     <entry file="file://$PROJECT_DIR$/Inventory.h">
       <provider selected="true" editor-type-id="text-editor">
@@ -710,21 +694,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/test.frag" />
-    <entry file="file://$PROJECT_DIR$/Game.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="12" selection-start-line="0" selection-start-column="12" selection-end-line="0" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tile.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TextureManager.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="311">
@@ -739,19 +708,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/mix.frag" />
+    <entry file="file://$PROJECT_DIR$/resources/light.frag">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="26" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/blur.frag">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Makefile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
           <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="176" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/mix.frag" />
-    <entry file="file://$PROJECT_DIR$/Game.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="155" column="58" selection-start-line="155" selection-start-column="58" selection-end-line="155" selection-end-column="58" />
           <folding />
         </state>
       </provider>
@@ -764,57 +739,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Game.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="31" column="28" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Background.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Background.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="17" column="41" selection-start-line="17" selection-start-column="41" selection-end-line="17" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tile.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="15" column="71" selection-start-line="15" selection-start-column="71" selection-end-line="15" selection-end-column="71" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Map.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="707">
-          <caret line="58" column="2" selection-start-line="58" selection-start-column="2" selection-end-line="58" selection-end-column="2" />
+        <state relative-caret-position="415">
+          <caret line="52" column="29" selection-start-line="52" selection-start-column="15" selection-end-line="52" selection-end-column="29" />
           <folding>
             <element signature="e#13#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/light.frag">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="26" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/blur.frag">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/light2.frag">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
-          <caret line="36" column="61" selection-start-line="36" selection-start-column="61" selection-end-line="36" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Map.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="791" column="117" selection-start-line="791" selection-start-column="117" selection-end-line="791" selection-end-column="117" />
-          <folding>
-            <element signature="e#86#112#0" expanded="true" />
-            <element signature="e#6873#7003#0" expanded="false" />
-            <element signature="e#7005#7606#0" expanded="false" />
-            <element signature="e#7608#24666#0" expanded="false" />
-            <element signature="e#24668#26977#0" expanded="false" />
-            <element signature="e#26979#27359#0" expanded="false" />
-            <element signature="e#27360#27515#0" expanded="false" />
-            <element signature="e#27518#27751#0" expanded="false" />
-            <element signature="e#27753#27914#0" expanded="false" />
-            <element signature="e#27915#28146#0" expanded="false" />
-            <element signature="e#28147#30182#0" expanded="false" />
-            <element signature="e#30184#31199#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -822,24 +784,77 @@
     <entry file="file://$PROJECT_DIR$/Chunk.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
-          <caret line="21" column="188" selection-start-line="21" selection-start-column="188" selection-end-line="21" selection-end-column="188" />
+          <caret line="22" column="104" selection-start-line="22" selection-start-column="104" selection-end-line="22" selection-end-column="104" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tile.cpp">
+    <entry file="file://$PROJECT_DIR$/resources/sun.frag">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="284" column="8" selection-start-line="284" selection-start-column="8" selection-end-line="287" selection-end-column="128" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Chunk.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="515" column="26" selection-start-line="515" selection-start-column="26" selection-end-line="515" selection-end-column="26" />
+        <state relative-caret-position="399">
+          <caret line="511" column="55" selection-start-line="511" selection-start-column="28" selection-end-line="511" selection-end-column="55" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Game.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="147" column="14" selection-start-line="147" selection-start-column="14" selection-end-line="147" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tile.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="509">
+          <caret line="281" column="73" selection-start-line="281" selection-start-column="73" selection-end-line="281" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/sun_mix.frag">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/light2.frag">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Map.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="469">
+          <caret line="863" column="58" selection-start-line="863" selection-start-column="52" selection-end-line="863" selection-end-column="58" />
+          <folding>
+            <element signature="e#86#112#0" expanded="true" />
+            <element signature="e#6941#7071#0" expanded="false" />
+            <element signature="e#7073#7674#0" expanded="false" />
+            <element signature="e#7676#24734#0" expanded="false" />
+            <element signature="e#24736#27045#0" expanded="false" />
+            <element signature="e#27047#27427#0" expanded="false" />
+            <element signature="e#27428#27583#0" expanded="false" />
+            <element signature="e#27586#27819#0" expanded="false" />
+            <element signature="e#27821#27982#0" expanded="false" />
+            <element signature="e#27983#28214#0" expanded="false" />
+            <element signature="e#28215#30250#0" expanded="false" />
+            <element signature="e#30252#31267#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

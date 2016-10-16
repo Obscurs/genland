@@ -509,12 +509,13 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
                             t0->neighbors[3]!=nullptr && t0->neighbors[3]->id=="0" &&
                             t0->neighbors[5]!=nullptr && t0->neighbors[5]->id=="0" &&
                             t0->neighbors[7]!=nullptr && t0->neighbors[7]->id=="0"){
-                            //t0->drawLightMiddle
+                            t0->drawSkyArray(skyArray);
                         //vertexArray.append(sf::Vertex(sf::Vector2f(t0->position.x+t0->GetWidth(),position.y-GetHeight()/2), pos_tex1));
                         //vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Chunk::TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
                         //vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Chunk::TILE_SIZE,position.y-GetHeight()/2+Chunk::TILE_SIZE), pos_tex3));
                         //vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y+Chunk::TILE_SIZE-GetHeight()/2), pos_tex4));
                     }
+                    else t0->drawBorderSkyArray(skyArray,t);
                 }
                 if(t0->id != "0")t0->Draw(renderWindow, t, tile_shader,vertexArray);
                 else if(t0->reach_sun)t0->DrawOuts(renderWindow, t,vertexArray);

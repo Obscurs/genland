@@ -23,7 +23,7 @@ Map::Map(int pos)
 {
 
 
-    texture1.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
+
     texture2.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
     texture3.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
 
@@ -65,8 +65,8 @@ Map::Map(int pos)
 
     // Load the shader
     if (!tile_shader.loadFromFile("resources/light2.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    if (!map_shader.loadFromFile("resources/mix.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-
+    if (!sun_shader.loadFromFile("resources/sun.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!sun_mix_shader.loadFromFile("resources/sun_mix.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
     texMan = new TextureManager("resources/tiles2.png", 16, 16);
 	texMan->insert_map_value("D",sf::Vector2i(0,0));
 	texMan->insert_map_value("d",sf::Vector2i(16,0));
@@ -737,30 +737,13 @@ void Map::DrawFrontItems(sf::RenderWindow& renderWindow)
     states.texture = texMan->getTexture();
     renderWindow.draw(render_array, states);
 }
-void Map::DrawMap(sf::RenderWindow& renderWindow)
+void Map::DrawMap(sf::RenderWindow& renderWindow, sf::RenderTexture &texture1)
 {
 
 
 
-    sf::Vector2f v1(10,10);
-    vertexArray->append(sf::Vertex(sf::Vector2f(100,100), sf::Color::Red));
-    vertexArray->append(sf::Vertex(sf::Vector2f(150,100), sf::Color::Cyan));
-    vertexArray->append(sf::Vertex(sf::Vector2f(150,150), sf::Color::Green));
-    vertexArray->append(sf::Vertex(sf::Vector2f(100,150), sf::Color::Yellow));
-
-    vertexArray->append(sf::Vertex(sf::Vector2f(0,400), sf::Color::Red));
-    vertexArray->append(sf::Vertex(sf::Vector2f(400,400), sf::Color::Cyan));
-    vertexArray->append(sf::Vertex(sf::Vector2f(400,500), sf::Color::Green));
-    vertexArray->append(sf::Vertex(sf::Vector2f(0,500), sf::Color::Yellow));
 
 
-
-
-    //temp_mouse_pos = renderWindow.mapPixelToCoords(sf::Mouse::getPosition(renderWindow));
-
-    //sf::RenderStates states;
-    //states.shader = &m_shader;
-    renderWindow.draw(m_text);
 
     sf::View currentView = renderWindow.getView();
     sf::Vector2f centerView = currentView.getCenter();
@@ -859,37 +842,59 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
 
     sf::RenderStates states;
     states.texture = texMan->getTexture();
-    texture1.clear(sf::Color::Red);
+
     texture1.setView(currentView);
     texture1.draw(render_array, states);
+
+
+    sf::Vector2f pos_sprite = firstPos;
+    pos_sprite.x+=1;
+    pos_sprite.y+=1;
+    sf::Sprite map_without_lights(texture1.getTexture());
+    map_without_lights.setPosition(pos_sprite);
+
+
     texture1.display();
 
-    tile_shader.setParameter("texture2", black_texture.getTexture());
+    states.shader = &sun_shader;
+    texture2.clear(sf::Color::Black);
+    texture2.draw(sky_array, states);
+    texture2.display();
+
+    sun_mix_shader.setParameter("color", sf::Color::Yellow);
+    sun_mix_shader.setParameter("factor", 0.1);
+    sun_mix_shader.setParameter("texture2", texture2.getTexture());
+    states.shader = &sun_mix_shader;
+    //states.texture = &texture1.getTexture();
+    texture3.clear(sf::Color::Yellow);
+    texture3.setView(currentView);
+    texture3.draw(map_without_lights, states);
+    texture3.display();
+
+
+
+
+    tile_shader.setParameter("texture2", texture3.getTexture());
     tile_shader.setParameter("color", sf::Color::Green);
-    tile_shader.setParameter("color2", sf::Color::White);
-    tile_shader.setParameter("center", sf::Vector2f(100.0,400.0));
+    tile_shader.setParameter("center", sf::Vector2f(350.0,400.0));
     tile_shader.setParameter("radius", 100.0);
     tile_shader.setParameter("expand", -1.5f);
     tile_shader.setParameter("windowHeight", static_cast<float>(renderWindow.getSize().y)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
     //states.shader = &tile_shader;
 
 
-    sf::Vector2f pos_sprite = firstPos;
-    pos_sprite.x+=1;
-    pos_sprite.y+=1;
-    sf::Sprite sprite0(texture1.getTexture());
-    sprite0.setPosition(pos_sprite);
 
 
     states.shader = &tile_shader;
     //states.texture = &texture1.getTexture();
     texture2.clear(sf::Color::Blue);
     texture2.setView(currentView);
-    texture2.draw(sprite0, states);
+    texture2.draw(map_without_lights, states);
     texture2.display();
 
-    sf::Sprite sprite1(texture2.getTexture());
-    sprite1.setPosition(pos_sprite);
+
+    //sf::Sprite sprite1(texture2.getTexture());
+    //sprite1.setPosition(pos_sprite);
 
     tile_shader.setParameter("color", sf::Color::Red);
     tile_shader.setParameter("texture2", texture2.getTexture());
@@ -898,7 +903,7 @@ void Map::DrawMap(sf::RenderWindow& renderWindow)
     //states.texture = &texture2.getTexture();
     texture3.clear(sf::Color::Blue);
     texture3.setView(currentView);
-    texture3.draw(sprite0, states);
+    texture3.draw(map_without_lights, states);
     texture3.display();
 
     /*

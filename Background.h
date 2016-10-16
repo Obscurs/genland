@@ -15,7 +15,7 @@ public:
     Background(std::string file, float distance, sf::Vector2f size);
     ~Background();
     sf::Texture _image;
-    void Draw(sf::RenderWindow & renderWindow);
+    void Draw(sf::RenderTexture &texture1);
     void updatePosition(sf::Vector2f playerPos);
 private:
     std::string file_path;

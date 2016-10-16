@@ -26,7 +26,7 @@ public:
 	int getChunkIndex(float x);
     int getIndexMatChunk(int x);
 
-    void DrawMap(sf::RenderWindow& renderWindow);
+    void DrawMap(sf::RenderWindow& renderWindow,sf::RenderTexture &texture1);
     void DrawFrontItems(sf::RenderWindow& renderWindow);
     void removeTile2(Tile* r_tile);
 	void UpdateAll(float delta);
@@ -49,10 +49,11 @@ private:
     sf::Text m_text;
     sf::Shader tile_shader;
     sf::Font font;
-    sf::Shader map_shader;
+    sf::Shader sun_shader;
+    sf::Shader sun_mix_shader;
     sf::Vector2f temp_mouse_pos;
 
-    sf::RenderTexture texture1;
+
     sf::RenderTexture texture2;
     sf::RenderTexture texture3;
     sf::RenderTexture black_texture;
