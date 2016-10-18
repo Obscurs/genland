@@ -249,7 +249,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 
             } else{
                 t->Reload("0");
-                t->reach_sun=true;
+                //t->reach_sun=true;
                 t->reach_floor = false;
             }
 
@@ -313,7 +313,7 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
             t2->Reload(std::string(1, c2));
             t->reach_floor = true;
             t2->reach_floor = true;
-            if(t->id == "0") t->reach_sun=true;
+            //if(t->id == "0") t->reach_sun=true;
 
 
             t->SetPosition(chunk_pos.x*TILE_SIZE*N_TILES_X+j*TILE_SIZE, chunk_pos.y*TILE_SIZE*N_TILES_Y+i*TILE_SIZE);
@@ -518,16 +518,16 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
                     else t0->drawBorderSkyArray(skyArray,t);
                 }
                 if(t0->id != "0")t0->Draw(renderWindow, t, tile_shader,vertexArray);
-                else if(t0->reach_sun)t0->DrawOuts(renderWindow, t,vertexArray);
+                else t0->DrawOuts(renderWindow, t,vertexArray);
 
-                if(t1->reach_sun)t1->DrawOuts(renderWindow, t,vertexArray);
+                t1->DrawOuts(renderWindow, t,vertexArray);
 
             }
             //DEBUG
 
             Tile* t0 = tile_mat[i][j][0];
-            int test = t0->reach_sun;
-            //int test = -1;
+            //int test = t0->reach_sun;
+            int test = -1;
             //if(t0->reach_floor & t1->reach_floor) test=11;
             //else if(!t0->reach_floor & t1->reach_floor) test = 1;
             //else if(t0->reach_floor & !t1->reach_floor) test = 10;

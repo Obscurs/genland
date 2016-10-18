@@ -5,7 +5,7 @@
 
 #include "Player.h"
 #include "Map.h"
-#include "Background.h"
+
 class Game
 {
 public:
@@ -28,8 +28,8 @@ private:
 	static Map map_curr;
 	static Player player;
 	static Inputs inputs;
-	static std::vector<Background> backgrounds;
-	static sf::RenderTexture texture1;
+
+
 
 
 };

@@ -49,4 +49,5 @@ void Background::Draw(sf::RenderTexture &texture1)
 void Background::updatePosition(sf::Vector2f playerPos){
     position.x = playerPos.x/distance;
     position.y = playerPos.y/distance;
+
 }

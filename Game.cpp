@@ -22,7 +22,6 @@ void Game::Start(void)
 
     window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
     sf::View viewPlayer(sf::FloatRect(200, 200, 1024, 768));
-    texture1.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
     window.setView(viewPlayer);
     //Game::window sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML works!");
 
@@ -131,21 +130,17 @@ void Game::GameLoop(double delta)
         }
         case Game::Playing:
         {
-            texture1.clear(sf::Color::Red);
+
 
             //_gameObjectManager.UpdateAll();
             //_gameObjectManager.DrawAll(_mainWindow);
             Game::inputs.Update();
-            Game::map_curr.UpdateAll(delta);
-            Game::player.Update(delta, Game::map_curr, Game::inputs, window, backgrounds);
-            backgrounds[0].Draw(texture1);
-            backgrounds[1].Draw(texture1);
-            backgrounds[2].Draw(texture1);
-            backgrounds[3].Draw(texture1);
-            Game::map_curr.DrawMap(window, texture1);
+
+            Game::player.Update(delta, Game::map_curr, Game::inputs, window);
+            Game::map_curr.UpdateAll(delta, player.GetPosition());
+            Game::map_curr.DrawMap(window);
             srand(time(NULL));
             Game::player.Draw(window);
-            //Game::map_curr.DrawFrontItems(window);
             Game::player.DrawInventory(window);
             while(window.pollEvent(currentEvent))
 	    {
@@ -176,14 +171,9 @@ void Game::ExitGame()
 
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::window;
-sf::RenderTexture Game::texture1;
 //sf::Vector2i v1(0,0);
 //Chunk Game::chunk(v1);
 Map Game::map_curr(-1);
 Player Game::player;
 Inputs Game::inputs;
-Background background1("resources/custom_back0.png",1.1, sf::Vector2f(755,2048));
-Background background2("resources/custom_back1.png",1.2, sf::Vector2f(755,2048));
-Background background3("resources/custom_back2.png",1.3, sf::Vector2f(755,2048));
-Background background4("resources/custom_back3.png",1.4, sf::Vector2f(755,2048));
-std::vector<Background> Game::backgrounds ={background1,background2,background3,background4};
+

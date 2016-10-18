@@ -78,7 +78,7 @@ void Tile::Reload(std::string new_id)
 	
 }
 bool Tile::drawable(){
-    if(!reach_sun) return false;
+    //if(!reach_sun) return false;
 	bool res =false;
     if(layer==1 && id=="0") return true;
 	for(int i=0; i<8; i++){
@@ -320,8 +320,9 @@ void Tile::DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t, sf::Ver
 void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray)
 {
 
-    if(reach_sun) {
+
         if (layer == 1) {
+            if(drawable()) {
                 if (neighbors[8] != nullptr && neighbors[8]->id != "0") neighbors[8]->Draw(renderWindow, t, tile_shader,vertexArray);
                 DrawIns(renderWindow, t, tile_shader,vertexArray);
                 DrawFadeOut(renderWindow, t,vertexArray);
@@ -329,19 +330,20 @@ void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &
 
 
 
-        }
-        else {
-            DrawIns(renderWindow, t, tile_shader,vertexArray);
-            DrawAmbientOclusion(renderWindow, t,vertexArray);
-        }
+            }
+            else {
+                sf::Vector2f pos= GetPosition();
+                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y), sf::Color::Black));
+                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+Chunk::TILE_SIZE,pos.y), sf::Color::Black));
+                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+Chunk::TILE_SIZE,pos.y+Chunk::TILE_SIZE), sf::Color::Black));
+                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y+Chunk::TILE_SIZE), sf::Color::Black));
+
+            }
     }
-    else{
-        sf::Vector2f pos= GetPosition();
-        vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y), sf::Color::Black));
-        vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+Chunk::TILE_SIZE,pos.y), sf::Color::Black));
-        vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+Chunk::TILE_SIZE,pos.y+Chunk::TILE_SIZE), sf::Color::Black));
-        vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y+Chunk::TILE_SIZE), sf::Color::Black));
-    }
+    else {
+            DrawIns(renderWindow, t, tile_shader, vertexArray);
+            DrawAmbientOclusion(renderWindow, t, vertexArray);
+        }
 }
 
 
