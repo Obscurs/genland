@@ -399,10 +399,14 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
     map.checkLoadedChunks(GetPosition().x, GetPosition().y);
 
 
-
-
+	sf::FloatRect viewRect(
+		window.getView().getCenter().x - window.getView().getSize().x/2,
+		window.getView().getCenter().y - window.getView().getSize().y/2,
+		window.getView().getSize().x,
+		window.getView().getSize().y
+	);
     //COMPROBA INPUTS
-	if (mouseLeft.x == 1 && !inventory->show_inventory)
+	if (mouseLeft.x == 1 && !inventory->show_inventory && viewRect.contains(position.x, position.y))
 	{
 		//std::cout << position.x << " " << position.y << std::endl;
 	    Tile* t = map.getTile(position.x, position.y, 1);
@@ -425,7 +429,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    }
 
 	}
-	else if (mouseRight.x == 1 && !inventory->show_inventory)
+	else if (mouseRight.x == 1 && !inventory->show_inventory && viewRect.contains(position.x, position.y))
 	{
 
 	    Tile* t = map.getTile(position.x, position.y, 1);
