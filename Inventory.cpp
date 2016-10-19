@@ -729,4 +729,8 @@ void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
 		tab_item_selected += TAB_SLOTS;
 	}
 	tab_item_selected %= TAB_SLOTS;
+
+	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
+		if (inputs.getKey("number"+std::to_string(i)).x == 1) tab_item_selected = i-1;
+	}
 }
