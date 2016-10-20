@@ -41,10 +41,11 @@ private:
 	//INVENTORY
 	Inventory* inventory;
 
+	//REMOVE AND PUT TILES;
+	Tile* tile_being_removed;
 
 	//SHOW
 	sf::Sprite _sprite;
 	sf::Texture _image;
 	std::string _filename;
 };
-

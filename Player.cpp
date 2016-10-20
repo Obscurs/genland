@@ -408,42 +408,55 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    Tile* t = map.getTile(position.x, position.y, 1);
 		//std::cout << t->id_temp << " " <<true_position.x << " " << true_position.y << std::endl;
 	    int position_tile = 1;
-	    if(t->id =="0"){
+	    if(t->id == "0"){
 	    	position_tile = 0;
 	    	t = map.getTile(position.x, position.y, 0);
 	    }
+			if (t != tile_being_removed && tile_being_removed != nullptr) {
+				tile_being_removed->being_removed = false;
+			}
 	    sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
 	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
 	    float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
-   
-	    if(position_tile == 1 && t->id != "0") {
 
-	    	if(giveItem(t->id, 1)){
-
-	    		map.removeTile2(t);
-	    	}
+	    if(t->id != "0") {
+				tile_being_removed = t;
+				if (tile_being_removed->being_removed) {
+					tile_being_removed->ms_to_be_removed -= delta*1000;
+					if (tile_being_removed->ms_to_be_removed < 0) {
+						if(giveItem(t->id, 1)){
+							map.removeTile2(t);
+						}
+					}
+				}
+				else {
+					tile_being_removed->being_removed = true;
+					tile_being_removed->ms_to_be_removed = tile_being_removed->ms_to_remove;
+				}
 	    }
 
 	}
 	else if (mouseRight.x == 1 && !inventory->show_inventory)
 	{
 
-	    Tile* t = map.getTile(position.x, position.y, 1);
-	    int position_tile = 1;
-	    if(t->id =="0"){
-	    	position_tile = 0;
-	    	t = map.getTile(position.x, position.y, 0);
+	    Tile* t = map.getTile(position.x, position.y, 0);
+	    int position_tile = 0;
+	    if(t->id != "0") {
+	    	position_tile = 1;
+	    	t = map.getTile(position.x, position.y, 1);
 	    }
 	    sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
 	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
 	    float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
-   
-	    if(position_tile == 0 && t->id != "0") {
 
-	    	if(giveItem(t->id, 1)){
-	    		//t->Remove();
-	    		map.removeTile2(t);
-	    	}
+	    if(t->id == "0") {
+				std::string idOfTabItem = inventory->getIdItemAtTab();
+				if ((position_tile == 0 && std::islower(idOfTabItem[0])) ||
+				    (position_tile == 1 && std::isupper(idOfTabItem[0]))
+				) {
+					t->Reload(inventory->getIdItemAtTab());
+					inventory->decrementItemAtTab();
+				}
 	    }
 
 	}

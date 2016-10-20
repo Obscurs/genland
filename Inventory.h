@@ -15,12 +15,14 @@ public:
 	const static int GRID_SELECTED_THICKNESS = 4;
 	const static int N_CRAFT_ITEMS = 2;
 
-	
-	
-	
+
+
+
 	void Draw(sf::RenderWindow& renderWindow);
 	void Update(Inputs &inputs, sf::RenderWindow &window);
 	int stackItem(std::string id, int amount);
+	std::string getIdItemAtTab();
+	void decrementItemAtTab();
 	bool show_inventory;
 	bool show_tab;
 	bool show_craft_list;
