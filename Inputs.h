@@ -1,3 +1,6 @@
+#ifndef __INPUTS_H__
+#define __INPUTS_H__
+
 #include <vector>
 
 class Inputs
@@ -19,3 +22,5 @@ private:
 	std::map<std::string, sf::Vector2i> keys;
 	int wheelDelta;
 };
+
+#endif

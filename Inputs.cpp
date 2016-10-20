@@ -13,7 +13,7 @@
 
 
 #include "Inputs.h"
-
+#include "Inventory.h"
 
 
 
@@ -28,6 +28,9 @@ Inputs::Inputs()
 	keys["Space"] = sf::Vector2i(0,0);
 	keys["wheel"] = sf::Vector2i(0,0);
 	wheelDelta = 0;
+	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
+		keys["number"+std::to_string(i)] = sf::Vector2i(0,0);
+	}
 }
 
 
@@ -60,6 +63,9 @@ void Inputs::Update(){
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Space), "Space");
 	keys["wheel"] = sf::Vector2i(wheelDelta, 0);
 	wheelDelta = 0;
+	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
+		UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Key(int(sf::Keyboard::Num0) + i)), "number"+std::to_string(i));
+	}
 }
 
 void Inputs::UpdateWheel(int delta) {
