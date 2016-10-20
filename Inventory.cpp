@@ -172,8 +172,17 @@ int Inventory::decrementItem(std::string id_item, int amount){
 					}
 				}
 			}
-			
+
 		}
+	}
+}
+void Inventory::decrementItemAtTab() {
+	Item* item = tab[tab_item_selected];
+	if (item == nullptr) return;
+	item->amount -= 1;
+	if (item->amount <= 0) {
+		delete item;
+		tab[tab_item_selected] = nullptr;
 	}
 }
 int Inventory::stackItemInventory(std::string id_item, int amount){
@@ -364,13 +373,16 @@ void Inventory::craftItem(std::string id_item){
 			}
 			int res = stackItem(id_item,1);
 		}
-		
+
 	}
-	
+
 
 }
 std::string Inventory::getIdCraftItem(int index){
 	return craft_list[index]->id;
+}
+std::string Inventory::getIdItemAtTab() {
+	return tab[tab_item_selected] != nullptr ? tab[tab_item_selected]->id : "0";
 }
 void Inventory::inventoryClick(float x, float y, std::string key){
 	int index_tab = getTabIndex(sf::Vector2f(x,y));

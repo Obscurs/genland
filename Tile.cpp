@@ -17,6 +17,7 @@
 Tile::Tile(int id_t, int l){
     id_temp = id_t;
     layer = l;
+    being_removed = false;
 }
 
 
@@ -35,6 +36,7 @@ void Tile::Reload(std::string new_id)
 		max_tension = 0;
 		rigid = false;
 		reach_floor = false;
+    ms_to_remove = 1e9;
 	}
 	else if(new_id == "D"){
         reach_sun = false;
@@ -42,6 +44,7 @@ void Tile::Reload(std::string new_id)
 		max_tension = 100;
 		rigid = false;
 		reach_floor = true;
+    ms_to_remove = 100;
 	}
 	else if(new_id == "d"){
         reach_sun = false;
@@ -49,6 +52,7 @@ void Tile::Reload(std::string new_id)
 		max_tension = 100;
 		rigid = false;
 		reach_floor = false;
+    ms_to_remove = 100;
 	}
 	else if(new_id == "r"){
         reach_sun = false;
@@ -56,6 +60,7 @@ void Tile::Reload(std::string new_id)
 		max_tension = 200;
 		rigid = false;
 		reach_floor = false;
+    ms_to_remove = 100;
 	}
     else if(new_id == "C"){
         reach_sun = false;
@@ -63,6 +68,7 @@ void Tile::Reload(std::string new_id)
         max_tension = 500;
         rigid = false;
         reach_floor = false;
+        ms_to_remove = 100;
     }
     else if(new_id == "c"){
         reach_sun = false;
@@ -70,6 +76,7 @@ void Tile::Reload(std::string new_id)
         max_tension = 500;
         rigid = false;
         reach_floor = false;
+        ms_to_remove = 100;
     }
 	else{
 		Reload("0");

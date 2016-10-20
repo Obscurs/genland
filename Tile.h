@@ -25,6 +25,9 @@ public:
 	int layer;
 	int max_tension;
 	int weight;
+	float ms_to_remove;
+	float ms_to_be_removed;
+	bool being_removed;
 	std::string id; //sha de privatitzar
     int id_temp;
 	Tile* neighbors[9] = {nullptr};
