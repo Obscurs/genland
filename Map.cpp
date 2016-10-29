@@ -23,7 +23,7 @@ Map::Map(int pos)
 {
     Light l1(sf::Vector2f(-500.0,2000.0),95.0,105.0,-1.5, sf::Color::Green);
     Light l2(sf::Vector2f(-550.0,2000.0),95.0,105.0,-1.5, sf::Color::Red);
-    Light l3(sf::Vector2f(0,0),70.0,80.0,-0.5, sf::Color::Yellow);
+    Light l3(sf::Vector2f(0,0),78.0,80.0,-0.5, sf::Color::Yellow);
     lights.push_back(l1);
     lights.push_back(l2);
     lights.push_back(l3);
@@ -32,6 +32,8 @@ Map::Map(int pos)
     Background background3("resources/custom_back2.png",1.3, sf::Vector2f(755,2048));
     Background background4("resources/custom_back3.png",1.4, sf::Vector2f(755,2048));
     backgrounds ={background1,background2,background3,background4};
+
+    /////////////////////////////////////////////
     texture_plain_sprite.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
     texture_front = new sf::RenderTexture();
     texture_back = new sf::RenderTexture();
@@ -43,36 +45,10 @@ Map::Map(int pos)
     rectangle.setSize(sf::Vector2f(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT));
     rectangle.setFillColor(sf::Color::Black);
     black_texture.draw(rectangle);
+//////////////////////////////////////////////////
 
-    //map_shader.loadFromFile("resources/test.vert", sf::Shader::Vertex);
-    temp_mouse_pos.x =0;
-    temp_mouse_pos.y =0;
-    vertexArray = new sf::VertexArray(sf::Quads , (uint)8);
-    sf::Vector2f v1(10,10);
-    vertexArray->append(sf::Vertex(sf::Vector2f(100,100), sf::Color::Red));
-    vertexArray->append(sf::Vertex(sf::Vector2f(150,100), sf::Color::Cyan));
-    vertexArray->append(sf::Vertex(sf::Vector2f(150,150), sf::Color::Green));
-    vertexArray->append(sf::Vertex(sf::Vector2f(100,150), sf::Color::Yellow));
 
-    vertexArray->append(sf::Vertex(sf::Vector2f(0,400), sf::Color::Red));
-    vertexArray->append(sf::Vertex(sf::Vector2f(400,400), sf::Color::Cyan));
-    vertexArray->append(sf::Vertex(sf::Vector2f(400,500), sf::Color::Green));
-    vertexArray->append(sf::Vertex(sf::Vector2f(0,500), sf::Color::Yellow));
 
-    m_text.setString("Praesent suscipit augue in velit pulvinar hendrerit varius purus aliquam.\n"
-
-                             "In hac habitasse platea dictumst. Etiam fringilla est id odio dapibus sit amet semper dui laoreet.\n");
-
-    if (!font.loadFromFile("resources/font1.ttf"))
-    {
-        std::cout << "font error" << std::endl;
-    }
-
-    //text.setStyle(sf::Text::Bold);
-    m_text.setColor(sf::Color::Red);
-    m_text.setFont(font); // font is a sf::Font
-    m_text.setCharacterSize(22);
-    m_text.setPosition(30, 20);
 
     // Load the shader
     if (!tile_shader.loadFromFile("resources/light2.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
@@ -756,20 +732,11 @@ sf::Sprite Map::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray 
 
     sf::Vector2f firstPos(first_x, first_y);
     sf::Vector2f lastPos(last_x+Chunk::TILE_SIZE, last_y+Chunk::TILE_SIZE);
-    //std::cout << first_x << " " << first_y << " " << last_x << " " << last_y << std::endl;
     int first_chunk = getChunkIndex(first_x);
     int last_chunk = getChunkIndex(last_x+Chunk::TILE_SIZE);
-    //std::cout << "first " << first_chunk.x << "last " << last_chunk.x << std::endl;
-    //std::cout << "last " << last_chunk.x << " " << last_chunk.y << std::endl;
-    //std::cout << first_chunk <<  " " << last_chunk << " " << first_x << std::endl;
 
     for(int i = first_chunk ; i<=last_chunk ; ++i) {
-        //if(i>0) std::cout << "heeyy" << std::endl;
         int index_mat = getIndexMatChunk(i);
-
-        //std::cout << firstPos.x << " " << firstPos.y << " " << lastPos.x << " " << lastPos.y << std::endl;
-        //std::cout << "draw chunk " << index_mat.x << " " << index_mat.y << std::endl;
-        //#pragma omp task shared(renderWindow)
         chunk_mat[index_mat]->DrawChunk(renderWindow, firstPos, lastPos, *texMan, tile_shader,render_array, sky_array);
     }
 
@@ -818,50 +785,18 @@ void Map::DrawLights(sf::View& currentView,sf::VertexArray &render_array,sf::Ver
     //END DRAWING SUN
     //DRAWING MAP LIGHTS
     for(int i = 0; i<lights.size(); i++){
-        DrawLight(currentView,map_without_lights,lights[i]);
-    }
-}
-void Map::DrawLight(sf::View& currentView, sf::Sprite map_without_lights, Light& l){
-
-    sf::Vector2f centerView = currentView.getCenter();
-    sf::Vector2f sizeView = currentView.getSize();
-    float first_x = centerView.x-(sizeView.x/2)-1;
-    float first_y = centerView.y-(sizeView.y/2)-1;
-    float last_x = centerView.x+(sizeView.x/2)+1;
-    float last_y = centerView.y+(sizeView.y/2)+1;
-
-    sf::Vector2f lightpos = sf::Vector2f(l.position.x-first_x,l.position.y-first_y);
-    if(lightpos.x>0-l.radius*2 && lightpos.x<sizeView.x+l.radius*2 && lightpos.y>0-l.radius*2 && lightpos.y<sizeView.y+l.radius*2) {
-
-
-        sf::RenderStates states;
-        states.texture = texMan->getTexture();
-
-        tile_shader.setParameter("texture2", texture_back->getTexture());
-        tile_shader.setParameter("color", l.color);
-        tile_shader.setParameter("center", lightpos);
-        tile_shader.setParameter("radius", l.radius);
-        tile_shader.setParameter("expand", l.expand);
-
-        states.shader = &tile_shader;
-        texture_front->clear(sf::Color::Blue);
-        texture_front->setView(currentView);
-        texture_front->draw(map_without_lights, states);
-        texture_front->display();
-
+        lights[i].Draw(currentView,map_without_lights,tile_shader,texMan,texture_front,texture_back);
         std::swap(texture_back, texture_front);
     }
 }
+
 void Map::DrawMap(sf::RenderWindow& renderWindow)
 {
     sf::View currentView = renderWindow.getView();
-
     sf::VertexArray render_array(sf::Quads , (uint)(4));
     sf::VertexArray sky_array(sf::Quads , (uint)(4));
     sf::Sprite map_without_lights = get_plain_sprite(renderWindow, render_array,sky_array);
-
     DrawLights(currentView,render_array,sky_array,map_without_lights);
-
     sf::Sprite sprite(texture_back->getTexture());
     sprite.setPosition(map_without_lights.getPosition());
     renderWindow.draw(sprite);
@@ -881,14 +816,7 @@ void Map::UpdateAll(float delta, sf::Vector2f player_pos)
     player_pos.x+=16;
     player_pos.y+=16;
     lights[2].position=player_pos;
-    //temp_mouse_pos.x +=delta;
-    //temp_mouse_pos.y +=delta;
-    //if(temp_mouse_pos.x> 1.5) temp_mouse_pos.x=0;
-    //if(temp_mouse_pos.y > 1.5) temp_mouse_pos.y=0;
 
-    //m_shader.setParameter("wave_phase", delta);
-    //m_shader.setParameter("wave_amplitude", sf::Vector2f(temp_mouse_pos.x * 40, temp_mouse_pos.y * 40));
-    //m_shader.setParameter("blur_radius", (temp_mouse_pos.x + temp_mouse_pos.y) * 0.008f);
 	for(int i=0; i<falling_tiles.size(); ++i){
 		falling_tiles[i]->Update(delta, chunk_mat[0], chunk_mat[1], chunk_mat[2], posMap);
         if(falling_tiles[i]->deleted==1){

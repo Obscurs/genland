@@ -459,6 +459,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 				    (position_tile == 1 && std::isupper(idOfTabItem[0]))
 				) {
 					t->Reload(inventory->getIdItemAtTab());
+					t->reach_floor = (t->neighbors[8]->reach_floor || (t->neighbors[5] != nullptr && (t->neighbors[5]->reach_floor || t->neighbors[5]->neighbors[8]->reach_floor)));
 					inventory->decrementItemAtTab();
 				}
 	    }

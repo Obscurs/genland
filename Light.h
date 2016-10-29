@@ -8,7 +8,7 @@
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
-
+#include "TextureManager.h"
 class Light {
 public:
     Light(sf::Vector2f pos, float rad_min, float rad_max, float exp, sf::Color c);
@@ -20,8 +20,9 @@ public:
     sf::Color color;
     float radius;
     void Update(float deltatime);
+    void Draw(sf::View& currentView, sf::Sprite &map_without_lights, sf::Shader &light_shader, TextureManager *t, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back);
 
-private:
+        private:
 
 };
 

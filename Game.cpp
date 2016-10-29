@@ -176,4 +176,4 @@ sf::RenderWindow Game::window;
 Map Game::map_curr(-1);
 Player Game::player;
 Inputs Game::inputs;
-
+Drawer Game::drawer;

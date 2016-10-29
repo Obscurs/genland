@@ -37,9 +37,7 @@ public:
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
 private:
 
-    void DrawLight(sf::View& currentView, sf::Sprite map_without_lights, Light& l);
 
-    sf::VertexArray* vertexArray;
     inline bool exists_file (const std::string& name);
     int posMap;
 	std::mt19937 generator;
@@ -57,12 +55,9 @@ private:
     std::vector<Background> backgrounds;
 
     std::vector<Light> lights;
-    sf::Text m_text;
     sf::Shader tile_shader;
-    sf::Font font;
     sf::Shader sun_shader;
     sf::Shader sun_mix_shader;
-    sf::Vector2f temp_mouse_pos;
 
     sf::RenderTexture texture_plain_sprite;
     sf::RenderTexture *texture_front;

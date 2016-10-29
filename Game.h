@@ -3,8 +3,10 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 
+#include "Drawer.h"
 #include "Player.h"
 #include "Map.h"
+
 
 class Game
 {
@@ -28,6 +30,7 @@ private:
 	static Map map_curr;
 	static Player player;
 	static Inputs inputs;
+	static Drawer drawer;
 
 
 
