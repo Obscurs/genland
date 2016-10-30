@@ -28,7 +28,7 @@ void Game::Start(void)
     //PlayerPaddle *player1 = new PlayerPaddle();
     //player1->SetPosition((SCREEN_WIDTH/2),700);
     _gameState= Game::Playing;
-    sf::Clock clock;
+    sf::Clock clock1;
     sf::Clock clock2;
     float lastTime = 0;
 
@@ -67,7 +67,7 @@ void Game::Start(void)
         viewPlayer.setCenter(player.GetPosition().x+(player.GetWidth()/2), player.GetPosition().y+(player.GetHeight()/2));
         window.setView(viewPlayer);
 
-        double delta =  clock.restart().asSeconds();
+        double delta =  clock1.restart().asSeconds();
 
 
         float currentTime = clock2.restart().asSeconds();
@@ -132,16 +132,15 @@ void Game::GameLoop(double delta)
         {
 
 
-            //_gameObjectManager.UpdateAll();
-            //_gameObjectManager.DrawAll(_mainWindow);
             Game::inputs.Update();
 
             Game::player.Update(delta, Game::map_curr, Game::inputs, window);
             Game::map_curr.UpdateAll(delta, player.GetPosition());
-            Game::map_curr.DrawMap(window);
-            srand(time(NULL));
-            Game::player.Draw(window);
-            Game::player.DrawInventory(window);
+            Game::backgrounds.Update(player.GetPosition());
+            Game::clock.Update(delta);
+            Game::drawer.Draw(window);
+
+
             while(window.pollEvent(currentEvent))
 	    {
                 if(currentEvent.type == sf::Event::MouseWheelMoved)
@@ -176,4 +175,7 @@ sf::RenderWindow Game::window;
 Map Game::map_curr(-1);
 Player Game::player;
 Inputs Game::inputs;
-Drawer Game::drawer;
+WorldBackground Game::backgrounds;
+Clock Game::clock;
+Drawer Game::drawer(&map_curr,&player,&backgrounds, &clock);
+

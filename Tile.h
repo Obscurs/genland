@@ -8,9 +8,9 @@ public:
 	~Tile();
 
 	void Reload(std::string id);
-	void Draw(sf::RenderWindow & window, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray);
-    void DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
-    void DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
+	void Draw(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray);
+    void DrawOuts(TextureManager &t, sf::VertexArray &vertexArray);
+    void DrawGrass(TextureManager &t, sf::VertexArray &vertexArray);
 	void Update(float elapsedTime);
 	void drawSkyArray(sf::VertexArray &skyArray);
 	void drawBorderSkyArray(sf::VertexArray &skyArray,TextureManager &t);
@@ -38,9 +38,9 @@ public:
 
 private:
 
-    void DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
-    void DrawIns(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray);
-    void DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray);
+    void DrawFadeOut(TextureManager &t, sf::VertexArray &vertexArray);
+    void DrawIns(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray);
+    void DrawAmbientOclusion(TextureManager &t, sf::VertexArray &vertexArray);
 	sf::Vector2f position;
 	sf::Vector2f size;
 

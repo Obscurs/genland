@@ -17,25 +17,18 @@ void main(void)
     if(gl_Color == vec4(0,0,0,1)) gl_FragColor= color;
     else if (r >= 1.0)
     {
-        vec4 testColor = mix(color, vec4(1,1,1,1), res);
 
         vec4 light_without_color = mix(vec4(1,1,1,1), tex_current, res);
         vec4 light_with_color = mix(color,light_without_color,1.0-res*0.1);
-        //vec4 light_with_color;
-        //if(light_without_color==vec4(1,1,1,1)){
-        //    light_with_color = vec4(1,1,1,1);
-        //}
-        //light_with_color = mix(light_without_color,color,0.5);
+
 
         gl_FragColor = max(tex_old,light_with_color);
 
     }
     else
         {
-            //vec4 light_without_color = mix(vec4(1,1,1,1), tex_current, res);
             vec4 light_with_color = mix(color,tex_current,0.9);
             gl_FragColor = max(tex_old,light_with_color);
-            //gl_FragColor = vec4(0,0,0,1);
         }
 
 }

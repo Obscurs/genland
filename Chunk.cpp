@@ -453,10 +453,10 @@ sf::Vector2i Chunk::getTileIndex(float x, float y){
 
 }
 
-void Chunk::DrawGrassTiles(sf::RenderWindow& renderWindow,  TextureManager &t, sf::VertexArray &vertexArray)
+void Chunk::DrawGrassTiles(TextureManager &t, sf::VertexArray &vertexArray)
 {
     for(int i=0; i<grass_tiles.size(); i++){
-        grass_tiles[i]->DrawGrass(renderWindow, t,vertexArray);
+        grass_tiles[i]->DrawGrass(t,vertexArray);
     }
 }
 void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray, sf::VertexArray &skyArray)
@@ -495,7 +495,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
         for(int j = first_index.y; j<=last_index.y; ++j){
             Tile* t1 = tile_mat[i][j][1];
             if(t1->id !="0"){
-                t1->Draw(renderWindow, t, tile_shader,vertexArray);
+                t1->Draw(t, tile_shader,vertexArray);
                 if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
                     if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && t1->id=="D") grass_tiles.push_back(t1);
                 }
@@ -517,10 +517,10 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
                     }
                     else t0->drawBorderSkyArray(skyArray,t);
                 }
-                if(t0->id != "0")t0->Draw(renderWindow, t, tile_shader,vertexArray);
-                else t0->DrawOuts(renderWindow, t,vertexArray);
+                if(t0->id != "0")t0->Draw(t, tile_shader,vertexArray);
+                else t0->DrawOuts(t,vertexArray);
 
-                t1->DrawOuts(renderWindow, t,vertexArray);
+                t1->DrawOuts(t,vertexArray);
 
             }
             //DEBUG

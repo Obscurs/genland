@@ -11,15 +11,22 @@
 #include "SFML/Audio.hpp"
 #include "Player.h"
 #include "Map.h"
+#include "WorldBackground.h"
+#include "Clock.h"
 
 class Drawer {
 public:
-    Drawer();
+    Drawer(Map *m,Player *p,WorldBackground *b, Clock *c);
     ~Drawer();
 
-    void Draw(Player &player, Map &map,sf::RenderWindow &window);
+    void Draw(sf::RenderWindow &window);
 
 private:
+private:
+    Map *map_curr;
+    Player *player;
+    Clock *clock;
+    WorldBackground *backgrounds;
     //sf::RenderWindow window; //TO DO
 
     TextureManager* texMan;
@@ -32,6 +39,12 @@ private:
     sf::RenderTexture *texture_front;
     sf::RenderTexture *texture_back;
     sf::RenderTexture black_texture;
+
+
+    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array);
+    void DrawLights(sf::View& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights);
+    void DrawMap(sf::RenderWindow& renderWindow);
+    void DrawFrontItemsMap(sf::RenderWindow& renderWindow,sf::VertexArray &render_array);
 };
 
 

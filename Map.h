@@ -21,16 +21,20 @@ public:
 	Map(int pos);
 	~Map();
 
+
+
 	const static int N_CHUNKS_X = 3;
 
-	Chunk* getChunk(float x, float y);
+    std::vector<Light> lights;
+    Chunk* chunk_mat[N_CHUNKS_X] = {nullptr};
+    std::vector<AnimatedTile*> falling_tiles;
+
+
 	Tile* getTile(float x, float y, int z);
 	int getChunkIndex(float x);
     int getIndexMatChunk(int x);
 
-    void DrawLights(sf::View& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights);
-    void DrawMap(sf::RenderWindow& renderWindow);
-    void DrawFrontItems(sf::RenderWindow& renderWindow,sf::VertexArray &render_array);
+
     void removeTile2(Tile* r_tile);
 	void UpdateAll(float delta, sf::Vector2f player_pos);
 	void checkLoadedChunks(float x, float y);
@@ -46,21 +50,8 @@ private:
 
     void removeReachFloorCascade2(Tile* t_first);
 
-    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array);
+
 	sf::Vector2i getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal);
-	std::vector<AnimatedTile*> falling_tiles;
-	Chunk* chunk_mat[N_CHUNKS_X] = {nullptr};
-	TextureManager* texMan;
 
-    std::vector<Background> backgrounds;
 
-    std::vector<Light> lights;
-    sf::Shader tile_shader;
-    sf::Shader sun_shader;
-    sf::Shader sun_mix_shader;
-
-    sf::RenderTexture texture_plain_sprite;
-    sf::RenderTexture *texture_front;
-    sf::RenderTexture *texture_back;
-    sf::RenderTexture black_texture;
 };

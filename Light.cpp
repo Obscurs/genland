@@ -56,7 +56,7 @@ void Light::Draw(sf::View& currentView, sf::Sprite &map_without_lights, sf::Shad
         light_shader.setParameter("expand", expand);
 
         states.shader = &light_shader;
-        tex_front->clear(sf::Color::Blue);
+        tex_front->clear(sf::Color::Red);
         tex_front->setView(currentView);
         tex_front->draw(map_without_lights, states);
         tex_front->display();

@@ -27,58 +27,8 @@ Map::Map(int pos)
     lights.push_back(l1);
     lights.push_back(l2);
     lights.push_back(l3);
-    Background background1("resources/custom_back0.png",1.1, sf::Vector2f(755,2048));
-    Background background2("resources/custom_back1.png",1.2, sf::Vector2f(755,2048));
-    Background background3("resources/custom_back2.png",1.3, sf::Vector2f(755,2048));
-    Background background4("resources/custom_back3.png",1.4, sf::Vector2f(755,2048));
-    backgrounds ={background1,background2,background3,background4};
-
-    /////////////////////////////////////////////
-    texture_plain_sprite.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    texture_front = new sf::RenderTexture();
-    texture_back = new sf::RenderTexture();
-    texture_front->create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    texture_back->create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-
-    black_texture.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    sf::RectangleShape rectangle(sf::Vector2f(0, 0));
-    rectangle.setSize(sf::Vector2f(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT));
-    rectangle.setFillColor(sf::Color::Black);
-    black_texture.draw(rectangle);
-//////////////////////////////////////////////////
 
 
-
-
-    // Load the shader
-    if (!tile_shader.loadFromFile("resources/light2.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    if (!sun_shader.loadFromFile("resources/sun.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    if (!sun_mix_shader.loadFromFile("resources/sun_mix.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    tile_shader.setParameter("windowHeight", static_cast<float>(Game::SCREEN_HEIGHT)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
-    texMan = new TextureManager("resources/tiles2.png", 16, 16);
-	texMan->insert_map_value("D",sf::Vector2i(0,0));
-	texMan->insert_map_value("d",sf::Vector2i(16,0));
-	texMan->insert_map_value("C",sf::Vector2i(0,16));
-	texMan->insert_map_value("c",sf::Vector2i(16,16));
-
-    texMan->insert_map_value("D_in",sf::Vector2i(32,0));
-    texMan->insert_map_value("d_in",sf::Vector2i(64,0));
-    texMan->insert_map_value("C_in",sf::Vector2i(32,16));
-    texMan->insert_map_value("c_in",sf::Vector2i(64,16));
-
-    texMan->insert_map_value("D_out",sf::Vector2i(48,0));
-    texMan->insert_map_value("d_out",sf::Vector2i(80,0));
-    texMan->insert_map_value("C_out",sf::Vector2i(48,16));
-    texMan->insert_map_value("c_out",sf::Vector2i(80,16));
-
-	texMan->insert_map_value("r",sf::Vector2i(0,32));
-	texMan->insert_map_value("0",sf::Vector2i(64,32));
-    texMan->insert_map_value("s",sf::Vector2i(16,32));
-    texMan->insert_map_value("S",sf::Vector2i(32,32));
-    texMan->insert_map_value("S2",sf::Vector2i(48,32));
-
-    texMan->insert_map_value("grass0",sf::Vector2i(0,48));
-    texMan->insert_map_value("grass1",sf::Vector2i(16,48));
 
     int id_temp = 0;
     posMap = pos;
@@ -109,9 +59,6 @@ Map::Map(int pos)
     std::cout << "chunk 2 recalc" << std::endl;
     chunk_mat[2]->recalcReachFloor();
 
-    //chunk_mat[0]->recalcReachSun();
-    //chunk_mat[1]->recalcReachSun();
-    //chunk_mat[2]->recalcReachSun();
 
 
 }
@@ -172,11 +119,9 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
 
 }
 
-
-Map::~Map()
-{
-	//std::for_each(_gameObjects.begin(),_gameObjects.end(),GameObjectDeallocator());
+Map::~Map() {
 }
+
 inline bool Map::exists_file (const std::string& name) {
     struct stat buffer;
     return (stat (name.c_str(), &buffer) == 0);
@@ -571,12 +516,6 @@ void Map::removeReachFloorCascade2(Tile* t_first){
         removeReachFloorCascade2(t_first->neighbors[1]);
     }
 }
-Chunk* Map::getChunk(float x, float y){
-	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
-	int chunk_x = x/size_chunk_x;
-	return chunk_mat[chunk_x];
-}
-
 
 Tile* Map::getTile(float x, float y, int z){
 	if(y<0) y = 0;
@@ -594,6 +533,7 @@ int Map::getChunkIndex(float x){
     if(x <0) --chunk_x;
 	return chunk_x;
 }
+
 int Map::getIndexMatChunk(int x){
     int final_x = -1;
     for(int i = 0 ; i<N_CHUNKS_X ; ++i){
@@ -605,6 +545,7 @@ int Map::getIndexMatChunk(int x){
 
     return final_x;
 }
+
 void Map::checkLoadedChunks(float x, float y){
 
         Chunk *c1 = chunk_mat[0];
@@ -701,114 +642,10 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
 }
 
 
-void Map::DrawFrontItems(sf::RenderWindow& renderWindow,sf::VertexArray &render_array)
-{
-    sf::View currentView = renderWindow.getView();
-    sf::Vector2f centerView = currentView.getCenter();
-    sf::Vector2f sizeView = currentView.getSize();
-    float first_x = centerView.x-(sizeView.x/2)-1;
-    float last_x = centerView.x+(sizeView.x/2)+1;
-    int first_chunk = getChunkIndex(first_x);
-    int last_chunk = getChunkIndex(last_x+Chunk::TILE_SIZE);
-    for(int i = first_chunk ; i<=last_chunk ; ++i) {
-        int index_mat = getIndexMatChunk(i);
-        chunk_mat[index_mat]->DrawGrassTiles(renderWindow, *texMan,render_array);
-    }
-}
-
-sf::Sprite Map::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array){
-    texture_plain_sprite.clear(sf::Color::Red);
-    for(int i=0; i< backgrounds.size(); i++){
-        backgrounds[i].Draw(texture_plain_sprite);
-    }
-
-    sf::View currentView = renderWindow.getView();
-    sf::Vector2f centerView = currentView.getCenter();
-    sf::Vector2f sizeView = currentView.getSize();
-    float first_x = centerView.x-(sizeView.x/2)-1;
-    float first_y = centerView.y-(sizeView.y/2)-1;
-    float last_x = centerView.x+(sizeView.x/2)+1;
-    float last_y = centerView.y+(sizeView.y/2)+1;
-
-    sf::Vector2f firstPos(first_x, first_y);
-    sf::Vector2f lastPos(last_x+Chunk::TILE_SIZE, last_y+Chunk::TILE_SIZE);
-    int first_chunk = getChunkIndex(first_x);
-    int last_chunk = getChunkIndex(last_x+Chunk::TILE_SIZE);
-
-    for(int i = first_chunk ; i<=last_chunk ; ++i) {
-        int index_mat = getIndexMatChunk(i);
-        chunk_mat[index_mat]->DrawChunk(renderWindow, firstPos, lastPos, *texMan, tile_shader,render_array, sky_array);
-    }
-
-    for(int i = 0; i<falling_tiles.size(); i++){
-
-        falling_tiles[i]->Draw(renderWindow, *texMan);
-    }
-    DrawFrontItems(renderWindow,render_array);
-
-    sf::RenderStates states;
-    states.texture = texMan->getTexture();
-    texture_plain_sprite.setView(currentView);
-    texture_plain_sprite.draw(render_array, states);
-
-
-    sf::Vector2f pos_sprite = firstPos;
-    pos_sprite.x+=1;
-    pos_sprite.y+=1;
-    sf::Sprite map_without_lights(texture_plain_sprite.getTexture());
-    map_without_lights.setPosition(pos_sprite);
-    texture_plain_sprite.display();
-    return map_without_lights;
-}
-void Map::DrawLights(sf::View& currentView,sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights){
-    sf::RenderStates states;
-    states.texture = texMan->getTexture();
-
-    //DRAWING SUN
-    states.shader = &sun_shader;
-    texture_back->clear(sf::Color::Black);
-    texture_back->draw(sky_array, states);
-    texture_back->display();
-
-    sun_mix_shader.setParameter("color", sf::Color::Yellow);
-    sun_mix_shader.setParameter("factor", 0.1);
-    sun_mix_shader.setParameter("texture2", texture_back->getTexture());
-    states.shader = &sun_mix_shader;
-    //states.texture = &texture1.getTexture();
-    texture_front->clear(sf::Color::Yellow);
-    texture_front->setView(currentView);
-    texture_front->draw(map_without_lights, states);
-    texture_front->display();
-
-    std::swap(texture_back,texture_front);
-
-    //END DRAWING SUN
-    //DRAWING MAP LIGHTS
-    for(int i = 0; i<lights.size(); i++){
-        lights[i].Draw(currentView,map_without_lights,tile_shader,texMan,texture_front,texture_back);
-        std::swap(texture_back, texture_front);
-    }
-}
-
-void Map::DrawMap(sf::RenderWindow& renderWindow)
-{
-    sf::View currentView = renderWindow.getView();
-    sf::VertexArray render_array(sf::Quads , (uint)(4));
-    sf::VertexArray sky_array(sf::Quads , (uint)(4));
-    sf::Sprite map_without_lights = get_plain_sprite(renderWindow, render_array,sky_array);
-    DrawLights(currentView,render_array,sky_array,map_without_lights);
-    sf::Sprite sprite(texture_back->getTexture());
-    sprite.setPosition(map_without_lights.getPosition());
-    renderWindow.draw(sprite);
-
-}
-
 void Map::UpdateAll(float delta, sf::Vector2f player_pos)
 {
     //BACKGROUNDS
-    for(int i=0; i<backgrounds.size(); i++){
-        backgrounds[i].updatePosition(player_pos);
-    }
+
     for(int i=0; i<lights.size(); i++){
         lights[i].Update(delta);
 

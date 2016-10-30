@@ -6,7 +6,8 @@
 #include "Drawer.h"
 #include "Player.h"
 #include "Map.h"
-
+#include "WorldBackground.h"
+#include "Clock.h"
 
 class Game
 {
@@ -31,6 +32,8 @@ private:
 	static Player player;
 	static Inputs inputs;
 	static Drawer drawer;
+	static WorldBackground backgrounds;
+	static Clock clock;
 
 
 

@@ -96,7 +96,7 @@ bool Tile::drawable(){
 	}
 	return res;
 }
-void Tile::DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray){
+void Tile::DrawFadeOut(TextureManager &t, sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && neighbors[0]->neighbors[8]->id != "0" && !neighbors[0]->drawable()  && neighbors[7]->drawable() && neighbors[1]->drawable()){
         appendSpriteToArray(t, vertexArray, -1, "S2", 90);
     }
@@ -125,7 +125,7 @@ void Tile::DrawFadeOut(sf::RenderWindow & renderWindow, TextureManager &t, sf::V
         appendSpriteToArray(t, vertexArray, -1, "S", 90);
     }
 }
-void Tile::DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray){
+void Tile::DrawAmbientOclusion(TextureManager &t, sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && !neighbors[0]->drawable() && neighbors[7]->drawable() && neighbors[1]->drawable()){
 
     }
@@ -151,7 +151,7 @@ void Tile::DrawAmbientOclusion(sf::RenderWindow & renderWindow, TextureManager &
         appendSpriteToArray(t, vertexArray, -1, "s", 90);
     }
 }
-void Tile::DrawOuts(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray)
+void Tile::DrawOuts(TextureManager &t, sf::VertexArray &vertexArray)
 {
     Tile* t1 = neighbors[1];
     Tile* t3 = neighbors[3];
@@ -235,7 +235,7 @@ void Tile::appendSpriteToArray(TextureManager &t, sf::VertexArray &vertexArray, 
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+Chunk::TILE_SIZE/divisor,position.y+increment_y+Chunk::TILE_SIZE/divisor), pos_tex3));
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x,position.y+Chunk::TILE_SIZE/divisor+increment_y), pos_tex4));
 }
-void Tile::DrawIns(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray){
+void Tile::DrawIns(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray){
     bool is_mini[4] ={0,0,0,0};
     if(neighbors[1] != nullptr && neighbors[1]->id=="0" && neighbors[2] != nullptr && neighbors[2]->id=="0" && neighbors[3] != nullptr && neighbors[3]->id=="0"){
         std::string id_mini = id;
@@ -289,7 +289,7 @@ void Tile::drawBorderSkyArray(sf::VertexArray &skyArray,TextureManager &t){
     skyArray.append(sf::Vertex(sf::Vector2f(position.x-Chunk::TILE_SIZE*3,position.y+Chunk::TILE_SIZE*4), pos_tex4));
 
 }
-void Tile::DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t, sf::VertexArray &vertexArray){
+void Tile::DrawGrass(TextureManager &t, sf::VertexArray &vertexArray){
     sf::Vector2f pos_tex1, pos_tex2, pos_tex3, pos_tex4;
     sf::Vector2i position_sprite = t.getPositionSprite("grass0");
     pos_tex1 = sf::Vector2f(position_sprite.x, position_sprite.y);
@@ -324,15 +324,15 @@ void Tile::DrawGrass(sf::RenderWindow & renderWindow, TextureManager &t, sf::Ver
         vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth(),position.y+Chunk::TILE_SIZE-GetHeight()/2+5), pos_tex4));
     }
 }
-void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray)
+void Tile::Draw(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray)
 {
 
 
         if (layer == 1) {
             if(drawable()) {
-                if (neighbors[8] != nullptr && neighbors[8]->id != "0") neighbors[8]->Draw(renderWindow, t, tile_shader,vertexArray);
-                DrawIns(renderWindow, t, tile_shader,vertexArray);
-                DrawFadeOut(renderWindow, t,vertexArray);
+                if (neighbors[8] != nullptr && neighbors[8]->id != "0") neighbors[8]->Draw( t, tile_shader,vertexArray);
+                DrawIns( t, tile_shader,vertexArray);
+                DrawFadeOut(t,vertexArray);
 
 
 
@@ -348,8 +348,8 @@ void Tile::Draw(sf::RenderWindow & renderWindow, TextureManager &t, sf::Shader &
             }
     }
     else {
-            DrawIns(renderWindow, t, tile_shader, vertexArray);
-            DrawAmbientOclusion(renderWindow, t, vertexArray);
+            DrawIns(t, tile_shader, vertexArray);
+            DrawAmbientOclusion(t, vertexArray);
         }
 }
 
@@ -373,24 +373,17 @@ void Tile::SetSize(float x)
 
 sf::Vector2f Tile::GetPosition() const
 {
-	/*
-	if(_isLoaded)
-	{
-		return _sprite.getPosition();
-	}*/
 	return position;
 }
 
 float Tile::GetHeight() const
 {
 	return size.y;
-	//return _sprite.getTexture()->getSize().y*_sprite.getScale().y;
 }
 
 float Tile::GetWidth() const
 {
 	return size.x;
-	//return _sprite.getTexture()->getSize().x*_sprite.getScale().x;
 }
 
 
