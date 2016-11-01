@@ -78,7 +78,7 @@ void Game::Start(void)
         lastTime = currentTime;
         //std::cout << fps << std::endl;
 
-        window.clear(sf::Color(200,200,0));
+        window.clear(sf::Color(0,0,0,0));
         GameLoop(delta);
         fps_timer += lastTime;
         sf::View currentView = window.getView();
@@ -136,8 +136,8 @@ void Game::GameLoop(double delta)
 
             Game::player.Update(delta, Game::map_curr, Game::inputs, window);
             Game::map_curr.UpdateAll(delta, player.GetPosition());
-            Game::backgrounds.Update(player.GetPosition());
             Game::clock.Update(delta);
+            Game::backgrounds.Update(player.GetPosition(),clock);
             Game::drawer.Draw(window);
 
 

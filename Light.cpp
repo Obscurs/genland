@@ -35,15 +35,8 @@ void Light::Update(float deltatime){
      */
 }
 
-void Light::Draw(sf::View& currentView, sf::Sprite &map_without_lights, sf::Shader &light_shader, TextureManager *t, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back){
+void Light::Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::Shader &light_shader, TextureManager *t, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back){
 
-    sf::Vector2f centerView = currentView.getCenter();
-    sf::Vector2f sizeView = currentView.getSize();
-    float first_x = centerView.x-(sizeView.x/2)-1;
-    float first_y = centerView.y-(sizeView.y/2)-1;
-
-    sf::Vector2f lightpos = sf::Vector2f(position.x-first_x,position.y-first_y);
-    if(lightpos.x>0-radius*2 && lightpos.x<sizeView.x+radius*2 && lightpos.y>0-radius*2 && lightpos.y<sizeView.y+radius*2) {
 
 
         sf::RenderStates states;
@@ -51,16 +44,14 @@ void Light::Draw(sf::View& currentView, sf::Sprite &map_without_lights, sf::Shad
 
         light_shader.setParameter("texture2", tex_back->getTexture());
         light_shader.setParameter("color", color);
-        light_shader.setParameter("center", lightpos);
+        light_shader.setParameter("center", pos_light);
         light_shader.setParameter("radius", radius);
         light_shader.setParameter("expand", expand);
 
         states.shader = &light_shader;
-        tex_front->clear(sf::Color::Red);
-        tex_front->setView(currentView);
+        tex_front->clear(sf::Color(0,0,0,0));
         tex_front->draw(map_without_lights, states);
         tex_front->display();
 
 
-    }
 }

@@ -7,7 +7,7 @@
 Clock::Clock(){
     day=0;
     hour=0;
-    min=0;
+    min=15;
 }
 
 
@@ -23,5 +23,6 @@ void Clock::Update(float delta){
         day += hour/24;
         hour = hour-24;
     }
+    //std::cout << min << std::endl;
 
 }

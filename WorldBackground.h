@@ -5,15 +5,15 @@
 #ifndef GENLAND_WORLDBACKGROUND_H
 #define GENLAND_WORLDBACKGROUND_H
 #include "Background.h"
-#include "Sun.h"
+#include "Clock.h"
 class WorldBackground {
 public:
     WorldBackground();
     ~WorldBackground();
     std::vector<Background> backgrounds;
-    void Update(sf::Vector2f player_pos);
+    void Update(sf::Vector2f player_pos, Clock &clock);
     void Draw(sf::RenderTexture &texture_plain_sprite);
-    Sun sun;
+    sf::CircleShape sun_sprite;
 };
 
 

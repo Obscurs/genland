@@ -34,11 +34,14 @@ private:
     sf::Shader tile_shader;
     sf::Shader sun_shader;
     sf::Shader sun_mix_shader;
+    sf::Shader mix_back_terr_shader;
+    sf::Shader sun_background_shader;
 
     sf::RenderTexture texture_plain_sprite;
     sf::RenderTexture *texture_front;
     sf::RenderTexture *texture_back;
     sf::RenderTexture black_texture;
+    sf::RenderTexture texture_background;
 
 
     sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array);

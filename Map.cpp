@@ -21,9 +21,9 @@
 
 Map::Map(int pos)
 {
-    Light l1(sf::Vector2f(-500.0,2000.0),95.0,105.0,-1.5, sf::Color::Green);
-    Light l2(sf::Vector2f(-550.0,2000.0),95.0,105.0,-1.5, sf::Color::Red);
-    Light l3(sf::Vector2f(0,0),78.0,80.0,-0.5, sf::Color::Yellow);
+    Light l1(sf::Vector2f(+500.0,2000.0),95.0,105.0,100.0, sf::Color::Green);
+    Light l2(sf::Vector2f(+550.0,2000.0),95.0,105.0,100.0, sf::Color::Red);
+    Light l3(sf::Vector2f(0,0),78.0,80.0,100.0, sf::Color::Yellow);
     lights.push_back(l1);
     lights.push_back(l2);
     lights.push_back(l3);
