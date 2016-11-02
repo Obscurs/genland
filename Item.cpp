@@ -20,8 +20,11 @@ Item::Item(std::string id_item)
 	//std::cout << id_item << std::endl;
 	id = id_item;
 	max_stack_amount= 1;
+	id_set0="-1";
+	id_set1="-1";
 	Reload(id_item);
 	amount = 0;
+
 	/*
 	if (!font.loadFromFile("resources/font1.ttf"))
 	{
@@ -117,30 +120,42 @@ void Item::Reload(std::string new_id)
 	if(new_id == "0"){
 		max_stack_amount= 10;
 		amount=0;
+		id_set0="0";
+		id_set1="0";
 
 	}
 	else if(new_id == "D"){
 		max_stack_amount= 10;
 		amount=0;
+		id_set0="d";
+		id_set1="D";
 		craft_cost["r"] = 2;
 		craft_cost["d"] = 3;
 	}
 	else if(new_id == "d"){
 		max_stack_amount= 10;
 		amount = 0;
+		id_set0="d";
+		id_set1="D";
 	}
 	else if(new_id == "c"){
 		max_stack_amount= 10;
 		amount = 0;
+		id_set0="c";
+		id_set1="C";
 	}
 	else if(new_id == "C"){
 		max_stack_amount= 5;
 		amount = 0;
+		id_set0="c";
+		id_set1="C";
 	}
 	else if(new_id == "r"){
 		max_stack_amount= 5;
 		amount = 0;
 		craft_cost["d"] = 5;
+		id_set0="r";
+		id_set1="R";
 
 	}
 	else{

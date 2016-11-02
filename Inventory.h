@@ -22,6 +22,7 @@ public:
 	void Update(Inputs &inputs, sf::RenderWindow &window);
 	int stackItem(std::string id, int amount);
 	std::string getIdItemAtTab();
+	Item* getItemAtTab();
 	void decrementItemAtTab();
 	bool show_inventory;
 	bool show_tab;

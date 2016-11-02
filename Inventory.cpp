@@ -384,6 +384,9 @@ std::string Inventory::getIdCraftItem(int index){
 std::string Inventory::getIdItemAtTab() {
 	return tab[tab_item_selected] != nullptr ? tab[tab_item_selected]->id : "0";
 }
+Item * Inventory::getItemAtTab() {
+	return tab[tab_item_selected];
+}
 void Inventory::inventoryClick(float x, float y, std::string key){
 	int index_tab = getTabIndex(sf::Vector2f(x,y));
 	int index_craft = getCraftIndex(sf::Vector2f(x,y));

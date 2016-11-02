@@ -130,7 +130,7 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
 
 
 
-    texture_background.clear(sf::Color(0,0,0,0));
+    texture_background.clear(sf::Color(255,0,0,255));
     backgrounds->Draw(texture_background);
     sf::Vector2f pos_sprite = firstPos;
     pos_sprite.x+=1;
@@ -231,7 +231,7 @@ void Drawer::DrawLights(sf::View& currentView,sf::VertexArray &render_array,sf::
     //DRAWING MAP LIGHTS
     texture_back->setView(currentView);
     texture_front->setView(currentView);
-    /*
+
     for(int i = 0; i<map_curr->lights.size(); i++){
         sf::Vector2f centerView = currentView.getCenter();
         sf::Vector2f sizeView = currentView.getSize();
@@ -244,7 +244,7 @@ void Drawer::DrawLights(sf::View& currentView,sf::VertexArray &render_array,sf::
             map_curr->lights[i].Draw(lightpos, map_without_lights, tile_shader, texMan, texture_front, texture_back);
             std::swap(texture_back, texture_front);
         }
-    }*/
+    }
 
 }
 

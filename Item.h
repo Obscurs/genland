@@ -18,6 +18,8 @@ public:
 	Item* getItemCopy();
 	std::map<std::string, int> craft_cost;
 	std::string id; //sha de privatitzar
+	std::string id_set0;
+	std::string id_set1;
 	int amount; //sha de privatitzar
 	int max_stack_amount; //sha de privatitzar
 

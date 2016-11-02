@@ -29,6 +29,7 @@ public:
 	float ms_to_be_removed;
 	bool being_removed;
 	std::string id; //sha de privatitzar
+	std::string id_pick; //sha de privatitzar
     int id_temp;
 	Tile* neighbors[9] = {nullptr};
 	bool drawable();

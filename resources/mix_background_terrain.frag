@@ -14,7 +14,7 @@ void main(void)
             gl_FragColor = vec4(color_aux.xyz,1.0);
         }
         else gl_FragColor = color_terrain;
-        //gl_FragColor = color_terrain;
+        //gl_FragColor = color_sky;
 
 }
 /*

@@ -31,51 +31,51 @@ void Tile::Reload(std::string new_id)
 {
 	id = new_id;
 	if(new_id == "0"){
-		reach_sun = false;
 		weight = 0;
 		max_tension = 0;
 		rigid = false;
 		reach_floor = false;
-    ms_to_remove = 1e9;
+        id_pick="0";
+        ms_to_remove = 100;
 	}
 	else if(new_id == "D"){
-        reach_sun = false;
 		weight = 20;
 		max_tension = 100;
 		rigid = false;
 		reach_floor = true;
-    ms_to_remove = 100;
+        id_pick="D";
+        ms_to_remove = 100;
 	}
 	else if(new_id == "d"){
-        reach_sun = false;
 		weight = 20;
 		max_tension = 100;
 		rigid = false;
 		reach_floor = false;
-    ms_to_remove = 100;
+        id_pick="D";
+        ms_to_remove = 100;
 	}
 	else if(new_id == "r"){
-        reach_sun = false;
 		weight = 10;
 		max_tension = 200;
 		rigid = false;
 		reach_floor = false;
-    ms_to_remove = 100;
+        id_pick="R";
+        ms_to_remove = 100;
 	}
     else if(new_id == "C"){
-        reach_sun = false;
         weight = 20;
         max_tension = 500;
         rigid = false;
         reach_floor = false;
+        id_pick="C";
         ms_to_remove = 100;
     }
     else if(new_id == "c"){
-        reach_sun = false;
         weight = 20;
         max_tension = 500;
         rigid = false;
         reach_floor = false;
+        id_pick="C";
         ms_to_remove = 100;
     }
 	else{

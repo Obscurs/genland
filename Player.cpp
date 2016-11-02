@@ -419,16 +419,16 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 			if (t != tile_being_removed && tile_being_removed != nullptr) {
 				tile_being_removed->being_removed = false;
 			}
-	    sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
-	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
-	    float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
+	    //sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
+	    //sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
+	    //float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
 
 	    if(t->id != "0") {
 				tile_being_removed = t;
 				if (tile_being_removed->being_removed) {
 					tile_being_removed->ms_to_be_removed -= delta*1000;
 					if (tile_being_removed->ms_to_be_removed < 0) {
-						if(giveItem(t->id, 1)){
+						if(giveItem(t->id_pick, 1)){
 							map.removeTile2(t);
 						}
 					}
@@ -449,18 +449,41 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    	position_tile = 1;
 	    	t = map.getTile(position.x, position.y, 1);
 	    }
-	    sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
-	    sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
-	    float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
+	    //sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
+	    //sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
+	    //float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
+		if (t != tile_being_removed && tile_being_removed != nullptr) {
+			tile_being_removed->being_removed = false;
+		}
 
 	    if(t->id == "0") {
 				std::string idOfTabItem = inventory->getIdItemAtTab();
-				if ((position_tile == 0 && std::islower(idOfTabItem[0])) ||
-				    (position_tile == 1 && std::isupper(idOfTabItem[0]))
-				) {
-					t->Reload(inventory->getIdItemAtTab());
-					t->reach_floor = (t->neighbors[8]->reach_floor || (t->neighbors[5] != nullptr && (t->neighbors[5]->reach_floor || t->neighbors[5]->neighbors[8]->reach_floor)));
-					inventory->decrementItemAtTab();
+				if(idOfTabItem !="0") {
+					std::cout <<"0" << std::endl;
+					tile_being_removed = t;
+					if (tile_being_removed->being_removed) {
+						std::cout <<tile_being_removed->ms_to_be_removed << std::endl;
+						tile_being_removed->ms_to_be_removed -= delta * 1000;
+						if (tile_being_removed->ms_to_be_removed < 0) {
+							if (position_tile == 0) {
+
+								t->Reload(inventory->getItemAtTab()->id_set0);
+							}
+							else if (position_tile == 1) {
+								t->Reload(inventory->getItemAtTab()->id_set1);
+							}
+
+							//t->Reload(inventory->getIdItemAtTab());
+							t->reach_floor = (t->neighbors[8]->reach_floor || (t->neighbors[5] != nullptr &&
+																			   (t->neighbors[5]->reach_floor ||
+																				t->neighbors[5]->neighbors[8]->reach_floor)));
+							inventory->decrementItemAtTab();
+						}
+					}
+					else {
+						tile_being_removed->being_removed = true;
+						tile_being_removed->ms_to_be_removed = tile_being_removed->ms_to_remove;
+					}
 				}
 	    }
 
