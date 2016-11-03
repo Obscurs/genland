@@ -27,7 +27,7 @@ void Game::Start(void)
 
     //PlayerPaddle *player1 = new PlayerPaddle();
     //player1->SetPosition((SCREEN_WIDTH/2),700);
-    _gameState= Game::Playing;
+    _gameState= Game::ShowingMenu;
     sf::Clock clock1;
     sf::Clock clock2;
     float lastTime = 0;
@@ -125,7 +125,22 @@ void Game::GameLoop(double delta)
     {
         case Game::ShowingMenu:
         {
-            //ShowMenu();
+            MenuMain::Draw();
+            while(window.pollEvent(currentEvent))
+            {
+                if(currentEvent.type == sf::Event::MouseWheelMoved)
+                {
+                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
+                }
+                else if (currentEvent.type == sf::Event::Closed ||
+                         ((currentEvent.type == sf::Event::KeyPressed) &&
+                          (currentEvent.key.code == sf::Keyboard::Escape)))
+                {
+                    std::cout << "bye" << std::endl;
+                    ExitGame();
+                    //window.close();
+                }
+            }
             break;
         }
         case Game::Playing:
@@ -142,17 +157,16 @@ void Game::GameLoop(double delta)
 
 
             while(window.pollEvent(currentEvent))
-	    {
+	        {
                 if(currentEvent.type == sf::Event::MouseWheelMoved)
-		{
+		        {
                     Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
                 }
-		else if (currentEvent.type == sf::Event::Closed ||
+		        else if (currentEvent.type == sf::Event::Closed ||
                     ((currentEvent.type == sf::Event::KeyPressed) &&
                      (currentEvent.key.code == sf::Keyboard::Escape)))
-                {
-                    std::cout << "bye" << std::endl;
-                    ExitGame();
+                    {
+                        _gameState = ShowingMenu;
                     //window.close();
                 }
             }

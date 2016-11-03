@@ -6,6 +6,7 @@
 #include "Drawer.h"
 #include "Player.h"
 #include "Map.h"
+#include "MenuMain.h"
 #include "WorldBackground.h"
 #include "Clock.h"
 
