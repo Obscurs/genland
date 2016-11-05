@@ -304,6 +304,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	sf::Vector2i keySpace = inputs.getKey("Space");
 
     sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
 	//sf::View currentView = window.getView();
 	//sf::Vector2f centerView = currentView.getCenter();
 	//sf::Vector2f sizeView = currentView.getSize();

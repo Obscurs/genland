@@ -27,7 +27,7 @@ void Game::Start(void)
 
     //PlayerPaddle *player1 = new PlayerPaddle();
     //player1->SetPosition((SCREEN_WIDTH/2),700);
-    _gameState= Game::ShowingMenu;
+    _gameState= Game::Playing;
     sf::Clock clock1;
     sf::Clock clock2;
     float lastTime = 0;
@@ -119,13 +119,20 @@ void Game::GameLoop(double delta)
 {
     sf::Event currentEvent;
     //_mainWindow.GetEvent(currentEvent);
-    
 
+    sf::Font font;
+    if (!font.loadFromFile("resources/font1.ttf"))
+    {
+        std::cout << "font error" << std::endl;
+    }
+    Game::inputs.Update();
     switch(_gameState)
     {
         case Game::ShowingMenu:
         {
-            MenuMain::Draw();
+            MenuMain::Draw(window, font);
+            if(MenuMain::newGameClicked(Game::inputs,window)) std::cout <<"click" << std::endl;
+
             while(window.pollEvent(currentEvent))
             {
                 if(currentEvent.type == sf::Event::MouseWheelMoved)
@@ -147,7 +154,7 @@ void Game::GameLoop(double delta)
         {
 
 
-            Game::inputs.Update();
+
 
             Game::player.Update(delta, Game::map_curr, Game::inputs, window);
             Game::map_curr.UpdateAll(delta, player.GetPosition());

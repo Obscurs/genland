@@ -54,6 +54,7 @@ void Inputs::UpdateKey(bool pressed, std::string key){
 
 
 void Inputs::Update(){
+
 	UpdateKey(sf::Mouse::isButtonPressed(sf::Mouse::Left), "mouseLeft");
 	UpdateKey(sf::Mouse::isButtonPressed(sf::Mouse::Right), "mouseRight");
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift), "LShift");
