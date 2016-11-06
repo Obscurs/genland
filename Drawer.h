@@ -22,7 +22,6 @@ public:
     void Draw(sf::RenderWindow &window);
 
 private:
-private:
     Map *map_curr;
     Player *player;
     Clock *clock;

@@ -18,7 +18,7 @@
 class Map
 {
 public:
-	Map(int pos);
+	Map(int pos, std::string game_path);
 	~Map();
 
 
@@ -34,14 +34,14 @@ public:
 	int getChunkIndex(float x);
     int getIndexMatChunk(int x);
 
-
+    void saveMap();
     void removeTile2(Tile* r_tile);
 	void UpdateAll(float delta, sf::Vector2f player_pos);
 	void checkLoadedChunks(float x, float y);
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
 private:
 
-
+	std::string save_path;
     inline bool exists_file (const std::string& name);
     int posMap;
 	std::mt19937 generator;

@@ -7,9 +7,12 @@
 #include "Player.h"
 #include "Map.h"
 #include "MenuMain.h"
+#include "NewGameMenu.h"
+#include "MenuLoadGame.h"
+#include "MenuConfigGame.h"
 #include "WorldBackground.h"
 #include "Clock.h"
-
+#include "RunningGame.h"
 class Game
 {
 public:
@@ -23,18 +26,16 @@ private:
 	static bool IsExiting();
 	static void GameLoop(double delta);
 	static void ExitGame();
-
-	enum GameState { Uninitialized, Starting, Paused, 
+    static void GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory);
+    static void CreateNewGame(std::string path);
+    static void DeleteGame(int index,std::string path);
+	enum GameState { Uninitialized, NewGame, LoadGame, Paused,
 					ShowingMenu, Playing, Exiting };
 
 	static GameState _gameState;
 	static sf::RenderWindow window;
-	static Map map_curr;
-	static Player player;
 	static Inputs inputs;
-	static Drawer drawer;
-	static WorldBackground backgrounds;
-	static Clock clock;
+    static RunningGame game;
 
 
 

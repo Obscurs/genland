@@ -17,10 +17,14 @@
 
 
 
-void Chunk::saveToFile(){
-    std::string filename = "map/";
+void Chunk::saveToFile(std::string path){
+    std::string filename = path;
+
+    filename.append("/map/");
+    //std::string filename = "map/";
     filename.append(std::to_string(chunk_pos.x));
     filename.append(".txt");
+    std::cout << filename << std::endl;
     //std::ofstream myfile(filename, std::ios::trunc);
     std::ofstream myfile;
     myfile.open (filename);

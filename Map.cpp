@@ -19,8 +19,9 @@
 
 
 
-Map::Map(int pos)
+Map::Map(int pos, std::string path)
 {
+    save_path=path;
     Light l1(sf::Vector2f(+500.0,2000.0),95.0,105.0,100.0, sf::Color::Green);
     Light l2(sf::Vector2f(+550.0,2000.0),95.0,105.0,100.0, sf::Color::Red);
     Light l3(sf::Vector2f(0,0),78.0,80.0,100.0, sf::Color::Yellow);
@@ -62,9 +63,15 @@ Map::Map(int pos)
 
 
 }
+void Map::saveMap(){
+    for(int i=0; i<N_CHUNKS_X; i++){
+        chunk_mat[i]->saveToFile(save_path);
+    }
+}
 void Map::createMap(int map_index, int chunk_index, int &id_temp){
 
-    std::string filename = "map/";
+    std::string filename = save_path;
+    filename.append("/map/");
     filename.append(std::to_string(chunk_index));
     filename.append(".txt");
 
@@ -562,7 +569,7 @@ void Map::checkLoadedChunks(float x, float y){
             //#pragma omp task
             {
 
-                c2->saveToFile();
+                c2->saveToFile(save_path);
                 int current_pos = c1->chunk_pos.x;
                 int id_temp = 0;
                 Chunk *chunk_mid = chunk_mat[1];
@@ -585,7 +592,7 @@ void Map::checkLoadedChunks(float x, float y){
             //#pragma omp task
             {
 
-                c1->saveToFile();
+                c1->saveToFile(save_path);
                 int current_pos = c2->chunk_pos.x;
                 int id_temp = 0;
                 Chunk *chunk_mid = chunk_mat[1];

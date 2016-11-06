@@ -24,7 +24,7 @@ public:
 	sf::Vector2i getTileIndex(float x, float y);
 	void setTileNeighbors(int index_x, int index_y);
 	void calcLateralNeighborsTiles(int latelal);
-    void saveToFile();
+    void saveToFile(std::string path);
 	Chunk* neighbors[2] = { nullptr };
 	void recalcReachFloor();
 	void recalcReachSun();

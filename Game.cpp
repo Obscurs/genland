@@ -8,10 +8,55 @@
 #include <SFML/Audio.hpp>
 #include <map>
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <dirent.h>
+#include <sys/types.h>
 #include <cassert>
 
 
+#include <string.h>
+#include <limits.h>
+#include <unistd.h>
+
 #include "Game.h"
+
+
+int DeleteDirectory(const char *dirname)
+{
+    DIR *dir;
+    struct dirent *entry;
+    char path[PATH_MAX];
+
+    if (path == NULL) {
+        fprintf(stderr, "Out of memory error\n");
+        return 0;
+    }
+    dir = opendir(dirname);
+    if (dir == NULL) {
+        perror("Error opendir()");
+        return 0;
+    }
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
+            snprintf(path, (size_t) PATH_MAX, "%s/%s", dirname, entry->d_name);
+            if (entry->d_type == DT_DIR) {
+                DeleteDirectory(path);
+            }
+
+            printf("(not really) Deleting: %s\n", path);
+            remove(path);
+
+        }
+
+    }
+    closedir(dir);
+    remove(dirname);
+    printf("(not really) Deleting: %s\n", dirname);
+
+    return 1;
+}
 
 
 void Game::Start(void)
@@ -23,11 +68,8 @@ void Game::Start(void)
     window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
     sf::View viewPlayer(sf::FloatRect(200, 200, 1024, 768));
     window.setView(viewPlayer);
-    //Game::window sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML works!");
 
-    //PlayerPaddle *player1 = new PlayerPaddle();
-    //player1->SetPosition((SCREEN_WIDTH/2),700);
-    _gameState= Game::Playing;
+    _gameState= Game::ShowingMenu;
     sf::Clock clock1;
     sf::Clock clock2;
     float lastTime = 0;
@@ -58,14 +100,11 @@ void Game::Start(void)
 
 
 
-    Game::player.Load("blue.png");
-    Game::player.SetPosition(0,0);
-    Game::player.SetSize(32);
+
 
     while(!IsExiting())
     {
-        viewPlayer.setCenter(player.GetPosition().x+(player.GetWidth()/2), player.GetPosition().y+(player.GetHeight()/2));
-        window.setView(viewPlayer);
+
 
         double delta =  clock1.restart().asSeconds();
 
@@ -131,36 +170,66 @@ void Game::GameLoop(double delta)
         case Game::ShowingMenu:
         {
             MenuMain::Draw(window, font);
-            if(MenuMain::newGameClicked(Game::inputs,window)) std::cout <<"click" << std::endl;
-
+            if(MenuMain::newGameClicked(Game::inputs,window)) _gameState = NewGame;
+            else if(MenuMain::exitClicked(Game::inputs,window)) ExitGame();
+            else if(MenuMain::loadClicked(Game::inputs,window)) _gameState = LoadGame;
             while(window.pollEvent(currentEvent))
             {
                 if(currentEvent.type == sf::Event::MouseWheelMoved)
                 {
                     Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
                 }
-                else if (currentEvent.type == sf::Event::Closed ||
-                         ((currentEvent.type == sf::Event::KeyPressed) &&
-                          (currentEvent.key.code == sf::Keyboard::Escape)))
+                else if (
+                         (currentEvent.type == sf::Event::KeyPressed) &&
+                          (currentEvent.key.code == sf::Keyboard::Escape))
                 {
                     std::cout << "bye" << std::endl;
-                    ExitGame();
+                    _gameState = Playing;
                     //window.close();
+                }
+                else if (currentEvent.type == sf::Event::Closed)
+                {
+                    Game::ExitGame();
                 }
             }
             break;
         }
+        case Game::NewGame:
+        {
+            NewGameMenu::Draw(window, font);
+            if(NewGameMenu::backClicked(Game::inputs,window)) _gameState = ShowingMenu;
+            else if(NewGameMenu::startClicked(Game::inputs,window)) {
+                std::vector<std::string> out;
+                GetFilesInDirectory(out,"save");
+                std::string new_game_path = "save/s";
+                new_game_path.append(std::to_string(out.size()));
+                CreateNewGame(new_game_path);
+                Game::game.restart(new_game_path,window);
+
+                _gameState = Playing;
+                //DeleteGame(2,"save");
+                //int a = DeleteDirectory("save/s1");
+                //std::cout << out[0] << std::endl;
+            }
+
+            break;
+        }
+        case Game::LoadGame:
+        {
+            std::vector<std::string> out;
+            GetFilesInDirectory(out,"save");
+            std::string new_game_path = "save/s";
+            new_game_path.append(std::to_string(out.size()-1));
+            Game::game.restart(new_game_path,window);
+            _gameState = Playing;
+
+
+            break;
+        }
         case Game::Playing:
         {
-
-
-
-
-            Game::player.Update(delta, Game::map_curr, Game::inputs, window);
-            Game::map_curr.UpdateAll(delta, player.GetPosition());
-            Game::clock.Update(delta);
-            Game::backgrounds.Update(player.GetPosition(),clock);
-            Game::drawer.Draw(window);
+            Game::game.update(window,delta,inputs);
+            Game::game.draw(window);
 
 
             while(window.pollEvent(currentEvent))
@@ -169,12 +238,17 @@ void Game::GameLoop(double delta)
 		        {
                     Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
                 }
-		        else if (currentEvent.type == sf::Event::Closed ||
-                    ((currentEvent.type == sf::Event::KeyPressed) &&
-                     (currentEvent.key.code == sf::Keyboard::Escape)))
-                    {
-                        _gameState = ShowingMenu;
+                else if (
+                        (currentEvent.type == sf::Event::KeyPressed) &&
+                        (currentEvent.key.code == sf::Keyboard::Escape))
+                {
+                    std::cout << "bye" << std::endl;
+                    _gameState = ShowingMenu;
                     //window.close();
+                }
+                else if (currentEvent.type == sf::Event::Closed)
+                {
+                    Game::ExitGame();
                 }
             }
             break;
@@ -186,17 +260,106 @@ void Game::GameLoop(double delta)
 
 void Game::ExitGame()
 {
+    Game::game.saveGame();
     _gameState = Exiting;
 }
+void Game::CreateNewGame(std::string path) {
+    const int dir_err = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if (-1 == dir_err)
+    {
+        printf("Error creating directory s !n");
+        exit(1);
+    }
+    std::string path_map = path;
+    path_map.append("/map");
+    const int dir_err2 = mkdir(path_map.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if (-1 == dir_err2)
+    {
+        printf("Error creating directory map !n");
+        exit(1);
+    }
+}
+
+void Game::DeleteGame(int index, std::string path) {
+    std::vector<std::string> out;
+    GetFilesInDirectory(out,path);
+    std::string path_delete = path;
+    path_delete.append("/s");
+    path_delete.append(std::to_string(index));
+    DeleteDirectory(path_delete.c_str());
+    int result;
+    for(int i=index+1; i<out.size();i++){
+        std::string path_rename_old = path;
+        path_rename_old.append("/s");
+        std::string path_rename_new = path_rename_old;
+        path_rename_old.append(std::to_string(i));
+        path_rename_new.append(std::to_string(i-1));
+        char oldname[50];
+        strcpy(oldname, path_rename_old.c_str());
+        char newname[50] ="newname.txt";
+        strcpy(newname, path_rename_new.c_str());
+        result= rename( oldname , newname );
+        if ( result == 0 )
+            puts ( "File successfully renamed" );
+        else
+            perror( "Error renaming file" );
+    }
+}
+void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory)
+{
+#ifdef WINDOWS
+    HANDLE dir;
+    WIN32_FIND_DATA file_data;
+
+    if ((dir = FindFirstFile((directory + "/*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
+        return; /* No files found */
+
+    do {
+        const string file_name = file_data.cFileName;
+        const string full_file_name = directory + "/" + file_name;
+        const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+
+        if (file_name[0] == '.')
+            continue;
+
+        if (is_directory)
+            continue;
+
+        out.push_back(full_file_name);
+    } while (FindNextFile(dir, &file_data));
+
+    FindClose(dir);
+#else
+    DIR *dir;
+    class dirent *ent;
+    class stat st;
+    const char * c = directory.c_str();
+    dir = opendir(c);
+    while ((ent = readdir(dir)) != NULL) {
+
+        const std::string file_name = ent->d_name;
+        const std::string full_file_name = directory + "/" + file_name;
+
+        if (file_name[0] == '.')
+            continue;
+
+        if (stat(full_file_name.c_str(), &st) == -1)
+            continue;
+
+        //const bool is_directory = (st.st_mode & S_IFDIR) != 0;
+
+        //if (is_directory)
+        //    continue;
+        out.push_back(full_file_name);
+    }
+    closedir(dir);
+#endif
+} // GetFilesInDirectory
+
 
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::window;
-//sf::Vector2i v1(0,0);
-//Chunk Game::chunk(v1);
-Map Game::map_curr(-1);
-Player Game::player;
+
 Inputs Game::inputs;
-WorldBackground Game::backgrounds;
-Clock Game::clock;
-Drawer Game::drawer(&map_curr,&player,&backgrounds, &clock);
+RunningGame Game::game("save/s0",window);
 
