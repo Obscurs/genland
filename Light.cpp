@@ -20,12 +20,12 @@ Light::~Light()
     //std::for_each(_gameObjects.begin(),_gameObjects.end(),GameObjectDeallocator());
 }
 void Light::Update(float deltatime){
-    std::random_device rd;     // only used once to initialise (seed) engine
-    std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
-    std::uniform_int_distribution<int> uni((int)radius_min,(int)radius_max); // guaranteed unbiased
+    //std::random_device rd;     // only used once to initialise (seed) engine
+    //std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
+    //std::uniform_int_distribution<int> uni((int)radius_min,(int)radius_max); // guaranteed unbiased
 
-    auto random_integer = uni(rng);
-    radius = random_integer;
+    //auto random_integer = uni(rng);
+    //radius = random_integer;
     /*
     int direction = rand()%(1-0 + 1);
     if(direction==0 && radius>radius_min)radius -= deltatime*10;

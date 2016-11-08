@@ -459,16 +459,16 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs){
 }
 
 void Map::removeTile2(Tile* removed_tile){
-    bool removed_reach_sun=removed_tile->reach_sun;
-    if(removed_tile->layer==0) removed_reach_sun = true;
+    //bool removed_reach_sun=removed_tile->reach_sun;
+    //if(removed_tile->layer==0) removed_reach_sun = true;
     Tile* otherLayerRemovedTile= removed_tile->neighbors[8];
     if(!otherLayerRemovedTile->reach_floor) removeReachFloorCascade2(removed_tile->neighbors[1]);
     removed_tile->Reload("0");
-    if(removed_reach_sun) removed_tile->reach_sun = true;
+    //if(removed_reach_sun) removed_tile->reach_sun = true;
     Tile* removed_tile0;
     if(removed_tile->layer==0) removed_tile0 = removed_tile;
     else removed_tile0 = removed_tile->neighbors[8];
-
+    /*
     if(removed_reach_sun){
         std::queue<Tile*> queue_bfs;
         for(int i = 0; i< 8; i++){
@@ -498,7 +498,7 @@ void Map::removeTile2(Tile* removed_tile){
 
         }
     }
-
+    */
     std::map<Tile*,bool> leftUpRight_evaluatedTiles;
     leftUpRight_evaluatedTiles[removed_tile0->neighbors[7]] = (removed_tile0->neighbors[7] == nullptr);
     leftUpRight_evaluatedTiles[removed_tile0->neighbors[1]] = (removed_tile0->neighbors[1] == nullptr);

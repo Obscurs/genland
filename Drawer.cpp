@@ -131,6 +131,9 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
 
 
     texture_background.clear(sf::Color(255,0,0,255));
+
+
+
     backgrounds->Draw(texture_background);
     sf::Vector2f pos_sprite = firstPos;
     pos_sprite.x+=1;

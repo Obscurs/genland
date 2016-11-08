@@ -28,6 +28,10 @@ Player::Player()
 	col_top_dist = 0;
 	col_left_dist = 0;
 	col_right_dist = 0;
+	_sprite.setPosition(0,0);
+    vx = 0;
+    vy = 0;
+    tile_being_removed=nullptr;
 }
 
 
@@ -417,7 +421,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    	position_tile = 0;
 	    	t = map.getTile(position.x, position.y, 0);
 	    }
-			if (t != tile_being_removed && tile_being_removed != nullptr) {
+			if (tile_being_removed != nullptr && t != tile_being_removed) {
 				tile_being_removed->being_removed = false;
 			}
 	    //sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);

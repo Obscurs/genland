@@ -27,9 +27,11 @@ void WorldBackground::Update(sf::Vector2f player_pos, Clock &clock){
     sun_sprite.setPosition(player_pos.x+clock.min,player_pos.y/1.2-clock.min*30+1000);
 }
 void WorldBackground::Draw(sf::RenderTexture &texture_plain_sprite){
+
     for(int i=0; i< backgrounds.size(); i++){
         backgrounds[i].Draw(texture_plain_sprite);
         if(i==0)texture_plain_sprite.draw(sun_sprite);
+        texture_plain_sprite.display();
     }
 
 }
