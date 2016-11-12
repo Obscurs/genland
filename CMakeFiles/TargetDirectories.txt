@@ -1,0 +1,3 @@
+/home/arnito/ClionProjects/genland/CMakeFiles/edit_cache.dir
+/home/arnito/ClionProjects/genland/CMakeFiles/rebuild_cache.dir
+/home/arnito/ClionProjects/genland/CMakeFiles/genland.dir
