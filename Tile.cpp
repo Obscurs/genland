@@ -373,6 +373,7 @@ void Tile::SetSize(float x)
 
 sf::Vector2f Tile::GetPosition() const
 {
+
 	return position;
 }
 

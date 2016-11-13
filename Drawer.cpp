@@ -80,16 +80,16 @@ void Drawer::DrawFrontItemsMap(sf::RenderWindow& renderWindow,sf::VertexArray &r
     }
 }
 
-sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array){
+sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow, MagicView &mv ,sf::VertexArray &render_array,sf::VertexArray &sky_array){
     texture_plain_sprite.clear(sf::Color(0,0,0,0));
     //backgrounds->Draw(texture_plain_sprite);
 
 
 
 
-    sf::View currentView = renderWindow.getView();
-    sf::Vector2f centerView = currentView.getCenter();
-    sf::Vector2f sizeView = currentView.getSize();
+    //sf::View currentView = renderWindow.getView();
+    sf::Vector2f centerView = mv.getCenter();
+    sf::Vector2f sizeView = mv.getSize();
     float first_x = centerView.x-(sizeView.x/2)-1;
     float first_y = centerView.y-(sizeView.y/2)-1;
     float last_x = centerView.x+(sizeView.x/2)+1;
@@ -140,7 +140,7 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
     pos_sprite.y+=1;
     sf::Sprite background_sprite(texture_background.getTexture());
     background_sprite.setPosition(pos_sprite);
-    texture_background.setView(currentView);
+    texture_background.setView(mv);
     sf::RenderStates states2;
     states2.texture = &texture_background.getTexture();
     states2.shader = &sun_background_shader;
@@ -160,7 +160,7 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
 
     sf::RenderStates states;
     states.texture = texMan->getTexture();
-    texture_plain_sprite.setView(currentView);
+    texture_plain_sprite.setView(mv);
     texture_plain_sprite.draw(render_array, states);
 
 
@@ -251,14 +251,14 @@ void Drawer::DrawLights(sf::View& currentView,sf::VertexArray &render_array,sf::
 
 }
 
-void Drawer::DrawMap(sf::RenderWindow& renderWindow)
+void Drawer::DrawMap(sf::RenderWindow& renderWindow,MagicView &mv)
 {
 
-    sf::View currentView = renderWindow.getView();
+    //sf::View currentView = renderWindow.getView();
     sf::VertexArray render_array(sf::Quads , (uint)(4));
     sf::VertexArray sky_array(sf::Quads , (uint)(4));
-    sf::Sprite map_without_lights = get_plain_sprite(renderWindow, render_array,sky_array);
-    DrawLights(currentView,render_array,sky_array,map_without_lights);
+    sf::Sprite map_without_lights = get_plain_sprite(renderWindow,mv, render_array,sky_array);
+    DrawLights(mv,render_array,sky_array,map_without_lights);
     sf::Sprite sprite(texture_back->getTexture());
     sprite.setPosition(map_without_lights.getPosition());
 
@@ -270,8 +270,8 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow)
 
 }
 
-void Drawer::Draw(sf::RenderWindow &window){
-    DrawMap(window);
+void Drawer::Draw(sf::RenderWindow &window,MagicView &mv){
+    DrawMap(window,mv);
     player->Draw(window);
     player->DrawInventory(window);
 }

@@ -15,6 +15,7 @@
 #include "NewGameMenu.h"
 #include "WorldBackground.h"
 #include "Clock.h"
+#include "MagicView.h"
 
 class RunningGame {
 public:
@@ -28,9 +29,9 @@ public:
     WorldBackground backgrounds;
     Clock clock;
     std::string pathGame;
-    void update(sf::RenderWindow &window,float delta,Inputs &inputs);
+    void update(sf::RenderWindow &window, MagicView &game_view,float delta,Inputs &inputs);
     void saveGame();
-    void draw(sf::RenderWindow &window);
+    void draw(sf::RenderWindow &window,MagicView &mv);
 
 };
 

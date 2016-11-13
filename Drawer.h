@@ -13,13 +13,13 @@
 #include "Map.h"
 #include "WorldBackground.h"
 #include "Clock.h"
-
+#include "MagicView.h"
 class Drawer {
 public:
     Drawer(Map *m,Player *p,WorldBackground *b, Clock *c);
     ~Drawer();
 
-    void Draw(sf::RenderWindow &window);
+    void Draw(sf::RenderWindow &window,MagicView &mv);
 
 private:
     Map *map_curr;
@@ -43,9 +43,9 @@ private:
     sf::RenderTexture texture_background;
 
 
-    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array);
+    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,MagicView &mv,sf::VertexArray &render_array,sf::VertexArray &sky_array);
     void DrawLights(sf::View& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights);
-    void DrawMap(sf::RenderWindow& renderWindow);
+    void DrawMap(sf::RenderWindow& renderWindow,MagicView &mv);
     void DrawFrontItemsMap(sf::RenderWindow& renderWindow,sf::VertexArray &render_array);
 };
 

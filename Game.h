@@ -13,6 +13,7 @@
 #include "WorldBackground.h"
 #include "Clock.h"
 #include "RunningGame.h"
+#include "MagicView.h"
 class Game
 {
 public:
@@ -36,7 +37,7 @@ private:
 	static sf::RenderWindow window;
 	static Inputs inputs;
     static RunningGame game;
-
+    static MagicView view_game;
 
 
 

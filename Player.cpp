@@ -290,6 +290,7 @@ void Player::Load(std::string filename)
 
 void Player::Draw(sf::RenderWindow & renderWindow)
 {
+
 		renderWindow.draw(_sprite);
 }
 void Player::DrawInventory(sf::RenderWindow & renderWindow)

@@ -66,8 +66,11 @@ void Game::Start(void)
         return;
 
     window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
-    sf::View viewPlayer(sf::FloatRect(200, 200, 1024, 768));
-    window.setView(viewPlayer);
+    view_game.setRenderTarget(&window);
+    view_game.setViewport({0,0,1,1});
+    view_game.setResolution(sf::Vector2i(1024,1024));
+    view_game.setMode(MagicView::expanded);
+    window.setView(view_game);
 
     _gameState= Game::ShowingMenu;
     sf::Clock clock1;
@@ -157,8 +160,7 @@ bool Game::IsExiting()
 void Game::GameLoop(double delta)
 {
     sf::Event currentEvent;
-    //_mainWindow.GetEvent(currentEvent);
-
+    view_game.update();
     sf::Font font;
     if (!font.loadFromFile("resources/font1.ttf"))
     {
@@ -169,16 +171,19 @@ void Game::GameLoop(double delta)
     {
         case Game::ShowingMenu:
         {
+
             MenuMain::Draw(window, font);
-            if(MenuMain::newGameClicked(Game::inputs,window)) _gameState = NewGame;
-            else if(MenuMain::exitClicked(Game::inputs,window)) ExitGame();
-            else if(MenuMain::loadClicked(Game::inputs,window)) _gameState = LoadGame;
+            MenuMain::Update(); //s'ha de fer despres de draw pk sino peta magicView
+            if(MenuMain::newGameClicked(Game::inputs)) _gameState = NewGame;
+            else if(MenuMain::exitClicked(Game::inputs)) ExitGame();
+            else if(MenuMain::loadClicked(Game::inputs)) _gameState = LoadGame;
             while(window.pollEvent(currentEvent))
             {
                 if(currentEvent.type == sf::Event::MouseWheelMoved)
                 {
                     Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
                 }
+
                 else if (
                          (currentEvent.type == sf::Event::KeyPressed) &&
                           (currentEvent.key.code == sf::Keyboard::Escape))
@@ -186,6 +191,10 @@ void Game::GameLoop(double delta)
                     std::cout << "bye" << std::endl;
                     _gameState = Playing;
                     //window.close();
+                }
+                else if (currentEvent.type == sf::Event::Resized){
+                    MenuMain::view.update();
+                    std::cout << "res" << std::endl;
                 }
                 else if (currentEvent.type == sf::Event::Closed)
                 {
@@ -197,8 +206,9 @@ void Game::GameLoop(double delta)
         case Game::NewGame:
         {
             NewGameMenu::Draw(window, font);
-            if(NewGameMenu::backClicked(Game::inputs,window)) _gameState = ShowingMenu;
-            else if(NewGameMenu::startClicked(Game::inputs,window)) {
+            NewGameMenu::Update();
+            if(NewGameMenu::backClicked(Game::inputs)) _gameState = ShowingMenu;
+            else if(NewGameMenu::startClicked(Game::inputs)) {
                 std::vector<std::string> out;
                 GetFilesInDirectory(out,"save");
                 std::string new_game_path = "save/s";
@@ -211,7 +221,21 @@ void Game::GameLoop(double delta)
                 //int a = DeleteDirectory("save/s1");
                 //std::cout << out[0] << std::endl;
             }
-
+            while(window.pollEvent(currentEvent))
+            {
+                if(currentEvent.type == sf::Event::MouseWheelMoved)
+                {
+                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
+                }
+                else if (currentEvent.type == sf::Event::Resized){
+                    NewGameMenu::view.update();
+                    std::cout << "res" << std::endl;
+                }
+                else if (currentEvent.type == sf::Event::Closed)
+                {
+                    Game::ExitGame();
+                }
+            }
             break;
         }
         case Game::LoadGame:
@@ -228,8 +252,9 @@ void Game::GameLoop(double delta)
         }
         case Game::Playing:
         {
-            Game::game.update(window,delta,inputs);
-            Game::game.draw(window);
+            Game::game.update(window,view_game,delta,inputs);
+
+            Game::game.draw(window,view_game);
 
 
             while(window.pollEvent(currentEvent))
@@ -237,6 +262,10 @@ void Game::GameLoop(double delta)
                 if(currentEvent.type == sf::Event::MouseWheelMoved)
 		        {
                     Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
+                }
+                else if (currentEvent.type == sf::Event::Resized){
+                    view_game.update();
+                    std::cout << "res" << std::endl;
                 }
                 else if (
                         (currentEvent.type == sf::Event::KeyPressed) &&
@@ -362,4 +391,4 @@ sf::RenderWindow Game::window;
 
 Inputs Game::inputs;
 RunningGame Game::game("save/s0",window);
-
+MagicView Game::view_game;

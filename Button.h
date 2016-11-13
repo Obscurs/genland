@@ -17,9 +17,9 @@ public:
     sf::Vector2f size;
     std::string text;
     int type;
-
-    bool isMouseOver(sf::Vector2i mousePos);
+    bool mouseOver;
     void Draw(sf::RenderWindow &window,sf::Font font);
+    void update(sf::Vector2f mousePos);
 
 };
 

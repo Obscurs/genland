@@ -7,47 +7,56 @@
 
 void MenuMain::Draw(sf::RenderWindow &window, sf::Font font)
 {
+    view.setRenderTarget(&window);
+    view.setViewport({0,0,1,1});
+    view.setResolution(sf::Vector2i(2000,2000));
+    view.setMode(MagicView::crop);
+    sf::View oldView = window.getView();
+    window.setView(view);
     new_game.Draw(window, font);
     load.Draw(window, font);
     config.Draw(window, font);
     exit.Draw(window, font);
+    window.setView(oldView);
 }
-void MenuMain::Update(sf::RenderWindow &window)
+void MenuMain::Update()
 {
+    sf::Vector2f mousePos = view.getMouseCoord();
+    new_game.update(mousePos);
+    load.update(mousePos);
+    config.update(mousePos);
+    exit.update(mousePos);
 }
-Button MenuMain::new_game(sf::Vector2f(Game::SCREEN_WIDTH/2,Game::SCREEN_HEIGHT/2),
-                          sf::Vector2f(Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT/20),
+Button MenuMain::new_game(sf::Vector2f(850,800),
+                          sf::Vector2f(300,90),
                           "NEW GAME",
                           0);
-Button MenuMain::load(sf::Vector2f(Game::SCREEN_WIDTH/2,Game::SCREEN_HEIGHT/2+(Game::SCREEN_HEIGHT/18)),
-                          sf::Vector2f(Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT/20),
+Button MenuMain::load(sf::Vector2f(850,900),
+                      sf::Vector2f(300,90),
                           "LOAD",
                           0);
-Button MenuMain::config(sf::Vector2f(Game::SCREEN_WIDTH/2,Game::SCREEN_HEIGHT/2+(Game::SCREEN_HEIGHT/18)*2),
-                          sf::Vector2f(Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT/20),
+Button MenuMain::config(sf::Vector2f(850,1000),
+                        sf::Vector2f(300,90),
                           "CONFIG",
                           0);
-Button MenuMain::exit(sf::Vector2f(Game::SCREEN_WIDTH/2,Game::SCREEN_HEIGHT/2+(Game::SCREEN_HEIGHT/18)*3),
-                          sf::Vector2f(Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT/20),
+Button MenuMain::exit(sf::Vector2f(850,1100),
+                      sf::Vector2f(300,90),
                           "EXIT",
                           0);
-bool MenuMain::newGameClicked(Inputs &inputs,sf::RenderWindow &window){
+bool MenuMain::newGameClicked(Inputs &inputs){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    sf::Vector2i posMouse = sf::Mouse::getPosition(window);
-    return (mouseLeft.y && new_game.isMouseOver(posMouse));
+    return (mouseLeft.y && new_game.mouseOver);
 }
-bool MenuMain::loadClicked(Inputs &inputs,sf::RenderWindow &window){
+bool MenuMain::loadClicked(Inputs &inputs){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    sf::Vector2i posMouse = sf::Mouse::getPosition(window);
-    return (mouseLeft.y && load.isMouseOver(posMouse));
+    return (mouseLeft.y && load.mouseOver);
 }
-bool MenuMain::configClicked(Inputs &inputs,sf::RenderWindow &window){
+bool MenuMain::configClicked(Inputs &inputs){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    sf::Vector2i posMouse = sf::Mouse::getPosition(window);
-    return (mouseLeft.y && config.isMouseOver(posMouse));
+    return (mouseLeft.y && config.mouseOver);
 }
-bool MenuMain::exitClicked(Inputs &inputs,sf::RenderWindow &window){
+bool MenuMain::exitClicked(Inputs &inputs){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    sf::Vector2i posMouse = sf::Mouse::getPosition(window);
-    return (mouseLeft.y && exit.isMouseOver(posMouse));
+    return (mouseLeft.y && exit.mouseOver);
 }
+MagicView MenuMain::view;

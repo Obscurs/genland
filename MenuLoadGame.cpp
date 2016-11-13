@@ -18,17 +18,17 @@ void MenuLoadGame::Update(sf::RenderWindow &window)
 bool MenuLoadGame::loadClicked(Inputs &inputs,sf::RenderWindow &window){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
     sf::Vector2i posMouse = sf::Mouse::getPosition(window);
-    return (mouseLeft.y && load.isMouseOver(posMouse));
+    return (mouseLeft.y && load.mouseOver);
 }
 bool MenuLoadGame::delClicked(Inputs &inputs,sf::RenderWindow &window){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
     sf::Vector2i posMouse = sf::Mouse::getPosition(window);
-    return (mouseLeft.y && del.isMouseOver(posMouse));
+    return (mouseLeft.y && del.mouseOver);
 }
 bool MenuLoadGame::backClicked(Inputs &inputs,sf::RenderWindow &window){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
     sf::Vector2i posMouse = sf::Mouse::getPosition(window);
-    return (mouseLeft.y && back.isMouseOver(posMouse));
+    return (mouseLeft.y && back.mouseOver);
 }
 Button MenuLoadGame::load(sf::Vector2f(0+Game::SCREEN_WIDTH/20,Game::SCREEN_HEIGHT-Game::SCREEN_HEIGHT/20),
                           sf::Vector2f(Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT/20),
