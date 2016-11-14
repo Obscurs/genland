@@ -20,8 +20,8 @@ public:
 	static void Start();
 	//static sf::RenderWindow& GetWindow();
 	//const static sf::Input& GetInput();
-	const static int SCREEN_WIDTH = 1024;
-	const static int SCREEN_HEIGHT = 768;
+	const static int SCREEN_WIDTH = 1000;
+	const static int SCREEN_HEIGHT = 700;
 
 private:
 	static bool IsExiting();
@@ -37,8 +37,7 @@ private:
 	static sf::RenderWindow window;
 	static Inputs inputs;
     static RunningGame game;
-    static MagicView view_game;
-
+	static MagicView view_game;
 
 
 };

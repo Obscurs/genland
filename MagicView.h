@@ -18,6 +18,7 @@ class MagicView : public sf::View {
 public:
 
     enum ViewMode {
+        crop2,
         crop, // If the aspectratio of the window is not the same of the viewresolution, the viewport adapts.
         expanded, // If the aspectratio of the window is not the same of the viewresolution, the resolution adapts.
         viewport, // Same as 'expanded' but saying what viewport do you want.
@@ -38,6 +39,7 @@ public:
 
 
     void init(sf::Vector2i targetResolution);
+    void init2(sf::Vector2i targetResolution);
     void initExpanded(sf::Vector2i minResolution);
     void initExpanded(sf::Vector2i targetResolution, sf::FloatRect viewport);
     void initExpandedFit(sf::Vector2i targetResolution, sf::FloatRect viewport);

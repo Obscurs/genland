@@ -48,12 +48,42 @@ void MagicView::init(sf::Vector2i targetResolution) {
 
     size.x = 1. - (1. - yr);
     size.y = 1. - (1. - xr);
+    //std::cout << start.x << std::endl;
+    reset(sf::FloatRect(0,0,targetResolution.x,targetResolution.y));
+    setViewport(sf::FloatRect(start.x,start.y,size.x,size.y));
+    sf::View::move(_offset);
+
+}
+void MagicView::init2(sf::Vector2i targetResolution) {
+    if (_target == nullptr) { std::cout <<"Trying to init a view that not have a RenderTarget" << std::endl;}
+    int windowX = _target->getSize().x, windowY = _target->getSize().y;
+
+    float xr = windowX / float(targetResolution.x);
+    float yr = windowY / float(targetResolution.y);
+    float aux;
+    if (xr < yr) aux = 1 / yr;
+    else aux = 1 / xr;
+
+    xr *= aux;
+    yr *= aux;
+
+    sf::Vector2d start,size;
+    start.x = (1. - yr) / 2.;
+    start.y = (1. - xr) / 2.;
+    if (_align & (top|down)) {
+        start.y = (1. - xr) * ((_align & down) != 0);
+    }
+    if (_align & (left|right)) {
+        start.x = (1. - yr) *((_align & right) != 0);
+    }
+
+    size.x = 1. - (1. - yr);
+    size.y = 1. - (1. - xr);
 
     reset(sf::FloatRect(0,0,targetResolution.x,targetResolution.y));
     setViewport(sf::FloatRect(start.x,start.y,size.x,size.y));
     sf::View::move(_offset);
 }
-
 
 void MagicView::initExpanded(sf::Vector2i minResolution) {
     if (_target == nullptr) {std::cout <<"Trying to init a view that not have a RenderTarget"<< std::endl;}
@@ -177,6 +207,9 @@ void MagicView::update() {
     switch(_mode) {
         case ViewMode::crop:
             init(_resolution);
+            break;
+        case ViewMode::crop2:
+            init2(_resolution);
             break;
         case ViewMode::expanded:
             initExpanded(_resolution);

@@ -13,13 +13,13 @@ public:
 	const static int N_TILES_X = 100;
 	const static int N_TILES_Y = 200;
 	const static int N_TILES_Z = 2;
-	const static int TILE_SIZE = 32;
+	const static int TILE_SIZE = 16;
 
 	sf::Vector2i chunk_pos;
 
 	Tile* getTile(float x, float y, int z);
     Tile* getTileByIndex(int x, int y, int z);
-    void DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray, sf::VertexArray &skyArray);
+    void DrawChunk(sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray, sf::VertexArray &skyArray);
     void DrawGrassTiles(TextureManager &t, sf::VertexArray &vertexArray);
 	sf::Vector2i getTileIndex(float x, float y);
 	void setTileNeighbors(int index_x, int index_y);

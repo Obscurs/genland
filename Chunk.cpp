@@ -463,7 +463,7 @@ void Chunk::DrawGrassTiles(TextureManager &t, sf::VertexArray &vertexArray)
         grass_tiles[i]->DrawGrass(t,vertexArray);
     }
 }
-void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray, sf::VertexArray &skyArray)
+void Chunk::DrawChunk(sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray, sf::VertexArray &skyArray)
 {
     grass_tiles.clear();
     //std::cout << "Drawing chunk " << chunk_pos.x<< std::endl;
@@ -514,10 +514,6 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
                             t0->neighbors[5]!=nullptr && t0->neighbors[5]->id=="0" &&
                             t0->neighbors[7]!=nullptr && t0->neighbors[7]->id=="0"){
                             t0->drawSkyArray(skyArray);
-                        //vertexArray.append(sf::Vertex(sf::Vector2f(t0->position.x+t0->GetWidth(),position.y-GetHeight()/2), pos_tex1));
-                        //vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Chunk::TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
-                        //vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Chunk::TILE_SIZE,position.y-GetHeight()/2+Chunk::TILE_SIZE), pos_tex3));
-                        //vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y+Chunk::TILE_SIZE-GetHeight()/2), pos_tex4));
                     }
                     else t0->drawBorderSkyArray(skyArray,t);
                 }
@@ -528,7 +524,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
 
             }
             //DEBUG
-
+            /*
             Tile* t0 = tile_mat[i][j][0];
             //int test = t0->reach_sun;
             int test = -1;
@@ -544,6 +540,7 @@ void Chunk::DrawChunk(sf::RenderWindow& renderWindow, sf::Vector2f pos1, sf::Vec
             text.setPosition(test_pos.x, test_pos.y);
             text.setScale(sf::Vector2f(1.5,1.5));
             //renderWindow.draw(text);
+             */
             //END DEBUG
         }
     }

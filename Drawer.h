@@ -19,7 +19,7 @@ public:
     Drawer(Map *m,Player *p,WorldBackground *b, Clock *c);
     ~Drawer();
 
-    void Draw(sf::RenderWindow &window,MagicView &mv);
+    void Draw(sf::RenderWindow &window);
 
 private:
     Map *map_curr;
@@ -42,10 +42,11 @@ private:
     sf::RenderTexture black_texture;
     sf::RenderTexture texture_background;
 
+    sf::View view_player;
 
-    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,MagicView &mv,sf::VertexArray &render_array,sf::VertexArray &sky_array);
+    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array);
     void DrawLights(sf::View& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights);
-    void DrawMap(sf::RenderWindow& renderWindow,MagicView &mv);
+    void DrawMap(sf::RenderWindow& renderWindow);
     void DrawFrontItemsMap(sf::RenderWindow& renderWindow,sf::VertexArray &render_array);
 };
 

@@ -66,13 +66,15 @@ void Game::Start(void)
         return;
 
     window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
+
+    sf::View viewPlayer(sf::FloatRect(200, 200, SCREEN_WIDTH, SCREEN_HEIGHT));
     view_game.setRenderTarget(&window);
     view_game.setViewport({0,0,1,1});
-    view_game.setResolution(sf::Vector2i(1024,1024));
-    view_game.setMode(MagicView::expanded);
+    view_game.setResolution(sf::Vector2i(SCREEN_WIDTH,SCREEN_HEIGHT));
+    view_game.setMode(MagicView::crop);
     window.setView(view_game);
 
-    _gameState= Game::ShowingMenu;
+    _gameState= Game::Playing;
     sf::Clock clock1;
     sf::Clock clock2;
     float lastTime = 0;
@@ -120,7 +122,7 @@ void Game::Start(void)
         lastTime = currentTime;
         //std::cout << fps << std::endl;
 
-        window.clear(sf::Color(0,0,0,0));
+        window.clear(sf::Color(0,255,0,0));
         GameLoop(delta);
         fps_timer += lastTime;
         sf::View currentView = window.getView();
@@ -159,14 +161,15 @@ bool Game::IsExiting()
 
 void Game::GameLoop(double delta)
 {
+
     sf::Event currentEvent;
-    view_game.update();
     sf::Font font;
     if (!font.loadFromFile("resources/font1.ttf"))
     {
         std::cout << "font error" << std::endl;
     }
     Game::inputs.Update();
+    view_game.update();
     switch(_gameState)
     {
         case Game::ShowingMenu:
@@ -252,9 +255,10 @@ void Game::GameLoop(double delta)
         }
         case Game::Playing:
         {
+
             Game::game.update(window,view_game,delta,inputs);
 
-            Game::game.draw(window,view_game);
+            Game::game.draw(window);
 
 
             while(window.pollEvent(currentEvent))
@@ -264,7 +268,6 @@ void Game::GameLoop(double delta)
                     Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
                 }
                 else if (currentEvent.type == sf::Event::Resized){
-                    view_game.update();
                     std::cout << "res" << std::endl;
                 }
                 else if (

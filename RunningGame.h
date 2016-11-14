@@ -19,6 +19,8 @@
 
 class RunningGame {
 public:
+    const static int SCREEN_WIDTH = 1000;
+    const static int SCREEN_HEIGHT = 700;
     void restart(std::string path,sf::RenderWindow &window);
     RunningGame(std::string path,sf::RenderWindow &window);
     ~RunningGame();
@@ -29,10 +31,9 @@ public:
     WorldBackground backgrounds;
     Clock clock;
     std::string pathGame;
-    void update(sf::RenderWindow &window, MagicView &game_view,float delta,Inputs &inputs);
+    void update(sf::RenderWindow &window,MagicView &view_game,float delta,Inputs &inputs);
     void saveGame();
-    void draw(sf::RenderWindow &window,MagicView &mv);
-
+    void draw(sf::RenderWindow &window);
 };
 
 
