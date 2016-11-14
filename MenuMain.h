@@ -11,7 +11,7 @@
 
 class MenuMain {
 public:
-    static void Draw(sf::RenderWindow &window, sf::Font font);
+    static void Draw(sf::RenderWindow &window, const sf::Font& font);
     static void Update();
     static bool newGameClicked(Inputs &inputs);
     static bool loadClicked(Inputs &inputs);
