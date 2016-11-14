@@ -5,19 +5,17 @@
 #include "MenuMain.h"
 #include "Game.h"
 
-void MenuMain::Draw(sf::RenderWindow &window, sf::Font font)
+void MenuMain::Draw(sf::RenderWindow &window, const sf::Font& font)
 {
-    view.setRenderTarget(&window);
-    view.setViewport({0,0,1,1});
-    view.setResolution(sf::Vector2i(2000,2000));
-    view.setMode(MagicView::crop);
-    sf::View oldView = window.getView();
+
+
+    const sf::View* oldView = &window.getView();
     window.setView(view);
     new_game.Draw(window, font);
     load.Draw(window, font);
     config.Draw(window, font);
     exit.Draw(window, font);
-    window.setView(oldView);
+    window.setView(*oldView);
 }
 void MenuMain::Update()
 {

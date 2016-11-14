@@ -31,7 +31,8 @@ public:
     WorldBackground backgrounds;
     Clock clock;
     std::string pathGame;
-    void update(sf::RenderWindow &window,MagicView &view_game,float delta,Inputs &inputs);
+    MagicView view_game;
+    void update(sf::RenderWindow &window,float delta,Inputs &inputs);
     void saveGame();
     void draw(sf::RenderWindow &window);
 };

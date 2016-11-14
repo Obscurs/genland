@@ -67,12 +67,7 @@ void Game::Start(void)
 
     window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
 
-    sf::View viewPlayer(sf::FloatRect(200, 200, SCREEN_WIDTH, SCREEN_HEIGHT));
-    view_game.setRenderTarget(&window);
-    view_game.setViewport({0,0,1,1});
-    view_game.setResolution(sf::Vector2i(SCREEN_WIDTH,SCREEN_HEIGHT));
-    view_game.setMode(MagicView::crop);
-    window.setView(view_game);
+    // sf::View viewPlayer(sf::FloatRect(200, 200, SCREEN_WIDTH, SCREEN_HEIGHT));
 
     _gameState= Game::Playing;
     sf::Clock clock1;
@@ -98,14 +93,7 @@ void Game::Start(void)
     int fps_count=0;
     int fps_count2=0;
 
-
-
-
-
-
-
-
-
+    MenuMain::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
 
     while(!IsExiting())
     {
@@ -122,7 +110,7 @@ void Game::Start(void)
         lastTime = currentTime;
         //std::cout << fps << std::endl;
 
-        window.clear(sf::Color(0,255,0,0));
+        window.clear(sf::Color(0,255,0));
         GameLoop(delta);
         fps_timer += lastTime;
         sf::View currentView = window.getView();
@@ -169,14 +157,10 @@ void Game::GameLoop(double delta)
         std::cout << "font error" << std::endl;
     }
     Game::inputs.Update();
-    view_game.update();
     switch(_gameState)
     {
         case Game::ShowingMenu:
         {
-
-            MenuMain::Draw(window, font);
-            MenuMain::Update(); //s'ha de fer despres de draw pk sino peta magicView
             if(MenuMain::newGameClicked(Game::inputs)) _gameState = NewGame;
             else if(MenuMain::exitClicked(Game::inputs)) ExitGame();
             else if(MenuMain::loadClicked(Game::inputs)) _gameState = LoadGame;
@@ -204,6 +188,8 @@ void Game::GameLoop(double delta)
                     Game::ExitGame();
                 }
             }
+            MenuMain::Update(); //s'ha de fer despres de draw pk sino peta magicView
+            MenuMain::Draw(window, font);
             break;
         }
         case Game::NewGame:
@@ -255,12 +241,6 @@ void Game::GameLoop(double delta)
         }
         case Game::Playing:
         {
-
-            Game::game.update(window,view_game,delta,inputs);
-
-            Game::game.draw(window);
-
-
             while(window.pollEvent(currentEvent))
 	        {
                 if(currentEvent.type == sf::Event::MouseWheelMoved)
@@ -269,6 +249,7 @@ void Game::GameLoop(double delta)
                 }
                 else if (currentEvent.type == sf::Event::Resized){
                     std::cout << "res" << std::endl;
+                    Game::game.view_game.update();
                 }
                 else if (
                         (currentEvent.type == sf::Event::KeyPressed) &&
@@ -283,6 +264,8 @@ void Game::GameLoop(double delta)
                     Game::ExitGame();
                 }
             }
+            Game::game.update(window,delta,inputs);
+            Game::game.draw(window);
             break;
         }
     }
@@ -394,4 +377,3 @@ sf::RenderWindow Game::window;
 
 Inputs Game::inputs;
 RunningGame Game::game("save/s0",window);
-MagicView Game::view_game;
