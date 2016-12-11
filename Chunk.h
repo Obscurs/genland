@@ -27,7 +27,6 @@ public:
     void saveToFile(std::string path);
 	Chunk* neighbors[2] = { nullptr };
 	void recalcReachFloor();
-	void recalcReachSun();
 
 private:
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];

@@ -45,10 +45,7 @@ void Chunk::saveToFile(std::string path){
 void Chunk::setTileNeighbors(int index_x, int index_y){
     Tile* t0 = tile_mat[index_y][index_x][0];
     Tile* t1 = tile_mat[index_y][index_x][1];
-    if(t0->id_temp==19900){
-        int cactus = 3;
 
-    }
     t0->neighbors[8] = t1;
     t1->neighbors[8] = t0;
     if(index_x-1<0){
@@ -361,40 +358,13 @@ void Chunk::recalcReachFloor(){
         }
     }
 }
-void Chunk::recalcReachSun(){
-    std::queue<Tile*> queue_bfs;
-    for(int i= 0; i<N_TILES_Y; ++i){
-        for(int j=0; j<N_TILES_X; j++){
-            //std::cout << i << " " << j << std::endl;
-            if(tile_mat[i][j][0]->id != "0" && tile_mat[i][j][0]->reach_sun){
-                if(tile_mat[i][j][1]->id=="0") queue_bfs.push(tile_mat[i][j][0]);
-            }
-        }
-    }
-    while(!queue_bfs.empty()){
-        Tile* t0 = queue_bfs.front();
-        Tile* t1 = t0->neighbors[8];
-        queue_bfs.pop();
-        for(int i = 0; i<8; i++){
-            if(t0->neighbors[i] !=nullptr){
-                Tile* t0_aux = t0->neighbors[i];
-                Tile* t1_aux = t1->neighbors[i];
-                if(!t0_aux->reach_sun && t0_aux->id != "0" && t1_aux->id == "0"){
-                    queue_bfs.push(t0_aux);
-                }
-                t0_aux->reach_sun=true;
-                t1_aux->reach_sun=true;
-            }
-        }
 
-    }
-}
 void Chunk::calcLateralNeighborsTiles(int lateral){
     int x;
     if(lateral==1) x=Chunk::N_TILES_X-1;
     else x = 0;
     for(int y=0; y<Chunk::N_TILES_Y; y++){
-        std::cout << tile_mat[y][x][1]->id_temp << " set"<< std::endl;
+        //std::cout << tile_mat[y][x][1]->id_temp << " set"<< std::endl;
         setTileNeighbors(x,y);
     }
 }

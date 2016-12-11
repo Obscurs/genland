@@ -21,8 +21,8 @@ class RunningGame {
 public:
     const static int SCREEN_WIDTH = 1000;
     const static int SCREEN_HEIGHT = 700;
-    void restart(std::string path,sf::RenderWindow &window);
-    RunningGame(std::string path,sf::RenderWindow &window);
+    void restart(std::string path,sf::RenderWindow &window, std::string seed);
+    RunningGame(sf::RenderWindow &window);
     ~RunningGame();
     Map map_curr;
     Player player;

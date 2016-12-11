@@ -141,7 +141,7 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
     sf::Vector2f pos_sprite = firstPos;
     pos_sprite.x+=1;
     pos_sprite.y+=1;
-    std::cout <<pos_sprite.x << std::endl;
+    //std::cout <<pos_sprite.x << std::endl;
     sf::Sprite background_sprite(texture_background.getTexture());
     background_sprite.setPosition(pos_sprite);
     //return background_sprite;

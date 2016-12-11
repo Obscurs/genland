@@ -8,6 +8,7 @@
 #include <SFML/Audio.hpp>
 #include <map>
 #include <iostream>
+#include <cassert>
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -19,9 +20,13 @@
 #include <limits.h>
 #include <unistd.h>
 
+#include <iostream>
+#include <fstream>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "Game.h"
 
-
+//bool sortByName(const Person &lhs, const Person &rhs) { return lhs.name < rhs.name; }
 int DeleteDirectory(const char *dirname)
 {
     DIR *dir;
@@ -57,8 +62,31 @@ int DeleteDirectory(const char *dirname)
 
     return 1;
 }
+inline bool Game::exists_file (const std::string& name) {
+    struct stat buffer;
+    return (stat (name.c_str(), &buffer) == 0);
+}
+void Game::LoadData(){
+    std::vector<std::string> save_folders;
+    GetFilesInDirectory(save_folders, "save");
+    MenuLoadGame::save_list.elements.clear();
+    for(int i = 0; i<save_folders.size(); i++){
+        std::string route = save_folders[i];
+        route.append("/data");
+        if(exists_file(route)) {
+            std::string route_aux = route;
+            route_aux.append(".txt");
+            std::ifstream myfile(route_aux);
+            myfile.open(route);
+            std::string data_seed= "def", data_name = "def";
+            myfile >> data_seed >> data_name;
+            MenuLoadGame::save_list.insertElement(data_name);
+            myfile.close();
+        }
+        else std::cout << "ERROR: could not read file " << route << std::endl;
 
-
+    }
+}
 void Game::Start(void)
 {
 
@@ -69,7 +97,7 @@ void Game::Start(void)
 
     // sf::View viewPlayer(sf::FloatRect(200, 200, SCREEN_WIDTH, SCREEN_HEIGHT));
 
-    _gameState= Game::Playing;
+    _gameState= Game::ShowingMenu;
     sf::Clock clock1;
     sf::Clock clock2;
     float lastTime = 0;
@@ -94,7 +122,9 @@ void Game::Start(void)
     int fps_count2=0;
 
     MenuMain::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
-
+    NewGameMenu::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
+    MenuLoadGame::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
+    LoadData();
     while(!IsExiting())
     {
 
@@ -173,7 +203,8 @@ void Game::GameLoop(double delta)
 
                 else if (
                          (currentEvent.type == sf::Event::KeyPressed) &&
-                          (currentEvent.key.code == sf::Keyboard::Escape))
+                          (currentEvent.key.code == sf::Keyboard::Tab) &&
+                         Game::game.map_curr.initialized)
                 {
                     std::cout << "bye" << std::endl;
                     _gameState = Playing;
@@ -188,33 +219,68 @@ void Game::GameLoop(double delta)
                     Game::ExitGame();
                 }
             }
-            MenuMain::Update(); //s'ha de fer despres de draw pk sino peta magicView
+            MenuMain::Update();
             MenuMain::Draw(window, font);
             break;
         }
         case Game::NewGame:
         {
-            NewGameMenu::Draw(window, font);
-            NewGameMenu::Update();
+
+
             if(NewGameMenu::backClicked(Game::inputs)) _gameState = ShowingMenu;
-            else if(NewGameMenu::startClicked(Game::inputs)) {
+            else if(NewGameMenu::seedClicked(Game::inputs)){
+                NewGameMenu::disSelectAll();
+                NewGameMenu::seed.selected = true;
+            }
+            else if(NewGameMenu::nameClicked(Game::inputs)){
+                NewGameMenu::disSelectAll();
+                NewGameMenu::name.selected = true;
+            }
+            else if(NewGameMenu::startClicked(Game::inputs) && NewGameMenu::seed.text != "") {
                 std::vector<std::string> out;
                 GetFilesInDirectory(out,"save");
-                std::string new_game_path = "save/s";
-                new_game_path.append(std::to_string(out.size()));
-                CreateNewGame(new_game_path);
-                Game::game.restart(new_game_path,window);
+                if(out.size()<100) {
 
-                _gameState = Playing;
-                //DeleteGame(2,"save");
-                //int a = DeleteDirectory("save/s1");
-                //std::cout << out[0] << std::endl;
+
+                    std::string new_game_path = "save/s";
+                    if (out.size() < 10) new_game_path.append("0");
+                    new_game_path.append(std::to_string(out.size()));
+                    CreateNewGame(new_game_path, NewGameMenu::seed.getText(), NewGameMenu::name.getText());
+                    Game::game.restart(new_game_path, window, NewGameMenu::seed.getText());
+
+                    _gameState = Playing;
+                } else std::cout << "demasiadas partidas guardadas" << std::endl;
             }
             while(window.pollEvent(currentEvent))
             {
-                if(currentEvent.type == sf::Event::MouseWheelMoved)
+                if(currentEvent.type == sf::Event::TextEntered)
                 {
-                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
+                    if(((currentEvent.text.unicode < 58 && currentEvent.text.unicode >= 48) || currentEvent.text.unicode == 8 ) && NewGameMenu::seed.selected)
+                    {
+                        std::string name = NewGameMenu::seed.getText();
+                        if( currentEvent.text.unicode == 13 ) // return key
+                        {
+                            // finished entering name
+                        } else if( currentEvent.text.unicode == 8 ) { // backspace
+                            if( name.size() > 0 ) name.resize( name.size() - 1 );
+                        } else if(name.size()<10){
+                            name += static_cast<char>(currentEvent.text.unicode);
+                        }
+                        NewGameMenu::seed.setText( name );
+                    }
+                    else if(((currentEvent.text.unicode < 128 && currentEvent.text.unicode >= 48) || currentEvent.text.unicode == 8 )&& NewGameMenu::name.selected)
+                    {
+                        std::string name = NewGameMenu::name.getText();
+                        if( currentEvent.text.unicode == 13 ) // return key
+                        {
+                            // finished entering name
+                        } else if( currentEvent.text.unicode == 8 ) { // backspace
+                            if( name.size() > 0 ) name.resize( name.size() - 1 );
+                        } else if(name.size()<10){
+                            name += static_cast<char>(currentEvent.text.unicode);
+                        }
+                        NewGameMenu::name.setText( name );
+                    }
                 }
                 else if (currentEvent.type == sf::Event::Resized){
                     NewGameMenu::view.update();
@@ -225,19 +291,87 @@ void Game::GameLoop(double delta)
                     Game::ExitGame();
                 }
             }
+            NewGameMenu::Update();
+            NewGameMenu::Draw(window, font);
             break;
         }
         case Game::LoadGame:
         {
-            std::vector<std::string> out;
-            GetFilesInDirectory(out,"save");
-            std::string new_game_path = "save/s";
-            new_game_path.append(std::to_string(out.size()-1));
-            Game::game.restart(new_game_path,window);
-            _gameState = Playing;
 
 
+            if(MenuLoadGame::backClicked(Game::inputs)) _gameState = ShowingMenu;
+
+            else if(MenuLoadGame::loadClicked(Game::inputs) && !MenuLoadGame::save_list.elements.empty()) {
+
+                std::string folder_save = "s";
+                int slot = MenuLoadGame::save_list.selected_slot;
+                if(slot<10) folder_save.append("0");
+                if(slot <100){
+                    folder_save.append(std::to_string(slot));
+                    std::vector<std::string> out;
+                    GetFilesInDirectory(out,"save");
+                    std::string new_game_path = "save/";
+                    new_game_path.append(folder_save);
+
+                    std::string route = new_game_path;
+                    route.append("/data");
+                    if(exists_file(route)) {
+
+                        std::string route_aux = route;
+                        route_aux.append(".txt");
+                        std::ifstream myfile(route_aux);
+                        myfile.open(route);
+                        std::string data_seed= "def", data_name = "def";
+                        myfile >> data_seed >> data_name;
+                        myfile.close();
+
+                        Game::game.saveGame();
+                        Game::game.restart(new_game_path,window, data_seed);
+                        _gameState = Playing;
+                    }
+                    else std::cout << "ERROR: could not read file " << route << std::endl;
+
+
+
+
+
+                } else std::cout << "slot demasiado grande" << std::endl;
+            }
+            else if(MenuLoadGame::delClicked(Game::inputs) && !Game::game.map_curr.initialized && !MenuLoadGame::save_list.elements.empty()) {
+
+                std::string folder_save = "s";
+                int slot = MenuLoadGame::save_list.selected_slot;
+                if(slot<10) folder_save.append("0");
+                if(slot <100){
+                    folder_save.append(std::to_string(slot));
+                    std::vector<std::string> out;
+                    GetFilesInDirectory(out,"save");
+                    std::string del_game_path = "save/";
+                    del_game_path.append(folder_save);
+                    std::cout << "deleting "<< del_game_path << std::endl;
+                    DeleteGame(slot, "save");
+                    LoadData();
+                } else std::cout << "slot demasiado grande" << std::endl;
+            }
+            while(window.pollEvent(currentEvent))
+            {
+                if(currentEvent.type == sf::Event::MouseWheelMoved)
+                {
+                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
+                }
+                else if (currentEvent.type == sf::Event::Resized){
+                    MenuLoadGame::view.update();
+                    std::cout << "res" << std::endl;
+                }
+                else if (currentEvent.type == sf::Event::Closed)
+                {
+                    Game::ExitGame();
+                }
+            }
+            MenuLoadGame::Update(Game::inputs);
+            MenuLoadGame::Draw(window, font);
             break;
+
         }
         case Game::Playing:
         {
@@ -253,7 +387,7 @@ void Game::GameLoop(double delta)
                 }
                 else if (
                         (currentEvent.type == sf::Event::KeyPressed) &&
-                        (currentEvent.key.code == sf::Keyboard::Escape))
+                        (currentEvent.key.code == sf::Keyboard::Tab))
                 {
                     std::cout << "bye" << std::endl;
                     _gameState = ShowingMenu;
@@ -278,13 +412,28 @@ void Game::ExitGame()
     Game::game.saveGame();
     _gameState = Exiting;
 }
-void Game::CreateNewGame(std::string path) {
+void Game::CreateNewGame(std::string path, std::string seed, std::string name) {
+    //GAME FOLDER
     const int dir_err = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     if (-1 == dir_err)
     {
         printf("Error creating directory s !n");
         exit(1);
     }
+    //UPDATING LOAD MENU
+    MenuLoadGame::save_list.insertElement(name);
+
+    //DATA FILE
+    std::string path_data = path;
+    path_data.append("/data");
+    std::ofstream myfile;
+    myfile.open (path_data);
+    myfile << seed;
+    myfile << "\r\n";
+    myfile << name;
+    myfile.close();
+
+    //MAP FOLDER
     std::string path_map = path;
     path_map.append("/map");
     const int dir_err2 = mkdir(path_map.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -300,6 +449,7 @@ void Game::DeleteGame(int index, std::string path) {
     GetFilesInDirectory(out,path);
     std::string path_delete = path;
     path_delete.append("/s");
+    if(index <10) path_delete.append("0");
     path_delete.append(std::to_string(index));
     DeleteDirectory(path_delete.c_str());
     int result;
@@ -307,7 +457,9 @@ void Game::DeleteGame(int index, std::string path) {
         std::string path_rename_old = path;
         path_rename_old.append("/s");
         std::string path_rename_new = path_rename_old;
+        if(i<10) path_rename_old.append("0");
         path_rename_old.append(std::to_string(i));
+        if(i-1<10) path_rename_new.append("0");
         path_rename_new.append(std::to_string(i-1));
         char oldname[50];
         strcpy(oldname, path_rename_old.c_str());
@@ -369,6 +521,7 @@ void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string 
     }
     closedir(dir);
 #endif
+    std::sort (out.begin(), out.end());
 } // GetFilesInDirectory
 
 
@@ -376,4 +529,4 @@ Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::window;
 
 Inputs Game::inputs;
-RunningGame Game::game("save/s0",window);
+RunningGame Game::game(window);

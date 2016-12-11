@@ -7,38 +7,53 @@
 
 void MenuLoadGame::Draw(sf::RenderWindow &window, sf::Font font)
 {
+    const sf::View* oldView = &window.getView();
+    window.setView(view);
     del.Draw(window, font);
     load.Draw(window, font);
     back.Draw(window, font);
+    save_list.Draw(window, font);
+    window.setView(*oldView);
 }
-void MenuLoadGame::Update(sf::RenderWindow &window)
+void MenuLoadGame::Update(Inputs &inputs)
 {
+    sf::Vector2f mousePos = view.getMouseCoord();
+    load.update(mousePos);
+    back.update(mousePos);
+    del.update(mousePos);
+    save_list.update(mousePos, inputs);
+
+
 }
 
-bool MenuLoadGame::loadClicked(Inputs &inputs,sf::RenderWindow &window){
+
+bool MenuLoadGame::delClicked(Inputs &inputs){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    sf::Vector2i posMouse = sf::Mouse::getPosition(window);
-    return (mouseLeft.y && load.mouseOver);
-}
-bool MenuLoadGame::delClicked(Inputs &inputs,sf::RenderWindow &window){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    sf::Vector2i posMouse = sf::Mouse::getPosition(window);
     return (mouseLeft.y && del.mouseOver);
 }
-bool MenuLoadGame::backClicked(Inputs &inputs,sf::RenderWindow &window){
+bool MenuLoadGame::loadClicked(Inputs &inputs){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    sf::Vector2i posMouse = sf::Mouse::getPosition(window);
+    return (mouseLeft.y && load.mouseOver);
+}
+bool MenuLoadGame::backClicked(Inputs &inputs){
+    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
     return (mouseLeft.y && back.mouseOver);
 }
-Button MenuLoadGame::load(sf::Vector2f(0+Game::SCREEN_WIDTH/20,Game::SCREEN_HEIGHT-Game::SCREEN_HEIGHT/20),
-                          sf::Vector2f(Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT/20),
+Button MenuLoadGame::load(sf::Vector2f(10,1900),
+                          sf::Vector2f(300,90),
                           "LOAD",
                           0);
-Button MenuLoadGame::del(sf::Vector2f(0+Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT-Game::SCREEN_HEIGHT/20),
-                          sf::Vector2f(Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT/20),
-                          "DELETE",
-                          0);
-Button MenuLoadGame::back(sf::Vector2f(Game::SCREEN_WIDTH-Game::SCREEN_WIDTH/20,Game::SCREEN_HEIGHT-Game::SCREEN_HEIGHT/20),
-                         sf::Vector2f(Game::SCREEN_WIDTH/10,Game::SCREEN_HEIGHT/20),
+Button MenuLoadGame::back(sf::Vector2f(1700,1900),
+                         sf::Vector2f(300,90),
                          "BACK",
                          0);
+Button MenuLoadGame::del(sf::Vector2f(850,1900),
+                          sf::Vector2f(300,90),
+                          "DELETE",
+                          0);
+InterfaceList MenuLoadGame::save_list(sf::Vector2f(850,500),
+                         sf::Vector2f(300,90),
+                         0,
+                         5);
+
+MagicView MenuLoadGame::view;

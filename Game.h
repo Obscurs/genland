@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 
+
 #include "Drawer.h"
 #include "Player.h"
 #include "Map.h"
@@ -14,6 +15,7 @@
 #include "Clock.h"
 #include "RunningGame.h"
 #include "MagicView.h"
+#include <algorithm>
 class Game
 {
 public:
@@ -27,8 +29,9 @@ private:
 	static bool IsExiting();
 	static void GameLoop(double delta);
 	static void ExitGame();
+    static void LoadData();
     static void GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory);
-    static void CreateNewGame(std::string path);
+    static void CreateNewGame(std::string path, std::string seed,std::string name);
     static void DeleteGame(int index,std::string path);
 	enum GameState { Uninitialized, NewGame, LoadGame, Paused,
 					ShowingMenu, Playing, Exiting };
@@ -37,6 +40,7 @@ private:
 	static sf::RenderWindow window;
 	static Inputs inputs;
     static RunningGame game;
+    static inline bool exists_file (const std::string& name);
 
 
 };

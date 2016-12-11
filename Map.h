@@ -18,10 +18,12 @@
 class Map
 {
 public:
-	Map(int pos, std::string game_path);
+    Map();
+
+	Map(int pos, std::string game_path, std::string seed);
 	~Map();
-
-
+	std::string seed;
+    void init(int pos, std::string game_path, std::string seed);
 
 	const static int N_CHUNKS_X = 3;
 
@@ -33,7 +35,7 @@ public:
 	Tile* getTile(float x, float y, int z);
 	int getChunkIndex(float x);
     int getIndexMatChunk(int x);
-
+    bool initialized;
     void saveMap();
     void removeTile2(Tile* r_tile);
 	void UpdateAll(float delta, sf::Vector2f player_pos);

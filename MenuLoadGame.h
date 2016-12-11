@@ -7,16 +7,20 @@
 
 #include "Button.h"
 #include "Inputs.h"
+#include "MagicView.h"
+#include "InterfaceList.h"
 class MenuLoadGame {
 public:
     static void Draw(sf::RenderWindow &window, sf::Font font);
-    static void Update(sf::RenderWindow &window);
-    static bool loadClicked(Inputs &inputs,sf::RenderWindow &window);
-    static bool backClicked(Inputs &inputs,sf::RenderWindow &window);
-    static bool delClicked(Inputs &inputs,sf::RenderWindow &window);
+    static void Update(Inputs &inputs);
+    static bool loadClicked(Inputs &inputs);
+    static bool backClicked(Inputs &inputs);
+    static bool delClicked(Inputs &inputs);
+    static MagicView view;
     static Button load;
     static Button back;
     static Button del;
+    static InterfaceList save_list;
 };
 
 

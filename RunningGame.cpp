@@ -3,8 +3,8 @@
 //
 
 #include "RunningGame.h"
-RunningGame::RunningGame(std::string path,sf::RenderWindow &window)
-    : map_curr(-1,path),
+RunningGame::RunningGame(sf::RenderWindow &window)
+    : map_curr(),
       player(),
       backgrounds(),
       clock(),
@@ -14,7 +14,7 @@ RunningGame::RunningGame(std::string path,sf::RenderWindow &window)
     player.Load("blue.png");
     player.SetPosition(0,0);
     player.SetSize(32);
-    pathGame = path;
+    pathGame = "null";
 }
 void RunningGame::update(sf::RenderWindow &window,float delta,Inputs &inputs){
     //sf::View currentView = window.getView();
@@ -36,9 +36,10 @@ void RunningGame::draw(sf::RenderWindow &window){
   drawer.Draw(window);
   window.setView(aux);
 }
-void RunningGame::restart(std::string path,sf::RenderWindow &window){
-    Map *newMap = new Map(-1,path);
+void RunningGame::restart(std::string path,sf::RenderWindow &window, std::string seed){
+    Map *newMap = new Map(-1,path, seed);
     map_curr = *newMap;
+    map_curr.init(-1,path, seed);
     Player *newPlayer = new Player();
     player = *newPlayer;
     WorldBackground *newBack = new WorldBackground();

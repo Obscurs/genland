@@ -7,22 +7,21 @@
 
 void NewGameMenu::Draw(sf::RenderWindow &window, sf::Font font)
 {
-
-    view.setRenderTarget(&window);
-    view.setViewport({0,0,1,1});
-    view.setResolution(sf::Vector2i(2000,2000));
-    view.setMode(MagicView::crop);
-    sf::View oldView = window.getView();
+    const sf::View* oldView = &window.getView();
     window.setView(view);
     start.Draw(window, font);
     back.Draw(window, font);
-    window.setView(oldView);
+    seed.Draw(window, font);
+    name.Draw(window, font);
+    window.setView(*oldView);
 }
 void NewGameMenu::Update()
 {
     sf::Vector2f mousePos = view.getMouseCoord();
     start.update(mousePos);
     back.update(mousePos);
+    seed.update(mousePos);
+    name.update(mousePos);
 }
 
 bool NewGameMenu::startClicked(Inputs &inputs){
@@ -33,6 +32,18 @@ bool NewGameMenu::backClicked(Inputs &inputs){
     sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
     return (mouseLeft.y && back.mouseOver);
 }
+bool NewGameMenu::seedClicked(Inputs &inputs){
+    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
+    return (mouseLeft.y && seed.mouseOver);
+}
+bool NewGameMenu::nameClicked(Inputs &inputs){
+    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
+    return (mouseLeft.y && name.mouseOver);
+}
+void NewGameMenu::disSelectAll(){
+    seed.selected = false;
+    name.selected = false;
+}
 Button NewGameMenu::start(sf::Vector2f(10,1900),
                           sf::Vector2f(300,90),
                           "START",
@@ -41,4 +52,12 @@ Button NewGameMenu::back(sf::Vector2f(1700,1900),
                          sf::Vector2f(300,90),
                           "BACK",
                           0);
+TextInput NewGameMenu::seed(sf::Vector2f(850,500),
+                         sf::Vector2f(300,90),
+                         0,
+                         "", "seed");
+TextInput NewGameMenu::name(sf::Vector2f(850,700),
+                            sf::Vector2f(300,90),
+                            0,
+                            "", "Name");
 MagicView NewGameMenu::view;

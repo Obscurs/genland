@@ -25,6 +25,10 @@ Inputs::Inputs()
 	keys["Q"] = sf::Vector2i(0,0);
 	keys["A"] = sf::Vector2i(0,0);
 	keys["D"] = sf::Vector2i(0,0);
+	keys["Left"] = sf::Vector2i(0,0);
+	keys["Right"] = sf::Vector2i(0,0);
+	keys["Up"] = sf::Vector2i(0,0);
+	keys["Down"] = sf::Vector2i(0,0);
 	keys["Space"] = sf::Vector2i(0,0);
 	keys["wheel"] = sf::Vector2i(0,0);
 	wheelDelta = 0;
@@ -62,6 +66,10 @@ void Inputs::Update(){
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::A), "A");
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::D), "D");
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Space), "Space");
+	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Left), "Left");
+	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Right), "Right");
+	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Up), "Up");
+	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Down), "Down");
 	keys["wheel"] = sf::Vector2i(wheelDelta, 0);
 	wheelDelta = 0;
 	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
