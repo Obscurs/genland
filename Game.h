@@ -22,8 +22,8 @@ public:
 	static void Start();
 	//static sf::RenderWindow& GetWindow();
 	//const static sf::Input& GetInput();
-	const static int SCREEN_WIDTH = 1000;
-	const static int SCREEN_HEIGHT = 700;
+	static int SCREEN_WIDTH;
+	static int SCREEN_HEIGHT;
 
 private:
 	static bool IsExiting();
@@ -34,7 +34,7 @@ private:
     static void CreateNewGame(std::string path, std::string seed,std::string name);
     static void DeleteGame(int index,std::string path);
 	enum GameState { Uninitialized, NewGame, LoadGame, Paused,
-					ShowingMenu, Playing, Exiting };
+					ShowingMenu, Playing, Exiting, Config };
 
 	static GameState _gameState;
 	static sf::RenderWindow window;

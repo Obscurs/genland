@@ -13,6 +13,7 @@ class InterfaceList {
 public:
     const static int GRID_THICKNESS = 2;
     const static int GRID_SELECTED_THICKNESS = 4;
+    InterfaceList(sf::Vector2f pos, sf::Vector2f s, int tp, int vis_slots, std::vector<std::string> &elems);
     InterfaceList(sf::Vector2f pos, sf::Vector2f s, int tp, int vis_slots);
     ~InterfaceList();
     sf::Vector2f position;

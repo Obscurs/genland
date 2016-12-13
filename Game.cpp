@@ -67,6 +67,12 @@ inline bool Game::exists_file (const std::string& name) {
     return (stat (name.c_str(), &buffer) == 0);
 }
 void Game::LoadData(){
+    if(exists_file("config/config")) {
+        std::ifstream myfile("config/config");
+        myfile >> SCREEN_WIDTH >> SCREEN_HEIGHT;
+        myfile.close();
+    }
+
     std::vector<std::string> save_folders;
     GetFilesInDirectory(save_folders, "save");
     MenuLoadGame::save_list.elements.clear();
@@ -74,10 +80,10 @@ void Game::LoadData(){
         std::string route = save_folders[i];
         route.append("/data");
         if(exists_file(route)) {
-            std::string route_aux = route;
-            route_aux.append(".txt");
-            std::ifstream myfile(route_aux);
-            myfile.open(route);
+            //std::string route_aux = route;
+            //route_aux.append(".txt");
+            std::ifstream myfile(route);
+            //myfile.open(route);
             std::string data_seed= "def", data_name = "def";
             myfile >> data_seed >> data_name;
             MenuLoadGame::save_list.insertElement(data_name);
@@ -92,7 +98,7 @@ void Game::Start(void)
 
     if(_gameState != Uninitialized)
         return;
-
+    LoadData();
     window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
 
     // sf::View viewPlayer(sf::FloatRect(200, 200, SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -124,7 +130,8 @@ void Game::Start(void)
     MenuMain::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
     NewGameMenu::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
     MenuLoadGame::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
-    LoadData();
+    MenuConfigGame::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
+
     while(!IsExiting())
     {
 
@@ -194,6 +201,7 @@ void Game::GameLoop(double delta)
             if(MenuMain::newGameClicked(Game::inputs)) _gameState = NewGame;
             else if(MenuMain::exitClicked(Game::inputs)) ExitGame();
             else if(MenuMain::loadClicked(Game::inputs)) _gameState = LoadGame;
+            else if(MenuMain::configClicked(Game::inputs)) _gameState = Config;
             while(window.pollEvent(currentEvent))
             {
                 if(currentEvent.type == sf::Event::MouseWheelMoved)
@@ -297,8 +305,6 @@ void Game::GameLoop(double delta)
         }
         case Game::LoadGame:
         {
-
-
             if(MenuLoadGame::backClicked(Game::inputs)) _gameState = ShowingMenu;
 
             else if(MenuLoadGame::loadClicked(Game::inputs) && !MenuLoadGame::save_list.elements.empty()) {
@@ -318,9 +324,9 @@ void Game::GameLoop(double delta)
                     if(exists_file(route)) {
 
                         std::string route_aux = route;
-                        route_aux.append(".txt");
-                        std::ifstream myfile(route_aux);
-                        myfile.open(route);
+                        //route_aux.append(".txt");
+                        std::ifstream myfile(route);
+                        //myfile.open(route);
                         std::string data_seed= "def", data_name = "def";
                         myfile >> data_seed >> data_name;
                         myfile.close();
@@ -400,6 +406,51 @@ void Game::GameLoop(double delta)
             }
             Game::game.update(window,delta,inputs);
             Game::game.draw(window);
+            break;
+        }
+        case Game::Config:
+        {
+            if(MenuConfigGame::backClicked(Game::inputs) && !MenuConfigGame::resolution_visible) _gameState = ShowingMenu;
+            else if(MenuConfigGame::resolution_visible && Game::inputs.getKey("Enter").y){
+                MenuConfigGame::resolution_visible = false;
+                int x = MenuConfigGame::res_keys[MenuConfigGame::resolution_list.selected_slot*2];
+                int y = MenuConfigGame::res_keys[MenuConfigGame::resolution_list.selected_slot*2+1];
+                window.setSize(sf::Vector2u(x,y));
+                MenuConfigGame::view.update();
+
+                if(exists_file("config/config")) {
+                    std::ofstream myfile;
+                    myfile.open("config/config");
+                    myfile << x;
+                    myfile << "\n";
+                    myfile << y;
+                    myfile.close();
+                }
+
+            }
+            else if(MenuConfigGame::resClicked(Game::inputs)) {
+                MenuConfigGame::resolution_visible = true;
+
+
+            }
+
+            while(window.pollEvent(currentEvent))
+            {
+                if(currentEvent.type == sf::Event::MouseWheelMoved)
+                {
+                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
+                }
+                else if (currentEvent.type == sf::Event::Resized){
+                    MenuConfigGame::view.update();
+                    std::cout << "res" << std::endl;
+                }
+                else if (currentEvent.type == sf::Event::Closed)
+                {
+                    Game::ExitGame();
+                }
+            }
+            MenuConfigGame::Update(Game::inputs);
+            MenuConfigGame::Draw(window, font);
             break;
         }
     }
@@ -524,7 +575,8 @@ void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string 
     std::sort (out.begin(), out.end());
 } // GetFilesInDirectory
 
-
+int Game::SCREEN_WIDTH = 1000;
+int Game::SCREEN_HEIGHT = 700;
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::window;
 

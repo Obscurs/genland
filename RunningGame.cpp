@@ -37,6 +37,7 @@ void RunningGame::draw(sf::RenderWindow &window){
   window.setView(aux);
 }
 void RunningGame::restart(std::string path,sf::RenderWindow &window, std::string seed){
+
     Map *newMap = new Map(-1,path, seed);
     map_curr = *newMap;
     map_curr.init(-1,path, seed);
@@ -47,7 +48,7 @@ void RunningGame::restart(std::string path,sf::RenderWindow &window, std::string
     Clock *newClock = new Clock();
     clock = *newClock;
 
-
+    view_game.update();
     player.Load("blue.png");
     player.SetPosition(0,0);
     player.SetSize(32);

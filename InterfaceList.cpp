@@ -4,6 +4,19 @@
 
 #include "InterfaceList.h"
 #include <iostream>
+InterfaceList::InterfaceList(sf::Vector2f pos, sf::Vector2f s, int tp, int vis_slots, std::vector<std::string> &elems)
+{
+    position=pos;
+    size = s;
+    type = tp;
+    visible_slots = vis_slots;
+    selected_slot = 0;
+    current_first_slot = 0;
+    mouseOver =false;
+    for(int i = 0; i< elems.size(); i++){
+        elements.push_back(elems[i]);
+    }
+}
 InterfaceList::InterfaceList(sf::Vector2f pos, sf::Vector2f s, int tp, int vis_slots)
 {
     position=pos;
