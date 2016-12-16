@@ -270,7 +270,7 @@ void Tile::DrawIns(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &
         if(!is_mini[3]) appendSpriteToArray(t, vertexArray, 0, id, 0);
     }
 }
-void Tile::drawSkyArray(sf::VertexArray &skyArray,TextureManager &t){
+void Tile::drawSkyArray(sf::VertexArray &skyArray){
     skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y), sf::Color(0,0,255,255)));
     skyArray.append(sf::Vertex(sf::Vector2f(position.x+Chunk::TILE_SIZE,position.y), sf::Color(0,0,255,255)));
     skyArray.append(sf::Vertex(sf::Vector2f(position.x+Chunk::TILE_SIZE,position.y+Chunk::TILE_SIZE), sf::Color(0,0,255,255)));

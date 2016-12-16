@@ -581,4 +581,4 @@ Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::window;
 
 Inputs Game::inputs;
-RunningGame Game::game(window,sf::Vector2u(SCREEN_WIDTH,SCREEN_HEIGHT));
+RunningGame Game::game(window, sf::Vector2u(SCREEN_WIDTH,SCREEN_HEIGHT));

@@ -20,11 +20,11 @@ class Map
 public:
     Map();
 
-	Map(int pos, std::string game_path, std::string seed, float tile_factor);
+	Map(int pos, std::string game_path, std::string seed);
 	~Map();
 	std::string seed;
-    void init(int pos, std::string game_path, std::string seed, float tile_factor);
-	float CURRENT_TILE_FACTOR;
+    void init(int pos, std::string game_path, std::string seed);
+
 	const static int N_CHUNKS_X = 3;
 
     std::vector<Light> lights;
@@ -42,11 +42,12 @@ public:
 	void checkLoadedChunks(float x, float y);
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
 private:
+
 	std::string save_path;
     inline bool exists_file (const std::string& name);
     int posMap;
 	std::mt19937 generator;
-	void createMap(int map_index, int chunk_index, int &id_temp, float tile_factor);
+	void createMap(int map_index, int chunk_index, int &id_temp);
     void calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs);
 
     void removeReachFloorCascade2(Tile* t_first);
