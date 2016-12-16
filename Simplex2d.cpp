@@ -25,7 +25,7 @@ Simplex2d::Simplex2d(std::mt19937 *generator, float s, float mi, float ma) {
     for (int i = 0; i < 256; i++)
         perm[i+256] = perm[i];
 }
-
+Simplex2d::~Simplex2d(){}
 int Simplex2d::fastfloor( const float x ) {
     return x > 0 ? (int) x : (int) x - 1;
 }

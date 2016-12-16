@@ -16,7 +16,19 @@
 #include "MagicView.h"
 class Drawer {
 public:
-    Drawer(Map *m,Player *p,WorldBackground *b, Clock *c);
+    const static int RES1W = 2048;
+    const static int RES1H = 1024;
+    const static int RES2W = 1024;
+    const static int RES2H = 512;
+    const static int RES3W = 512;
+    const static int RES3H = 256;
+    const float FACT_TILE1 = 1;
+    const float FACT_TILE2 = 0.5;
+    const float FACT_TILE3 = 0.25;
+
+    float current_tile_factor;
+    sf::Vector2u current_res;
+    Drawer(Map *m,Player *p,WorldBackground *b, Clock *c, sf::Vector2u resolution);
     ~Drawer();
 
     void Draw(sf::RenderWindow &window);

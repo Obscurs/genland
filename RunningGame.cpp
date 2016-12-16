@@ -3,13 +3,13 @@
 //
 
 #include "RunningGame.h"
-RunningGame::RunningGame(sf::RenderWindow &window)
+RunningGame::RunningGame(sf::RenderWindow &window,sf::Vector2u resolution)
     : map_curr(),
       player(),
       backgrounds(),
       clock(),
-      drawer(&map_curr,&player,&backgrounds, &clock),
-      view_game(&window,MagicView::crop,sf::Vector2i(SCREEN_WIDTH,SCREEN_HEIGHT))
+      drawer(&map_curr,&player,&backgrounds, &clock, resolution),
+      view_game(&window,MagicView::crop,sf::Vector2i(resolution.x,resolution.y))
 {
     player.Load("blue.png");
     player.SetPosition(0,0);
@@ -38,9 +38,9 @@ void RunningGame::draw(sf::RenderWindow &window){
 }
 void RunningGame::restart(std::string path,sf::RenderWindow &window, std::string seed){
 
-    Map *newMap = new Map(-1,path, seed);
+    Map *newMap = new Map(-1,path, seed, drawer.current_tile_factor);
     map_curr = *newMap;
-    map_curr.init(-1,path, seed);
+    map_curr.init(-1,path, seed,drawer.current_tile_factor);
     Player *newPlayer = new Player();
     player = *newPlayer;
     WorldBackground *newBack = new WorldBackground();

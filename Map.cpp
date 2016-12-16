@@ -20,8 +20,9 @@
 
 Map::Map(){
     initialized = false;
+    CURRENT_TILE_FACTOR = 1;
 }
-void Map::init(int pos, std::string path, std::string s)
+void Map::init(int pos, std::string path, std::string s, float tile_factor)
 {
     initialized = true;
     seed = s;
@@ -32,14 +33,14 @@ void Map::init(int pos, std::string path, std::string s)
     lights.push_back(l1);
     lights.push_back(l2);
     lights.push_back(l3);
-
+    CURRENT_TILE_FACTOR = tile_factor;
 
 
     int id_temp = 0;
     posMap = pos;
-    createMap(0, -1, id_temp);
-    createMap(1, 0, id_temp);
-    createMap(2, 1, id_temp);
+    createMap(0, -1, id_temp,tile_factor);
+    createMap(1, 0, id_temp,tile_factor);
+    createMap(2, 1, id_temp,tile_factor);
     chunk_mat[0]->neighbors[1] = chunk_mat[1];
     chunk_mat[1]->neighbors[0] = chunk_mat[0];
     chunk_mat[1]->neighbors[1] = chunk_mat[2];
@@ -67,8 +68,9 @@ void Map::init(int pos, std::string path, std::string s)
 
 
 }
-Map::Map(int pos, std::string path, std::string s)
+Map::Map(int pos, std::string path, std::string s, float tile_factor)
 {
+    CURRENT_TILE_FACTOR = tile_factor;
     initialized = true;
     seed = s;
     save_path=path;
@@ -83,9 +85,9 @@ Map::Map(int pos, std::string path, std::string s)
 
     int id_temp = 0;
     posMap = pos;
-    createMap(0, -1, id_temp);
-    createMap(1, 0, id_temp);
-    createMap(2, 1, id_temp);
+    createMap(0, -1, id_temp,tile_factor);
+    createMap(1, 0, id_temp,tile_factor);
+    createMap(2, 1, id_temp,tile_factor);
     chunk_mat[0]->neighbors[1] = chunk_mat[1];
     chunk_mat[1]->neighbors[0] = chunk_mat[0];
     chunk_mat[1]->neighbors[1] = chunk_mat[2];
@@ -120,7 +122,7 @@ void Map::saveMap(){
         }
     } std::cout << "canot save map, map not initialized" << std::endl;
 }
-void Map::createMap(int map_index, int chunk_index, int &id_temp){
+void Map::createMap(int map_index, int chunk_index, int &id_temp, float tile_factor){
     if(initialized) {
         std::string filename = save_path;
         filename.append("/map/");
@@ -132,7 +134,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
             myfile.open(filename);
             std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
             sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, myfile, id_temp);
+            Chunk *c = new Chunk(chunk_pos, myfile, id_temp,CURRENT_TILE_FACTOR);
             chunk_mat[map_index] = c;
             myfile.close();
         }
@@ -143,7 +145,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
             generator.seed(std::stoi(seed));
 
             sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, &generator, myfile);
+            Chunk *c = new Chunk(chunk_pos, &generator, myfile,CURRENT_TILE_FACTOR);
             chunk_mat[map_index] = c;
 
             myfile.close();
@@ -189,10 +191,10 @@ inline bool Map::exists_file (const std::string& name) {
 sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal){
 	//std::cout << "pos_origen_x " << pos_origen.x << " pos_origen_y " << pos_origen.y << std::endl;
 	//std::cout << "pos_goal_x " << pos_goal.x << " pos_goal_y " << pos_goal.y << std::endl;
-	pos_origen.x = pos_origen.x/Chunk::TILE_SIZE;
-	pos_origen.y = pos_origen.y/Chunk::TILE_SIZE;
-	pos_goal.x = pos_goal.x/Chunk::TILE_SIZE;
-	pos_goal.y = pos_goal.y/Chunk::TILE_SIZE;
+	pos_origen.x = pos_origen.x/Chunk::TILE_SIZE*CURRENT_TILE_FACTOR;
+	pos_origen.y = pos_origen.y/Chunk::TILE_SIZE*CURRENT_TILE_FACTOR;
+	pos_goal.x = pos_goal.x/Chunk::TILE_SIZE*CURRENT_TILE_FACTOR;
+	pos_goal.y = pos_goal.y/Chunk::TILE_SIZE*CURRENT_TILE_FACTOR;
 	sf::Vector2i result;
 	result.x = ((int)pos_goal.x)-((int)pos_origen.x);
 	result.y = ((int)pos_goal.y)-((int)pos_origen.y);
@@ -307,8 +309,8 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                     sf::Vector2i u = queue_bfs.front();
                     queue_bfs.pop();
                     //std::cout << "bfs_it " << u.x << " " << u.y << std::endl;
-                    Tile *tile_actual0 = getTile(first_tile_global_position.x + u.x * Chunk::TILE_SIZE,
-                                                 first_tile_global_position.y + u.y * Chunk::TILE_SIZE, 0);
+                    Tile *tile_actual0 = getTile(first_tile_global_position.x + u.x * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR,
+                                                 first_tile_global_position.y + u.y * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR, 0);
                     Tile *tile_actual1 = tile_actual0->neighbors[8];
                     sf::Vector2f tile_actual_global_position = tile_actual0->GetPosition();
                     if (tile_actual_global_position.x > max_pos.x) max_pos.x = tile_actual_global_position.x;
@@ -447,8 +449,8 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                         sf::Vector2i act_pos_ext = queue_bfs_next_right.front();
                         queue_bfs_next_right.pop();
                         Tile *ext_tile0 = getTile(
-                                act_pos_ext.x * Chunk::TILE_SIZE + first_tile_global_position.x - Chunk::TILE_SIZE,
-                                act_pos_ext.y * Chunk::TILE_SIZE + first_tile_global_position.y, 0);
+                                act_pos_ext.x * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR + first_tile_global_position.x - Chunk::TILE_SIZE*CURRENT_TILE_FACTOR,
+                                act_pos_ext.y * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR + first_tile_global_position.y, 0);
 
                         //Tile* ext_tile1 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+r_tile_pos_global.x - Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+r_tile_pos_global.y, 1);
                         border_tiles.push(ext_tile0);
@@ -459,8 +461,8 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                         sf::Vector2i act_pos_ext = queue_bfs_next_left.front();
                         queue_bfs_next_left.pop();
                         Tile *ext_tile0 = getTile(
-                                act_pos_ext.x * Chunk::TILE_SIZE + first_tile_global_position.x + Chunk::TILE_SIZE,
-                                act_pos_ext.y * Chunk::TILE_SIZE + first_tile_global_position.y, 0);
+                                act_pos_ext.x * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR + first_tile_global_position.x + Chunk::TILE_SIZE*CURRENT_TILE_FACTOR,
+                                act_pos_ext.y * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR + first_tile_global_position.y, 0);
                         //Tile* ext_tile1 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+r_tile_pos_global.x + Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+r_tile_pos_global.y, 1);
                         border_tiles.push(ext_tile0);
                         //extension_tiles.push(ext_tile1);
@@ -468,9 +470,9 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                     while (!queue_bfs_next_top.empty()) {
                         sf::Vector2i act_pos_ext = queue_bfs_next_top.front();
                         queue_bfs_next_top.pop();
-                        Tile *ext_tile0 = getTile(act_pos_ext.x * Chunk::TILE_SIZE + first_tile_global_position.x,
-                                                  act_pos_ext.y * Chunk::TILE_SIZE + first_tile_global_position.y +
-                                                  Chunk::TILE_SIZE, 0);
+                        Tile *ext_tile0 = getTile(act_pos_ext.x * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR + first_tile_global_position.x,
+                                                  act_pos_ext.y * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR + first_tile_global_position.y +
+                                                  Chunk::TILE_SIZE*CURRENT_TILE_FACTOR, 0);
                         //Tile* ext_tile1 = getTile(act_pos_ext.x*Chunk::TILE_SIZE+r_tile_pos_global.x + Chunk::TILE_SIZE ,act_pos_ext.y*Chunk::TILE_SIZE+r_tile_pos_global.y, 1);
                         border_tiles.push(ext_tile0);
                         //extension_tiles.push(ext_tile1);
@@ -490,7 +492,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                             sf::Vector2f tpos = t->GetPosition();
                             float dist_x = tpos.x - center_falling_x;
                             float dist_y = max_pos.y - tpos.y;
-                            falling_t->SetPosition(tpos.x, tpos.y + Chunk::TILE_SIZE / 2);
+                            falling_t->SetPosition(tpos.x, tpos.y + Chunk::TILE_SIZE*CURRENT_TILE_FACTOR / 2);
                             falling_t->SetSize(t->GetWidth());
                             falling_t->setFactor(dist_x, dist_y);
 
@@ -503,7 +505,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                             sf::Vector2f tpos = t1->GetPosition();
                             float dist_x = tpos.x - center_falling_x;
                             float dist_y = max_pos.y - tpos.y;
-                            falling_t->SetPosition(tpos.x, tpos.y + Chunk::TILE_SIZE / 2);
+                            falling_t->SetPosition(tpos.x, tpos.y + Chunk::TILE_SIZE*CURRENT_TILE_FACTOR / 2);
                             falling_t->SetSize(t1->GetWidth());
                             falling_t->setFactor(dist_x, dist_y);
                             falling_tiles.push_back(falling_t);
@@ -597,7 +599,7 @@ void Map::removeReachFloorCascade2(Tile* t_first){
 
 Tile* Map::getTile(float x, float y, int z){
 	if(y<0) y = 0;
-	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
+	int size_chunk_x = Chunk::N_TILES_X*(int)(Chunk::TILE_SIZE*CURRENT_TILE_FACTOR);
 	int chunk_x = (x-size_chunk_x*posMap)/size_chunk_x;
 
 	Chunk* c = chunk_mat[chunk_x];
@@ -606,9 +608,9 @@ Tile* Map::getTile(float x, float y, int z){
 }
 
 int Map::getChunkIndex(float x){
-	int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
+	int size_chunk_x = Chunk::N_TILES_X*(int)(Chunk::TILE_SIZE*CURRENT_TILE_FACTOR);
 	int chunk_x = x/size_chunk_x;
-    if(x <0) --chunk_x;
+    //if(x <0) --chunk_x;
 	return chunk_x;
 }
 
@@ -636,7 +638,7 @@ void Map::checkLoadedChunks(float x, float y){
         float distance_2 = sqrt((x - p2.x) * (x - p2.x));
 
 
-        if (distance_1 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE) {
+        if (distance_1 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR) {
             //#pragma omp task
             {
 
@@ -649,7 +651,7 @@ void Map::checkLoadedChunks(float x, float y){
                 chunk_mat[2] = chunk_mid;
                 chunk_mat[1] = c1;
                 --posMap;
-                createMap(0, current_pos - 1, id_temp);
+                createMap(0, current_pos - 1, id_temp, CURRENT_TILE_FACTOR);
                 chunk_mat[2]->neighbors[1] = nullptr;
                 chunk_mat[2]->calcLateralNeighborsTiles(1);
                 chunk_mat[0]->calcLateralNeighborsTiles(0);
@@ -659,7 +661,7 @@ void Map::checkLoadedChunks(float x, float y){
 
             //std::cout << distance_1 << " " << distance_2 << std::endl;
         }
-        if (distance_2 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE) {
+        if (distance_2 < Chunk::N_TILES_X / 2 * Chunk::TILE_SIZE*CURRENT_TILE_FACTOR) {
             //#pragma omp task
             {
 
@@ -671,7 +673,7 @@ void Map::checkLoadedChunks(float x, float y){
                 chunk_mat[0] = chunk_mid;
                 chunk_mat[1] = c2;
                 ++posMap;
-                createMap(2, current_pos + 1, id_temp);
+                createMap(2, current_pos + 1, id_temp, CURRENT_TILE_FACTOR);
                 chunk_mat[0]->neighbors[1] = nullptr;
                 chunk_mat[0]->calcLateralNeighborsTiles(0);
                 chunk_mat[2]->calcLateralNeighborsTiles(1);
@@ -686,11 +688,11 @@ void Map::checkLoadedChunks(float x, float y){
 
 std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
     std::vector<Tile*> result;
-    float num_ite_x = size.x/Chunk::TILE_SIZE;
-    float num_ite_y = size.y/Chunk::TILE_SIZE;
+    float num_ite_x = size.x/Chunk::TILE_SIZE*CURRENT_TILE_FACTOR;
+    float num_ite_y = size.y/Chunk::TILE_SIZE*CURRENT_TILE_FACTOR;
     for(int j = 0; j <= num_ite_y; ++j){
             for(int i = 0; i <=num_ite_x; i++){
-                Tile* t = getTile(pos.x+i*Chunk::TILE_SIZE, pos.y+j*Chunk::TILE_SIZE, 1);
+                Tile* t = getTile(pos.x+i*Chunk::TILE_SIZE*CURRENT_TILE_FACTOR, pos.y+j*Chunk::TILE_SIZE*CURRENT_TILE_FACTOR, 1);
                 if(t->id !="0") {
 
                     bool trobat = false;

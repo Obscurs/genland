@@ -4,37 +4,25 @@
 
 #include "Drawer.h"
 #include "Game.h"
-Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c){
+Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c, sf::Vector2u resolution){
     map_curr = m;
     player = p;
     clock = c;
     backgrounds = b;
-    texture_plain_sprite.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    texture_background.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    texture_front = new sf::RenderTexture();
-    texture_back = new sf::RenderTexture();
 
+    if(resolution.x>1500) {
+        current_res = sf::Vector2u(RES1W,RES1H);
+        current_tile_factor= FACT_TILE1;
+    }
+    else if(resolution.x>1000){
+        current_res = sf::Vector2u(RES2W,RES2H);
+        current_tile_factor= FACT_TILE2;
+    }
+    else{
+        current_res = sf::Vector2u(RES3W,RES3H);
+        current_tile_factor= FACT_TILE3;
+    }
 
-    view_player.setSize(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    texture_front->create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    texture_back->create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    black_texture.create(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT);
-    sf::RectangleShape rectangle(sf::Vector2f(0, 0));
-    rectangle.setSize(sf::Vector2f(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT));
-    rectangle.setFillColor(sf::Color::Black);
-    black_texture.draw(rectangle);
-
-
-
-    // Load the shaders
-
-    if (!sun_background_shader.loadFromFile("resources/sun_background.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    if (!tile_shader.loadFromFile("resources/light.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    if (!sun_shader.loadFromFile("resources/sun.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    if (!sun_mix_shader.loadFromFile("resources/sun_mix.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    if (!mix_back_terr_shader.loadFromFile("resources/mix_background_terrain.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
-    sun_background_shader.setParameter("windowHeight", static_cast<float>(Game::SCREEN_HEIGHT)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
-    tile_shader.setParameter("windowHeight", static_cast<float>(Game::SCREEN_HEIGHT)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
     texMan = new TextureManager("resources/tiles2.png", 16, 16);
     texMan->insert_map_value("D",sf::Vector2i(0,0));
     texMan->insert_map_value("d",sf::Vector2i(16,0));
@@ -59,6 +47,35 @@ Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c){
 
     texMan->insert_map_value("grass0",sf::Vector2i(0,48));
     texMan->insert_map_value("grass1",sf::Vector2i(16,48));
+
+    texture_plain_sprite.create(current_res.x, current_res.y);
+    texture_background.create(current_res.x, current_res.y);
+    texture_front = new sf::RenderTexture();
+    texture_back = new sf::RenderTexture();
+
+
+
+    view_player.setSize(current_res.x, current_res.y);
+    texture_front->create(current_res.x, current_res.y);
+    texture_back->create(current_res.x, current_res.y);
+    black_texture.create(current_res.x, current_res.y);
+    sf::RectangleShape rectangle(sf::Vector2f(0, 0));
+    rectangle.setSize(sf::Vector2f(current_res.x, current_res.y));
+    rectangle.setFillColor(sf::Color::Black);
+    black_texture.draw(rectangle);
+
+
+
+    // Load the shaders
+
+    if (!sun_background_shader.loadFromFile("resources/sun_background.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!tile_shader.loadFromFile("resources/light.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!sun_shader.loadFromFile("resources/sun.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!sun_mix_shader.loadFromFile("resources/sun_mix.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!mix_back_terr_shader.loadFromFile("resources/mix_background_terrain.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    sun_background_shader.setParameter("windowHeight", static_cast<float>(current_res.y)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
+    tile_shader.setParameter("windowHeight", static_cast<float>(current_res.y)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
+
 }
 
 
@@ -75,7 +92,7 @@ void Drawer::DrawFrontItemsMap(sf::RenderWindow& renderWindow,sf::VertexArray &r
     float first_x = centerView.x-(sizeView.x/2)-1;
     float last_x = centerView.x+(sizeView.x/2)+1;
     int first_chunk = map_curr->getChunkIndex(first_x);
-    int last_chunk = map_curr->getChunkIndex(last_x+Chunk::TILE_SIZE);
+    int last_chunk = map_curr->getChunkIndex(last_x+Chunk::TILE_SIZE*current_tile_factor);
     for(int i = first_chunk ; i<=last_chunk ; ++i) {
         int index_mat = map_curr->getIndexMatChunk(i);
         map_curr->chunk_mat[index_mat]->DrawGrassTiles(*texMan,render_array);
@@ -98,9 +115,9 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
     float last_y = centerView.y+(sizeView.y/2)+1;
     //std::cout << first_x << " " << first_y << std::endl;
     sf::Vector2f firstPos(first_x, first_y);
-    sf::Vector2f lastPos(last_x+Chunk::TILE_SIZE, last_y+Chunk::TILE_SIZE);
+    sf::Vector2f lastPos(last_x+Chunk::TILE_SIZE*current_tile_factor, last_y+Chunk::TILE_SIZE*current_tile_factor);
     int first_chunk = map_curr->getChunkIndex(first_x);
-    int last_chunk = map_curr->getChunkIndex(last_x+Chunk::TILE_SIZE);
+    int last_chunk = map_curr->getChunkIndex(last_x+Chunk::TILE_SIZE*current_tile_factor);
 
     if(clock->min<20){
         sun_background_shader.setParameter("color", sf::Color::Black);
