@@ -16,6 +16,8 @@ public:
     int id;
 	void SetPosition(float x, float y);
 	void SetSize(float x);
+	void saveStats(std::string pathGame);
+	void loadStats(std::string pathGame);
 	sf::Vector2f GetPosition() const;
 	float GetWidth() const;
 	float GetHeight() const;

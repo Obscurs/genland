@@ -190,16 +190,16 @@ void Tile::appendSpriteToArray(TextureManager &t, sf::VertexArray &vertexArray, 
     float increment_y_tex=0;
     int divisor=2;
     if(mini_pos==1) {
-        increment_x+=TILE_SIZE/2;
+        increment_x+=Settings::TILE_SIZE/2;
         increment_x_tex+=t.size_sprite.x/2;
     }
     else if(mini_pos==2) {
-        increment_y+=TILE_SIZE/2;
+        increment_y+=Settings::TILE_SIZE/2;
         increment_y_tex+=t.size_sprite.y/2;
     }
     else if(mini_pos==3){
-        increment_x+=TILE_SIZE/2;
-        increment_y+=TILE_SIZE/2;
+        increment_x+=Settings::TILE_SIZE/2;
+        increment_y+=Settings::TILE_SIZE/2;
         increment_y_tex+=t.size_sprite.y/2;
         increment_x_tex+=t.size_sprite.x/2;
     }
@@ -232,9 +232,9 @@ void Tile::appendSpriteToArray(TextureManager &t, sf::VertexArray &vertexArray, 
 
 
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x,position.y+increment_y), pos_tex1));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+TILE_SIZE/divisor,position.y+increment_y), pos_tex2));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+TILE_SIZE/divisor,position.y+increment_y+TILE_SIZE/divisor), pos_tex3));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x,position.y+TILE_SIZE/divisor+increment_y), pos_tex4));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+Settings::TILE_SIZE/divisor,position.y+increment_y), pos_tex2));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+Settings::TILE_SIZE/divisor,position.y+increment_y+Settings::TILE_SIZE/divisor), pos_tex3));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x,position.y+Settings::TILE_SIZE/divisor+increment_y), pos_tex4));
 }
 void Tile::DrawIns(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray){
     bool is_mini[4] ={0,0,0,0};
@@ -273,9 +273,9 @@ void Tile::DrawIns(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &
 }
 void Tile::drawSkyArray(sf::VertexArray &skyArray){
     skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y), sf::Color(0,0,255,255)));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x+TILE_SIZE,position.y), sf::Color(0,0,255,255)));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x+TILE_SIZE,position.y+TILE_SIZE), sf::Color(0,0,255,255)));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+TILE_SIZE), sf::Color(0,0,255,255)));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y), sf::Color(0,0,255,255)));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y+Settings::TILE_SIZE), sf::Color(0,0,255,255)));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Settings::TILE_SIZE), sf::Color(0,0,255,255)));
 
 }
 void Tile::drawBorderSkyArray(sf::VertexArray &skyArray,TextureManager &t){
@@ -284,10 +284,10 @@ void Tile::drawBorderSkyArray(sf::VertexArray &skyArray,TextureManager &t){
     pos_tex2 = sf::Vector2f(128, 0);
     pos_tex3 = sf::Vector2f(128, 32);
     pos_tex4 = sf::Vector2f(96, 32);
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x-TILE_SIZE*3,position.y-TILE_SIZE*3), pos_tex1));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x+TILE_SIZE*4,position.y-TILE_SIZE*3), pos_tex2));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x+TILE_SIZE*4,position.y+TILE_SIZE*4), pos_tex3));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x-TILE_SIZE*3,position.y+TILE_SIZE*4), pos_tex4));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x-Settings::TILE_SIZE*3,position.y-Settings::TILE_SIZE*3), pos_tex1));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE*4,position.y-Settings::TILE_SIZE*3), pos_tex2));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE*4,position.y+Settings::TILE_SIZE*4), pos_tex3));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x-Settings::TILE_SIZE*3,position.y+Settings::TILE_SIZE*4), pos_tex4));
 
 }
 void Tile::DrawGrass(TextureManager &t, sf::VertexArray &vertexArray){
@@ -298,9 +298,9 @@ void Tile::DrawGrass(TextureManager &t, sf::VertexArray &vertexArray){
     pos_tex3 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y+t.size_sprite.y);
     pos_tex4 = sf::Vector2f(position_sprite.x, position_sprite.y+t.size_sprite.y);
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y-GetHeight()/2), pos_tex1));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+TILE_SIZE,position.y-GetHeight()/2+TILE_SIZE), pos_tex3));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+TILE_SIZE-GetHeight()/2),
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y-GetHeight()/2+Settings::TILE_SIZE), pos_tex3));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Settings::TILE_SIZE-GetHeight()/2),
                                   pos_tex4));
     if(neighbors[3]!=nullptr && (neighbors[3]->id !="D" || (neighbors[2] !=nullptr && neighbors[2]->neighbors[8]->id !="0"))){
         sf::Vector2i position_sprite = t.getPositionSprite("grass1");
@@ -309,9 +309,9 @@ void Tile::DrawGrass(TextureManager &t, sf::VertexArray &vertexArray){
         pos_tex3 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y+t.size_sprite.y);
         pos_tex4 = sf::Vector2f(position_sprite.x, position_sprite.y+t.size_sprite.y);
         vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y-GetHeight()/2), pos_tex1));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+TILE_SIZE,position.y-GetHeight()/2+TILE_SIZE), pos_tex3));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y+TILE_SIZE-GetHeight()/2), pos_tex4));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2+Settings::TILE_SIZE), pos_tex3));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y+Settings::TILE_SIZE-GetHeight()/2), pos_tex4));
     }
     if(neighbors[7]!=nullptr && (neighbors[7]->id !="D"|| (neighbors[0] !=nullptr && neighbors[0]->neighbors[8]->id !="0"))){
         sf::Vector2i position_sprite = t.getPositionSprite("grass1");
@@ -320,9 +320,9 @@ void Tile::DrawGrass(TextureManager &t, sf::VertexArray &vertexArray){
         pos_tex1 = sf::Vector2f(position_sprite.x+t.size_sprite.x, position_sprite.y+t.size_sprite.y);
         pos_tex2 = sf::Vector2f(position_sprite.x, position_sprite.y+t.size_sprite.y);
         vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth(),position.y-GetHeight()/2+5), pos_tex1));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth()+TILE_SIZE,position.y-GetHeight()/2+5), pos_tex2));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth()+TILE_SIZE,position.y-GetHeight()/2+5+TILE_SIZE), pos_tex3));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth(),position.y+TILE_SIZE-GetHeight()/2+5), pos_tex4));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2+5), pos_tex2));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2+5+Settings::TILE_SIZE), pos_tex3));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth(),position.y+Settings::TILE_SIZE-GetHeight()/2+5), pos_tex4));
     }
 }
 void Tile::Draw(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray)
@@ -342,9 +342,9 @@ void Tile::Draw(TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &ver
             else {
                 sf::Vector2f pos= GetPosition();
                 vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y), sf::Color::Black));
-                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+TILE_SIZE,pos.y), sf::Color::Black));
-                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+TILE_SIZE,pos.y+TILE_SIZE), sf::Color::Black));
-                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y+TILE_SIZE), sf::Color::Black));
+                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+Settings::TILE_SIZE,pos.y), sf::Color::Black));
+                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x+Settings::TILE_SIZE,pos.y+Settings::TILE_SIZE), sf::Color::Black));
+                vertexArray.append(sf::Vertex(sf::Vector2f(pos.x,pos.y+Settings::TILE_SIZE), sf::Color::Black));
 
             }
     }

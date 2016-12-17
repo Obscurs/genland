@@ -64,6 +64,19 @@ int DeleteDirectory(const char *dirname)
 
     return 1;
 }
+
+Game::Game():
+        inputs(),
+        window(),
+        game(window)
+{
+    _gameState = Uninitialized;
+    true_exit=false;
+
+}
+Game::~Game(){
+
+}
 void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory)
 {
 #ifdef WINDOWS
@@ -119,24 +132,6 @@ void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string 
 
 
 void Game::LoadData(){
-    if(exists_file("config/config")) {
-        std::ifstream myfile("config/config");
-        myfile >> SCREEN_WIDTH >> SCREEN_HEIGHT;
-        myfile.close();
-        if(SCREEN_WIDTH > 1200){
-            TILE_SIZE = TILE_SIZE_HIGH;
-            GAME_WIDTH = GAME_WIDTH_HIGH;
-            GAME_HEIGHT = GAME_HEIGHT_HIGH;
-        } else if(SCREEN_WIDTH > 1000){
-            TILE_SIZE = TILE_SIZE_MED;
-            GAME_WIDTH = GAME_WIDTH_MED;
-            GAME_HEIGHT = GAME_HEIGHT_MED;
-        } else {
-            TILE_SIZE = TILE_SIZE_LOW;
-            GAME_WIDTH = GAME_WIDTH_LOW;
-            GAME_HEIGHT = GAME_HEIGHT_LOW;
-        }
-    }
 
     std::vector<std::string> save_folders;
     GetFilesInDirectory(save_folders, "save");
@@ -164,9 +159,9 @@ void Game::Start(void)
     if(_gameState != Uninitialized)
         return;
     LoadData();
-    window.create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Genland!");
+    window.create(sf::VideoMode(Settings::SCREEN_WIDTH,Settings::SCREEN_HEIGHT,32),"Genland!");
 
-    // sf::View viewPlayer(sf::FloatRect(200, 200, SCREEN_WIDTH, SCREEN_HEIGHT));
+    // sf::View viewPlayer(sf::FloatRect(200, 200, Settings::SCREEN_WIDTH, Settings::SCREEN_HEIGHT));
 
     _gameState= Game::ShowingMenu;
     sf::Clock clock1;
@@ -264,7 +259,10 @@ void Game::GameLoop(double delta)
         case Game::ShowingMenu:
         {
             if(MenuMain::newGameClicked(Game::inputs)) _gameState = NewGame;
-            else if(MenuMain::exitClicked(Game::inputs)) ExitGame();
+            else if(MenuMain::exitClicked(Game::inputs)) {
+                true_exit=true;
+                ExitGame();
+            }
             else if(MenuMain::loadClicked(Game::inputs)) _gameState = LoadGame;
             else if(MenuMain::configClicked(Game::inputs)) _gameState = Config;
             while(window.pollEvent(currentEvent))
@@ -361,6 +359,7 @@ void Game::GameLoop(double delta)
                 }
                 else if (currentEvent.type == sf::Event::Closed)
                 {
+                    true_exit=true;
                     Game::ExitGame();
                 }
             }
@@ -436,6 +435,7 @@ void Game::GameLoop(double delta)
                 }
                 else if (currentEvent.type == sf::Event::Closed)
                 {
+                    true_exit=true;
                     Game::ExitGame();
                 }
             }
@@ -466,6 +466,7 @@ void Game::GameLoop(double delta)
                 }
                 else if (currentEvent.type == sf::Event::Closed)
                 {
+                    true_exit=true;
                     Game::ExitGame();
                 }
             }
@@ -491,7 +492,8 @@ void Game::GameLoop(double delta)
                     myfile << y;
                     myfile.close();
                 }
-
+                true_exit=false;
+                ExitGame();
             }
             else if(MenuConfigGame::resClicked(Game::inputs)) {
                 MenuConfigGame::resolution_visible = true;
@@ -511,6 +513,7 @@ void Game::GameLoop(double delta)
                 }
                 else if (currentEvent.type == sf::Event::Closed)
                 {
+                    true_exit=true;
                     Game::ExitGame();
                 }
             }
@@ -589,9 +592,5 @@ void Game::DeleteGame(int index, std::string path) {
     }
 }
 
-//ConfigStarter Game::cfg;
 
-Game::GameState Game::_gameState = Uninitialized;
-sf::RenderWindow Game::window;
-Inputs Game::inputs;
-RunningGame Game::game(window);
+

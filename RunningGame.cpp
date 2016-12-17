@@ -11,7 +11,7 @@ RunningGame::RunningGame(sf::RenderWindow &window)
       backgrounds(),
       clock(),
       drawer(&map_curr,&player,&backgrounds, &clock),
-      view_game(&window,MagicView::crop,sf::Vector2i(GAME_WIDTH,GAME_HEIGHT))
+      view_game(&window,MagicView::crop,sf::Vector2i(Settings::GAME_WIDTH,Settings::GAME_HEIGHT))
 {
     player.Load("blue.png");
     player.SetPosition(0,0);
@@ -53,11 +53,13 @@ void RunningGame::restart(std::string path,sf::RenderWindow &window, std::string
     view_game.update();
     player.Load("blue.png");
     player.SetPosition(0,0);
-    player.SetSize(32);
+    player.SetSize(Settings::TILE_SIZE*2);
     pathGame = path;
+    player.loadStats(pathGame);
 
 }
 void RunningGame::saveGame(){
+    player.saveStats(pathGame);
     map_curr.saveMap();
 }
 
