@@ -3,13 +3,15 @@
 //
 
 #include "RunningGame.h"
-RunningGame::RunningGame(sf::RenderWindow &window,sf::Vector2u resolution)
+#include "Settings.h"
+
+RunningGame::RunningGame(sf::RenderWindow &window)
     : map_curr(),
       player(),
       backgrounds(),
       clock(),
       drawer(&map_curr,&player,&backgrounds, &clock),
-      view_game(&window,MagicView::crop,sf::Vector2i(resolution.x,resolution.y))
+      view_game(&window,MagicView::crop,sf::Vector2i(GAME_WIDTH,GAME_HEIGHT))
 {
     player.Load("blue.png");
     player.SetPosition(0,0);

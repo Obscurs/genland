@@ -15,21 +15,23 @@
 #include "Clock.h"
 #include "RunningGame.h"
 #include "MagicView.h"
+#include "ConfigStarter.h"
 #include <algorithm>
 class Game
 {
 public:
 	static void Start();
+	static void LoadData();
 	//static sf::RenderWindow& GetWindow();
 	//const static sf::Input& GetInput();
-	static int SCREEN_WIDTH;
-	static int SCREEN_HEIGHT;
+
+
 
 private:
 	static bool IsExiting();
 	static void GameLoop(double delta);
 	static void ExitGame();
-    static void LoadData();
+
     static void GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory);
     static void CreateNewGame(std::string path, std::string seed,std::string name);
     static void DeleteGame(int index,std::string path);
@@ -40,7 +42,7 @@ private:
 	static sf::RenderWindow window;
 	static Inputs inputs;
     static RunningGame game;
-    static inline bool exists_file (const std::string& name);
+	//static ConfigStarter cfg;
 
 
 };

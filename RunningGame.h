@@ -20,7 +20,7 @@
 class RunningGame {
 public:
     void restart(std::string path,sf::RenderWindow &window, std::string seed);
-    RunningGame(sf::RenderWindow &window,sf::Vector2u resolution);
+    RunningGame(sf::RenderWindow &window);
     ~RunningGame();
     Map map_curr;
     Player player;

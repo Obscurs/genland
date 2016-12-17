@@ -14,7 +14,7 @@
 #include <cassert>
 #include <queue>
 #include "Chunk.h"
-
+#include "Settings.h"
 
 
 void Chunk::saveToFile(std::string path){
@@ -374,17 +374,17 @@ Tile* Chunk::getTile(float x, float y, int z){
 	//if(y<0) y = 0;
 
     if(x>=0){
-        int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
-        int size_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE;
-        int tile_x = ((int)x%size_chunk_x)/Chunk::TILE_SIZE;
-        int tile_y = ((int)y%size_chunk_y)/Chunk::TILE_SIZE;
+        int size_chunk_x = Chunk::N_TILES_X*TILE_SIZE;
+        int size_chunk_y = Chunk::N_TILES_Y*TILE_SIZE;
+        int tile_x = ((int)x%size_chunk_x)/TILE_SIZE;
+        int tile_y = ((int)y%size_chunk_y)/TILE_SIZE;
         return tile_mat[tile_y][abs(tile_x)][z];
     }
     else{
-        int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
-        int size_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE;
-        int tile_x = (((int)floorf(x)%size_chunk_x)+size_chunk_x)/Chunk::TILE_SIZE;
-        int tile_y = ((int)floorf(y)%size_chunk_y)/Chunk::TILE_SIZE;
+        int size_chunk_x = Chunk::N_TILES_X*TILE_SIZE;
+        int size_chunk_y = Chunk::N_TILES_Y*TILE_SIZE;
+        int tile_x = (((int)floorf(x)%size_chunk_x)+size_chunk_x)/TILE_SIZE;
+        int tile_y = ((int)floorf(y)%size_chunk_y)/TILE_SIZE;
         //std::cout << "t" << x <<" "<< floorf(x) << " " << (int)floorf(x) << std::endl;
         //tile_x = Chunk::N_TILES_X-1-tile_x;
         return tile_mat[abs(tile_y)][abs(tile_x)][z];
@@ -408,18 +408,18 @@ sf::Vector2i Chunk::getTileIndex(float x, float y){
 	//if(y<0) y = 0;
 
     if(x>=0) {
-        int size_chunk_x = Chunk::N_TILES_X * Chunk::TILE_SIZE;
-        int size_chunk_y = Chunk::N_TILES_Y * Chunk::TILE_SIZE;
-        int tile_x = ((int) x % size_chunk_x) / Chunk::TILE_SIZE;
-        int tile_y = ((int) y % size_chunk_y) / Chunk::TILE_SIZE;
+        int size_chunk_x = Chunk::N_TILES_X * TILE_SIZE;
+        int size_chunk_y = Chunk::N_TILES_Y * TILE_SIZE;
+        int tile_x = ((int) x % size_chunk_x) / TILE_SIZE;
+        int tile_y = ((int) y % size_chunk_y) / TILE_SIZE;
         if(tile_x == Chunk::N_TILES_X) tile_x = 0;
         return sf::Vector2i(abs(tile_y), abs(tile_x));
     }
     else{
-        int size_chunk_x = Chunk::N_TILES_X * Chunk::TILE_SIZE;
-        int size_chunk_y = Chunk::N_TILES_Y * Chunk::TILE_SIZE;
-        int tile_x = (((int) floorf(x) % size_chunk_x)+size_chunk_x) / Chunk::TILE_SIZE;
-        int tile_y = (((int) floorf(y) % size_chunk_y)) / Chunk::TILE_SIZE;
+        int size_chunk_x = Chunk::N_TILES_X * TILE_SIZE;
+        int size_chunk_y = Chunk::N_TILES_Y * TILE_SIZE;
+        int tile_x = (((int) floorf(x) % size_chunk_x)+size_chunk_x) / TILE_SIZE;
+        int tile_y = (((int) floorf(y) % size_chunk_y)) / TILE_SIZE;
         if(tile_x == Chunk::N_TILES_X) tile_x = 0;
         return sf::Vector2i(abs(tile_y), abs(tile_x));
     }
@@ -453,12 +453,12 @@ void Chunk::DrawChunk(sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, s
     float pos1y = pos1.y;
     float pos2x = pos2.x;
     float pos2y = pos2.y;
-    float golbal_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE*chunk_pos.x;
-    float golbal_chunk_y = Chunk::N_TILES_Y*Chunk::TILE_SIZE*chunk_pos.y;
+    float golbal_chunk_x = Chunk::N_TILES_X*TILE_SIZE*chunk_pos.x;
+    float golbal_chunk_y = Chunk::N_TILES_Y*TILE_SIZE*chunk_pos.y;
     if(pos1x < golbal_chunk_x) pos1x = golbal_chunk_x;
     if(pos1y < golbal_chunk_y) pos1y = golbal_chunk_y;
-    if(pos2x >= golbal_chunk_x + Chunk::N_TILES_X*Chunk::TILE_SIZE) pos2x = golbal_chunk_x + (Chunk::N_TILES_X-1)*Chunk::TILE_SIZE;
-    if(pos2y >= golbal_chunk_y + Chunk::N_TILES_Y*Chunk::TILE_SIZE) pos2y = golbal_chunk_y + (Chunk::N_TILES_Y-1)*Chunk::TILE_SIZE;
+    if(pos2x >= golbal_chunk_x + Chunk::N_TILES_X*TILE_SIZE) pos2x = golbal_chunk_x + (Chunk::N_TILES_X-1)*TILE_SIZE;
+    if(pos2y >= golbal_chunk_y + Chunk::N_TILES_Y*TILE_SIZE) pos2y = golbal_chunk_y + (Chunk::N_TILES_Y-1)*TILE_SIZE;
     //std::cout << pos1x << " " << pos1y << " " << pos2x << " " << pos2y<< " " << chunk_pos.x << std::endl;
     sf::Vector2i first_index = getTileIndex(pos1x, pos1y);
     sf::Vector2i last_index = getTileIndex(pos2x, pos2y);

@@ -2,7 +2,6 @@
 #define __INPUTS_H__
 
 #include <vector>
-
 class Inputs
 {
 public:

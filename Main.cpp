@@ -19,6 +19,7 @@ sf::Clock deltaClock;
 sf::Time dt;
 int main(int argc, char** argv)
 {
+
   Game::Start();
   
   return 0;

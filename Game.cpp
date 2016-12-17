@@ -6,27 +6,29 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
-#include <map>
 #include <iostream>
+
+#include <dirent.h>
+#include <fstream>
+#include <sys/stat.h>
+#include <string.h>
+
+#include <limits.h>
+#include <unistd.h>
+#include <unistd.h>
 #include <cassert>
 #include <stdio.h>
 #include <stdlib.h>
-#include <dirent.h>
 #include <sys/types.h>
-#include <cassert>
 
-
-#include <string.h>
-#include <limits.h>
-#include <unistd.h>
-
-#include <iostream>
-#include <fstream>
-#include <sys/stat.h>
-#include <unistd.h>
 #include "Game.h"
-
+#include "Settings.h"
 //bool sortByName(const Person &lhs, const Person &rhs) { return lhs.name < rhs.name; }
+
+inline bool exists_file (const std::string& name) {
+    struct stat buffer;
+    return (stat (name.c_str(), &buffer) == 0);
+}
 int DeleteDirectory(const char *dirname)
 {
     DIR *dir;
@@ -62,15 +64,78 @@ int DeleteDirectory(const char *dirname)
 
     return 1;
 }
-inline bool Game::exists_file (const std::string& name) {
-    struct stat buffer;
-    return (stat (name.c_str(), &buffer) == 0);
-}
+void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory)
+{
+#ifdef WINDOWS
+    HANDLE dir;
+    WIN32_FIND_DATA file_data;
+
+    if ((dir = FindFirstFile((directory + "/*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
+        return; /* No files found */
+
+    do {
+        const string file_name = file_data.cFileName;
+        const string full_file_name = directory + "/" + file_name;
+        const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+
+        if (file_name[0] == '.')
+            continue;
+
+        if (is_directory)
+            continue;
+
+        out.push_back(full_file_name);
+    } while (FindNextFile(dir, &file_data));
+
+    FindClose(dir);
+#else
+    DIR *dir;
+    class dirent *ent;
+    class stat st;
+    const char * c = directory.c_str();
+    dir = opendir(c);
+    while ((ent = readdir(dir)) != NULL) {
+
+        const std::string file_name = ent->d_name;
+        const std::string full_file_name = directory + "/" + file_name;
+
+        if (file_name[0] == '.')
+            continue;
+
+        if (stat(full_file_name.c_str(), &st) == -1)
+            continue;
+
+        //const bool is_directory = (st.st_mode & S_IFDIR) != 0;
+
+        //if (is_directory)
+        //    continue;
+        out.push_back(full_file_name);
+    }
+    closedir(dir);
+#endif
+    std::sort (out.begin(), out.end());
+} // GetFilesInDirectory
+
+
+
 void Game::LoadData(){
     if(exists_file("config/config")) {
         std::ifstream myfile("config/config");
         myfile >> SCREEN_WIDTH >> SCREEN_HEIGHT;
         myfile.close();
+        if(SCREEN_WIDTH > 1200){
+            TILE_SIZE = TILE_SIZE_HIGH;
+            GAME_WIDTH = GAME_WIDTH_HIGH;
+            GAME_HEIGHT = GAME_HEIGHT_HIGH;
+        } else if(SCREEN_WIDTH > 1000){
+            TILE_SIZE = TILE_SIZE_MED;
+            GAME_WIDTH = GAME_WIDTH_MED;
+            GAME_HEIGHT = GAME_HEIGHT_MED;
+        } else {
+            TILE_SIZE = TILE_SIZE_LOW;
+            GAME_WIDTH = GAME_WIDTH_LOW;
+            GAME_HEIGHT = GAME_HEIGHT_LOW;
+        }
     }
 
     std::vector<std::string> save_folders;
@@ -523,62 +588,10 @@ void Game::DeleteGame(int index, std::string path) {
             perror( "Error renaming file" );
     }
 }
-void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory)
-{
-#ifdef WINDOWS
-    HANDLE dir;
-    WIN32_FIND_DATA file_data;
 
-    if ((dir = FindFirstFile((directory + "/*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
-        return; /* No files found */
+//ConfigStarter Game::cfg;
 
-    do {
-        const string file_name = file_data.cFileName;
-        const string full_file_name = directory + "/" + file_name;
-        const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-
-        if (file_name[0] == '.')
-            continue;
-
-        if (is_directory)
-            continue;
-
-        out.push_back(full_file_name);
-    } while (FindNextFile(dir, &file_data));
-
-    FindClose(dir);
-#else
-    DIR *dir;
-    class dirent *ent;
-    class stat st;
-    const char * c = directory.c_str();
-    dir = opendir(c);
-    while ((ent = readdir(dir)) != NULL) {
-
-        const std::string file_name = ent->d_name;
-        const std::string full_file_name = directory + "/" + file_name;
-
-        if (file_name[0] == '.')
-            continue;
-
-        if (stat(full_file_name.c_str(), &st) == -1)
-            continue;
-
-        //const bool is_directory = (st.st_mode & S_IFDIR) != 0;
-
-        //if (is_directory)
-        //    continue;
-        out.push_back(full_file_name);
-    }
-    closedir(dir);
-#endif
-    std::sort (out.begin(), out.end());
-} // GetFilesInDirectory
-
-int Game::SCREEN_WIDTH = 1000;
-int Game::SCREEN_HEIGHT = 700;
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::window;
-
 Inputs Game::inputs;
-RunningGame Game::game(window, sf::Vector2u(SCREEN_WIDTH,SCREEN_HEIGHT));
+RunningGame Game::game(window);

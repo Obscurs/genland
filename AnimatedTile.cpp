@@ -13,6 +13,7 @@
 
 #include "AnimatedTile.h"
 #include "Map.h"
+#include "Settings.h"
 
 
 AnimatedTile::AnimatedTile(){
@@ -112,7 +113,7 @@ bool AnimatedTile::ColideWorld(Chunk* c1,Chunk* c2,Chunk* c3, int posMap){
     sf::Vector2f center_pos(position.x+size.x/2, position.y+size.y/2);
 
         if(center_pos.y<0) center_pos.y = 0;
-        int size_chunk_x = Chunk::N_TILES_X*Chunk::TILE_SIZE;
+        int size_chunk_x = Chunk::N_TILES_X*TILE_SIZE;
         int chunk_x = (center_pos.x-size_chunk_x*posMap)/size_chunk_x;
 
 
