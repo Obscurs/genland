@@ -52,6 +52,7 @@ Item* Item::getItemCopy(){
 
 void Item::Draw(sf::RenderWindow& renderWindow, TextureManager &t, sf::Text &text)
 {
+
 		sf::Sprite s;
 		sf::Vector2f item_pos = GetPosition();
 		t.generateSprite(id, item_pos, s, sf::Vector2f(GetWidth(),GetHeight()));

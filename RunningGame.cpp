@@ -40,27 +40,61 @@ void RunningGame::draw(sf::RenderWindow &window){
 }
 void RunningGame::restart(std::string path,sf::RenderWindow &window, std::string seed){
 
-    Map *newMap = new Map(-1,path, seed);
-    map_curr = *newMap;
-    map_curr.init(-1,path, seed);
     Player *newPlayer = new Player();
     player = *newPlayer;
-    WorldBackground *newBack = new WorldBackground();
-    backgrounds = *newBack;
-    Clock *newClock = new Clock();
-    clock = *newClock;
-
-    view_game.update();
     player.Load("blue.png");
     player.SetPosition(0,0);
     player.SetSize(Settings::TILE_SIZE*2);
     pathGame = path;
     player.loadStats(pathGame);
 
+    sf::Vector2f player_pos = player.GetPosition();
+    int chunk_player = (int)round(player_pos.x/(Settings::TILE_SIZE*Chunk::N_TILES_X));
+    Map *newMap = new Map(chunk_player,path, seed);
+    map_curr = *newMap;
+    map_curr.init(chunk_player,path, seed);
+
+    WorldBackground *newBack = new WorldBackground();
+    backgrounds = *newBack;
+    Clock *newClock = new Clock();
+    clock = *newClock;
+
+    view_game.update();
+
+
+    std::string route = pathGame;
+    route.append("/data");
+
+    std::ifstream myfile(route);
+    std::string data_seed= "def", data_name = "def";
+    std::string day= "0", hour= "0", min = "0";
+    myfile >> data_seed >> data_name;
+    myfile >> day >> hour >> min;
+    clock.day = stoi(day);
+    clock.hour = stoi(hour);
+    clock.min = stoi(min);
+    myfile.close();
+
 }
 void RunningGame::saveGame(){
     player.saveStats(pathGame);
     map_curr.saveMap();
+
+    std::string route = pathGame;
+    route.append("/data");
+
+    std::ifstream myfile(route);
+    std::string data_seed= "def", data_name = "def";
+    myfile >> data_seed >> data_name;
+    myfile.close();
+
+    std::ofstream myfile2(route);
+    myfile2 << data_seed << "\n" << data_name << "\n" ;
+    myfile2 << clock.day << " " << clock.hour << " " << clock.min;
+    myfile2.close();
+
+
+
 }
 
 

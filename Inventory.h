@@ -17,7 +17,8 @@ public:
 
 
 
-
+	void saveData(std::ofstream &myfile);
+	void loadData(std::ifstream &myfile);
 	void Draw(sf::RenderWindow& renderWindow);
 	void Update(Inputs &inputs, sf::RenderWindow &window);
 	int stackItem(std::string id, int amount);

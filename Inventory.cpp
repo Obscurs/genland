@@ -12,8 +12,8 @@
 #include <iostream>
 #include <cassert>
 #include "Inventory.h"
-
-
+#include <string>
+#include <fstream>
 //#include "Game.h"
 
 Inventory::Inventory()
@@ -747,5 +747,62 @@ void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
 
 	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
 		if (inputs.getKey("number"+std::to_string(i)).x == 1) tab_item_selected = i-1;
+	}
+}
+
+void Inventory::saveData(std::ofstream &myfile){
+
+
+	//std::string x = std::to_string(_sprite.getPosition().x);
+	//std::string y = std::to_string(_sprite.getPosition().y);
+	myfile << X_SLOTS <<" " << Y_SLOTS << "\n";
+	for(int i=0; i<Y_SLOTS; i++){
+		for(int j=0; j<X_SLOTS; j++){
+			Item *it =inventory[i][j];
+			if(it==nullptr) myfile << -1 << " " << -1 << " ";
+			else myfile << it->id << " " << it->amount << " ";
+		}
+	}
+	myfile << "\n" << TAB_SLOTS << "\n";
+	for(int i=0; i<TAB_SLOTS; i++){
+		Item *it =tab[i];
+		if(it==nullptr) myfile << -1 << " " << -1 << " ";
+		else myfile << it->id << " " << it->amount << " ";
+
+	}
+}
+void Inventory::loadData(std::ifstream &myfile){
+
+	std::string x_sl;
+	std::string y_sl;
+	myfile >> x_sl >> y_sl;
+	for(int i=0; i< stoi(y_sl); i++){
+		for(int j=0; j<stoi(x_sl); j++){
+			std::string item;
+			std::string amount;
+			myfile >> item >> amount;
+			if(item != "-1"){
+				Item *it = new Item(item);
+				it->amount = stoi(amount);
+                it->SetSize(SLOT_SIZE-GRID_THICKNESS);
+				inventory[i][j] = it;
+			}
+		}
+	}
+
+	std::string n_tab;
+	myfile >> n_tab;
+	for(int i=0; i< stoi(n_tab); i++){
+
+		std::string item;
+		std::string amount;
+		myfile >> item >> amount;
+		if(item != "-1"){
+			Item *it = new Item(item);
+			it->amount = stoi(amount);
+            it->SetSize(SLOT_SIZE-GRID_THICKNESS);
+			tab[i] = it;
+		}
+
 	}
 }
