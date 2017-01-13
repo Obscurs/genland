@@ -167,7 +167,7 @@ void Game::Start(void)
     sf::Clock clock1;
     sf::Clock clock2;
     float lastTime = 0;
-
+//hola
     char c[10];
     sf::Text text;
     sf::Font font;
