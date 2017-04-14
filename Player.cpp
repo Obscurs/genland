@@ -289,10 +289,11 @@ void Player::Load(std::string filename)
 
 void Player::Draw(sf::RenderWindow & renderWindow)
 {
-
-
 	renderWindow.draw(_sprite);
-
+}
+void Player::Draw2(sf::RenderTexture & tex)
+{
+	tex.draw(_sprite);
 }
 void Player::DrawInventory(sf::RenderWindow & renderWindow)
 {
@@ -300,7 +301,7 @@ void Player::DrawInventory(sf::RenderWindow & renderWindow)
 }
 
 
-void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window)
+void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, float zoom)
 {
 	inventory->Update(inputs, window);
 	sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
@@ -310,7 +311,15 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	sf::Vector2i keySpace = inputs.getKey("Space");
 
     sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
+	std::cout << position.x << " " << position.y << " zoomed ";
+	//position.x = pow(position.x, 1/zoom);
+    //position.y = pow(position.y, 1/zoom);
+    sf::Vector2f position_center = sf::Vector2f(GetPosition().x+GetWidth()/2,GetPosition().y+GetWidth()/2);
+    sf::Vector2f position_zoomed = (position-position_center)/zoom +position_center;
+    //sf::Vector2f diff_with_center = sf::Vector2f(position_zoomed.x-GetPosition().x+GetWidth()/2,position_zoomed.y-GetPosition().y+GetWidth()/2);
+    //position = position_zoomed+diff_with_center;
+    position = position_zoomed;
+    std::cout << position.x<< " " << position.y<< std::endl;
 	//sf::View currentView = window.getView();
 	//sf::Vector2f centerView = currentView.getCenter();
 	//sf::Vector2f sizeView = currentView.getSize();

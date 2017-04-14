@@ -33,7 +33,7 @@ void RunningGame::update(sf::RenderWindow &window,float delta,Inputs &inputs){
         if(zoom > 1) zoom = std::max(zoom-0.05, 1.0);
     }
 
-    player.Update(delta, map_curr, inputs, window);
+    player.Update(delta, map_curr, inputs, window, zoom);
 
     backgrounds.Update(player.GetPosition(),clock);
     map_curr.UpdateAll(delta, player.GetPosition());
@@ -44,9 +44,8 @@ void RunningGame::update(sf::RenderWindow &window,float delta,Inputs &inputs){
 }
 void RunningGame::draw(sf::RenderWindow &window){
   const sf::View &aux = window.getView();
-
   window.setView(view_game);
-  drawer.Draw(window);
+  drawer.Draw(window, zoom);
   window.setView(aux);
 }
 void RunningGame::restart(std::string path,sf::RenderWindow &window, std::string seed){

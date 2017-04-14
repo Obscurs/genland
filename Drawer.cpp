@@ -19,6 +19,7 @@ Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c){
 
     view_player.setSize(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     view_player.setSize(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
+    //view_player.zoom(0.5);
     texture_front->create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     texture_back->create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     black_texture.create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
@@ -137,6 +138,7 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
     pos_sprite.y+=1;
     //std::cout <<pos_sprite.x << std::endl;
     sf::Sprite background_sprite(texture_background.getTexture());
+    //background_sprite.setScale(sf::Vector2f(0.5,0.5));
     background_sprite.setPosition(pos_sprite);
     //return background_sprite;
 
@@ -164,6 +166,7 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
 
     texture_plain_sprite.display();
     sf::Sprite map_without_lights(texture_plain_sprite.getTexture());
+    //map_without_lights.setScale(sf::Vector2f(0.5,0.5));
     map_without_lights.setPosition(pos_sprite);
 
     return map_without_lights;
@@ -239,7 +242,7 @@ void Drawer::DrawLights(sf::VertexArray &render_array,sf::VertexArray &sky_array
 
 }
 
-void Drawer::DrawMap(sf::RenderWindow& renderWindow)
+void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
 {
     //texture_back->setView(mv);
     //texture_front->setView(mv);
@@ -254,11 +257,18 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow)
     //std::cout << map_without_lights.getPosition().x << " " << " "<< std::endl;
     DrawLights(render_array,sky_array,map_without_lights);
     texture_back->display();
+    player->Draw2(*texture_back);
     sf::Sprite sprite(texture_back->getTexture());
 
-    sprite.setPosition(map_without_lights.getPosition());
 
-    //renderWindow.draw(sprite);
+
+    sprite.setPosition(map_without_lights.getPosition());
+    sf::Vector2f oldOrgin = sprite.getOrigin();
+    sprite.setOrigin(sprite.getTexture()->getSize().x/(2),sprite.getTexture()->getSize().y/(2));
+
+    sprite.setScale(sf::Vector2f(zoom,zoom));
+    sprite.setPosition(sprite.getPosition().x+sprite.getTexture()->getSize().x/(2), sprite.getPosition().y+sprite.getTexture()->getSize().y/(2));
+
     mix_back_terr_shader.setParameter("texture2", texture_background.getTexture());
     sf::RenderStates states;
     states.texture = &texture_back->getTexture();
@@ -268,27 +278,19 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow)
     //view_player.setSize(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
 }
 
-void Drawer::Draw(sf::RenderWindow &window){
+void Drawer::Draw(sf::RenderWindow &window, float zoom){
 
 
     view_player.setCenter(player->GetPosition().x+(player->GetWidth()/2), player->GetPosition().y+(player->GetHeight()/2));
 
     texture_back->setView(view_player);
     texture_front->setView(view_player);
-
     texture_plain_sprite.setView(view_player);
     texture_background.setView(view_player);
-
-
     black_texture.setView(view_player);
-    //view_player.setSize(sf::Vector2f(1000,600));
 
-    //view_player.setSize(sf::Vector2f(1000,600));
+    DrawMap(window, zoom);
 
-
-
-    DrawMap(window);
-    player->Draw(window);
     player->DrawInventory(window);
-    //view_player.zoom(1.2);
+
 }

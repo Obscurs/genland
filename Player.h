@@ -11,8 +11,9 @@ public:
 	
 	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
+	void Draw2(sf::RenderTexture & tex);
 	void DrawInventory(sf::RenderWindow & window);
-	void Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window);
+	void Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, float zoom);
     int id;
 	void SetPosition(float x, float y);
 	void SetSize(float x);
