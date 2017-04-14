@@ -6,12 +6,13 @@
       <sourceFolder url="file://$MODULE_DIR$/test/test.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/test.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Drawer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/ConfigStarter.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Clock.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Background.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Inventory.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Simplex2d.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Inputs.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Sun.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/ConfigStarter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MagicView.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MenuConfigGame.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Background.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Sun.cpp" isTestSource="false" />
@@ -20,13 +21,16 @@
       <sourceFolder url="file://$MODULE_DIR$/MenuLoadGame.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MenuLoadGame.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Light.cpp" isTestSource="false" />
+
       <sourceFolder url="file://$MODULE_DIR$/RunningGame.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Settings.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/RunningGame.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Inputs.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Functions.h" isTestSource="false" />
+
       <sourceFolder url="file://$MODULE_DIR$/Button.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Inventory.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/RunningGame.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Button.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Game.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/NewGameMenu.cpp" isTestSource="false" />
@@ -34,7 +38,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Map.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MenuConfigGame.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/AnimatedTile.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/TextureManager.h" isTestSource="false" />
+
       <sourceFolder url="file://$MODULE_DIR$/TextInput.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Item.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/AnimatedTile.cpp" isTestSource="false" />
@@ -42,9 +46,9 @@
       <sourceFolder url="file://$MODULE_DIR$/NewGameMenu.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Chunk.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InterfaceList.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+
       <sourceFolder url="file://$MODULE_DIR$/MenuMain.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Chunk.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ConfigStarter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Item.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Map.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TextInput.h" isTestSource="false" />
@@ -52,30 +56,31 @@
       <sourceFolder url="file://$MODULE_DIR$/MenuMain.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MagicView.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Player.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ConfigStarter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MagicView.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WorldBackground.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InterfaceList.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Clock.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Game.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Inventory.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Chunk.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Functions.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TextureManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Player.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/WorldBackground.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Settings.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Drawer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/WorldBackground.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Light.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Game.h" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
         </CLASSES>
         <SOURCES>
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
         </SOURCES>

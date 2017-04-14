@@ -551,7 +551,7 @@ void Player::saveStats(std::string pathGame){
 	std::string x = std::to_string(_sprite.getPosition().x);
 	std::string y = std::to_string(_sprite.getPosition().y);
 	myfile << x << " " << y << "\n";
-	//inventory.saveData(pathGame);
+	inventory->saveData(myfile);
 	myfile.close();
 }
 void Player::loadStats(std::string pathGame){
@@ -566,9 +566,9 @@ void Player::loadStats(std::string pathGame){
 		std::string y;
 		myfile >> x >> y;
 		SetPosition(std::stof(x),std::stof(y));
+
+        inventory->loadData(myfile);
 		myfile.close();
 	}
-
-
 }
 

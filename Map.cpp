@@ -38,9 +38,9 @@ void Map::init(int pos, std::string path, std::string s)
 
     int id_temp = 0;
     posMap = pos;
-    createMap(0, -1, id_temp);
-    createMap(1, 0, id_temp);
-    createMap(2, 1, id_temp);
+    createMap(0, pos, id_temp);
+    createMap(1, pos+1, id_temp);
+    createMap(2, pos+2, id_temp);
     chunk_mat[0]->neighbors[1] = chunk_mat[1];
     chunk_mat[1]->neighbors[0] = chunk_mat[0];
     chunk_mat[1]->neighbors[1] = chunk_mat[2];
