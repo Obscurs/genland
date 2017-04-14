@@ -45,7 +45,7 @@ private:
     sf::View view_player;
 
     sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array);
-    void DrawLights(sf::View& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights);
+    void DrawLights(sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights);
     void DrawMap(sf::RenderWindow& renderWindow);
     void DrawFrontItemsMap(sf::RenderWindow& renderWindow,sf::VertexArray &render_array);
 };

@@ -36,5 +36,5 @@ void main(void)
             gl_FragColor = max(tex_old,light_with_color);
             //gl_FragColor = max(tex_old,tex_current);
         }
-
+    //gl_FragColor = tex_current;
 }

@@ -33,6 +33,7 @@ public:
     void update(sf::RenderWindow &window,float delta,Inputs &inputs);
     void saveGame();
     void draw(sf::RenderWindow &window);
+    float zoom;
 };
 
 

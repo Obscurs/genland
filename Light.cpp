@@ -41,7 +41,6 @@ void Light::Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::Sha
 
         sf::RenderStates states;
         states.texture = t->getTexture();
-
         light_shader.setParameter("texture2", tex_back->getTexture());
         light_shader.setParameter("color", color);
         light_shader.setParameter("center", pos_light);

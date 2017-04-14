@@ -13,6 +13,7 @@ RunningGame::RunningGame(sf::RenderWindow &window)
       drawer(&map_curr,&player,&backgrounds, &clock),
       view_game(&window,MagicView::crop,sf::Vector2i(Settings::GAME_WIDTH,Settings::GAME_HEIGHT))
 {
+    zoom = 1.0;
     player.Load("blue.png");
     player.SetPosition(0,0);
     player.SetSize(32);
@@ -22,6 +23,15 @@ void RunningGame::update(sf::RenderWindow &window,float delta,Inputs &inputs){
     //sf::View currentView = window.getView();
     //currentView.setCenter(player.GetPosition().x+(player.GetWidth()/2), player.GetPosition().y+(player.GetHeight()/2));
     //window.setView(currentView);
+
+    int wheel = inputs.getKey("wheel").x;
+    sf::Vector2i controlKey = inputs.getKey("Control");
+    if(wheel == 1 && controlKey.x){
+        if(zoom < 3) zoom = std::min(zoom+0.05, 3.0);
+    }
+    else if(wheel == -1 && controlKey.x){
+        if(zoom > 1) zoom = std::max(zoom-0.05, 1.0);
+    }
 
     player.Update(delta, map_curr, inputs, window);
 
@@ -34,6 +44,7 @@ void RunningGame::update(sf::RenderWindow &window,float delta,Inputs &inputs){
 }
 void RunningGame::draw(sf::RenderWindow &window){
   const sf::View &aux = window.getView();
+
   window.setView(view_game);
   drawer.Draw(window);
   window.setView(aux);

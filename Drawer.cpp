@@ -18,9 +18,11 @@ Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c){
 
 
     view_player.setSize(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
+    view_player.setSize(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     texture_front->create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     texture_back->create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     black_texture.create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
+    view_player.zoom(.9f);
     sf::RectangleShape rectangle(sf::Vector2f(0, 0));
     rectangle.setSize(sf::Vector2f(Settings::GAME_WIDTH, Settings::GAME_HEIGHT));
     rectangle.setFillColor(sf::Color::Black);
@@ -88,12 +90,8 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
     texture_plain_sprite.clear(sf::Color(0,0,0,0));
     //backgrounds->Draw(texture_plain_sprite);
 
-
-
-
-    sf::View currentView = renderWindow.getView();
-    sf::Vector2f centerView = currentView.getCenter();
-    sf::Vector2f sizeView = currentView.getSize();
+    sf::Vector2f centerView = view_player.getCenter();
+    sf::Vector2f sizeView = view_player.getSize();
     float first_x = centerView.x-(sizeView.x/2)-1;
     float first_y = centerView.y-(sizeView.y/2)-1;
     float last_x = centerView.x+(sizeView.x/2)+1;
@@ -132,12 +130,7 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
     else if(clock->min<50) sun_background_shader.setParameter("factor", 0.0);
     else sun_background_shader.setParameter("factor", (clock->min-50)/10);
 
-
-
     texture_background.clear(sf::Color(255,0,0,255));
-
-
-
 
     backgrounds->Draw(texture_background);
     sf::Vector2f pos_sprite = firstPos;
@@ -168,7 +161,6 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
 
     sf::RenderStates states;
     states.texture = texMan->getTexture();
-    //texture_plain_sprite.setView(currentView);
     texture_plain_sprite.draw(render_array, states);
 
     texture_plain_sprite.display();
@@ -177,105 +169,8 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArr
 
     return map_without_lights;
 }
-/*
-sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow, MagicView &mv ,sf::VertexArray &render_array,sf::VertexArray &sky_array){
-    texture_plain_sprite.clear(sf::Color(0,0,0,0));
-    //backgrounds->Draw(texture_plain_sprite);
 
-
-
-
-    //sf::View currentView = renderWindow.getView();
-    sf::Vector2f centerView = mv.getCenter();
-    sf::Vector2f sizeView = mv.getSize();
-    float first_x = centerView.x-(sizeView.x/2)-1;
-    float first_y = centerView.y-(sizeView.y/2)-1;
-    float last_x = centerView.x+(sizeView.x/2)+1;
-    float last_y = centerView.y+(sizeView.y/2)+1;
-
-    sf::Vector2f firstPos(first_x, first_y);
-    sf::Vector2f lastPos(last_x+Settings::TILE_SIZE, last_y+Settings::TILE_SIZE);
-
-    int first_chunk = map_curr->getChunkIndex(first_x);
-    int last_chunk = map_curr->getChunkIndex(last_x+Settings::TILE_SIZE);
-
-    if(clock->min<20){
-        sun_background_shader.setParameter("color", sf::Color::Black);
-        sun_background_shader.setParameter("color2", sf::Color::Black);
-        sun_background_shader.setParameter("factor2", 0);
-    } else if(clock->min<30){
-        sun_background_shader.setParameter("color", sf::Color::Black);
-        sun_background_shader.setParameter("color2", sf::Color(244, 173, 66));
-        sun_background_shader.setParameter("factor2", (clock->min-20)/10);
-    }else if(clock->min<40){
-        sun_background_shader.setParameter("color", sf::Color(244, 173, 66));
-        sun_background_shader.setParameter("color2", sf::Color::Yellow);
-        sun_background_shader.setParameter("factor2", (clock->min-30)/10);
-    }
-    else if(clock->min<50){
-        sun_background_shader.setParameter("color", sf::Color::Yellow);
-        sun_background_shader.setParameter("color2", sf::Color::Blue);
-        sun_background_shader.setParameter("factor2", (clock->min-40)/10);
-    }
-    else if(clock->min<60){
-        sun_background_shader.setParameter("color", sf::Color::Blue);
-        sun_background_shader.setParameter("color2", sf::Color::Black);
-        sun_background_shader.setParameter("factor2", (clock->min-50)/10);
-    }
-    if(clock->min<20)sun_background_shader.setParameter("factor", 1.0);
-    else if(clock->min<30) sun_background_shader.setParameter("factor", 1.0-(clock->min-20)/10);
-    else if(clock->min<50) sun_background_shader.setParameter("factor", 0.0);
-    else sun_background_shader.setParameter("factor", (clock->min-50)/10);
-
-
-
-    texture_background.clear(sf::Color(255,0,0,255));
-
-
-
-    backgrounds->Draw(texture_background);
-
-
-    sf::Vector2f pos_sprite = firstPos;
-    pos_sprite.x+=1;
-    pos_sprite.y+=1;
-    sf::Sprite background_sprite(texture_background.getTexture());
-    //background_sprite.setPosition(pos_sprite);
-    //texture_background.setView(mv);
-    sf::RenderStates states2;
-    states2.texture = &texture_background.getTexture();
-    states2.shader = &sun_background_shader;
-    texture_background.draw(background_sprite, states2);
-
-    texture_background.display();
-
-    for(int i = first_chunk ; i<=last_chunk ; ++i) {
-        int index_mat = map_curr->getIndexMatChunk(i);
-        map_curr->chunk_mat[index_mat]->DrawChunk(firstPos, lastPos, *texMan, tile_shader,render_array, sky_array);
-    }
-
-    for(int i = 0; i<map_curr->falling_tiles.size(); i++){
-
-        map_curr->falling_tiles[i]->Draw(renderWindow, *texMan);
-    }
-    DrawFrontItemsMap(renderWindow,render_array);
-
-    sf::RenderStates states;
-    states.texture = texMan->getTexture();
-    texture_plain_sprite.setView(mv);
-    texture_plain_sprite.draw(render_array, states);
-
-
-
-    sf::Sprite map_without_lights(texture_plain_sprite.getTexture());
-    map_without_lights.setPosition(pos_sprite);
-    texture_plain_sprite.display();
-
-    sf::Sprite map_without_lights(texture_background.getTexture());
-    return map_without_lights;
-}
-*/
-void Drawer::DrawLights(sf::View& currentView,sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights){
+void Drawer::DrawLights(sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights){
     sf::RenderStates states;
     states.texture = texMan->getTexture();
 
@@ -317,37 +212,27 @@ void Drawer::DrawLights(sf::View& currentView,sf::VertexArray &render_array,sf::
     sun_mix_shader.setParameter("texture2", texture_back->getTexture());
     states.shader = &sun_mix_shader;
     texture_front->clear(sf::Color(0,0,0,0));
-    //texture_front->setView(currentView);
+
     texture_front->draw(map_without_lights, states);
     texture_front->display();
 
     std::swap(texture_back,texture_front);
 
-
-
-
-
-
-
-
-
-
-
-
     //END DRAWING SUN
     //DRAWING MAP LIGHTS
     //texture_back->setView(currentView);
     //texture_front->setView(currentView);
+    sf::Vector2f centerView = view_player.getCenter();
+    sf::Vector2f sizeView = view_player.getSize();
+    float first_x = centerView.x-(sizeView.x/2)-1;
+    float first_y = centerView.y-(sizeView.y/2)-1;
 
     for(int i = 0; i<map_curr->lights.size(); i++){
-        sf::Vector2f centerView = currentView.getCenter();
-        sf::Vector2f sizeView = currentView.getSize();
-        float first_x = centerView.x-(sizeView.x/2)-1;
-        float first_y = centerView.y-(sizeView.y/2)-1;
+    //for(int i = 0; i<4; i++){
         float radius = map_curr->lights[i].radius;
-
         sf::Vector2f lightpos = sf::Vector2f(map_curr->lights[i].position.x-first_x,map_curr->lights[i].position.y-first_y);
         if(lightpos.x>0-radius*2 && lightpos.x<sizeView.x+radius*2 && lightpos.y>0-radius*2 && lightpos.y<sizeView.y+radius*2) {
+
             map_curr->lights[i].Draw(lightpos, map_without_lights, tile_shader, texMan, texture_front, texture_back);
             std::swap(texture_back, texture_front);
         }
@@ -363,30 +248,48 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow)
     //black_texture.setView(mv);
     //texture_background.setView(mv);
 
-    sf::View currentView = renderWindow.getView();
     sf::VertexArray render_array(sf::Quads , (uint)(4));
     sf::VertexArray sky_array(sf::Quads , (uint)(4));
     sf::Sprite map_without_lights = get_plain_sprite(renderWindow, render_array,sky_array);
-    DrawLights(currentView,render_array,sky_array,map_without_lights);
+    //view_player.setSize(sf::Vector2f(1000,600));
+    //std::cout << map_without_lights.getPosition().x << " " << " "<< std::endl;
+    DrawLights(render_array,sky_array,map_without_lights);
     texture_back->display();
     sf::Sprite sprite(texture_back->getTexture());
+
     sprite.setPosition(map_without_lights.getPosition());
+
+    //renderWindow.draw(sprite);
     mix_back_terr_shader.setParameter("texture2", texture_background.getTexture());
     sf::RenderStates states;
     states.texture = &texture_back->getTexture();
     states.shader = &mix_back_terr_shader;
-    renderWindow.draw(sprite, states);
 
+    renderWindow.draw(sprite, states);
+    //view_player.setSize(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
 }
 
 void Drawer::Draw(sf::RenderWindow &window){
+
+
     view_player.setCenter(player->GetPosition().x+(player->GetWidth()/2), player->GetPosition().y+(player->GetHeight()/2));
-    texture_background.setView(view_player);
+
     texture_back->setView(view_player);
     texture_front->setView(view_player);
+
     texture_plain_sprite.setView(view_player);
+    texture_background.setView(view_player);
+
+
     black_texture.setView(view_player);
+    //view_player.setSize(sf::Vector2f(1000,600));
+
+    //view_player.setSize(sf::Vector2f(1000,600));
+
+
+
     DrawMap(window);
     player->Draw(window);
     player->DrawInventory(window);
+    //view_player.zoom(1.2);
 }

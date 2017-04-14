@@ -19,6 +19,7 @@
 
 Inputs::Inputs()
 {
+	keys["Control"] = sf::Vector2i(0,0);
 	keys["mouseLeft"] = sf::Vector2i(0,0);
 	keys["mouseRight"] = sf::Vector2i(0,0);
 	keys["LShift"] = sf::Vector2i(0,0);
@@ -72,6 +73,7 @@ void Inputs::Update(){
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Up), "Up");
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Down), "Down");
 	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Return), "Enter");
+	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl), "Control");
 	keys["wheel"] = sf::Vector2i(wheelDelta, 0);
 	wheelDelta = 0;
 	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
