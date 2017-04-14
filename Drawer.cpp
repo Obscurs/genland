@@ -22,7 +22,6 @@ Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c){
     texture_front->create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     texture_back->create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     black_texture.create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
-    view_player.zoom(.9f);
     sf::RectangleShape rectangle(sf::Vector2f(0, 0));
     rectangle.setSize(sf::Vector2f(Settings::GAME_WIDTH, Settings::GAME_HEIGHT));
     rectangle.setFillColor(sf::Color::Black);
