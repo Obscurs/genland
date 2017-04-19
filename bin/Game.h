@@ -44,6 +44,7 @@ private:
 	sf::RenderWindow window;
 	Inputs inputs;
     Scene scene;
+	sf::Font font;
 
 
 };

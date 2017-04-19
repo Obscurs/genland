@@ -311,7 +311,7 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
     float time4 = elapsed4.asSeconds()-elapsed3.asSeconds();
     float time5 = elapsed5.asSeconds()-elapsed4.asSeconds();
     float time6 = elapsed6.asSeconds()-elapsed5.asSeconds();
-    std::cout <<"create map without lights: " << time3/elapsed6.asSeconds()*100  << "%   draw lights: " << time4/elapsed6.asSeconds()*100 << "%   player: " << time5/elapsed6.asSeconds()*100 << "%   draw window: " << time6/elapsed6.asSeconds()*100 << "%"<< std::endl;
+    //std::cout <<"create map without lights: " << time3/elapsed6.asSeconds()*100  << "%   draw lights: " << time4/elapsed6.asSeconds()*100 << "%   player: " << time5/elapsed6.asSeconds()*100 << "%   draw window: " << time6/elapsed6.asSeconds()*100 << "%"<< std::endl;
 
 }
 

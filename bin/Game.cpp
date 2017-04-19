@@ -72,6 +72,10 @@ Game::Game():
 {
     _gameState = Uninitialized;
     true_exit=false;
+    if (!font.loadFromFile("resources/font1.ttf"))
+    {
+        std::cout << "font error" << std::endl;
+    }
 
 }
 Game::~Game(){
@@ -170,7 +174,6 @@ void Game::Start(void)
 
     char c[10];
     sf::Text text;
-    sf::Font font;
     text.setCharacterSize(24);
     text.setColor(sf::Color::Red);
     text.setStyle(sf::Text::Bold | sf::Text::Underlined);
@@ -178,10 +181,6 @@ void Game::Start(void)
     sf::String str("no data");
     text.setString(str);
 
-    if (!font.loadFromFile("resources/font1.ttf"))
-    {
-        std::cout << "font error" << std::endl;
-    }
     text.setFont(font); // font is a sf::Font
     float fps_timer=0;
     int fps_count=0;
@@ -250,14 +249,54 @@ void Game::GameLoop(double delta)
     clock1.restart().asSeconds();
 
     sf::Event currentEvent;
-    sf::Font font;
-    if (!font.loadFromFile("resources/font1.ttf"))
-    {
-        std::cout << "font error" << std::endl;
-    }
+
+
+
     Game::inputs.Update();
+
     switch(_gameState)
     {
+        case Game::Playing:
+        {
+
+            while(window.pollEvent(currentEvent))
+            {
+                if(currentEvent.type == sf::Event::MouseWheelMoved)
+                {
+                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
+                }
+                else if (currentEvent.type == sf::Event::Resized){
+                    std::cout << "res" << std::endl;
+                    Game::scene.view_game.update();
+                }
+                else if (
+                        (currentEvent.type == sf::Event::KeyPressed) &&
+                        (currentEvent.key.code == sf::Keyboard::Tab))
+                {
+                    std::cout << "bye" << std::endl;
+                    _gameState = ShowingMenu;
+                    //window.close();
+                }
+                else if (currentEvent.type == sf::Event::Closed)
+                {
+                    true_exit=true;
+                    Game::ExitGame();
+                }
+            }
+            sf::Time elapsed1 =clock1.getElapsedTime();
+            Game::scene.update(window,delta,inputs);
+            sf::Time elapsed2 =clock1.getElapsedTime();
+            Game::scene.draw(window);
+            sf::Time elapsed3 =clock1.getElapsedTime();
+
+            float time1 = elapsed1.asSeconds();
+            float time2 = elapsed2.asSeconds()-elapsed1.asSeconds();
+            float time3 = elapsed3.asSeconds()-elapsed2.asSeconds();
+            float timeTotal = elapsed3.asSeconds();
+            std::cout <<"preLoop: " << time1/timeTotal*100  << "%   update: " << time2/timeTotal*100 << "%   draw: " << time3/timeTotal*100 << "% "<< std::endl;
+
+            break;
+        }
         case Game::ShowingMenu:
         {
             if(MenuMain::newGameClicked(Game::inputs)) _gameState = NewGame;
@@ -446,44 +485,7 @@ void Game::GameLoop(double delta)
             break;
 
         }
-        case Game::Playing:
-        {
-            while(window.pollEvent(currentEvent))
-	        {
-                if(currentEvent.type == sf::Event::MouseWheelMoved)
-		        {
-                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
-                }
-                else if (currentEvent.type == sf::Event::Resized){
-                    std::cout << "res" << std::endl;
-                    Game::scene.view_game.update();
-                }
-                else if (
-                        (currentEvent.type == sf::Event::KeyPressed) &&
-                        (currentEvent.key.code == sf::Keyboard::Tab))
-                {
-                    std::cout << "bye" << std::endl;
-                    _gameState = ShowingMenu;
-                    //window.close();
-                }
-                else if (currentEvent.type == sf::Event::Closed)
-                {
-                    true_exit=true;
-                    Game::ExitGame();
-                }
-            }
-            sf::Time elapsed1 =clock1.getElapsedTime();
-            Game::scene.update(window,delta,inputs);
-            sf::Time elapsed2 =clock1.getElapsedTime();
-            Game::scene.draw(window);
-            sf::Time elapsed3 =clock1.getElapsedTime();
-            float time1 = elapsed1.asSeconds();
-            float time2 = elapsed2.asSeconds();
-            float time3 = elapsed3.asSeconds();
-            float timeTotal = elapsed3.asSeconds();
-            //std::cout << time1 << " " << time2 << " " << time3 << " " << timeTotal << std::endl;
-            break;
-        }
+
         case Game::Config:
         {
             if(MenuConfigGame::backClicked(Game::inputs) && !MenuConfigGame::resolution_visible) _gameState = ShowingMenu;

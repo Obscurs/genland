@@ -12,20 +12,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f465ec9c-b195-4793-b1a1-68ed08476bd4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/genland.iml" afterPath="$PROJECT_DIR$/.idea/genland.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Game.cpp" afterPath="$PROJECT_DIR$/bin/Game.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Game.h" afterPath="$PROJECT_DIR$/bin/Game.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Drawer.cpp" afterPath="$PROJECT_DIR$/bin/scene/Drawer.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Drawer.h" afterPath="$PROJECT_DIR$/bin/scene/Drawer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Player.cpp" afterPath="$PROJECT_DIR$/bin/scene/Player.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Scene.cpp" afterPath="$PROJECT_DIR$/bin/scene/Scene.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Scene.h" afterPath="$PROJECT_DIR$/bin/scene/Scene.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Chunk.h" afterPath="$PROJECT_DIR$/bin/scene/world/Chunk.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Map.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Map.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Map.h" afterPath="$PROJECT_DIR$/bin/scene/world/Map.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Tile.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Tile.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Tile.h" afterPath="$PROJECT_DIR$/bin/scene/world/Tile.h" />
     </list>
     <ignored path="genland.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -87,43 +77,53 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Tile.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/world/Tile.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="702">
-              <caret line="42" column="17" selection-start-line="42" selection-start-column="17" selection-end-line="42" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Tile.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/world/Tile.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
-              <folding>
-                <element signature="e#86#112#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Scene.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
+            <state relative-caret-position="1098">
               <caret line="62" column="69" selection-start-line="62" selection-start-column="69" selection-end-line="62" selection-end-column="69" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Drawer.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Game.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/bin/Game.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="229">
+              <caret line="74" column="13" selection-start-line="74" selection-start-column="9" selection-end-line="74" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Game.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/Game.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="467">
+              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+              <folding>
+                <element signature="e#13#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Inputs.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/Inputs.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="267">
+              <caret line="64" column="74" selection-start-line="64" selection-start-column="74" selection-end-line="64" selection-end-column="74" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Drawer.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-848">
-              <caret line="185" column="24" selection-start-line="185" selection-start-column="24" selection-end-line="185" selection-end-column="24" />
+            <state relative-caret-position="368">
+              <caret line="313" column="6" selection-start-line="313" selection-start-column="6" selection-end-line="313" selection-end-column="6" />
               <folding>
                 <element signature="e#41#60#0" expanded="true" />
               </folding>
@@ -137,18 +137,6 @@
             <state relative-caret-position="627">
               <caret line="48" column="20" selection-start-line="48" selection-start-column="20" selection-end-line="48" selection-end-column="20" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Map.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="143">
-              <caret line="24" column="4" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="23" />
-              <folding>
-                <element signature="e#13#46#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -195,13 +183,10 @@
         <option value="$PROJECT_DIR$/Scene.cpp" />
         <option value="$PROJECT_DIR$/Scene.h" />
         <option value="$PROJECT_DIR$/Game.h" />
-        <option value="$PROJECT_DIR$/bin/Inputs.cpp" />
         <option value="$PROJECT_DIR$/bin/Tile.cpp" />
         <option value="$PROJECT_DIR$/bin/WorldBackground.h" />
-        <option value="$PROJECT_DIR$/bin/Game.h" />
         <option value="$PROJECT_DIR$/bin/menu_interface/MenuConfigGame.cpp" />
         <option value="$PROJECT_DIR$/bin/Main.cpp" />
-        <option value="$PROJECT_DIR$/bin/Game.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/Scene.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Tile.h" />
         <option value="$PROJECT_DIR$/bin/scene/world/Tile.cpp" />
@@ -212,6 +197,9 @@
         <option value="$PROJECT_DIR$/bin/scene/world/Chunk.h" />
         <option value="$PROJECT_DIR$/bin/scene/Drawer.h" />
         <option value="$PROJECT_DIR$/bin/scene/Drawer.cpp" />
+        <option value="$PROJECT_DIR$/bin/Inputs.cpp" />
+        <option value="$PROJECT_DIR$/bin/Game.h" />
+        <option value="$PROJECT_DIR$/bin/Game.cpp" />
       </list>
     </option>
   </component>
@@ -623,12 +611,12 @@
       <workItem from="1492247625561" duration="577000" />
       <workItem from="1492249697760" duration="60000" />
       <workItem from="1492449817474" duration="5216000" />
-      <workItem from="1492540704742" duration="17873000" />
+      <workItem from="1492540704742" duration="18912000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="623217000" />
+    <option name="totallyTimeSpent" value="624256000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
@@ -783,14 +771,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Functions.h" />
     <entry file="file://$PROJECT_DIR$/example.txt" />
-    <entry file="file://$PROJECT_DIR$/bin/Inputs.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="28" column="22" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/Sun.cpp" />
     <entry file="file://$PROJECT_DIR$/bin/Sun.h" />
     <entry file="file://$PROJECT_DIR$/bin/scene/world/WorldBackground.h">
@@ -823,6 +803,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
           <caret line="24" column="4" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -830,6 +811,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="324">
           <caret line="21" column="36" selection-start-line="21" selection-start-column="28" selection-end-line="21" selection-end-column="36" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -897,30 +879,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Game.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="483" column="14" selection-start-line="483" selection-start-column="14" selection-end-line="483" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Game.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-127">
-          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="62" column="69" selection-start-line="62" selection-start-column="69" selection-end-line="62" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/world/Tile.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -959,26 +917,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1878">
-          <caret line="526" column="21" selection-start-line="526" selection-start-column="21" selection-end-line="526" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="576">
           <caret line="34" column="26" selection-start-line="34" selection-start-column="26" selection-end-line="34" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3338">
-          <caret line="480" column="21" selection-start-line="480" selection-start-column="10" selection-end-line="480" selection-end-column="21" />
           <folding />
         </state>
       </provider>
@@ -991,13 +933,63 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1098">
+          <caret line="62" column="69" selection-start-line="62" selection-start-column="69" selection-end-line="62" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-848">
-          <caret line="185" column="24" selection-start-line="185" selection-start-column="24" selection-end-line="185" selection-end-column="24" />
+        <state relative-caret-position="368">
+          <caret line="313" column="6" selection-start-line="313" selection-start-column="6" selection-end-line="313" selection-end-column="6" />
           <folding>
             <element signature="e#41#60#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Inputs.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="64" column="74" selection-start-line="64" selection-start-column="74" selection-end-line="64" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1878">
+          <caret line="526" column="21" selection-start-line="526" selection-start-column="21" selection-end-line="526" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3338">
+          <caret line="480" column="21" selection-start-line="480" selection-start-column="10" selection-end-line="480" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Game.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="467">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding>
+            <element signature="e#13#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Game.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="74" column="13" selection-start-line="74" selection-start-column="9" selection-end-line="74" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
