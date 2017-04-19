@@ -246,6 +246,8 @@ bool Game::IsExiting()
 
 void Game::GameLoop(double delta)
 {
+    sf::Clock clock1;
+    clock1.restart().asSeconds();
 
     sf::Event currentEvent;
     sf::Font font;
@@ -317,7 +319,7 @@ void Game::GameLoop(double delta)
                     if (out.size() < 10) new_game_path.append("0");
                     new_game_path.append(std::to_string(out.size()));
                     CreateNewGame(new_game_path, NewGameMenu::seed.getText(), NewGameMenu::name.getText());
-                    Game::scene.restart(new_game_path, window, NewGameMenu::seed.getText());
+                    Game::scene.init(new_game_path, window, NewGameMenu::seed.getText());
 
                     _gameState = Playing;
                 } else std::cout << "demasiadas partidas guardadas" << std::endl;
@@ -396,7 +398,7 @@ void Game::GameLoop(double delta)
                         myfile.close();
 
                         Game::scene.saveGame();
-                        Game::scene.restart(new_game_path,window, data_seed);
+                        Game::scene.init(new_game_path, window, data_seed);
                         _gameState = Playing;
                     }
                     else std::cout << "ERROR: could not read file " << route << std::endl;
@@ -470,8 +472,16 @@ void Game::GameLoop(double delta)
                     Game::ExitGame();
                 }
             }
+            sf::Time elapsed1 =clock1.getElapsedTime();
             Game::scene.update(window,delta,inputs);
+            sf::Time elapsed2 =clock1.getElapsedTime();
             Game::scene.draw(window);
+            sf::Time elapsed3 =clock1.getElapsedTime();
+            float time1 = elapsed1.asSeconds();
+            float time2 = elapsed2.asSeconds();
+            float time3 = elapsed3.asSeconds();
+            float timeTotal = elapsed3.asSeconds();
+            //std::cout << time1 << " " << time2 << " " << time3 << " " << timeTotal << std::endl;
             break;
         }
         case Game::Config:

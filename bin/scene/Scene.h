@@ -19,7 +19,7 @@
 
 class Scene {
 public:
-    void restart(std::string path,sf::RenderWindow &window, std::string seed);
+    void init(std::string path, sf::RenderWindow &window, std::string seed);
     Scene(sf::RenderWindow &window);
     ~Scene();
     Map map_curr;

@@ -20,7 +20,8 @@ public:
     ~Drawer();
 
     void Draw(sf::RenderWindow &window, float zoom);
-
+    TextureManager& getTextureManager();
+    sf::Shader& getTileShader();
 private:
     Map *map_curr;
     Player *player;
@@ -28,7 +29,7 @@ private:
     WorldBackground *backgrounds;
     //sf::RenderWindow window; //TO DO
 
-    TextureManager* texMan;
+    TextureManager texMan;
 
     sf::Shader tile_shader;
     sf::Shader sun_shader;
@@ -44,10 +45,9 @@ private:
 
     sf::View view_player;
 
-    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow,sf::VertexArray &render_array,sf::VertexArray &sky_array);
-    void DrawLights(sf::VertexArray &render_array,sf::VertexArray &sky_array, sf::Sprite map_without_lights);
+    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow);
+    void DrawLights(sf::Sprite map_without_lights);
     void DrawMap(sf::RenderWindow& renderWindow, float zoom);
-    void DrawFrontItemsMap(sf::RenderWindow& renderWindow,sf::VertexArray &render_array);
 };
 
 

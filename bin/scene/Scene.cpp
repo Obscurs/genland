@@ -48,7 +48,7 @@ void Scene::draw(sf::RenderWindow &window){
   drawer.Draw(window, zoom);
   window.setView(aux);
 }
-void Scene::restart(std::string path,sf::RenderWindow &window, std::string seed){
+void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
 
     Player *newPlayer = new Player();
     player = *newPlayer;
@@ -60,9 +60,7 @@ void Scene::restart(std::string path,sf::RenderWindow &window, std::string seed)
 
     sf::Vector2f player_pos = player.GetPosition();
     int chunk_player = (int)round(player_pos.x/(Settings::TILE_SIZE*Chunk::N_TILES_X));
-    Map *newMap = new Map(chunk_player,path, seed);
-    map_curr = *newMap;
-    map_curr.init(chunk_player,path, seed);
+    map_curr.init(chunk_player,path, seed, drawer.getTextureManager());
 
     WorldBackground *newBack = new WorldBackground();
     backgrounds = *newBack;

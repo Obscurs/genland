@@ -204,8 +204,11 @@ void Chunk::setTileNeighbors(int index_x, int index_y){
     }
 
 }
-Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
+Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile, TextureManager& texM):
+        render_array(sf::Quads , (uint)(4)),
+        sky_array(sf::Quads , (uint)(4))
 {
+    is_dirty = true;
 	chunk_pos = pos;
     //std::cout  << chunk_pos.x*N_TILES_X*Settings::TILE_SIZE << " " << chunk_pos.y*N_TILES_Y*Settings::TILE_SIZE << std::endl;
     Simplex2d* sim1 = new Simplex2d(generator, 1000.0f, 0.0f, 0.1f);
@@ -229,8 +232,8 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
             //float valReal = ((float) current_global_y/3000.0f > valFloor? 1 : 0);
             //std::cout << valFloor << std::endl;
 
-            Tile* t = new Tile(0, 0);
-            Tile* t2 = new Tile(0, 1);
+            Tile* t = new Tile(0, 0,texM);
+            Tile* t2 = new Tile(0, 1, texM);
             if(i==N_TILES_Y-1){
                 t->rigid=true;
                 t2->rigid=true;
@@ -290,8 +293,11 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile)
 	
 }
 
-Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
+Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, TextureManager& texM):
+        render_array(sf::Quads , (uint)(4)),
+        sky_array(sf::Quads , (uint)(4))
 {
+    is_dirty = true;
     chunk_pos = pos;
     std::cout << "creat" << chunk_pos.x << std::endl;
     typedef std::istreambuf_iterator<char> buf_iter;
@@ -300,8 +306,8 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp)
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
 
-            Tile* t = new Tile(id_temp, 0);
-            Tile* t2 = new Tile(id_temp, 1);
+            Tile* t = new Tile(id_temp, 0, texM);
+            Tile* t2 = new Tile(id_temp, 1,texM);
             id_temp++;
             char c1 = *k;
             ++k;
@@ -426,29 +432,15 @@ sf::Vector2i Chunk::getTileIndex(float x, float y){
 
 }
 
-void Chunk::DrawGrassTiles(TextureManager &t, sf::VertexArray &vertexArray)
+void Chunk::DrawGrassTiles()
 {
     for(int i=0; i<grass_tiles.size(); i++){
-        grass_tiles[i]->DrawGrass(t,vertexArray);
+        grass_tiles[i]->DrawGrass(render_array);
     }
 }
-void Chunk::DrawChunk(sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, sf::Shader &tile_shader, sf::VertexArray &vertexArray, sf::VertexArray &skyArray)
+void Chunk::DrawChunk(sf::Vector2f pos1, sf::Vector2f pos2, sf::VertexArray &vertexArray, sf::VertexArray &skyArray)
 {
     grass_tiles.clear();
-    //std::cout << "Drawing chunk " << chunk_pos.x<< std::endl;
-    sf::Text text;
-    sf::Font font;
-    if (!font.loadFromFile("resources/font1.ttf"))
-    {
-        std::cout << "font error" << std::endl;
-    }
-    text.setCharacterSize(9);
-    text.setColor(sf::Color::Red);
-    //text.setStyle(sf::Text::Bold);
-    text.setFont(font); // font is a sf::Font
-    char c[10];
-
-    //std::cout << pos1.x << " " << pos1.y << " " << pos2.x << " " << pos2.y << " " << chunk_pos.x << std::endl;
     float pos1x = pos1.x;
     float pos1y = pos1.y;
     float pos2x = pos2.x;
@@ -459,16 +451,13 @@ void Chunk::DrawChunk(sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, s
     if(pos1y < golbal_chunk_y) pos1y = golbal_chunk_y;
     if(pos2x >= golbal_chunk_x + Chunk::N_TILES_X*Settings::TILE_SIZE) pos2x = golbal_chunk_x + (Chunk::N_TILES_X-1)*Settings::TILE_SIZE;
     if(pos2y >= golbal_chunk_y + Chunk::N_TILES_Y*Settings::TILE_SIZE) pos2y = golbal_chunk_y + (Chunk::N_TILES_Y-1)*Settings::TILE_SIZE;
-    //std::cout << pos1x << " " << pos1y << " " << pos2x << " " << pos2y<< " " << chunk_pos.x << std::endl;
     sf::Vector2i first_index = getTileIndex(pos1x, pos1y);
     sf::Vector2i last_index = getTileIndex(pos2x, pos2y);
-    //std::cout << "hiii" << std::endl;
-    //std::cout << first_index.x << " " << first_index.y << " " << last_index.x << " " << last_index.y << " " << chunk_pos.x << std::endl;
     for(int i = first_index.x; i<=last_index.x; ++i){
         for(int j = first_index.y; j<=last_index.y; ++j){
             Tile* t1 = tile_mat[i][j][1];
             if(t1->id !="0"){
-                t1->Draw(t, tile_shader,vertexArray);
+                t1->Draw(vertexArray);
                 if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
                     if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && t1->id=="D") grass_tiles.push_back(t1);
                 }
@@ -484,42 +473,57 @@ void Chunk::DrawChunk(sf::Vector2f pos1, sf::Vector2f pos2, TextureManager &t, s
                             t0->neighbors[7]!=nullptr && t0->neighbors[7]->id=="0"){
                             t0->drawSkyArray(skyArray);
                     }
-                    else t0->drawBorderSkyArray(skyArray,t);
+                    else t0->drawBorderSkyArray(skyArray);
                 }
-                if(t0->id != "0")t0->Draw(t, tile_shader,vertexArray);
-                else t0->DrawOuts(t,vertexArray);
+                if(t0->id != "0")t0->Draw(vertexArray);
+                else t0->DrawOuts(vertexArray);
 
-                t1->DrawOuts(t,vertexArray);
+                t1->DrawOuts(vertexArray);
 
             }
-            //DEBUG
-            /*
-            Tile* t0 = tile_mat[i][j][0];
-            //int test = t0->reach_sun;
-            int test = -1;
-            //if(t0->reach_floor & t1->reach_floor) test=11;
-            //else if(!t0->reach_floor & t1->reach_floor) test = 1;
-            //else if(t0->reach_floor & !t1->reach_floor) test = 10;
-            //else test =0;
-            sf::Vector2f test_pos = t1->GetPosition();
-            sprintf(c, "%i", test);
-            std::string string(c);
-            sf::String str(string);
-            text.setString(str);
-            text.setPosition(test_pos.x, test_pos.y);
-            text.setScale(sf::Vector2f(1.5,1.5));
-            //renderWindow.draw(text);
-             */
-            //END DEBUG
         }
     }
-
-
-
-
-
-
 }
+void Chunk::update(float delta){
+    if(is_dirty){
+        prepareArrays();
+        is_dirty = false;
+    }
+}
+void Chunk::prepareArrays(){
+    grass_tiles.clear();
+    render_array.clear();
+    sky_array.clear();
+    for(int i = 0; i<Chunk::N_TILES_Y; ++i){
+        for(int j = 0; j<Chunk::N_TILES_X; ++j){
+            Tile* t1 = tile_mat[i][j][1];
+            if(t1->id !="0"){
+                t1->Draw(render_array);
+                if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
+                    if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && t1->id=="D") grass_tiles.push_back(t1);
+                }
+            }
 
+            else{
+                Tile* t0 = tile_mat[i][j][0];
 
+                if(t0->id=="0"){
+                    if(t0->neighbors[1]!=nullptr && t0->neighbors[1]->id=="0" &&
+                       t0->neighbors[3]!=nullptr && t0->neighbors[3]->id=="0" &&
+                       t0->neighbors[5]!=nullptr && t0->neighbors[5]->id=="0" &&
+                       t0->neighbors[7]!=nullptr && t0->neighbors[7]->id=="0"){
+                        t0->drawSkyArray(sky_array);
+                    }
+                    else t0->drawBorderSkyArray(sky_array);
+                }
+                if(t0->id != "0")t0->Draw(render_array);
+                else t0->DrawOuts(render_array);
+
+                t1->DrawOuts(render_array);
+
+            }
+        }
+    }
+    DrawGrassTiles();
+}
 

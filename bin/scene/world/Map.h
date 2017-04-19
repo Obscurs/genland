@@ -19,12 +19,10 @@ class Map
 {
 public:
     Map();
-
-	Map(int pos, std::string game_path, std::string seed);
 	~Map();
 	std::string seed;
-    void init(int pos, std::string game_path, std::string seed);
-
+    void init(int pos, std::string game_path, std::string seed,TextureManager& texMan);
+	void dirtyChunks();
 	const static int N_CHUNKS_X = 3;
 
     std::vector<Light> lights;
@@ -42,7 +40,7 @@ public:
 	void checkLoadedChunks(float x, float y);
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
 private:
-
+	TextureManager *texMan;
 	std::string save_path;
     inline bool exists_file (const std::string& name);
     int posMap;
