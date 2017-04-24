@@ -301,15 +301,9 @@ void Player::DrawInventory(sf::RenderWindow & renderWindow)
 }
 
 
-void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &window, float zoom)
+void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
 {
-	inventory->Update(inputs, window);
-	sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-	sf::Vector2i mouseRight = inputs.getKey("mouseRight");
-	sf::Vector2i keyA = inputs.getKey("A");
-	sf::Vector2i keyD = inputs.getKey("D");
-	sf::Vector2i keySpace = inputs.getKey("Space");
-
+	inventory->Update(window);
     sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 	//position.x = pow(position.x, 1/zoom);
     //position.y = pow(position.y, 1/zoom);
@@ -325,10 +319,10 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	//position.x += centerView.x-sizeView.x/2;
 	//position.y += centerView.y-sizeView.y/2;
 
-	if (keyA.x){
+	if (Inputs::KeyDown(Inputs::A)){
 		vx = -300;
 	}
-	else if (keyD.x){
+	else if (Inputs::KeyDown(Inputs::D)){
 		vx = 300;
 	} 
 	else {
@@ -336,12 +330,12 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	}
 	if(col_bottom==0){
 		vy = (float)9.8*delta*100 + vy;
-		if (keySpace.x){
+		if (Inputs::KeyDown(Inputs::SPACE)){
 			vy = -200;
 		}
 	}
 	else{
-		if (keySpace.x){
+		if (Inputs::KeyDown(Inputs::SPACE)){
 			vy = -200;
 		}
 		else{
@@ -420,7 +414,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 		window.getView().getSize().y
 	);
     //COMPROBA INPUTS
-	if (mouseLeft.x == 1 && !inventory->show_inventory && viewRect.contains(position.x, position.y))
+	if (Inputs::MouseDown(Inputs::M_LEFT) && !inventory->show_inventory && viewRect.contains(position.x, position.y))
 	{
 		//std::cout << position.x << " " << position.y << std::endl;
 	    Tile* t = map.getTile(position.x, position.y, 1);
@@ -455,7 +449,7 @@ void Player::Update(float delta, Map &map, Inputs &inputs, sf::RenderWindow &win
 	    }
 
 	}
-	else if (mouseRight.x == 1 && !inventory->show_inventory && viewRect.contains(position.x, position.y))
+	else if (Inputs::MouseDown(Inputs::M_RIGHT) && !inventory->show_inventory && viewRect.contains(position.x, position.y))
 	{
 
 	    Tile* t = map.getTile(position.x, position.y, 0);

@@ -12,10 +12,10 @@
 class MenuLoadGame {
 public:
     static void Draw(sf::RenderWindow &window, sf::Font font);
-    static void Update(Inputs &inputs);
-    static bool loadClicked(Inputs &inputs);
-    static bool backClicked(Inputs &inputs);
-    static bool delClicked(Inputs &inputs);
+    static void Update();
+    static bool loadClicked();
+    static bool backClicked();
+    static bool delClicked();
     static MagicView view;
     static Button load;
     static Button back;

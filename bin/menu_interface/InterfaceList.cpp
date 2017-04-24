@@ -71,7 +71,7 @@ void InterfaceList::Draw(sf::RenderWindow &window, sf::Font font){
         window.draw(selected);
     }
 }
-void InterfaceList::update(sf::Vector2f mousePos, Inputs &inputs){
+void InterfaceList::update(sf::Vector2f mousePos){
     if(!elements.empty()) {
         sf::FloatRect buttonRect(
                 position.x,
@@ -80,9 +80,9 @@ void InterfaceList::update(sf::Vector2f mousePos, Inputs &inputs){
                 size.y);
         mouseOver = buttonRect.contains(mousePos.x, mousePos.y);
 
-        int tab_selection_delta = inputs.getKey("wheel").x;
-        int up_key = inputs.getKey("Up").y;
-        int down_key = inputs.getKey("Down").y;
+        int tab_selection_delta = Inputs::GetWheel();
+        int up_key = Inputs::KeyBreak(Inputs::UP);
+        int down_key = Inputs::KeyBreak(Inputs::DOWN);
         if (tab_selection_delta != 0) {
             selected_slot = (selected_slot - tab_selection_delta);
         }

@@ -12,9 +12,9 @@
 class MenuConfigGame {
 public:
     static void Draw(sf::RenderWindow &window, sf::Font font);
-    static void Update(Inputs &inputs);
-    static bool backClicked(Inputs &inputs);
-    static bool resClicked(Inputs &inputs);
+    static void Update();
+    static bool backClicked();
+    static bool resClicked();
     static MagicView view;
     static Button back;
     static Button res;

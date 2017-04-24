@@ -13,10 +13,10 @@ class NewGameMenu {
 public:
     static void Draw(sf::RenderWindow &window, sf::Font font);
     static void Update();
-    static bool startClicked(Inputs &inputs);
-    static bool backClicked(Inputs &inputs);
-    static bool seedClicked(Inputs &inputs);
-    static bool nameClicked(Inputs &inputs);
+    static bool startClicked();
+    static bool backClicked();
+    static bool seedClicked();
+    static bool nameClicked();
     static void disSelectAll();
     static Button start;
     static Button back;

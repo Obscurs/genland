@@ -24,7 +24,7 @@ public:
     int type;
     int mouseOver;
     void Draw(sf::RenderWindow &window,sf::Font font);
-    void update(sf::Vector2f mousePos,Inputs &inputs);
+    void update(sf::Vector2f mousePos);
     std::vector<std::string> elements;
     void insertElement(std::string elem);
 };

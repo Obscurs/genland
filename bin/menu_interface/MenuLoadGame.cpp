@@ -15,29 +15,26 @@ void MenuLoadGame::Draw(sf::RenderWindow &window, sf::Font font)
     save_list.Draw(window, font);
     window.setView(*oldView);
 }
-void MenuLoadGame::Update(Inputs &inputs)
+void MenuLoadGame::Update()
 {
     sf::Vector2f mousePos = view.getMouseCoord();
     load.update(mousePos);
     back.update(mousePos);
     del.update(mousePos);
-    save_list.update(mousePos, inputs);
+    save_list.update(mousePos);
 
 
 }
 
 
-bool MenuLoadGame::delClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && del.mouseOver);
+bool MenuLoadGame::delClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && del.mouseOver);
 }
-bool MenuLoadGame::loadClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && load.mouseOver);
+bool MenuLoadGame::loadClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && load.mouseOver);
 }
-bool MenuLoadGame::backClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && back.mouseOver);
+bool MenuLoadGame::backClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && back.mouseOver);
 }
 Button MenuLoadGame::load(sf::Vector2f(10,1900),
                           sf::Vector2f(300,90),

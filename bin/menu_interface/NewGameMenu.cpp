@@ -24,21 +24,17 @@ void NewGameMenu::Update()
     name.update(mousePos);
 }
 
-bool NewGameMenu::startClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && start.mouseOver);
+bool NewGameMenu::startClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && start.mouseOver);
 }
-bool NewGameMenu::backClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && back.mouseOver);
+bool NewGameMenu::backClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && back.mouseOver);
 }
-bool NewGameMenu::seedClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && seed.mouseOver);
+bool NewGameMenu::seedClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && seed.mouseOver);
 }
-bool NewGameMenu::nameClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && name.mouseOver);
+bool NewGameMenu::nameClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && name.mouseOver);
 }
 void NewGameMenu::disSelectAll(){
     seed.selected = false;

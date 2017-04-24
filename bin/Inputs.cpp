@@ -10,81 +10,142 @@
 #include <map>
 #include <iostream>
 #include <cassert>
+#include <cstring>
 
 
 #include "Inputs.h"
-#include "scene/Inventory.h"
+
+const sf::Keyboard::Key Inputs::_keyMap[NUM_KEYS] = {
+        sf::Keyboard::Up,
+        sf::Keyboard::Down,
+        sf::Keyboard::Left,
+        sf::Keyboard::Right,
+        sf::Keyboard::LShift,
+        sf::Keyboard::Z,
+        sf::Keyboard::X,
+        sf::Keyboard::Return,
+        sf::Keyboard::BackSpace,
+        sf::Keyboard::LControl,
+        sf::Keyboard::A,
+        sf::Keyboard::D,
+        sf::Keyboard::Q,
+        sf::Keyboard::Space,
+        sf::Keyboard::Num0,
+        sf::Keyboard::Num1,
+        sf::Keyboard::Num2,
+        sf::Keyboard::Num3,
+        sf::Keyboard::Num4,
+        sf::Keyboard::Num5,
+        sf::Keyboard::Num6,
+        sf::Keyboard::Num7,
+        sf::Keyboard::Num8,
+        sf::Keyboard::Num9,
+        sf::Keyboard::Escape
+
+};
+const sf::Mouse::Button Inputs::_mouseMap[NUM_BUTTONS] = {
+        sf::Mouse::Left,
+        sf::Mouse::Right
 
 
+};
+int Inputs::wheelDelta = 0;
+bool Inputs::_lastKeyState[Inputs::NUM_KEYS] = {0};
+bool Inputs::_currentKeyState[Inputs::NUM_KEYS] = {0};
+bool Inputs::_lastButtonState[Inputs::NUM_BUTTONS] = {0};
+bool Inputs::_currentButtonState[Inputs::NUM_BUTTONS] = {0};
 
-Inputs::Inputs()
-{
-	keys["Control"] = sf::Vector2i(0,0);
-	keys["mouseLeft"] = sf::Vector2i(0,0);
-	keys["mouseRight"] = sf::Vector2i(0,0);
-	keys["LShift"] = sf::Vector2i(0,0);
-	keys["Q"] = sf::Vector2i(0,0);
-	keys["A"] = sf::Vector2i(0,0);
-	keys["D"] = sf::Vector2i(0,0);
-	keys["Left"] = sf::Vector2i(0,0);
-	keys["Right"] = sf::Vector2i(0,0);
-	keys["Up"] = sf::Vector2i(0,0);
-	keys["Down"] = sf::Vector2i(0,0);
-	keys["Space"] = sf::Vector2i(0,0);
-	keys["wheel"] = sf::Vector2i(0,0);
-	keys["Enter"] = sf::Vector2i(0,0);
-	wheelDelta = 0;
-	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
-		keys["number"+std::to_string(i)] = sf::Vector2i(0,0);
-	}
+void Inputs::Update() {
+    // Update _lastKeyState
+    memcpy(_lastKeyState, _currentKeyState, sizeof(_currentKeyState));
+    memcpy(_lastButtonState, _currentButtonState, sizeof(_currentButtonState));
+    wheelDelta = 0;
+
+}
+
+void Inputs::KeyPressed(const sf::Keyboard::Key &code) {
+
+    // Update _currentKeyState
+    unsigned int i;
+    for (i = 0; i < NUM_KEYS; ++i) {
+        Inputs::Key key = (Inputs::Key) i;
+        sf::Keyboard::Key keyboard_key = _keyMap[key];
+        if(code == keyboard_key) {
+            _currentKeyState[key] = true;
+        }
+
+    }
+}
+void Inputs::KeyReleased(const sf::Keyboard::Key &code) {
+
+    // Update _currentKeyState
+    unsigned int i;
+    for (i = 0; i < NUM_KEYS; ++i) {
+        Inputs::Key key = (Inputs::Key) i;
+        sf::Keyboard::Key keyboard_key = _keyMap[key];
+        if(code == keyboard_key) {
+            _currentKeyState[key] = false;
+        }
+
+    }
+}
+
+void Inputs::ButtonPressed(const sf::Mouse::Button &code) {
+
+    // Update _currentKeyState
+    unsigned int i;
+    for (i = 0; i < NUM_KEYS; ++i) {
+        Inputs::Button key = (Inputs::Button) i;
+        sf::Mouse::Button keyboard_key = _mouseMap[key];
+        if(code == keyboard_key) {
+            _currentButtonState[key] = true;
+        }
+
+    }
+}
+void Inputs::ButtonReleased(const sf::Mouse::Button &code) {
+
+    // Update _currentKeyState
+    unsigned int i;
+    for (i = 0; i < NUM_KEYS; ++i) {
+        Inputs::Button key = (Inputs::Button) i;
+        sf::Mouse::Button keyboard_key = _mouseMap[key];
+        if(code == keyboard_key) {
+            _currentButtonState[key] = false;
+        }
+
+    }
+}
+
+bool Inputs::KeyDown(Inputs::Key k) { return _currentKeyState[k]; }
+bool Inputs::KeyUp(Inputs::Key k)   { return not _currentKeyState[k]; }
+
+bool Inputs::KeyHit(Inputs::Key k) {
+    return not _lastKeyState[k] and _currentKeyState[k];
+}
+
+bool Inputs::KeyBreak(Inputs::Key k) {
+    return _lastKeyState[k] and not _currentKeyState[k];
+}
+
+bool Inputs::MouseDown(Inputs::Button k) { return _currentButtonState[k]; }
+bool Inputs::MouseUp(Inputs::Button k)   { return not _currentButtonState[k]; }
+
+bool Inputs::MouseHit(Inputs::Button k) {
+    return not _lastButtonState[k] and _currentButtonState[k];
+}
+
+bool Inputs::MouseBreak(Inputs::Button k) {
+    return _lastButtonState[k] and not _currentButtonState[k];
 }
 
 
-Inputs::~Inputs()
-{
-	
-}
-void Inputs::UpdateKey(bool pressed, std::string key){
-	if (pressed){
-		keys[key].x=1;
-		keys[key].y=0;
-	} else {
-		if(keys[key].x==1){
-			keys[key].x=0;
-			keys[key].y=1;
-		} else{
-			keys[key].y=0;
-		}
-	}
-}
-
-
-void Inputs::Update(){
-
-	UpdateKey(sf::Mouse::isButtonPressed(sf::Mouse::Left), "mouseLeft");
-	UpdateKey(sf::Mouse::isButtonPressed(sf::Mouse::Right), "mouseRight");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift), "LShift");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Q), "Q");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::A), "A");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::D), "D");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Space), "Space");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Left), "Left");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Right), "Right");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Up), "Up");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Down), "Down");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Return), "Enter");
-	UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl), "Control");
-	keys["wheel"] = sf::Vector2i(wheelDelta, 0);
-	wheelDelta = 0;
-	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
-		UpdateKey(sf::Keyboard::isKeyPressed(sf::Keyboard::Key(int(sf::Keyboard::Num0) + i)), "number"+std::to_string(i));
-	}
-}
 
 void Inputs::UpdateWheel(int delta) {
 	wheelDelta = delta;
 }
-
-sf::Vector2i Inputs::getKey(std::string s){
-	return keys[s];
+int Inputs::GetWheel() {
+    return wheelDelta;
 }
+
+

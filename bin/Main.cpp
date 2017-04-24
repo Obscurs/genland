@@ -49,7 +49,7 @@ int main(int argc, char** argv)
          */
         Game *g = new Game();
         g->Start();
-        true_exit = g->true_exit;
+        true_exit = g->_true_exit;
     }
   return 0;
 }

@@ -41,20 +41,16 @@ Button MenuMain::exit(sf::Vector2f(850,1100),
                       sf::Vector2f(300,90),
                           "EXIT",
                           0);
-bool MenuMain::newGameClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && new_game.mouseOver);
+bool MenuMain::newGameClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && new_game.mouseOver);
 }
-bool MenuMain::loadClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && load.mouseOver);
+bool MenuMain::loadClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && load.mouseOver);
 }
-bool MenuMain::configClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && config.mouseOver);
+bool MenuMain::configClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && config.mouseOver);
 }
-bool MenuMain::exitClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && exit.mouseOver);
+bool MenuMain::exitClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && exit.mouseOver);
 }
 MagicView MenuMain::view;

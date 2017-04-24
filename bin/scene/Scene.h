@@ -24,13 +24,12 @@ public:
     ~Scene();
     Map map_curr;
     Player player;
-    Inputs inputs;
     Drawer drawer;
     WorldBackground backgrounds;
     Clock clock;
     std::string pathGame;
     MagicView view_game;
-    void update(sf::RenderWindow &window,float delta,Inputs &inputs);
+    void update(sf::RenderWindow &window,float delta);
     void saveGame();
     void draw(sf::RenderWindow &window);
     float zoom;

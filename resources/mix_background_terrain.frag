@@ -15,6 +15,7 @@ void main(void)
         }
         else gl_FragColor = color_terrain;
         //gl_FragColor = color_sky;
+        //gl_FragColor = color_terrain;
 
 }
 /*

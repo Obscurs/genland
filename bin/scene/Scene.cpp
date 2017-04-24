@@ -19,21 +19,20 @@ Scene::Scene(sf::RenderWindow &window)
     player.SetSize(32);
     pathGame = "null";
 }
-void Scene::update(sf::RenderWindow &window,float delta,Inputs &inputs){
+void Scene::update(sf::RenderWindow &window,float delta){
     //sf::View currentView = window.getView();
     //currentView.setCenter(player.GetPosition().x+(player.GetWidth()/2), player.GetPosition().y+(player.GetHeight()/2));
     //window.setView(currentView);
 
-    int wheel = inputs.getKey("wheel").x;
-    sf::Vector2i controlKey = inputs.getKey("Control");
-    if(wheel == 1 && controlKey.x){
+    int wheel = Inputs::GetWheel();
+    if(wheel == 1 && Inputs::KeyDown(Inputs::CONTROL)){
         if(zoom < 3) zoom = std::min(zoom+0.05, 3.0);
     }
-    else if(wheel == -1 && controlKey.x){
+    else if(wheel == -1 && Inputs::KeyDown(Inputs::CONTROL)){
         if(zoom > 1) zoom = std::max(zoom-0.05, 1.0);
     }
 
-    player.Update(delta, map_curr, inputs, window, zoom);
+    player.Update(delta, map_curr, window, zoom);
 
     backgrounds.Update(player.GetPosition(),clock);
     map_curr.UpdateAll(delta, player.GetPosition());

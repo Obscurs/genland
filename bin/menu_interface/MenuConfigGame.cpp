@@ -13,11 +13,11 @@ void MenuConfigGame::Draw(sf::RenderWindow &window, sf::Font font)
     if(resolution_visible) resolution_list.Draw(window, font);
     window.setView(*oldView);
 }
-void MenuConfigGame::Update(Inputs &inputs)
+void MenuConfigGame::Update()
 {
     sf::Vector2f mousePos = view.getMouseCoord();
     back.update(mousePos);
-    if(resolution_visible) resolution_list.update(mousePos, inputs);
+    if(resolution_visible) resolution_list.update(mousePos);
     else {
         back.update(mousePos);
         res.update(mousePos);
@@ -25,13 +25,11 @@ void MenuConfigGame::Update(Inputs &inputs)
 
 }
 
-bool MenuConfigGame::resClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && res.mouseOver);
+bool MenuConfigGame::resClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && res.mouseOver);
 }
-bool MenuConfigGame::backClicked(Inputs &inputs){
-    sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-    return (mouseLeft.y && back.mouseOver);
+bool MenuConfigGame::backClicked(){
+    return (Inputs::MouseBreak(Inputs::M_LEFT) && back.mouseOver);
 }
 Button MenuConfigGame::back(sf::Vector2f(1700,1900),
                           sf::Vector2f(300,90),

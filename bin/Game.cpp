@@ -66,13 +66,13 @@ int DeleteDirectory(const char *dirname)
 }
 
 Game::Game():
-        inputs(),
-        window(),
-        scene(window)
+        _window(),
+        _scene(_window)
 {
+    _resize = false;
     _gameState = Uninitialized;
-    true_exit=false;
-    if (!font.loadFromFile("resources/font1.ttf"))
+    _true_exit=false;
+    if (!_font.loadFromFile("resources/font1.ttf"))
     {
         std::cout << "font error" << std::endl;
     }
@@ -100,6 +100,7 @@ void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string 
 
         if (is_directory)
             continue;
+
 
         out.push_back(full_file_name);
     } while (FindNextFile(dir, &file_data));
@@ -159,77 +160,24 @@ void Game::LoadData(){
 }
 void Game::Start(void)
 {
-
-    if(_gameState != Uninitialized)
-        return;
+    if(_gameState != Uninitialized) return;
     LoadData();
-    window.create(sf::VideoMode(Settings::SCREEN_WIDTH,Settings::SCREEN_HEIGHT,32),"Genland!");
-
-    // sf::View viewPlayer(sf::FloatRect(200, 200, Settings::SCREEN_WIDTH, Settings::SCREEN_HEIGHT));
-
+    _window.create(sf::VideoMode(Settings::SCREEN_WIDTH,Settings::SCREEN_HEIGHT,32),"Genland!");
     _gameState= Game::ShowingMenu;
-    sf::Clock clock1;
-    sf::Clock clock2;
-    float lastTime = 0;
-
-    char c[10];
-    sf::Text text;
-    text.setCharacterSize(24);
-    text.setColor(sf::Color::Red);
-    text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
-    sf::String str("no data");
-    text.setString(str);
-
-    text.setFont(font); // font is a sf::Font
-    float fps_timer=0;
-    int fps_count=0;
-    int fps_count2=0;
-
-    MenuMain::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
-    NewGameMenu::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
-    MenuLoadGame::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
-    MenuConfigGame::view = MagicView(&window,MagicView::expanded,sf::Vector2i(2000,2000));
-
+    InitFpsText();
+    MenuMain::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
+    NewGameMenu::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
+    MenuLoadGame::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
+    MenuConfigGame::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     while(!IsExiting())
     {
-
-
-        double delta =  clock1.restart().asSeconds();
-
-
-        float currentTime = clock2.restart().asSeconds();
-        float fps = 1.f / currentTime;
-        fps_count += 1;
-        fps_count2 += fps;
-        //fps = roundf(fps/10)*10;
-        lastTime = currentTime;
-        //std::cout << fps << std::endl;
-
-        window.clear(sf::Color(0,255,0));
-        GameLoop(delta);
-        fps_timer += lastTime;
-        sf::View currentView = window.getView();
-        sf::Vector2f centerView = currentView.getCenter();
-        sf::Vector2f sizeView = currentView.getSize();
-        text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2);
-        if(fps_timer > 1){
-            sprintf(c, "%i", fps_count2/fps_count);
-            std::string string(c);
-            sf::String str(string);
-            text.setString(str);
-
-            fps_count = 0;
-            fps_count2 = 0;
-            fps_timer = 0;
-        }
-
-        window.draw(text);
-        window.display();
-        //sf::sleep(sf::milliseconds(30));
+        _window.clear(sf::Color(0,255,0));
+        GameLoop();
+        _window.draw(_fpsText);
+        _window.display();
     }
 
-    window.close();
+    _window.close();
 }
 
 bool Game::IsExiting()
@@ -242,52 +190,81 @@ bool Game::IsExiting()
 
 
 
-
-void Game::GameLoop(double delta)
-{
-    sf::Clock clock1;
-    clock1.restart().asSeconds();
-
+void Game::Events(){
     sf::Event currentEvent;
-
-
-
-    Game::inputs.Update();
-
+    while(_window.pollEvent(currentEvent))
+    {
+        if(currentEvent.type == sf::Event::MouseWheelMoved)
+        {
+            Inputs::UpdateWheel(currentEvent.mouseWheel.delta);
+        }
+        else if (currentEvent.type == sf::Event::Resized){
+            std::cout << "res" << std::endl;
+            _resize = true;
+            Game::_scene.view_game.update();
+        }
+        else if (currentEvent.type == sf::Event::Closed)
+        {
+            _true_exit=true;
+            Game::ExitGame();
+        } else if (currentEvent.type == sf::Event::KeyPressed) {
+            Inputs::KeyPressed(currentEvent.key.code);
+        }
+        else if (currentEvent.type == sf::Event::KeyReleased) {
+            Inputs::KeyReleased(currentEvent.key.code);
+        } else if (currentEvent.type == sf::Event::MouseButtonPressed) {
+            Inputs::ButtonPressed(currentEvent.mouseButton.button);
+        }
+        else if (currentEvent.type == sf::Event::MouseButtonReleased) {
+            Inputs::ButtonReleased(currentEvent.mouseButton.button);
+        } else if(currentEvent.type == sf::Event::TextEntered && _gameState == Game::NewGame)
+        {
+            if(((currentEvent.text.unicode < 58 && currentEvent.text.unicode >= 48) || currentEvent.text.unicode == 8 ) && NewGameMenu::seed.selected)
+            {
+                std::string name = NewGameMenu::seed.getText();
+                if( currentEvent.text.unicode == 13 ) // return key
+                {
+                    // finished entering name
+                } else if( currentEvent.text.unicode == 8 ) { // backspace
+                    if( name.size() > 0 ) name.resize( name.size() - 1 );
+                } else if(name.size()<10){
+                    name += static_cast<char>(currentEvent.text.unicode);
+                }
+                NewGameMenu::seed.setText( name );
+            }
+            else if(((currentEvent.text.unicode < 128 && currentEvent.text.unicode >= 48) || currentEvent.text.unicode == 8 )&& NewGameMenu::name.selected)
+            {
+                std::string name = NewGameMenu::name.getText();
+                if( currentEvent.text.unicode == 13 ) // return key
+                {
+                    // finished entering name
+                } else if( currentEvent.text.unicode == 8 ) { // backspace
+                    if( name.size() > 0 ) name.resize( name.size() - 1 );
+                } else if(name.size()<10){
+                    name += static_cast<char>(currentEvent.text.unicode);
+                }
+                NewGameMenu::name.setText( name );
+            }
+        }
+    }
+}
+void Game::GameLoop()
+{
+    sf::Time deltatime = _clock.restart();
+    float delta = deltatime.asSeconds();
+    Inputs::Update();
+    UpdateFpsText(deltatime);
+    Events();
     switch(_gameState)
     {
         case Game::Playing:
         {
-
-            while(window.pollEvent(currentEvent))
-            {
-                if(currentEvent.type == sf::Event::MouseWheelMoved)
-                {
-                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
-                }
-                else if (currentEvent.type == sf::Event::Resized){
-                    std::cout << "res" << std::endl;
-                    Game::scene.view_game.update();
-                }
-                else if (
-                        (currentEvent.type == sf::Event::KeyPressed) &&
-                        (currentEvent.key.code == sf::Keyboard::Tab))
-                {
-                    std::cout << "bye" << std::endl;
-                    _gameState = ShowingMenu;
-                    //window.close();
-                }
-                else if (currentEvent.type == sf::Event::Closed)
-                {
-                    true_exit=true;
-                    Game::ExitGame();
-                }
-            }
-            sf::Time elapsed1 =clock1.getElapsedTime();
-            Game::scene.update(window,delta,inputs);
-            sf::Time elapsed2 =clock1.getElapsedTime();
-            Game::scene.draw(window);
-            sf::Time elapsed3 =clock1.getElapsedTime();
+            if(Inputs::KeyBreak(Inputs::ESC)) _gameState = Game::ShowingMenu;
+            sf::Time elapsed1 =_clock.getElapsedTime();
+            Game::_scene.update(_window,delta);
+            sf::Time elapsed2 =_clock.getElapsedTime();
+            Game::_scene.draw(_window);
+            sf::Time elapsed3 =_clock.getElapsedTime();
 
             float time1 = elapsed1.asSeconds();
             float time2 = elapsed2.asSeconds()-elapsed1.asSeconds();
@@ -299,56 +276,39 @@ void Game::GameLoop(double delta)
         }
         case Game::ShowingMenu:
         {
-            if(MenuMain::newGameClicked(Game::inputs)) _gameState = NewGame;
-            else if(MenuMain::exitClicked(Game::inputs)) {
-                true_exit=true;
+            if(_resize){
+                MenuMain::view.update();
+                _resize = false;
+            }
+            if(Inputs::KeyBreak(Inputs::ESC) && Game::_scene.map_curr.initialized) _gameState = Game::Playing;
+            if(MenuMain::newGameClicked()) _gameState = NewGame;
+            else if(MenuMain::exitClicked()) {
+                _true_exit=true;
                 ExitGame();
             }
-            else if(MenuMain::loadClicked(Game::inputs)) _gameState = LoadGame;
-            else if(MenuMain::configClicked(Game::inputs)) _gameState = Config;
-            while(window.pollEvent(currentEvent))
-            {
-                if(currentEvent.type == sf::Event::MouseWheelMoved)
-                {
-                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
-                }
-
-                else if (
-                         (currentEvent.type == sf::Event::KeyPressed) &&
-                          (currentEvent.key.code == sf::Keyboard::Tab) &&
-                         Game::scene.map_curr.initialized)
-                {
-                    std::cout << "bye" << std::endl;
-                    _gameState = Playing;
-                    //window.close();
-                }
-                else if (currentEvent.type == sf::Event::Resized){
-                    MenuMain::view.update();
-                    std::cout << "res" << std::endl;
-                }
-                else if (currentEvent.type == sf::Event::Closed)
-                {
-                    Game::ExitGame();
-                }
-            }
+            else if(MenuMain::loadClicked()) _gameState = LoadGame;
+            else if(MenuMain::configClicked()) _gameState = Config;
             MenuMain::Update();
-            MenuMain::Draw(window, font);
+            MenuMain::Draw(_window, _font);
             break;
         }
         case Game::NewGame:
         {
 
-
-            if(NewGameMenu::backClicked(Game::inputs)) _gameState = ShowingMenu;
-            else if(NewGameMenu::seedClicked(Game::inputs)){
+            if(_resize){
+                NewGameMenu::view.update();
+                _resize = false;
+            }
+            if(NewGameMenu::backClicked()) _gameState = ShowingMenu;
+            else if(NewGameMenu::seedClicked()){
                 NewGameMenu::disSelectAll();
                 NewGameMenu::seed.selected = true;
             }
-            else if(NewGameMenu::nameClicked(Game::inputs)){
+            else if(NewGameMenu::nameClicked()){
                 NewGameMenu::disSelectAll();
                 NewGameMenu::name.selected = true;
             }
-            else if(NewGameMenu::startClicked(Game::inputs) && NewGameMenu::seed.text != "") {
+            else if(NewGameMenu::startClicked() && NewGameMenu::seed.text != "") {
                 std::vector<std::string> out;
                 GetFilesInDirectory(out,"save");
                 if(out.size()<100) {
@@ -358,61 +318,26 @@ void Game::GameLoop(double delta)
                     if (out.size() < 10) new_game_path.append("0");
                     new_game_path.append(std::to_string(out.size()));
                     CreateNewGame(new_game_path, NewGameMenu::seed.getText(), NewGameMenu::name.getText());
-                    Game::scene.init(new_game_path, window, NewGameMenu::seed.getText());
+                    Game::_scene.init(new_game_path, _window, NewGameMenu::seed.getText());
 
                     _gameState = Playing;
                 } else std::cout << "demasiadas partidas guardadas" << std::endl;
             }
-            while(window.pollEvent(currentEvent))
-            {
-                if(currentEvent.type == sf::Event::TextEntered)
-                {
-                    if(((currentEvent.text.unicode < 58 && currentEvent.text.unicode >= 48) || currentEvent.text.unicode == 8 ) && NewGameMenu::seed.selected)
-                    {
-                        std::string name = NewGameMenu::seed.getText();
-                        if( currentEvent.text.unicode == 13 ) // return key
-                        {
-                            // finished entering name
-                        } else if( currentEvent.text.unicode == 8 ) { // backspace
-                            if( name.size() > 0 ) name.resize( name.size() - 1 );
-                        } else if(name.size()<10){
-                            name += static_cast<char>(currentEvent.text.unicode);
-                        }
-                        NewGameMenu::seed.setText( name );
-                    }
-                    else if(((currentEvent.text.unicode < 128 && currentEvent.text.unicode >= 48) || currentEvent.text.unicode == 8 )&& NewGameMenu::name.selected)
-                    {
-                        std::string name = NewGameMenu::name.getText();
-                        if( currentEvent.text.unicode == 13 ) // return key
-                        {
-                            // finished entering name
-                        } else if( currentEvent.text.unicode == 8 ) { // backspace
-                            if( name.size() > 0 ) name.resize( name.size() - 1 );
-                        } else if(name.size()<10){
-                            name += static_cast<char>(currentEvent.text.unicode);
-                        }
-                        NewGameMenu::name.setText( name );
-                    }
-                }
-                else if (currentEvent.type == sf::Event::Resized){
-                    NewGameMenu::view.update();
-                    std::cout << "res" << std::endl;
-                }
-                else if (currentEvent.type == sf::Event::Closed)
-                {
-                    true_exit=true;
-                    Game::ExitGame();
-                }
-            }
+
+
             NewGameMenu::Update();
-            NewGameMenu::Draw(window, font);
+            NewGameMenu::Draw(_window, _font);
             break;
         }
         case Game::LoadGame:
         {
-            if(MenuLoadGame::backClicked(Game::inputs)) _gameState = ShowingMenu;
+            if(_resize){
+                MenuLoadGame::view.update();
+                _resize = false;
+            }
+            if(MenuLoadGame::backClicked()) _gameState = ShowingMenu;
 
-            else if(MenuLoadGame::loadClicked(Game::inputs) && !MenuLoadGame::save_list.elements.empty()) {
+            else if(MenuLoadGame::loadClicked() && !MenuLoadGame::save_list.elements.empty()) {
 
                 std::string folder_save = "s";
                 int slot = MenuLoadGame::save_list.selected_slot;
@@ -436,8 +361,8 @@ void Game::GameLoop(double delta)
                         myfile >> data_seed >> data_name;
                         myfile.close();
 
-                        Game::scene.saveGame();
-                        Game::scene.init(new_game_path, window, data_seed);
+                        Game::_scene.saveGame();
+                        Game::_scene.init(new_game_path, _window, data_seed);
                         _gameState = Playing;
                     }
                     else std::cout << "ERROR: could not read file " << route << std::endl;
@@ -448,7 +373,7 @@ void Game::GameLoop(double delta)
 
                 } else std::cout << "slot demasiado grande" << std::endl;
             }
-            else if(MenuLoadGame::delClicked(Game::inputs) && !Game::scene.map_curr.initialized && !MenuLoadGame::save_list.elements.empty()) {
+            else if(MenuLoadGame::delClicked() && !Game::_scene.map_curr.initialized && !MenuLoadGame::save_list.elements.empty()) {
 
                 std::string folder_save = "s";
                 int slot = MenuLoadGame::save_list.selected_slot;
@@ -464,36 +389,24 @@ void Game::GameLoop(double delta)
                     LoadData();
                 } else std::cout << "slot demasiado grande" << std::endl;
             }
-            while(window.pollEvent(currentEvent))
-            {
-                if(currentEvent.type == sf::Event::MouseWheelMoved)
-                {
-                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
-                }
-                else if (currentEvent.type == sf::Event::Resized){
-                    MenuLoadGame::view.update();
-                    std::cout << "res" << std::endl;
-                }
-                else if (currentEvent.type == sf::Event::Closed)
-                {
-                    true_exit=true;
-                    Game::ExitGame();
-                }
-            }
-            MenuLoadGame::Update(Game::inputs);
-            MenuLoadGame::Draw(window, font);
+            MenuLoadGame::Update();
+            MenuLoadGame::Draw(_window, _font);
             break;
 
         }
 
         case Game::Config:
         {
-            if(MenuConfigGame::backClicked(Game::inputs) && !MenuConfigGame::resolution_visible) _gameState = ShowingMenu;
-            else if(MenuConfigGame::resolution_visible && Game::inputs.getKey("Enter").y){
+            if(_resize){
+                MenuConfigGame::view.update();
+                _resize = false;
+            }
+            if(MenuConfigGame::backClicked() && !MenuConfigGame::resolution_visible) _gameState = ShowingMenu;
+            else if(MenuConfigGame::resolution_visible && Inputs::KeyBreak(Inputs::ENTER)){
                 MenuConfigGame::resolution_visible = false;
                 int x = MenuConfigGame::res_keys[MenuConfigGame::resolution_list.selected_slot*2];
                 int y = MenuConfigGame::res_keys[MenuConfigGame::resolution_list.selected_slot*2+1];
-                window.setSize(sf::Vector2u(x,y));
+                _window.setSize(sf::Vector2u(x,y));
                 MenuConfigGame::view.update();
 
                 if(exists_file("config/config")) {
@@ -504,33 +417,24 @@ void Game::GameLoop(double delta)
                     myfile << y;
                     myfile.close();
                 }
-                true_exit=false;
+                _true_exit=false;
                 ExitGame();
             }
-            else if(MenuConfigGame::resClicked(Game::inputs)) {
+            else if(MenuConfigGame::resClicked()) {
                 MenuConfigGame::resolution_visible = true;
 
 
             }
 
-            while(window.pollEvent(currentEvent))
-            {
-                if(currentEvent.type == sf::Event::MouseWheelMoved)
-                {
-                    Game::inputs.UpdateWheel(currentEvent.mouseWheel.delta);
-                }
-                else if (currentEvent.type == sf::Event::Resized){
-                    MenuConfigGame::view.update();
-                    std::cout << "res" << std::endl;
-                }
-                else if (currentEvent.type == sf::Event::Closed)
-                {
-                    true_exit=true;
-                    Game::ExitGame();
-                }
-            }
-            MenuConfigGame::Update(Game::inputs);
-            MenuConfigGame::Draw(window, font);
+            MenuConfigGame::Update();
+            MenuConfigGame::Draw(_window, _font);
+            break;
+
+        }
+        case Game::Uninitialized: {
+            break;
+        }
+        case Game::Exiting: {
             break;
         }
     }
@@ -540,7 +444,7 @@ void Game::GameLoop(double delta)
 
 void Game::ExitGame()
 {
-    Game::scene.saveGame();
+    Game::_scene.saveGame();
     _gameState = Exiting;
 }
 void Game::CreateNewGame(std::string path, std::string seed, std::string name) {
@@ -603,6 +507,46 @@ void Game::DeleteGame(int index, std::string path) {
             perror( "Error renaming file" );
     }
 }
+void Game::InitFpsText() {
+    _fpsText.setCharacterSize(24);
+    _fpsText.setColor(sf::Color::Red);
+    _fpsText.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
+    sf::String str("no data");
+    _fpsText.setString(str);
+
+    _fpsText.setFont(_font);
+
+    _fpsTimer  = 0;
+    _fpsCount  = 0;
+    _fpsCount2 = 0;
+}
+
+void Game::UpdateFpsText(const sf::Time& deltatime) {
+    float seconds = deltatime.asSeconds();
+    float fps = 1.f / seconds;
+
+    _fpsCount += 1;
+    _fpsCount2 += fps;
+    _fpsTimer += seconds;
+
+    sf::View currentView    = _window.getView();
+    sf::Vector2f centerView = currentView.getCenter();
+    sf::Vector2f sizeView   = currentView.getSize();
+
+    _fpsText.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2);
+
+    char buffer[40];
+    if(_fpsTimer > 1){
+        sprintf(buffer, "%i", _fpsCount2 / _fpsCount);
+        std::string string(buffer);
+        sf::String str(string);
+        _fpsText.setString(str);
+
+        _fpsCount = 0;
+        _fpsCount2 = 0;
+        _fpsTimer = 0;
+    }
+}
 
 

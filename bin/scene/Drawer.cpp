@@ -151,11 +151,7 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow){
     states.texture = texMan.getTexture();
     for(int i = first_chunk ; i<=last_chunk ; i = i +1) {
         int index_mat = map_curr->getIndexMatChunk(i);
-
-        std::cout << i << " "<< map_curr->chunk_mat[index_mat]->render_array.getVertexCount() << std::endl;
         texture_plain_sprite.draw(map_curr->chunk_mat[index_mat]->render_array, states);
-        //texture_plain_sprite.display();
-        //map_curr->chunk_mat[index_mat]->DrawChunk(firstPos, lastPos,render_array, sky_array);
     }
     sf::Time elapsed2 =clock1.getElapsedTime();
     for(int i = 0; i<map_curr->falling_tiles.size(); i++){
@@ -184,22 +180,19 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow){
 }
 
 void Drawer::DrawLights(sf::Sprite map_without_lights){
+
     sf::RenderStates states;
     states.texture = texMan.getTexture();
 
     //DRAWING SUN
     states.shader = &sun_shader;
     texture_back->clear(sf::Color(0,0,0,0));
-
-
-
     sf::Vector2f centerView = view_player.getCenter();
     sf::Vector2f sizeView = view_player.getSize();
     float first_x = centerView.x-(sizeView.x/2)-1;
     float first_y = centerView.y-(sizeView.y/2)-1;
     float last_x = centerView.x+(sizeView.x/2)+1;
     float last_y = centerView.y+(sizeView.y/2)+1;
-    //std::cout << first_x << " " << first_y << std::endl;
     sf::Vector2f firstPos(first_x, first_y);
     sf::Vector2f lastPos(last_x+Settings::TILE_SIZE, last_y+Settings::TILE_SIZE);
     int first_chunk = map_curr->getChunkIndex(first_x);
@@ -207,12 +200,9 @@ void Drawer::DrawLights(sf::Sprite map_without_lights){
 
     for(int i = first_chunk ; i<=last_chunk ; i++) {
         int index_mat = map_curr->getIndexMatChunk(i);
-
-        //map_curr->chunk_mat[index_mat]->DrawChunk(firstPos, lastPos,render_array, sky_array);
         texture_back->draw(map_curr->chunk_mat[index_mat]->sky_array, states);
-        //texture_back->display();
+
     }
-    //texture_back->draw(sky_array, states);
     texture_back->display();
 
     if(clock->min<20){
@@ -260,7 +250,7 @@ void Drawer::DrawLights(sf::Sprite map_without_lights){
 
 
     for(int i = 0; i<map_curr->lights.size(); i++){
-    //for(int i = 0; i<4; i++){
+        //for(int i = 0; i<4; i++){
         float radius = map_curr->lights[i].radius;
         sf::Vector2f lightpos = sf::Vector2f(map_curr->lights[i].position.x-first_x,map_curr->lights[i].position.y-first_y);
         if(lightpos.x>0-radius*2 && lightpos.x<sizeView.x+radius*2 && lightpos.y>0-radius*2 && lightpos.y<sizeView.y+radius*2) {

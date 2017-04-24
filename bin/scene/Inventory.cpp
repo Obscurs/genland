@@ -704,7 +704,7 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 
 
 
-void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
+void Inventory::Update(sf::RenderWindow &window)
 {
 	sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 	sf::View currentView = window.getView();
@@ -714,20 +714,17 @@ void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
 	//position.x += centerView.x-sizeView.x/2;
 	//position.y += centerView.y-sizeView.y/2;
 
-	sf::Vector2i mouseLeft = inputs.getKey("mouseLeft");
-	sf::Vector2i mouseRight = inputs.getKey("mouseRight");
-	sf::Vector2i LShift = inputs.getKey("LShift");
-	sf::Vector2i keyQ = inputs.getKey("Q");
 
-	if(mouseLeft.y == 1){
-		if(LShift.x ==1) inventoryClick(position.x, position.y, "shift+mouseLeft");
+
+	if(Inputs::MouseBreak(Inputs::M_LEFT)){
+		if(Inputs::KeyDown(Inputs::L_SHIFT)) inventoryClick(position.x, position.y, "shift+mouseLeft");
 
 		else inventoryClick(position.x, position.y, "mouseLeft");
 	}
-	else if(mouseRight.y == 1){
+	else if(Inputs::MouseBreak(Inputs::M_RIGHT)){
 		inventoryClick(position.x, position.y, "mouseRight");
 	}
-	if(keyQ.y == 1){
+	if(Inputs::KeyBreak(Inputs::Q)){
 		if(show_inventory) {
 			show_inventory = false;
 			show_craft_list = false;
@@ -738,7 +735,7 @@ void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
 		}
 	}
 
-	int tab_selection_delta = inputs.getKey("wheel").x;
+	int tab_selection_delta = Inputs::GetWheel();
 	tab_item_selected = (tab_item_selected - tab_selection_delta);
 	while (tab_item_selected < 0) {
 		tab_item_selected += TAB_SLOTS;
@@ -746,7 +743,7 @@ void Inventory::Update(Inputs &inputs, sf::RenderWindow &window)
 	tab_item_selected %= TAB_SLOTS;
 
 	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
-		if (inputs.getKey("number"+std::to_string(i)).x == 1) tab_item_selected = i-1;
+		if (Inputs::KeyDown(static_cast<Inputs::Key>(Inputs::Key::N0 +i))) tab_item_selected = i-1;
 	}
 }
 

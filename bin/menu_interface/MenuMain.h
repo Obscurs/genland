@@ -13,10 +13,10 @@ class MenuMain {
 public:
     static void Draw(sf::RenderWindow &window, const sf::Font& font);
     static void Update();
-    static bool newGameClicked(Inputs &inputs);
-    static bool loadClicked(Inputs &inputs);
-    static bool configClicked(Inputs &inputs);
-    static bool exitClicked(Inputs &inputs);
+    static bool newGameClicked();
+    static bool loadClicked();
+    static bool configClicked();
+    static bool exitClicked();
     static Button new_game;
     static Button load;
     static Button config;
