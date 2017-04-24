@@ -35,13 +35,14 @@ void Light::Update(float deltatime){
      */
 }
 
-void Light::Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::Shader &light_shader, TextureManager *t, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back){
+void Light::Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::Shader &light_shader, TextureManager *t, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back,sf::RenderTexture &tex_sun){
 
 
 
         sf::RenderStates states;
         states.texture = t->getTexture();
-        light_shader.setParameter("texture2", tex_back->getTexture());
+        light_shader.setParameter("textureOld", tex_back->getTexture());
+        light_shader.setParameter("textureSun", tex_sun.getTexture());
         light_shader.setParameter("color", color);
         light_shader.setParameter("center", pos_light);
         light_shader.setParameter("radius", radius);

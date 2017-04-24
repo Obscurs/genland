@@ -20,7 +20,7 @@ public:
     sf::Color color;
     float radius;
     void Update(float deltatime);
-    void Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::Shader &light_shader, TextureManager *t, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back);
+    void Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::Shader &light_shader, TextureManager *t, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back,sf::RenderTexture &tex_sun);
 
         private:
 

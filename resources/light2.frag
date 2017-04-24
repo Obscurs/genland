@@ -6,6 +6,7 @@ uniform float radius;
 uniform float windowHeight;
 uniform sampler2D texture;
 uniform sampler2D texture2;
+uniform sampler2D textureSun;
 void main(void)
 {
     vec4 tex_current =vec4(texture2D(texture, gl_TexCoord[0].xy));

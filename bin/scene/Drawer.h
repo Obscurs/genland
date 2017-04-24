@@ -37,16 +37,18 @@ private:
     sf::Shader mix_back_terr_shader;
     sf::Shader sun_background_shader;
 
-    sf::RenderTexture texture_plain_sprite;
+    sf::RenderTexture texture_scene;
+    sf::RenderTexture texture_sun;
     sf::RenderTexture *texture_front;
     sf::RenderTexture *texture_back;
     sf::RenderTexture black_texture;
     sf::RenderTexture texture_background;
 
     sf::View view_player;
-
-    sf::Sprite get_plain_sprite(sf::RenderWindow& renderWindow);
-    void DrawLights(sf::Sprite map_without_lights);
+    sf::Vector2f GetPosSprite();
+    void DrawSceneTex();
+    void DrawBackground();
+    void DrawLights();
     void DrawMap(sf::RenderWindow& renderWindow, float zoom);
 };
 

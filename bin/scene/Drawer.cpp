@@ -13,8 +13,9 @@ Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c)
     player = p;
     clock = c;
     backgrounds = b;
-    texture_plain_sprite.create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
+    texture_scene.create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     texture_background.create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
+    texture_sun.create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     texture_front = new sf::RenderTexture();
     texture_back = new sf::RenderTexture();
 
@@ -81,25 +82,38 @@ sf::Shader& Drawer::getTileShader(){
     return tile_shader;
 }
 
-
-sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow){
-    sf::Clock clock1;
-    clock1.restart().asSeconds();
-
-    texture_plain_sprite.clear(sf::Color(0,0,0,0));
-
+sf::Vector2f Drawer::GetPosSprite(){
     sf::Vector2f centerView = view_player.getCenter();
     sf::Vector2f sizeView = view_player.getSize();
     float first_x = centerView.x-(sizeView.x/2)-1;
     float first_y = centerView.y-(sizeView.y/2)-1;
-    float last_x = centerView.x+(sizeView.x/2)+1;
-    float last_y = centerView.y+(sizeView.y/2)+1;
-    //std::cout << first_x << " " << first_y << std::endl;
     sf::Vector2f firstPos(first_x, first_y);
-    sf::Vector2f lastPos(last_x+Settings::TILE_SIZE, last_y+Settings::TILE_SIZE);
+    firstPos.x+=1;
+    firstPos.y+=1;
+    return firstPos;
+}
+void Drawer::DrawSceneTex(){
+
+    texture_scene.clear(sf::Color(0,0,0,0));
+    sf::RenderStates states;
+    states.texture = texMan.getTexture();
+
+    sf::Vector2f centerView = view_player.getCenter();
+    sf::Vector2f sizeView = view_player.getSize();
+    float first_x = centerView.x-(sizeView.x/2)-1;
+    float last_x = centerView.x+(sizeView.x/2)+1;
     int first_chunk = map_curr->getChunkIndex(first_x);
     int last_chunk = map_curr->getChunkIndex(last_x+Settings::TILE_SIZE);
-
+    for(int i = first_chunk ; i<=last_chunk ; i = i +1) {
+        int index_mat = map_curr->getIndexMatChunk(i);
+        texture_scene.draw(map_curr->chunk_mat[index_mat]->render_array, states);
+    }
+    for(int i = 0; i<map_curr->falling_tiles.size(); i++){
+        //map_curr->falling_tiles[i]->Draw(renderWindow, texMan);
+    }
+    texture_scene.display();
+}
+void Drawer::DrawBackground() {
     if(clock->min<20){
         sun_background_shader.setParameter("color", sf::Color::Black);
         sun_background_shader.setParameter("color2", sf::Color::Black);
@@ -131,14 +145,10 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow){
     texture_background.clear(sf::Color(255,0,0,255));
 
     backgrounds->Draw(texture_background);
-    sf::Vector2f pos_sprite = firstPos;
-    pos_sprite.x+=1;
-    pos_sprite.y+=1;
-    //std::cout <<pos_sprite.x << std::endl;
+
     sf::Sprite background_sprite(texture_background.getTexture());
-    //background_sprite.setScale(sf::Vector2f(0.5,0.5));
+    sf::Vector2f pos_sprite = GetPosSprite();
     background_sprite.setPosition(pos_sprite);
-    //return background_sprite;
 
     sf::RenderStates states2;
     texture_background.display();
@@ -146,64 +156,33 @@ sf::Sprite Drawer::get_plain_sprite(sf::RenderWindow& renderWindow){
     states2.shader = &sun_background_shader;
     texture_background.draw(background_sprite, states2);
     texture_background.display();
-    sf::Time elapsed1 =clock1.getElapsedTime();
-    sf::RenderStates states;
-    states.texture = texMan.getTexture();
-    for(int i = first_chunk ; i<=last_chunk ; i = i +1) {
-        int index_mat = map_curr->getIndexMatChunk(i);
-        texture_plain_sprite.draw(map_curr->chunk_mat[index_mat]->render_array, states);
-    }
-    sf::Time elapsed2 =clock1.getElapsedTime();
-    for(int i = 0; i<map_curr->falling_tiles.size(); i++){
-
-        map_curr->falling_tiles[i]->Draw(renderWindow, texMan);
-    }
-    sf::Time elapsed3 =clock1.getElapsedTime();
-    sf::Time elapsed4 =clock1.getElapsedTime();
-
-
-    texture_plain_sprite.display();
-    sf::Sprite map_without_lights(texture_plain_sprite.getTexture());
-    map_without_lights.setPosition(pos_sprite);
-    sf::Time elapsed5 =clock1.getElapsedTime();
-    sf::Time elapsed6 =clock1.getElapsedTime();
-
-    float time1 = elapsed1.asSeconds();
-    float time2 = elapsed2.asSeconds()-elapsed1.asSeconds();
-    float time3 = elapsed3.asSeconds()-elapsed2.asSeconds();
-    float time4 = elapsed4.asSeconds()-elapsed3.asSeconds();
-    float time5 = elapsed5.asSeconds()-elapsed4.asSeconds();
-    float time6 = elapsed6.asSeconds()-elapsed5.asSeconds();
-    //std::cout <<"background: " << time1/elapsed6.asSeconds()*100  << "%   get_arrays: " << time2/elapsed6.asSeconds()*100 << "%   get_falling_tiles: " << time3/elapsed6.asSeconds()*100 << "%   front_items: " << time4/elapsed6.asSeconds()*100 << "%   draw: " << time5/elapsed6.asSeconds()*100 <<""<< std::endl;
-
-    return map_without_lights;
 }
+void Drawer::DrawLights(){
 
-void Drawer::DrawLights(sf::Sprite map_without_lights){
-
+    sf::Sprite map_without_lights(texture_scene.getTexture());
+    sf::Vector2f pos_sprite = GetPosSprite();
+    map_without_lights.setPosition(pos_sprite);
     sf::RenderStates states;
     states.texture = texMan.getTexture();
 
     //DRAWING SUN
     states.shader = &sun_shader;
-    texture_back->clear(sf::Color(0,0,0,0));
+    texture_sun.clear(sf::Color(0,0,0,0));
     sf::Vector2f centerView = view_player.getCenter();
     sf::Vector2f sizeView = view_player.getSize();
     float first_x = centerView.x-(sizeView.x/2)-1;
     float first_y = centerView.y-(sizeView.y/2)-1;
     float last_x = centerView.x+(sizeView.x/2)+1;
     float last_y = centerView.y+(sizeView.y/2)+1;
-    sf::Vector2f firstPos(first_x, first_y);
-    sf::Vector2f lastPos(last_x+Settings::TILE_SIZE, last_y+Settings::TILE_SIZE);
     int first_chunk = map_curr->getChunkIndex(first_x);
     int last_chunk = map_curr->getChunkIndex(last_x+Settings::TILE_SIZE);
 
     for(int i = first_chunk ; i<=last_chunk ; i++) {
         int index_mat = map_curr->getIndexMatChunk(i);
-        texture_back->draw(map_curr->chunk_mat[index_mat]->sky_array, states);
+        texture_sun.draw(map_curr->chunk_mat[index_mat]->sky_array, states);
 
     }
-    texture_back->display();
+    texture_sun.display();
 
     if(clock->min<20){
         sun_mix_shader.setParameter("color", sf::Color::Black);
@@ -234,10 +213,10 @@ void Drawer::DrawLights(sf::Sprite map_without_lights){
     else sun_mix_shader.setParameter("factor", (clock->min-50)/10);
 
 
-    sun_mix_shader.setParameter("texture2", texture_back->getTexture());
+    sun_mix_shader.setParameter("texture2", texture_sun.getTexture());
     states.shader = &sun_mix_shader;
+    texture_back->clear(sf::Color(0,0,0,0));
     texture_front->clear(sf::Color(0,0,0,0));
-
     texture_front->draw(map_without_lights, states);
     texture_front->display();
 
@@ -255,7 +234,7 @@ void Drawer::DrawLights(sf::Sprite map_without_lights){
         sf::Vector2f lightpos = sf::Vector2f(map_curr->lights[i].position.x-first_x,map_curr->lights[i].position.y-first_y);
         if(lightpos.x>0-radius*2 && lightpos.x<sizeView.x+radius*2 && lightpos.y>0-radius*2 && lightpos.y<sizeView.y+radius*2) {
 
-            map_curr->lights[i].Draw(lightpos, map_without_lights, tile_shader, &texMan, texture_front, texture_back);
+            map_curr->lights[i].Draw(lightpos, map_without_lights, tile_shader, &texMan, texture_front, texture_back,texture_sun);
             std::swap(texture_back, texture_front);
         }
     }
@@ -264,24 +243,25 @@ void Drawer::DrawLights(sf::Sprite map_without_lights){
 
 void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
 {
-    sf::Clock clock1;
-    clock1.restart().asSeconds();
+    //sf::Clock clock1;
+    //clock1.restart().asSeconds();
 
 
-    sf::Time elapsed1 =clock1.getElapsedTime();
-    sf::Time elapsed2 =clock1.getElapsedTime();
-    sf::Sprite map_without_lights = get_plain_sprite(renderWindow);
-    sf::Time elapsed3 =clock1.getElapsedTime();
-    DrawLights(map_without_lights);
+    //sf::Time elapsed1 =clock1.getElapsedTime();
+    //sf::Time elapsed2 =clock1.getElapsedTime();
+    DrawSceneTex();
+    DrawBackground();
+    //sf::Time elapsed3 =clock1.getElapsedTime();
+    DrawLights();
 
-    sf::Time elapsed4 =clock1.getElapsedTime();
+    //sf::Time elapsed4 =clock1.getElapsedTime();
     texture_back->display();
     player->Draw2(*texture_back);
     sf::Sprite sprite(texture_back->getTexture());
     //sprite = map_without_lights;
 
-
-    sprite.setPosition(map_without_lights.getPosition());
+    sf::Vector2f pos_sprite = GetPosSprite();
+    sprite.setPosition(pos_sprite);
     sf::Vector2f oldOrgin = sprite.getOrigin();
     sprite.setOrigin(sprite.getTexture()->getSize().x/(2),sprite.getTexture()->getSize().y/(2));
 
@@ -292,38 +272,39 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
     sf::RenderStates states;
     states.texture = &texture_back->getTexture();
     states.shader = &mix_back_terr_shader;
-    sf::Time elapsed5 =clock1.getElapsedTime();
+    //sf::Time elapsed5 =clock1.getElapsedTime();
     renderWindow.draw(sprite, states);
-    sf::Time elapsed6 =clock1.getElapsedTime();
-    float time1 = elapsed1.asSeconds();
-    float time2 = elapsed2.asSeconds()-elapsed1.asSeconds();
-    float time3 = elapsed3.asSeconds()-elapsed2.asSeconds();
-    float time4 = elapsed4.asSeconds()-elapsed3.asSeconds();
-    float time5 = elapsed5.asSeconds()-elapsed4.asSeconds();
-    float time6 = elapsed6.asSeconds()-elapsed5.asSeconds();
+    //sf::Time elapsed6 =clock1.getElapsedTime();
+    //float time1 = elapsed1.asSeconds();
+    //float time2 = elapsed2.asSeconds()-elapsed1.asSeconds();
+    //float time3 = elapsed3.asSeconds()-elapsed2.asSeconds();
+    //float time4 = elapsed4.asSeconds()-elapsed3.asSeconds();
+    //float time5 = elapsed5.asSeconds()-elapsed4.asSeconds();
+    //float time6 = elapsed6.asSeconds()-elapsed5.asSeconds();
     //std::cout <<"create map without lights: " << time3/elapsed6.asSeconds()*100  << "%   draw lights: " << time4/elapsed6.asSeconds()*100 << "%   player: " << time5/elapsed6.asSeconds()*100 << "%   draw window: " << time6/elapsed6.asSeconds()*100 << "%"<< std::endl;
 
 }
 
 void Drawer::Draw(sf::RenderWindow &window, float zoom){
-    sf::Clock clock1;
-    clock1.restart().asSeconds();
+    //sf::Clock clock1;
+    //clock1.restart().asSeconds();
 
 
     view_player.setCenter(player->GetPosition().x+(player->GetWidth()/2), player->GetPosition().y+(player->GetHeight()/2));
 
     texture_back->setView(view_player);
     texture_front->setView(view_player);
-    texture_plain_sprite.setView(view_player);
+    texture_scene.setView(view_player);
+    texture_sun.setView(view_player);
     texture_background.setView(view_player);
     black_texture.setView(view_player);
-    sf::Time elapsed1 =clock1.getElapsedTime();
+    //sf::Time elapsed1 =clock1.getElapsedTime();
     DrawMap(window, zoom);
-    sf::Time elapsed2 =clock1.getElapsedTime();
+    //sf::Time elapsed2 =clock1.getElapsedTime();
     player->DrawInventory(window);
-    sf::Time elapsed3 =clock1.getElapsedTime();
-    float time1 = elapsed1.asSeconds();
-    float time2 = elapsed2.asSeconds();
-    float time3 = elapsed3.asSeconds();
+    //sf::Time elapsed3 =clock1.getElapsedTime();
+    //float time1 = elapsed1.asSeconds();
+    //float time2 = elapsed2.asSeconds();
+    //float time3 = elapsed3.asSeconds();
     //std::cout << time1 << " " << time2 << " " << time3  << std::endl;
 }
