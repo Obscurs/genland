@@ -8,62 +8,17 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 
-#include <dirent.h>
+
 #include <fstream>
 #include <sys/stat.h>
 #include <string.h>
 
-#include <limits.h>
-#include <unistd.h>
-#include <unistd.h>
-#include <cassert>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
 
+#include "Debuger.h"
 #include "Game.h"
 #include "Settings.h"
-//bool sortByName(const Person &lhs, const Person &rhs) { return lhs.name < rhs.name; }
+#include "functions.h"
 
-inline bool exists_file (const std::string& name) {
-    struct stat buffer;
-    return (stat (name.c_str(), &buffer) == 0);
-}
-int DeleteDirectory(const char *dirname)
-{
-    DIR *dir;
-    struct dirent *entry;
-    char path[PATH_MAX];
-
-    if (path == NULL) {
-        fprintf(stderr, "Out of memory error\n");
-        return 0;
-    }
-    dir = opendir(dirname);
-    if (dir == NULL) {
-        perror("Error opendir()");
-        return 0;
-    }
-
-    while ((entry = readdir(dir)) != NULL) {
-        if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
-            snprintf(path, (size_t) PATH_MAX, "%s/%s", dirname, entry->d_name);
-            if (entry->d_type == DT_DIR) {
-                DeleteDirectory(path);
-            }
-
-            printf("(not really) Deleting: %s\n", path);
-            remove(path);
-
-        }
-
-    }
-    closedir(dir);
-    remove(dirname);
-    printf("(not really) Deleting: %s\n", dirname);
-
-    return 1;
-}
 
 Game::Game():
         _window(),
@@ -72,69 +27,17 @@ Game::Game():
     _resize = false;
     _gameState = Uninitialized;
     _true_exit=false;
+    _debuger = false;
     if (!_font.loadFromFile("resources/font1.ttf"))
     {
         std::cout << "font error" << std::endl;
     }
 
+
 }
 Game::~Game(){
 
 }
-void Game::GetFilesInDirectory(std::vector<std::string> &out, const std::string &directory)
-{
-#ifdef WINDOWS
-    HANDLE dir;
-    WIN32_FIND_DATA file_data;
-
-    if ((dir = FindFirstFile((directory + "/*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
-        return; /* No files found */
-
-    do {
-        const string file_name = file_data.cFileName;
-        const string full_file_name = directory + "/" + file_name;
-        const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-
-        if (file_name[0] == '.')
-            continue;
-
-        if (is_directory)
-            continue;
-
-
-        out.push_back(full_file_name);
-    } while (FindNextFile(dir, &file_data));
-
-    FindClose(dir);
-#else
-    DIR *dir;
-    class dirent *ent;
-    class stat st;
-    const char * c = directory.c_str();
-    dir = opendir(c);
-    while ((ent = readdir(dir)) != NULL) {
-
-        const std::string file_name = ent->d_name;
-        const std::string full_file_name = directory + "/" + file_name;
-
-        if (file_name[0] == '.')
-            continue;
-
-        if (stat(full_file_name.c_str(), &st) == -1)
-            continue;
-
-        //const bool is_directory = (st.st_mode & S_IFDIR) != 0;
-
-        //if (is_directory)
-        //    continue;
-        out.push_back(full_file_name);
-    }
-    closedir(dir);
-#endif
-    std::sort (out.begin(), out.end());
-} // GetFilesInDirectory
-
-
 
 void Game::LoadData(){
 
@@ -145,10 +48,7 @@ void Game::LoadData(){
         std::string route = save_folders[i];
         route.append("/data");
         if(exists_file(route)) {
-            //std::string route_aux = route;
-            //route_aux.append(".txt");
             std::ifstream myfile(route);
-            //myfile.open(route);
             std::string data_seed= "def", data_name = "def";
             myfile >> data_seed >> data_name;
             MenuLoadGame::save_list.insertElement(data_name);
@@ -164,7 +64,7 @@ void Game::Start(void)
     LoadData();
     _window.create(sf::VideoMode(Settings::SCREEN_WIDTH,Settings::SCREEN_HEIGHT,32),"Genland!");
     _gameState= Game::ShowingMenu;
-    InitFpsText();
+    Debuger::Init(_window, _scene);
     MenuMain::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     NewGameMenu::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     MenuLoadGame::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
@@ -173,7 +73,7 @@ void Game::Start(void)
     {
         _window.clear(sf::Color(0,255,0));
         GameLoop();
-        _window.draw(_fpsText);
+        if(_debuger) Debuger::Draw();
         _window.display();
     }
 
@@ -251,26 +151,22 @@ void Game::Events(){
 void Game::GameLoop()
 {
     sf::Time deltatime = _clock.restart();
+    Debuger::Update(deltatime);
     float delta = deltatime.asSeconds();
     Inputs::Update();
-    UpdateFpsText(deltatime);
     Events();
+    if(Inputs::KeyBreak(Inputs::TAB)) _debuger = !_debuger;
     switch(_gameState)
     {
         case Game::Playing:
         {
             if(Inputs::KeyBreak(Inputs::ESC)) _gameState = Game::ShowingMenu;
-            sf::Time elapsed1 =_clock.getElapsedTime();
+            Debuger::InsertClockMark("PreLoop");
             Game::_scene.update(_window,delta);
-            sf::Time elapsed2 =_clock.getElapsedTime();
+            Debuger::InsertClockMark("Update");
             Game::_scene.draw(_window);
-            sf::Time elapsed3 =_clock.getElapsedTime();
+            Debuger::InsertClockMark("Draw");
 
-            float time1 = elapsed1.asSeconds();
-            float time2 = elapsed2.asSeconds()-elapsed1.asSeconds();
-            float time3 = elapsed3.asSeconds()-elapsed2.asSeconds();
-            float timeTotal = elapsed3.asSeconds();
-            std::cout <<"preLoop: " << time1/timeTotal*100  << "%   update: " << time2/timeTotal*100 << "%   draw: " << time3/timeTotal*100 << "% "<< std::endl;
 
             break;
         }
@@ -507,46 +403,6 @@ void Game::DeleteGame(int index, std::string path) {
             perror( "Error renaming file" );
     }
 }
-void Game::InitFpsText() {
-    _fpsText.setCharacterSize(24);
-    _fpsText.setColor(sf::Color::Red);
-    _fpsText.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
-    sf::String str("no data");
-    _fpsText.setString(str);
-
-    _fpsText.setFont(_font);
-
-    _fpsTimer  = 0;
-    _fpsCount  = 0;
-    _fpsCount2 = 0;
-}
-
-void Game::UpdateFpsText(const sf::Time& deltatime) {
-    float seconds = deltatime.asSeconds();
-    float fps = 1.f / seconds;
-
-    _fpsCount += 1;
-    _fpsCount2 += fps;
-    _fpsTimer += seconds;
-
-    sf::View currentView    = _window.getView();
-    sf::Vector2f centerView = currentView.getCenter();
-    sf::Vector2f sizeView   = currentView.getSize();
-
-    _fpsText.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2);
-
-    char buffer[40];
-    if(_fpsTimer > 1){
-        sprintf(buffer, "%i", _fpsCount2 / _fpsCount);
-        std::string string(buffer);
-        sf::String str(string);
-        _fpsText.setString(str);
-
-        _fpsCount = 0;
-        _fpsCount2 = 0;
-        _fpsTimer = 0;
-    }
-}
 
 

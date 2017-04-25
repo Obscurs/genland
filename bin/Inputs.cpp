@@ -26,6 +26,7 @@ const sf::Keyboard::Key Inputs::_keyMap[NUM_KEYS] = {
         sf::Keyboard::Return,
         sf::Keyboard::BackSpace,
         sf::Keyboard::LControl,
+        sf::Keyboard::Tab,
         sf::Keyboard::A,
         sf::Keyboard::D,
         sf::Keyboard::Q,

@@ -21,6 +21,7 @@ public:
 		ENTER,
 		SELECT,
         CONTROL,
+        TAB,
         A,
         D,
         Q,
