@@ -15,7 +15,7 @@ void main(void)
     vec2 centerFromSfml = vec2(center.x, windowHeight - center.y);
     float dist = distance(gl_FragCoord.xy, centerFromSfml)-radius;
     float factor = dist/expand;
-    if(tex_sun.z == 1.0) gl_FragColor = tex_old;
+    if(tex_sun.z == 1.0 || tex_old.w < 1.0) gl_FragColor = tex_old;
     else if(gl_Color == vec4(0,0,0,0)) gl_FragColor = color;
     else{
         vec4 colorEnd;
@@ -32,10 +32,7 @@ void main(void)
         }
 
 
-        //if(tex_sun.z >=0.85){
-        //    float sun_factor = (1.0-tex_sun.z)/0.15;
-        //    colorEnd = mix(colorEnd, tex_old, 1-sun_factor);
-        //}
+
         gl_FragColor = colorEnd;
     }
 

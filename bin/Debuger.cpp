@@ -91,7 +91,7 @@ void Debuger::DrawWorldStats(){
     sf::Vector2f sizeView   = currentView.getSize();
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
     std::stringstream buffer;
-    buffer << "Day: " << _scene->clock.day << " Min: " << int(_scene->clock.min) << " Hour: " << _scene->clock.hour;
+    buffer << "Day: " << _scene->clock.day << " Min: " << int(_scene->clock.min) << " Hour: " << _scene->clock.hour << " DayTime: " << _scene->clock._dayTime << " "<< _scene->clock._dayTimeFactor<< " Season: " << _scene->clock._season<< " "<< _scene->clock._seasonFactor;
     std::string string(buffer.str());
     sf::String str(string);
     _text.setString(str);

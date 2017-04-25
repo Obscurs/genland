@@ -14,6 +14,29 @@ public:
     int day;
     int hour;
     float min;
+    enum DayTimes {
+        MORNING = 0,
+        AFTERNOON,
+        EVENING,
+        NIGHT,
+    };
+    enum Seasons {
+        WINTER = 0,
+        SPRING,
+        SUMMER,
+        AUTUMN
+    };
+    void UpdateDayTimeIntervals();
+    int _dayTimeIntervals[5];
+    int _seasonTimeIntervals[5];
+    int _season;
+    int _dayTime;
+
+    float _dayTimeFactor;
+    float _seasonFactor;
+    float _lightFactor;
+private:
+    float getFactorOfInterval(int (&interval)[5], float value);
 };
 
 

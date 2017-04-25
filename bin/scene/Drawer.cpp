@@ -114,33 +114,26 @@ void Drawer::DrawSceneTex(){
     texture_scene.display();
 }
 void Drawer::DrawBackground() {
-    if(clock->min<20){
-        sun_background_shader.setParameter("color", sf::Color::Black);
-        sun_background_shader.setParameter("color2", sf::Color::Black);
-        sun_background_shader.setParameter("factor2", 0);
-    } else if(clock->min<30){
-        sun_background_shader.setParameter("color", sf::Color::Black);
-        sun_background_shader.setParameter("color2", sf::Color(244, 173, 66));
-        sun_background_shader.setParameter("factor2", (clock->min-20)/10);
-    }else if(clock->min<40){
-        sun_background_shader.setParameter("color", sf::Color(244, 173, 66));
-        sun_background_shader.setParameter("color2", sf::Color::Yellow);
-        sun_background_shader.setParameter("factor2", (clock->min-30)/10);
+    switch(clock->_dayTime){
+        case Clock::MORNING:
+            sun_background_shader.setParameter("color", sf::Color::Black);
+            sun_background_shader.setParameter("color2", sf::Color(244, 173, 66));
+            break;
+        case Clock::AFTERNOON:
+            sun_background_shader.setParameter("color", sf::Color(244, 173, 66));
+            sun_background_shader.setParameter("color2", sf::Color::Yellow);
+            break;
+        case Clock::EVENING:
+            sun_background_shader.setParameter("color", sf::Color::Yellow);
+            sun_background_shader.setParameter("color2", sf::Color::Blue);
+            break;
+        case Clock::NIGHT:
+            sun_background_shader.setParameter("color", sf::Color::Blue);
+            sun_background_shader.setParameter("color2", sf::Color::Black);
+            break;
     }
-    else if(clock->min<50){
-        sun_background_shader.setParameter("color", sf::Color::Yellow);
-        sun_background_shader.setParameter("color2", sf::Color::Blue);
-        sun_background_shader.setParameter("factor2", (clock->min-40)/10);
-    }
-    else if(clock->min<60){
-        sun_background_shader.setParameter("color", sf::Color::Blue);
-        sun_background_shader.setParameter("color2", sf::Color::Black);
-        sun_background_shader.setParameter("factor2", (clock->min-50)/10);
-    }
-    if(clock->min<20)sun_background_shader.setParameter("factor", 1.0);
-    else if(clock->min<30) sun_background_shader.setParameter("factor", 1.0-(clock->min-20)/10);
-    else if(clock->min<50) sun_background_shader.setParameter("factor", 0.0);
-    else sun_background_shader.setParameter("factor", (clock->min-50)/10);
+    sun_background_shader.setParameter("factor2", clock->_dayTimeFactor);
+    sun_background_shader.setParameter("factor", 0.5);
 
     texture_background.clear(sf::Color(255,0,0,255));
 
@@ -184,33 +177,30 @@ void Drawer::DrawLights(){
     }
     texture_sun.display();
 
-    if(clock->min<20){
-        sun_mix_shader.setParameter("color", sf::Color::Black);
-        sun_mix_shader.setParameter("color2", sf::Color::Black);
-        sun_mix_shader.setParameter("factor2", 0);
-    } else if(clock->min<30){
-        sun_mix_shader.setParameter("color", sf::Color::Black);
-        sun_mix_shader.setParameter("color2", sf::Color(244, 173, 66));
-        sun_mix_shader.setParameter("factor2", (clock->min-20)/10);
-    }else if(clock->min<40){
-        sun_mix_shader.setParameter("color", sf::Color(244, 173, 66));
-        sun_mix_shader.setParameter("color2", sf::Color::Yellow);
-        sun_mix_shader.setParameter("factor2", (clock->min-30)/10);
+    switch(clock->_dayTime){
+        case Clock::MORNING:
+            sun_mix_shader.setParameter("color", sf::Color::Black);
+            sun_mix_shader.setParameter("color2", sf::Color(244, 173, 66));
+            break;
+        case Clock::AFTERNOON:
+            sun_mix_shader.setParameter("color", sf::Color(244, 173, 66));
+            sun_mix_shader.setParameter("color2", sf::Color::Yellow);
+            break;
+        case Clock::EVENING:
+            sun_mix_shader.setParameter("color", sf::Color::Yellow);
+            sun_mix_shader.setParameter("color2", sf::Color::Blue);
+            break;
+        case Clock::NIGHT:
+            sun_mix_shader.setParameter("color", sf::Color::Blue);
+            sun_mix_shader.setParameter("color2", sf::Color::Black);
+            break;
     }
-    else if(clock->min<50){
-        sun_mix_shader.setParameter("color", sf::Color::Yellow);
-        sun_mix_shader.setParameter("color2", sf::Color::Blue);
-        sun_mix_shader.setParameter("factor2", (clock->min-40)/10);
-    }
-    else if(clock->min<60){
-        sun_mix_shader.setParameter("color", sf::Color::Blue);
-        sun_mix_shader.setParameter("color2", sf::Color::Black);
-        sun_mix_shader.setParameter("factor2", (clock->min-50)/10);
-    }
-    if(clock->min<20)sun_mix_shader.setParameter("factor", 1.0);
-    else if(clock->min<30) sun_mix_shader.setParameter("factor", 1.0-(clock->min-20)/10);
-    else if(clock->min<50) sun_mix_shader.setParameter("factor", 0.0);
-    else sun_mix_shader.setParameter("factor", (clock->min-50)/10);
+    sun_mix_shader.setParameter("factor2", clock->_dayTimeFactor);
+    sun_mix_shader.setParameter("factor", 0.5);
+    //if(clock->hour<5)sun_mix_shader.setParameter("factor", 1.0);
+    //else if(clock->hour<8) sun_mix_shader.setParameter("factor", 1.0-(clock->hour-5)/3);
+    //else if(clock->hour<18) sun_mix_shader.setParameter("factor", 0.0);
+    //else sun_mix_shader.setParameter("factor", (clock->hour-18)/6);
 
 
     sun_mix_shader.setParameter("texture2", texture_sun.getTexture());
@@ -290,7 +280,7 @@ void Drawer::Draw(sf::RenderWindow &window, float zoom){
     //clock1.restart().asSeconds();
 
 
-    view_player.setCenter(player->GetPosition().x+(player->GetWidth()/2), player->GetPosition().y+(player->GetHeight()/2));
+    view_player.setCenter(player->GetPosition().x+player->GetWidth()/2, player->GetPosition().y+player->GetHeight()/2);
 
     texture_back->setView(view_player);
     texture_front->setView(view_player);
@@ -298,13 +288,6 @@ void Drawer::Draw(sf::RenderWindow &window, float zoom){
     texture_sun.setView(view_player);
     texture_background.setView(view_player);
     black_texture.setView(view_player);
-    //sf::Time elapsed1 =clock1.getElapsedTime();
     DrawMap(window, zoom);
-    //sf::Time elapsed2 =clock1.getElapsedTime();
     player->DrawInventory(window);
-    //sf::Time elapsed3 =clock1.getElapsedTime();
-    //float time1 = elapsed1.asSeconds();
-    //float time2 = elapsed2.asSeconds();
-    //float time3 = elapsed3.asSeconds();
-    //std::cout << time1 << " " << time2 << " " << time3  << std::endl;
 }
