@@ -4,13 +4,16 @@
 
 #ifndef GENLAND_CLOCK_H
 #define GENLAND_CLOCK_H
-
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
 
 class Clock {
 public:
     Clock();
     ~Clock();
     void Update(float delta);
+    void SetColorToShader(sf::Shader &shader);
     int day;
     int hour;
     float min;

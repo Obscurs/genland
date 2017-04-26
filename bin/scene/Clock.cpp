@@ -24,6 +24,28 @@ Clock::Clock(){
 Clock::~Clock() {
 }
 
+void Clock::SetColorToShader(sf::Shader &shader){
+    switch(_dayTime){
+        case Clock::MORNING:
+            shader.setParameter("color", sf::Color::Black);
+            shader.setParameter("color2", sf::Color(244, 173, 66));
+            break;
+        case Clock::AFTERNOON:
+            shader.setParameter("color", sf::Color(244, 173, 66));
+            shader.setParameter("color2", sf::Color::Yellow);
+            break;
+        case Clock::EVENING:
+            shader.setParameter("color", sf::Color::Yellow);
+            shader.setParameter("color2", sf::Color::Blue);
+            break;
+        case Clock::NIGHT:
+            shader.setParameter("color", sf::Color::Blue);
+            shader.setParameter("color2", sf::Color::Black);
+            break;
+    }
+    shader.setParameter("factor2", _dayTimeFactor);
+    shader.setParameter("factor", _lightFactor);
+}
 float Clock::getFactorOfInterval(int (&interval)[5], float value){
     int min = 0;
     int max = 0;
@@ -90,7 +112,7 @@ void Clock::UpdateDayTimeIntervals(){
     }
 }
 void Clock::Update(float delta){
-    min+=delta*20;
+    min+=delta;
     if(min>60) {
         hour+= (int)(min/60);
         min=min-60;
@@ -110,12 +132,34 @@ void Clock::Update(float delta){
     else _season = WINTER;
     if(_season != old_season) UpdateDayTimeIntervals();
 
-    if(hour< _dayTimeIntervals[0]) _dayTime = MORNING;
-    else if(hour <_dayTimeIntervals[1]) _dayTime = AFTERNOON;
-    else if(hour < _dayTimeIntervals[2]) _dayTime = EVENING;
-    else if(hour < _dayTimeIntervals[3]) _dayTime = NIGHT;
-    else _dayTime = MORNING;
+    if(hour< _dayTimeIntervals[0]) _dayTime = NIGHT;
+    else if(hour <_dayTimeIntervals[1]) _dayTime = MORNING;
+    else if(hour < _dayTimeIntervals[2]) _dayTime = AFTERNOON;
+    else if(hour < _dayTimeIntervals[3]) _dayTime = EVENING;
+    else _dayTime = NIGHT;
 
     _seasonFactor = getFactorOfInterval(_seasonTimeIntervals, day);
     _dayTimeFactor = getFactorOfInterval(_dayTimeIntervals, hour+min/60);
+    switch(_dayTime){
+        case MORNING:
+            _lightFactor = 0.9-0.5*_dayTimeFactor;
+            break;
+        case AFTERNOON:
+            _lightFactor = 0.4;
+            break;
+        case EVENING:
+            _lightFactor = 0.4;
+            break;
+        case NIGHT:
+            if(_dayTimeFactor>0.5){
+                _lightFactor = 0.9;
+            }
+            else _lightFactor = 0.4+0.5*_dayTimeFactor*2;
+            //_lightFactor = 0.4+0.5*_dayTimeFactor;
+            break;
+    }
+
+
+
+
 }

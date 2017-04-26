@@ -114,26 +114,7 @@ void Drawer::DrawSceneTex(){
     texture_scene.display();
 }
 void Drawer::DrawBackground() {
-    switch(clock->_dayTime){
-        case Clock::MORNING:
-            sun_background_shader.setParameter("color", sf::Color::Black);
-            sun_background_shader.setParameter("color2", sf::Color(244, 173, 66));
-            break;
-        case Clock::AFTERNOON:
-            sun_background_shader.setParameter("color", sf::Color(244, 173, 66));
-            sun_background_shader.setParameter("color2", sf::Color::Yellow);
-            break;
-        case Clock::EVENING:
-            sun_background_shader.setParameter("color", sf::Color::Yellow);
-            sun_background_shader.setParameter("color2", sf::Color::Blue);
-            break;
-        case Clock::NIGHT:
-            sun_background_shader.setParameter("color", sf::Color::Blue);
-            sun_background_shader.setParameter("color2", sf::Color::Black);
-            break;
-    }
-    sun_background_shader.setParameter("factor2", clock->_dayTimeFactor);
-    sun_background_shader.setParameter("factor", 0.5);
+    clock->SetColorToShader(sun_background_shader);
 
     texture_background.clear(sf::Color(255,0,0,255));
 
@@ -143,11 +124,11 @@ void Drawer::DrawBackground() {
     sf::Vector2f pos_sprite = GetPosSprite();
     background_sprite.setPosition(pos_sprite);
 
-    sf::RenderStates states2;
+    sf::RenderStates states;
     texture_background.display();
-    states2.texture = &texture_background.getTexture();
-    states2.shader = &sun_background_shader;
-    texture_background.draw(background_sprite, states2);
+    states.texture = &texture_background.getTexture();
+    states.shader = &sun_background_shader;
+    texture_background.draw(background_sprite, states);
     texture_background.display();
 }
 void Drawer::DrawLights(){
@@ -176,33 +157,7 @@ void Drawer::DrawLights(){
 
     }
     texture_sun.display();
-
-    switch(clock->_dayTime){
-        case Clock::MORNING:
-            sun_mix_shader.setParameter("color", sf::Color::Black);
-            sun_mix_shader.setParameter("color2", sf::Color(244, 173, 66));
-            break;
-        case Clock::AFTERNOON:
-            sun_mix_shader.setParameter("color", sf::Color(244, 173, 66));
-            sun_mix_shader.setParameter("color2", sf::Color::Yellow);
-            break;
-        case Clock::EVENING:
-            sun_mix_shader.setParameter("color", sf::Color::Yellow);
-            sun_mix_shader.setParameter("color2", sf::Color::Blue);
-            break;
-        case Clock::NIGHT:
-            sun_mix_shader.setParameter("color", sf::Color::Blue);
-            sun_mix_shader.setParameter("color2", sf::Color::Black);
-            break;
-    }
-    sun_mix_shader.setParameter("factor2", clock->_dayTimeFactor);
-    sun_mix_shader.setParameter("factor", 0.5);
-    //if(clock->hour<5)sun_mix_shader.setParameter("factor", 1.0);
-    //else if(clock->hour<8) sun_mix_shader.setParameter("factor", 1.0-(clock->hour-5)/3);
-    //else if(clock->hour<18) sun_mix_shader.setParameter("factor", 0.0);
-    //else sun_mix_shader.setParameter("factor", (clock->hour-18)/6);
-
-
+    clock->SetColorToShader(sun_mix_shader);
     sun_mix_shader.setParameter("texture2", texture_sun.getTexture());
     states.shader = &sun_mix_shader;
     texture_back->clear(sf::Color(0,0,0,0));

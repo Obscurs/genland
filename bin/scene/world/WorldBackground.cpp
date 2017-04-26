@@ -24,7 +24,7 @@ void WorldBackground::Update(sf::Vector2f player_pos, Clock &clock){
         backgrounds[i].updatePosition(player_pos);
 
     }
-    sun_sprite.setPosition(player_pos.x+clock.min,player_pos.y/1.2-clock.min*30+1000);
+    sun_sprite.setPosition(player_pos.x+(clock.hour+clock.min/60)*2,player_pos.y/1.2-(clock.hour+clock.min/60)*60+700);
 }
 void WorldBackground::Draw(sf::RenderTexture &texture_plain_sprite){
 
