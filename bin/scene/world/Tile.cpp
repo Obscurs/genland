@@ -13,6 +13,7 @@
 
 #include "Chunk.h"
 #include "../../Settings.h"
+#include "../../Resources.h"
 
 
 Tile::Tile(int id_t, int l, TextureManager &t){
@@ -27,11 +28,22 @@ Tile::~Tile()
 {
 	
 }
+void Tile::setReachFloorCascade(){
+    Tile* tB = neighbors[8];
+    if(id!="0")reach_floor = true;
+    if(tB->id!="0")tB->reach_floor = true;
+    if(neighbors[1] != nullptr && (neighbors[1]->id != "0" || neighbors[1]->neighbors[8]->id != "0")) neighbors[1]->setReachFloorCascade();
+}
+void Tile::removeReachFloorCascade(){
 
-
+    Tile* tB = neighbors[8];
+    reach_floor = false;
+    tB->reach_floor = false;
+    if(neighbors[1] != nullptr && (neighbors[1]->reach_floor || neighbors[1]->neighbors[8]->reach_floor)) neighbors[1]->removeReachFloorCascade();
+}
 void Tile::Reload(std::string new_id)
 {
-	id = new_id;
+
 	if(new_id == "0"){
 		weight = 0;
 		max_tension = 0;
@@ -39,51 +51,61 @@ void Tile::Reload(std::string new_id)
 		reach_floor = false;
         id_pick="0";
         ms_to_remove = 100;
+        if(neighbors[8] != nullptr && !neighbors[8]->reach_floor) removeReachFloorCascade();
 	}
-	else if(new_id == "D"){
-		weight = 20;
-		max_tension = 100;
-		rigid = false;
-		reach_floor = true;
-        id_pick="D";
-        ms_to_remove = 100;
-	}
-	else if(new_id == "d"){
-		weight = 20;
-		max_tension = 100;
-		rigid = false;
-		reach_floor = false;
-        id_pick="D";
-        ms_to_remove = 100;
-	}
-	else if(new_id == "r"){
-		weight = 10;
-		max_tension = 200;
-		rigid = false;
-		reach_floor = false;
-        id_pick="R";
-        ms_to_remove = 100;
-	}
-    else if(new_id == "C"){
-        weight = 20;
-        max_tension = 500;
-        rigid = false;
-        reach_floor = false;
-        id_pick="C";
-        ms_to_remove = 100;
-    }
-    else if(new_id == "c"){
-        weight = 20;
-        max_tension = 500;
-        rigid = false;
-        reach_floor = false;
-        id_pick="C";
-        ms_to_remove = 100;
-    }
-	else{
-		Reload("0");
-	}
+    else {
+        if (new_id == "D") {
+            weight = 20;
+            max_tension = 100;
+            rigid = false;
+            reach_floor = true;
+            id_pick = "D";
+            ms_to_remove = 100;
+        }
+        else if (new_id == "d") {
+            weight = 20;
+            max_tension = 100;
+            rigid = false;
+            reach_floor = false;
+            id_pick = "D";
+            ms_to_remove = 100;
+        }
+        else if (new_id == "r") {
+            weight = 10;
+            max_tension = 200;
+            rigid = false;
+            reach_floor = false;
+            id_pick = "R";
+            ms_to_remove = 100;
+        }
+        else if (new_id == "C") {
+            weight = 20;
+            max_tension = 500;
+            rigid = false;
+            reach_floor = false;
+            id_pick = "C";
+            ms_to_remove = 100;
+        }
+        else if (new_id == "c") {
+            weight = 20;
+            max_tension = 500;
+            rigid = false;
+            reach_floor = false;
+            id_pick = "C";
+            ms_to_remove = 100;
+        }
+        else {
+            Reload("0");
+        }
+        if(neighbors[8] != nullptr){
+            reach_floor = (neighbors[8]->reach_floor || (neighbors[5] != nullptr &&
+                                                         (neighbors[5]->reach_floor ||
+                                                          neighbors[5]->neighbors[8]->reach_floor)));
+            if(reach_floor) setReachFloorCascade();
+        }
 
+    }
+    id = new_id;
 	
 }
 bool Tile::drawable(){
@@ -389,5 +411,39 @@ float Tile::GetWidth() const
 	return size.x;
 }
 
+void Tile::debugTile(sf::RenderTarget &target,const std::string keyDebug, sf::Text &text, int chunk_id, sf::Vector2i posTile){
+    text.setPosition(position.x,position.y);
+    if(keyDebug == "id"){
+        if(layer==0){
+            int mapIdy = posTile.x;
+            int mapIdx = chunk_id*Chunk::N_TILES_X+posTile.y;
+            if(mapIdx%5==0 && mapIdy%5==0){
+                sf::String str(std::to_string(mapIdx));
+                sf::String str2(std::to_string(mapIdy));
+                text.setString(str+" "+str2);
+                target.draw(text);
+            }
+        }
 
+
+    }
+    else if(keyDebug == "reachFloor"){
+
+        sf::RectangleShape rectangle;
+        rectangle.setFillColor(sf::Color(255-reach_floor*255,reach_floor*255,0,255/3));
+
+        if(layer==1){
+            rectangle.setSize(sf::Vector2f(size.x/2, size.y/2));
+            rectangle.setPosition(position.x+size.x/4,position.y+size.y/4);
+        }
+        else{
+            rectangle.setSize(sf::Vector2f(size.x, size.y));
+            rectangle.setPosition(position.x,position.y);
+        }
+        target.draw(rectangle);
+    }
+
+
+
+}
 

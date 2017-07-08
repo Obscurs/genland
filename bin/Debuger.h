@@ -8,7 +8,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 #include "scene/Scene.h"
-
+#include "Resources.h"
 class Debuger {
 public:
     static void Init(sf::RenderWindow &window, Scene &scene);
@@ -16,11 +16,11 @@ public:
     static void Draw();
     static void InsertClockMark(std::string name);
     static const int DISPLACEMENT = 25;
+    static bool activated;
 private:
 
     static std::vector<sf::Time> _clockMarks;
     static std::vector<std::string> _clockNames;
-    static sf::Font _font;
     static sf::Text _text;
     static float _fpsTimer;
     static int _fpsCount;

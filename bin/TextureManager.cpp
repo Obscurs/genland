@@ -21,11 +21,7 @@ sf::Vector2u TextureManager::getSizeTex(){
 sf::Vector2i TextureManager::getPositionSprite(std::string key){
     return texture_map[key];
 }
-/*
-sf::Shader* TextureManager::getTileShader(){
-    return &tile_shader;
-}
-*/
+
 void TextureManager::generateSprite(std::string key, sf::Vector2f sprite_pos, sf::Sprite &s, sf::Vector2f size){
     sf::Vector2i tex_sprite_pos = texture_map[key];
     sf::IntRect r(tex_sprite_pos.x, tex_sprite_pos.y, size_sprite.x, size_sprite.y);

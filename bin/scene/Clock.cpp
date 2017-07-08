@@ -155,7 +155,6 @@ void Clock::Update(float delta){
                 _lightFactor = 0.9;
             }
             else _lightFactor = 0.4+0.5*_dayTimeFactor*2;
-            //_lightFactor = 0.4+0.5*_dayTimeFactor;
             break;
     }
 

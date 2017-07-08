@@ -7,7 +7,6 @@
 #include <fstream>
 #include <sstream>
 
-sf::Font Debuger::_font = sf::Font();
 sf::Text Debuger::_text;
 float Debuger::_fpsTimer;
 int Debuger::_fpsCount;
@@ -17,6 +16,7 @@ sf::Clock Debuger::_clock;
 sf::RenderWindow *Debuger::_window = NULL;
 Scene *Debuger::_scene = NULL;
 bool Debuger::_is_init = false;
+bool Debuger::activated = false;
 int Debuger::_displace = 0;
 std::vector<sf::Time> Debuger::_clockMarks;
 std::vector<std::string> Debuger::_clockNames;
@@ -30,10 +30,7 @@ void Debuger::Init(sf::RenderWindow &window, Scene &scene){
     _window = &window;
     _scene = &scene;
     _clock.restart();
-    if (!_font.loadFromFile("resources/font1.ttf"))
-    {
-        std::cout << "font error" << std::endl;
-    }
+    activated = false;
     InitFpsText();
 }
 void Debuger::Update(const sf::Time& deltatime){
@@ -135,7 +132,7 @@ void Debuger::InitFpsText() {
     sf::String str("no data");
     _text.setString(str);
 
-    _text.setFont(_font);
+    _text.setFont(*Resources::getFont("debugFont"));
 
     _fpsTimer  = 0;
     _fpsCount  = 0;

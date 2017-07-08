@@ -13,11 +13,10 @@ public:
 	const static int N_TILES_X = 100;
 	const static int N_TILES_Y = 200;
 	const static int N_TILES_Z = 2;
-	sf::Vector2i chunk_pos;
+	int chunk_id;
 
 	Tile* getTile(float x, float y, int z);
     Tile* getTileByIndex(int x, int y, int z);
-    void DrawChunk(sf::Vector2f pos1, sf::Vector2f pos2, sf::VertexArray &vertexArray, sf::VertexArray &skyArray);
 
 	sf::Vector2i getTileIndex(float x, float y);
 	void setTileNeighbors(int index_x, int index_y);
@@ -27,11 +26,12 @@ public:
 	void recalcReachFloor();
 	void prepareArrays();
 	void update(float delta);
+    void debugDraw(sf::RenderTarget &target, const std::string keyDebug,sf::Text &text);
 	bool is_dirty;
 	sf::VertexArray render_array;
 	sf::VertexArray sky_array;
 private:
-
+	float getChunkPos();
 	void DrawGrassTiles();
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];
     std::vector<Tile*> grass_tiles;

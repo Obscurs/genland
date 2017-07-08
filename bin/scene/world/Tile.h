@@ -34,11 +34,13 @@ public:
 	Tile* neighbors[9] = {nullptr};
 	bool drawable();
 	void appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex, int rotation);
-
+	void debugTile(sf::RenderTarget &target,const std::string keyDebug, sf::Text &text, int chunk_id, sf::Vector2i posTile);
 	
 
 private:
 	TextureManager *texMan;
+	void setReachFloorCascade();
+	void removeReachFloorCascade();
     void DrawFadeOut(sf::VertexArray &vertexArray);
     void DrawIns(sf::VertexArray &vertexArray);
     void DrawAmbientOclusion(sf::VertexArray &vertexArray);

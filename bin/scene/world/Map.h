@@ -38,6 +38,7 @@ public:
     void removeTile2(Tile* r_tile);
 	void UpdateAll(float delta, sf::Vector2f player_pos);
 	void checkLoadedChunks(float x, float y);
+	void setReachFloorCascade2(Tile* t_first);
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
 private:
 	TextureManager *texMan;

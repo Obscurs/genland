@@ -155,7 +155,10 @@ void Game::GameLoop()
     float delta = deltatime.asSeconds();
     Inputs::Update();
     Events();
-    if(Inputs::KeyBreak(Inputs::TAB)) _debuger = !_debuger;
+    if(Inputs::KeyBreak(Inputs::TAB)) {
+        Debuger::activated = !Debuger::activated;
+        _debuger = !_debuger;
+    }
     switch(_gameState)
     {
         case Game::Playing:

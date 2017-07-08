@@ -487,7 +487,7 @@ void Map::removeTile2(Tile* removed_tile){
     //bool removed_reach_sun=removed_tile->reach_sun;
     //if(removed_tile->layer==0) removed_reach_sun = true;
     Tile* otherLayerRemovedTile= removed_tile->neighbors[8];
-    if(!otherLayerRemovedTile->reach_floor) removeReachFloorCascade2(removed_tile->neighbors[1]);
+    //if(!otherLayerRemovedTile->reach_floor) removeReachFloorCascade2(removed_tile->neighbors[1]);
     removed_tile->Reload("0");
     //if(removed_reach_sun) removed_tile->reach_sun = true;
     Tile* removed_tile0;
@@ -508,21 +508,12 @@ void Map::removeTile2(Tile* removed_tile){
     }
 }
 
-void Map::removeReachFloorCascade2(Tile* t_first){
-    if(t_first == nullptr || (t_first->neighbors[8]->id=="0" && t_first->id=="0") || t_first->neighbors[8]->rigid || t_first->rigid) return;
-    else {
-        Tile* tB = t_first->neighbors[8];
-        t_first->reach_floor = false;
-        tB->reach_floor = false;
-        removeReachFloorCascade2(t_first->neighbors[1]);
-    }
-}
 
 Tile* Map::getTile(float x, float y, int z){
 	if(y<0) y = 0;
 	int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
 	int chunk_x = (x-size_chunk_x*posMap)/size_chunk_x;
-
+    //std::cout << chunk_x << std::endl;
 	Chunk* c = chunk_mat[chunk_x];
 
 	return c->getTile(x, y, z);
@@ -538,7 +529,7 @@ int Map::getChunkIndex(float x){
 int Map::getIndexMatChunk(int x){
     int final_x = -1;
     for(int i = 0 ; i<N_CHUNKS_X ; ++i){
-        int pos_x = chunk_mat[i]->chunk_pos.x;
+        int pos_x = chunk_mat[i]->chunk_id;
         if(pos_x == x){
             final_x = i;
         }
@@ -564,7 +555,7 @@ void Map::checkLoadedChunks(float x, float y){
             {
 
                 c2->saveToFile(save_path);
-                int current_pos = c1->chunk_pos.x;
+                int current_pos = c1->chunk_id;
                 int id_temp = 0;
                 Chunk *chunk_mid = chunk_mat[1];
 
@@ -587,7 +578,7 @@ void Map::checkLoadedChunks(float x, float y){
             {
 
                 c1->saveToFile(save_path);
-                int current_pos = c2->chunk_pos.x;
+                int current_pos = c2->chunk_id;
                 int id_temp = 0;
                 Chunk *chunk_mid = chunk_mat[1];
 
@@ -608,36 +599,21 @@ void Map::checkLoadedChunks(float x, float y){
 }
 
 std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
+
     std::vector<Tile*> result;
-    float num_ite_x = size.x/Settings::TILE_SIZE;
-    float num_ite_y = size.y/Settings::TILE_SIZE;
-    for(int j = 0; j <= num_ite_y; ++j){
-            for(int i = 0; i <=num_ite_x; i++){
-                Tile* t = getTile(pos.x+i*Settings::TILE_SIZE, pos.y+j*Settings::TILE_SIZE, 1);
-                if(t->id !="0") {
 
-                    bool trobat = false;
-                    for(int k = 0; k < result.size(); k++){
-                        if(result[k]==t) trobat = true;
-                    }
-                    if(!trobat)result.push_back(t);
-                }
+    Tile* firstT = getTile(pos.x, pos.y, 1);
+    Tile* lastT = getTile(pos.x+size.x, pos.y+size.y, 1);
+    sf::Vector2i firstPos = sf::Vector2i(firstT->GetPosition().x/Settings::TILE_SIZE,firstT->GetPosition().y/Settings::TILE_SIZE);
+    sf::Vector2i lastPos = sf::Vector2i(lastT->GetPosition().x/Settings::TILE_SIZE,lastT->GetPosition().y/Settings::TILE_SIZE);
+    for(int i = firstPos.x; i<=lastPos.x; i++){
+        for(int j = firstPos.y; j<=lastPos.y; j++){
+            Tile* t = getTile(i*Settings::TILE_SIZE, j*Settings::TILE_SIZE, 1);
+            if(t->id !="0") {
+                result.push_back(t);
             }
+        }
     }
-
-
-    //DEBUG
-    /*
-    for(int i= 0; i<result.size(); i++){
-        sf::Vector2f pos = result[i]->GetPosition();
-        int aux_id = result[i]->id_temp;
-        //std::cout << "pos x " << pos.x << " pos y " << pos.y << std::endl;
-        std::cout << aux_id << " ";
-
-    }
-
-    std::cout << std::endl;
-    */
 
     return result;
 }

@@ -305,19 +305,11 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
 {
 	inventory->Update(window);
     sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-	//position.x = pow(position.x, 1/zoom);
-    //position.y = pow(position.y, 1/zoom);
+
     sf::Vector2f position_center = sf::Vector2f(GetPosition().x+GetWidth()/2,GetPosition().y+GetWidth()/2);
     sf::Vector2f position_zoomed = (position-position_center)/zoom +position_center;
-    //sf::Vector2f diff_with_center = sf::Vector2f(position_zoomed.x-GetPosition().x+GetWidth()/2,position_zoomed.y-GetPosition().y+GetWidth()/2);
-    //position = position_zoomed+diff_with_center;
     position = position_zoomed;
-	//sf::View currentView = window.getView();
-	//sf::Vector2f centerView = currentView.getCenter();
-	//sf::Vector2f sizeView = currentView.getSize();
 
-	//position.x += centerView.x-sizeView.x/2;
-	//position.y += centerView.y-sizeView.y/2;
 
 	if (Inputs::KeyDown(Inputs::A)){
 		vx = -300;
@@ -482,10 +474,6 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
 								t->Reload(inventory->getItemAtTab()->id_set1);
 							}
 							map.dirtyChunks();
-							//t->Reload(inventory->getIdItemAtTab());
-							t->reach_floor = (t->neighbors[8]->reach_floor || (t->neighbors[5] != nullptr &&
-																			   (t->neighbors[5]->reach_floor ||
-																				t->neighbors[5]->neighbors[8]->reach_floor)));
 							inventory->decrementItemAtTab();
 						}
 					}

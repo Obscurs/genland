@@ -20,6 +20,7 @@ public:
     ~Drawer();
 
     void Draw(sf::RenderWindow &window, float zoom);
+    void debugMap(const std::string keyDebug);
     TextureManager& getTextureManager();
     sf::Shader& getTileShader();
 private:
@@ -27,7 +28,6 @@ private:
     Player *player;
     Clock *clock;
     WorldBackground *backgrounds;
-    //sf::RenderWindow window; //TO DO
 
     TextureManager texMan;
 

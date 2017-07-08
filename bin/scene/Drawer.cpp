@@ -5,6 +5,8 @@
 #include "Drawer.h"
 #include "../Game.h"
 #include "../Settings.h"
+#include "../Resources.h"
+#include "../Debuger.h"
 
 Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c)
         : texMan("resources/tiles2.png", 16, 16)
@@ -185,29 +187,32 @@ void Drawer::DrawLights(){
     }
 
 }
-
+void Drawer::debugMap(const std::string keyDebug){
+    sf::Text text;
+    text.setFont(*Resources::getFont("debugFont"));
+    text.setCharacterSize(12);
+    text.setColor(sf::Color::Red);
+    for(int i = 0 ; i<Map::N_CHUNKS_X ; i = i +1) {
+        map_curr->chunk_mat[i]->debugDraw(*texture_back, keyDebug,text);
+        //texture_back->draw(map_curr->chunk_mat[index_mat]->render_array, states);
+    }
+}
 void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
 {
-    //sf::Clock clock1;
-    //clock1.restart().asSeconds();
 
-
-    //sf::Time elapsed1 =clock1.getElapsedTime();
-    //sf::Time elapsed2 =clock1.getElapsedTime();
     DrawSceneTex();
     DrawBackground();
-    //sf::Time elapsed3 =clock1.getElapsedTime();
     DrawLights();
+    if(Debuger::activated) debugMap("linesChunks");
+    //debugMap("id");
+    if(Debuger::activated) debugMap("reachFloor");
 
-    //sf::Time elapsed4 =clock1.getElapsedTime();
     texture_back->display();
     player->Draw2(*texture_back);
     sf::Sprite sprite(texture_back->getTexture());
-    //sprite = map_without_lights;
 
     sf::Vector2f pos_sprite = GetPosSprite();
     sprite.setPosition(pos_sprite);
-    sf::Vector2f oldOrgin = sprite.getOrigin();
     sprite.setOrigin(sprite.getTexture()->getSize().x/(2),sprite.getTexture()->getSize().y/(2));
 
     sprite.setScale(sf::Vector2f(zoom,zoom));
@@ -217,24 +222,10 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
     sf::RenderStates states;
     states.texture = &texture_back->getTexture();
     states.shader = &mix_back_terr_shader;
-    //sf::Time elapsed5 =clock1.getElapsedTime();
     renderWindow.draw(sprite, states);
-    //sf::Time elapsed6 =clock1.getElapsedTime();
-    //float time1 = elapsed1.asSeconds();
-    //float time2 = elapsed2.asSeconds()-elapsed1.asSeconds();
-    //float time3 = elapsed3.asSeconds()-elapsed2.asSeconds();
-    //float time4 = elapsed4.asSeconds()-elapsed3.asSeconds();
-    //float time5 = elapsed5.asSeconds()-elapsed4.asSeconds();
-    //float time6 = elapsed6.asSeconds()-elapsed5.asSeconds();
-    //std::cout <<"create map without lights: " << time3/elapsed6.asSeconds()*100  << "%   draw lights: " << time4/elapsed6.asSeconds()*100 << "%   player: " << time5/elapsed6.asSeconds()*100 << "%   draw window: " << time6/elapsed6.asSeconds()*100 << "%"<< std::endl;
-
 }
 
 void Drawer::Draw(sf::RenderWindow &window, float zoom){
-    //sf::Clock clock1;
-    //clock1.restart().asSeconds();
-
-
     view_player.setCenter(player->GetPosition().x+player->GetWidth()/2, player->GetPosition().y+player->GetHeight()/2);
 
     texture_back->setView(view_player);

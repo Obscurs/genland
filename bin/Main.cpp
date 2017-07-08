@@ -13,6 +13,7 @@
 #include <cassert>
 #include "Game.h"
 #include "Settings.h"
+#include "Resources.h"
 
 
 sf::Clock deltaClock;
@@ -24,6 +25,7 @@ int Settings::GAME_WIDTH = 0;
 int Settings::GAME_HEIGHT = 0;
 int main(int argc, char** argv)
 {
+    Resources::load();
     bool true_exit = false;
     while(!true_exit) {
         std::ifstream myfile("config/config");
