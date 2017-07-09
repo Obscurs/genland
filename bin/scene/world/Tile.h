@@ -24,6 +24,7 @@ public:
 	bool reach_floor;
 	int layer;
 	int max_tension;
+    float last_tension_debug;
 	int weight;
 	float ms_to_remove;
 	float ms_to_be_removed;

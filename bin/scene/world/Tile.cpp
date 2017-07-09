@@ -21,6 +21,7 @@ Tile::Tile(int id_t, int l, TextureManager &t){
     id_temp = id_t;
     layer = l;
     being_removed = false;
+    last_tension_debug =0;
 }
 
 
@@ -43,7 +44,7 @@ void Tile::removeReachFloorCascade(){
 }
 void Tile::Reload(std::string new_id)
 {
-
+    last_tension_debug =0;
 	if(new_id == "0"){
 		weight = 0;
 		max_tension = 0;
@@ -441,6 +442,17 @@ void Tile::debugTile(sf::RenderTarget &target,const std::string keyDebug, sf::Te
             rectangle.setPosition(position.x,position.y);
         }
         target.draw(rectangle);
+    } else if(keyDebug == "tension"){
+        if(layer==0){
+            float factor = (last_tension_debug+neighbors[8]->last_tension_debug)/2;
+
+            sf::RectangleShape rectangle;
+            rectangle.setFillColor(sf::Color(factor*255,255-factor*255,0,255/3));
+            rectangle.setSize(sf::Vector2f(size.x, size.y));
+            rectangle.setPosition(position.x,position.y);
+            target.draw(rectangle);
+        }
+
     }
 
 

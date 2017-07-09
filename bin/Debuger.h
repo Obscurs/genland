@@ -17,6 +17,9 @@ public:
     static void InsertClockMark(std::string name);
     static const int DISPLACEMENT = 25;
     static bool activated;
+    static std::string metric1;
+    static std::string metric2;
+    static std::string metric3;
 private:
 
     static std::vector<sf::Time> _clockMarks;

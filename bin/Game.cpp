@@ -159,6 +159,24 @@ void Game::GameLoop()
         Debuger::activated = !Debuger::activated;
         _debuger = !_debuger;
     }
+    if(Debuger::activated){
+        if(Inputs::KeyBreak(Inputs::F1)) {
+            if(Debuger::metric1!="linesChunks")Debuger::metric1 = "linesChunks";
+            else Debuger::metric1="none";
+        }
+        if(Inputs::KeyBreak(Inputs::F2)) {
+            if(Debuger::metric2!="tension")Debuger::metric2 = "tension";
+            else Debuger::metric2="none";
+        }
+        if(Inputs::KeyBreak(Inputs::F3)) {
+            if(Debuger::metric2!="reachFloor")Debuger::metric2 = "reachFloor";
+            else Debuger::metric2="none";
+        }
+        if(Inputs::KeyBreak(Inputs::F4)) {
+            if(Debuger::metric3!="id")Debuger::metric3 = "id";
+            else Debuger::metric3="none";
+        }
+    }
     switch(_gameState)
     {
         case Game::Playing:

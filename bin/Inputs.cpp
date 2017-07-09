@@ -41,7 +41,11 @@ const sf::Keyboard::Key Inputs::_keyMap[NUM_KEYS] = {
         sf::Keyboard::Num7,
         sf::Keyboard::Num8,
         sf::Keyboard::Num9,
-        sf::Keyboard::Escape
+        sf::Keyboard::Escape,
+        sf::Keyboard::F1,
+        sf::Keyboard::F2,
+        sf::Keyboard::F3,
+        sf::Keyboard::F4
 
 };
 const sf::Mouse::Button Inputs::_mouseMap[NUM_BUTTONS] = {

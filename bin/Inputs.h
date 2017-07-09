@@ -37,6 +37,10 @@ public:
         N8,
         N9,
         ESC,
+		F1,
+		F2,
+		F3,
+		F4,
 		NUM_KEYS
 	};
     enum Button {

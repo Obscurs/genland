@@ -13,6 +13,7 @@
 #include "Map.h"
 #include "../../Game.h"
 #include "../../Settings.h"
+#include "../../Debuger.h"
 
 
 //#include "Game.h"
@@ -156,6 +157,8 @@ sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f
 void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
     if(initialized){
         std::cout << "calculating removed tile " << first_tile->id_temp << std::endl;
+        bool debug = Debuger::activated;
+        std::vector<Tile *> tilesWallDebug;
         int max_left = 0;
         int max_right = 0;
         int max_up = 0;
@@ -224,6 +227,62 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                 else if (turn == 2 && total_tension_no_rigid_top < total_tension_no_rigid_right &&
                          !queue_bfs_next_right.empty())
                     turn = 1;
+                ////////////////////////////////////////////////////////////////
+                //////////////////////////DEBUG/////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+                std::vector<Tile *> tilesLimitsDebug;
+                if(debug){
+                    std::queue<sf::Vector2i> queueAux;
+
+                    while (!queue_bfs_next_left.empty()) {
+                        queueAux.push(queue_bfs_next_left.front());
+                        queue_bfs_next_left.pop();
+                        sf::Vector2i u = queueAux.front();
+                        Tile *tileEval0 = getTile(first_tile_global_position.x + u.x * Settings::TILE_SIZE,
+                                                 first_tile_global_position.y + u.y * Settings::TILE_SIZE, 0);
+                        Tile *tileEval1 = tileEval0->neighbors[8];
+                        if(tileEval0->id !="0") tilesLimitsDebug.push_back(tileEval0);
+                        if(tileEval1->id !="0") tilesLimitsDebug.push_back(tileEval1);
+                    }
+                    while (!queueAux.empty()) {
+                        queue_bfs_next_left.push(queueAux.front());
+                        queueAux.pop();
+                    }
+
+                    while (!queue_bfs_next_right.empty()) {
+                        queueAux.push(queue_bfs_next_right.front());
+                        queue_bfs_next_right.pop();
+                        sf::Vector2i u = queueAux.front();
+                        Tile *tileEval0 = getTile(first_tile_global_position.x + u.x * Settings::TILE_SIZE,
+                                                  first_tile_global_position.y + u.y * Settings::TILE_SIZE, 0);
+                        Tile *tileEval1 = tileEval0->neighbors[8];
+                        if(tileEval0->id !="0") tilesLimitsDebug.push_back(tileEval0);
+                        if(tileEval1->id !="0") tilesLimitsDebug.push_back(tileEval1);
+                    }
+                    while (!queueAux.empty()) {
+                        queue_bfs_next_right.push(queueAux.front());
+                        queueAux.pop();
+                    }
+
+                    while (!queue_bfs_next_top.empty()) {
+                        queueAux.push(queue_bfs_next_top.front());
+                        queue_bfs_next_top.pop();
+                        sf::Vector2i u = queueAux.front();
+                        Tile *tileEval0 = getTile(first_tile_global_position.x + u.x * Settings::TILE_SIZE,
+                                                  first_tile_global_position.y + u.y * Settings::TILE_SIZE, 0);
+                        Tile *tileEval1 = tileEval0->neighbors[8];
+                        if(tileEval0->id !="0") tilesLimitsDebug.push_back(tileEval0);
+                        if(tileEval1->id !="0") tilesLimitsDebug.push_back(tileEval1);
+                    }
+                    while (!queueAux.empty()) {
+                        queue_bfs_next_top.push(queueAux.front());
+                        queueAux.pop();
+                    }
+                }
+
+                ////////////////////////////////////////////////////////////////
+                //////////////////////////ENDEBUG///////////////////////////////
+                ////////////////////////////////////////////////////////////////
                 if (turn == 0) {    //si es el turn de l'esquerra
                     while (!queue_bfs_next_left.empty()) {
                         queue_bfs.push(queue_bfs_next_left.front());
@@ -270,7 +329,6 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                     if (tile_actual_global_position.x < min_pos.x) min_pos.x = tile_actual_global_position.x;
                     if (tile_actual_global_position.y < min_pos.y) min_pos.y = tile_actual_global_position.y;
                     if (tile_actual0->id != "0") {
-
                         total_weight += tile_actual0->weight; //sumem el pes
                         queue_final_tiles.push(tile_actual0); //fem push a laltre queue (interior)
                         //std::cout << "sumem pes back" << tile_actual0->id_temp << std::endl;
@@ -278,7 +336,6 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                     if (tile_actual1->id != "0") {
                         total_weight += tile_actual1->weight; //sumem el pes
                         //std::cout << "sumem pes front " << tile_actual1->id_temp << std::endl;
-
                     }
 
 
@@ -304,7 +361,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                             bool visitat = false;
                             sf::Vector2i coord_respect = getCordinatesRespectTile(first_tile_global_position,
                                                                                   tile_adj0->GetPosition());
-
+                            //Mirem si la tile ja estaba visitada
                             if (coord_respect.x >= 0) {
                                 int j = 0;
                                 while (j < visitats_dreta[coord_respect.x].size() && !visitat) {
@@ -326,15 +383,6 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                                 //afageix a visitats
                                 if (coord_respect.x >= 0) visitats_dreta[coord_respect.x].push_back(coord_respect.y);
                                 else visitats_esquerra[coord_respect.x * (-1) - 1].push_back(coord_respect.y);
-                                //mirem si ex conex amb la dreta o esquerra del inici
-                                /*
-                                if (coord_respect.x <= 2 && coord_respect.x >= -2 && coord_respect.y <= 2 &&
-                                    coord_respect.y >= -2) {
-                                    if (!(conected_bfs.find(tile_adj0) == conected_bfs.end())) {
-                                        conected_bfs[tile_actual0] = true;
-                                    }
-                                }
-                                */
 
                                 //calculem la tensio
                                 int t0 = std::min(tile_actual0->max_tension, tile_adj0->max_tension);
@@ -351,7 +399,16 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                                     else if (coord_respect.x < 0) {
                                         wall_left = true;
                                     }
-
+                                    //////////////////////////////////////////
+                                    /////////////////DEBUG////////////////////
+                                    //////////////////////////////////////////
+                                    if(debug){
+                                        if(tile_actual0->id != "0") tilesWallDebug.push_back(tile_actual0);
+                                        if(tile_actual1->id != "0") tilesWallDebug.push_back(tile_actual1);
+                                    }
+                                    ///////////////////////////////////////////
+                                    /////////////////ENDEBUG///////////////////
+                                    ///////////////////////////////////////////
                                 }
 
                                 else {
@@ -391,9 +448,26 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                           << total_tension_no_rigid_right << " " << total_tension_no_rigid_top << " si "
                           << total_tension_rigid << " left/right/top " << max_left << " " << max_right << " " << max_up
                           << std::endl;
-                if (total_weight >
-                    pow((total_tension_no_rigid_left + total_tension_no_rigid_right + total_tension_no_rigid_top +
-                         total_tension_rigid), 1.1)) {
+                double total_tension =pow((total_tension_no_rigid_left + total_tension_no_rigid_right + total_tension_no_rigid_top +
+                                        total_tension_rigid), 1.1);
+                //////////////////////////////////////////
+                /////////////DEBUG////////////////////////
+                //////////////////////////////////////////
+                if(tilesWallDebug.size() + tilesLimitsDebug.size() > 0){
+                    float weight_per_limit_tile = total_weight/(tilesWallDebug.size() + tilesLimitsDebug.size());
+                    float tension_per_limit_tile = total_tension/(tilesWallDebug.size() + tilesLimitsDebug.size());
+                    for(int i = 0; i< tilesLimitsDebug.size(); i++){
+                        tilesLimitsDebug[i]->last_tension_debug=std::min(weight_per_limit_tile/tension_per_limit_tile,tension_per_limit_tile);
+                    }
+                    for(int i = 0; i< tilesWallDebug.size(); i++){
+                        tilesWallDebug[i]->last_tension_debug=std::min(weight_per_limit_tile/tension_per_limit_tile,tension_per_limit_tile);
+                    }
+                }
+
+                //////////////////////////////////////////
+                /////////////ENDEBUG//////////////////////
+                //////////////////////////////////////////
+                if (total_weight >total_tension) {
                     limit_tension_reached = true;
                     std::queue<Tile *> border_tiles;
                     while (!queue_bfs_next_right.empty()) {

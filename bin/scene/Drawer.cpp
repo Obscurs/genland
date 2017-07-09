@@ -111,7 +111,7 @@ void Drawer::DrawSceneTex(){
         texture_scene.draw(map_curr->chunk_mat[index_mat]->render_array, states);
     }
     for(int i = 0; i<map_curr->falling_tiles.size(); i++){
-        //map_curr->falling_tiles[i]->Draw(renderWindow, texMan);
+        map_curr->falling_tiles[i]->Draw(texture_scene, texMan);
     }
     texture_scene.display();
 }
@@ -194,7 +194,6 @@ void Drawer::debugMap(const std::string keyDebug){
     text.setColor(sf::Color::Red);
     for(int i = 0 ; i<Map::N_CHUNKS_X ; i = i +1) {
         map_curr->chunk_mat[i]->debugDraw(*texture_back, keyDebug,text);
-        //texture_back->draw(map_curr->chunk_mat[index_mat]->render_array, states);
     }
 }
 void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
@@ -203,9 +202,9 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
     DrawSceneTex();
     DrawBackground();
     DrawLights();
-    if(Debuger::activated) debugMap("linesChunks");
-    //debugMap("id");
-    if(Debuger::activated) debugMap("reachFloor");
+    if(Debuger::activated && Debuger::metric1 !="none") debugMap(Debuger::metric1);
+    if(Debuger::activated && Debuger::metric2 !="none") debugMap(Debuger::metric2);
+    if(Debuger::activated && Debuger::metric3 !="none") debugMap(Debuger::metric3);
 
     texture_back->display();
     player->Draw2(*texture_back);

@@ -90,7 +90,7 @@ void AnimatedTile::Reload(std::string new_id)
 	
 }
 
-void AnimatedTile::Draw(sf::RenderWindow & renderWindow, TextureManager &t)
+void AnimatedTile::Draw(sf::RenderTarget & renderWindow, TextureManager &t)
 {
     if(deleted==0){
         sf::Sprite s;
