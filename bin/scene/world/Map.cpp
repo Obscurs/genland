@@ -20,7 +20,9 @@
 
 
 
-Map::Map(){
+Map::Map():
+        _mapViewer()
+{
     initialized = false;
 }
 void Map::init(int pos, std::string path, std::string s, TextureManager& t)
@@ -130,6 +132,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
             chunk_mat[2]->calcLateralNeighborsTiles(0);
             //chunk_mat[2]->recalcReachSun();
         }
+        _mapViewer.addChunk(*chunk_mat[map_index]);
     } else std::cout << "canot create map, map not initialized" << std::endl;
 }
 
@@ -140,7 +143,9 @@ inline bool Map::exists_file (const std::string& name) {
     struct stat buffer;
     return (stat (name.c_str(), &buffer) == 0);
 }
-
+void Map::drawViewMap(sf::RenderTarget &render){
+    _mapViewer.draw(render);
+}
 sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal){
 	//std::cout << "pos_origen_x " << pos_origen.x << " pos_origen_y " << pos_origen.y << std::endl;
 	//std::cout << "pos_goal_x " << pos_goal.x << " pos_goal_y " << pos_goal.y << std::endl;
@@ -697,6 +702,14 @@ void Map::UpdateAll(float delta, sf::Vector2f player_pos)
 {
     if(initialized){
         //BACKGROUNDS
+        int x = player_pos.x;
+        int y = std::max((int)player_pos.y, 0);
+        int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
+        int chunk_player = (x-size_chunk_x*posMap)/size_chunk_x;
+        int idChunk = chunk_mat[chunk_player]->chunk_id;
+
+        sf::Vector2i tile = chunk_mat[chunk_player]->getTileIndex(x, y);
+        _mapViewer.update(chunk_mat[chunk_player]->chunk_id, tile);
         for(int i = 0; i<N_CHUNKS_X; i++){
             chunk_mat[i]->update(delta);
         }

@@ -41,6 +41,7 @@ public:
 		F2,
 		F3,
 		F4,
+		M,
 		NUM_KEYS
 	};
     enum Button {

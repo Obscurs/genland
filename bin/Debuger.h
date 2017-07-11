@@ -20,6 +20,7 @@ public:
     static std::string metric1;
     static std::string metric2;
     static std::string metric3;
+
 private:
 
     static std::vector<sf::Time> _clockMarks;

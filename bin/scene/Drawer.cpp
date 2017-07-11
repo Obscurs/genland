@@ -235,4 +235,6 @@ void Drawer::Draw(sf::RenderWindow &window, float zoom){
     black_texture.setView(view_player);
     DrawMap(window, zoom);
     player->DrawInventory(window);
+    map_curr->drawViewMap(window);
+
 }

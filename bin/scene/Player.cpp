@@ -312,10 +312,10 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
 
 
 	if (Inputs::KeyDown(Inputs::A)){
-		vx = -300;
+		vx = -PLAYER_SPEED_X;
 	}
 	else if (Inputs::KeyDown(Inputs::D)){
-		vx = 300;
+		vx = PLAYER_SPEED_X;
 	} 
 	else {
 		vx = 0;
@@ -323,12 +323,12 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
 	if(col_bottom==0){
 		vy = (float)9.8*delta*100 + vy;
 		if (Inputs::KeyDown(Inputs::SPACE)){
-			vy = -200;
+			vy = -PLAYER_SPEED_Y;
 		}
 	}
 	else{
 		if (Inputs::KeyDown(Inputs::SPACE)){
-			vy = -200;
+			vy = -PLAYER_SPEED_Y;
 		}
 		else{
 			vy = 0;

@@ -11,7 +11,7 @@ public:
 
 
 	const static int N_TILES_X = 100;
-	const static int N_TILES_Y = 200;
+	const static int N_TILES_Y = 300;
 	const static int N_TILES_Z = 2;
 	int chunk_id;
 
