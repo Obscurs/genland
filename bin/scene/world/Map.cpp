@@ -97,10 +97,11 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
 
             std::ofstream myfile;
             myfile.open(filename);
-            generator.seed(std::stoi(seed));
+
+
 
             sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, &generator, myfile, *texMan);
+            Chunk *c = new Chunk(chunk_pos, &generator,std::stoi(seed), myfile, *texMan);
             chunk_mat[map_index] = c;
 
             myfile.close();

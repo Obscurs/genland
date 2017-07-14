@@ -5,7 +5,7 @@
 class Chunk
 {
 public:	
-	Chunk(sf::Vector2i pos, std::mt19937 *generator, std::ofstream &myfile, TextureManager& texMan);
+	Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &myfile, TextureManager& texMan);
     Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, TextureManager& texMan);
 	~Chunk();
 
