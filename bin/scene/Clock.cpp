@@ -6,7 +6,7 @@
 #include <iostream>
 Clock::Clock(){
     day=0;
-    hour=0;
+    hour=7;
     min=15;
     _season = WINTER;
     _dayTime = MORNING;
@@ -182,5 +182,5 @@ void Clock::Update(float delta){
             _globalHumidity = 0;
             break;
     }
-    _globalTemperature += (_lightFactor*14)-7;
+    _globalTemperature += ((1-_lightFactor*14))-7;
 }

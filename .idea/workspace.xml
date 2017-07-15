@@ -13,9 +13,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f465ec9c-b195-4793-b1a1-68ed08476bd4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Background.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Background.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/MapView.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/MapView.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Debuger.cpp" afterPath="$PROJECT_DIR$/bin/Debuger.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Clock.cpp" afterPath="$PROJECT_DIR$/bin/scene/Clock.cpp" />
     </list>
     <ignored path="genland.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -75,11 +74,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Background.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Background.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/scene/world/Background.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="37" column="77" selection-start-line="37" selection-start-column="77" selection-end-line="37" selection-end-column="77" />
+            <state relative-caret-position="378">
+              <caret line="23" column="28" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Clock.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/Clock.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -95,11 +104,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Debuger.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Debuger.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bin/Debuger.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2034">
-              <caret line="113" column="202" selection-start-line="113" selection-start-column="202" selection-end-line="113" selection-end-column="202" />
+            <state relative-caret-position="385">
+              <caret line="131" column="25" selection-start-line="131" selection-start-column="25" selection-end-line="131" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -171,11 +180,11 @@
         <option value="$PROJECT_DIR$/bin/Settings.h" />
         <option value="$PROJECT_DIR$/bin/scene/Clock.h" />
         <option value="$PROJECT_DIR$/bin/scene/Player.cpp" />
-        <option value="$PROJECT_DIR$/bin/Debuger.cpp" />
-        <option value="$PROJECT_DIR$/bin/scene/Clock.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/MapView.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Background.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Clock.cpp" />
+        <option value="$PROJECT_DIR$/bin/Debuger.cpp" />
       </list>
     </option>
   </component>
@@ -619,12 +628,12 @@
       <workItem from="1500063675557" duration="3117000" />
       <workItem from="1500119284481" duration="14273000" />
       <workItem from="1500156634766" duration="48000" />
-      <workItem from="1500149491042" duration="3245000" />
+      <workItem from="1500149491042" duration="4100000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="784696000" />
+    <option name="totallyTimeSpent" value="785551000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
@@ -981,6 +990,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="523">
           <caret line="42" column="26" selection-start-line="42" selection-start-column="26" selection-end-line="42" selection-end-column="26" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1002,21 +1012,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Debuger.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2034">
-          <caret line="113" column="202" selection-start-line="113" selection-start-column="202" selection-end-line="113" selection-end-column="202" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Clock.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/world/MapView.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="807">
@@ -1035,8 +1030,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/world/Background.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="37" column="77" selection-start-line="37" selection-start-column="77" selection-end-line="37" selection-end-column="77" />
+        <state relative-caret-position="378">
+          <caret line="23" column="28" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Clock.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Debuger.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="131" column="25" selection-start-line="131" selection-start-column="25" selection-end-line="131" selection-end-column="25" />
           <folding />
         </state>
       </provider>
