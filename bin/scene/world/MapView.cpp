@@ -182,9 +182,9 @@ void MapViewer::drawOnTexture(int size) {
 
 }
 sf::Color MapViewer::getColorByTileId(std::string s){
-    if(s == "D") return sf::Color(76,58,34,150);
-    else if(s == "d") return sf::Color(135,102,60,150);
-    else if(s == "C") return sf::Color(99,97,95,150);
-    else if(s == "c") return sf::Color(145,142,139,150);
+    if(s == "d") return sf::Color(76,58,34,150);
+    else if(s == "D") return sf::Color(135,102,60,150);
+    else if(s == "c") return sf::Color(99,97,95,150);
+    else if(s == "C") return sf::Color(145,142,139,150);
     else return sf::Color(255,255,255,255);
 }

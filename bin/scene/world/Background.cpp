@@ -35,7 +35,7 @@ void Background::Draw(sf::RenderTexture &texture1)
     float dist = x_view1-position.x;
     float first_x = (std::floor(dist/size.x))*size.x+position.x;
     for(int i = first_x; i<x_view2; i= i+size.x){
-        s.setPosition(sf::Vector2f(i, position.y-600*std::pow(distance,-1)));
+        s.setPosition(sf::Vector2f(i, position.y-600*std::pow(distance,-1)+150));
         texture1.draw(s);
     }
 

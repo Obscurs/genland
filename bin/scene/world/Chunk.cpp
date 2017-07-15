@@ -233,9 +233,15 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
     generator->seed(seed+6);
     Simplex2d* noise_humidity = new Simplex2d(generator, 25000.0f, 0.0f, 100.0f);
 
-    //generator->seed(seed+1);
-    //Simplex2d* simCueva = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
-    //Simplex2d* simStone = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
+
+
+    generator->seed(seed+7);
+    Simplex2d* noiseCave = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
+    generator->seed(seed+8);
+    Simplex2d* caveFactor_x = new Simplex2d(generator, 10000.0f, 0.5f, 1.5f);
+    Simplex2d* caveFactor_y = new Simplex2d(generator, 1000.0f, 0.5f, 1.5f);
+
+    Simplex2d* caveHeight = new Simplex2d(generator, 1000.0f, -0.05f, 0.05f);
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
             int y_pos = N_TILES_Y-1-i;
@@ -253,14 +259,19 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             float valMountains = mountains_factor*mountains_noise;
             float valTerrain = valMountains+valPlains;
 
+            float valCaveHeight = caveHeight->valSimplex2D(0, current_global_x);
+            float valTerrainCaves = valTerrain+valCaveHeight-0.04;
+            bool valHeightCaveMax = height_factor < valTerrainCaves;
             //float valFloor2 = sim2->valSimplex2D(0, current_global_x);
             ////float valReal1 = ((float) current_global_y/3000.0f > (valFloor+valFloor2)? 1 : 0);
 
-            float valHeightMax = (height_factor < (valTerrain)? 1 : 0);
+            bool valHeightMax = height_factor < valTerrain;
             float valNoiseStoneDirt = noise_stone_to_dirt->valSimplex2D(0, current_global_x)+noise_stone_to_dirt2->valSimplex2D(0, current_global_x);
             float valHeightStone = (height_factor < (valTerrain+valNoiseStoneDirt+-0.04*(1-(mountains_factor*1.6+(1-height_factor)/2)))? 1 : 0);
-            //float valCueva = simCueva->valSimplex2D(current_global_y, current_global_x)*2;
-
+            float valCave = noiseCave->valSimplex2D(current_global_y, current_global_x);
+            float valCaveFactorX = caveFactor_x->valSimplex2D(current_global_y, current_global_x);
+            float valCaveFactorY = caveFactor_y->valSimplex2D(current_global_y, current_global_x);
+            bool isCave = valCave>0.7*(valCaveFactorX+valCaveFactorY)/2 && valHeightCaveMax;
             //float valStone = simStone->valSimplex2D(current_global_y, current_global_x);
 
 
@@ -300,12 +311,17 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             }
 
             if(valHeightMax){
-                if(valHeightStone){
-                    t2->Reload("C");
+                if(isCave){
+                    t2->Reload("0");
+                } else{
+                    if(valHeightStone){
+                        t2->Reload("C");
+                    }
+                    else{
+                        t2->Reload("D");
+                    }
                 }
-                else{
-                    t2->Reload("D");
-                }
+
                 t2->reach_floor = true;
             } else{
                 t2->Reload("0");
