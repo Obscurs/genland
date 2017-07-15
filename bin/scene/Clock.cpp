@@ -18,6 +18,8 @@ Clock::Clock(){
     _seasonTimeIntervals[2] =250;
     _seasonTimeIntervals[3] =340;
     _seasonTimeIntervals[4] =360;
+    _globalHumidity = 0;
+    _globalTemperature = 0;
 }
 
 
@@ -157,8 +159,28 @@ void Clock::Update(float delta){
             else _lightFactor = 0.4+0.5*_dayTimeFactor*2;
             break;
     }
-
-
-
-
+    float seasonFactorAux = 1-std::abs((_seasonFactor-float(0.5))*2);
+    switch(_season){
+        case WINTER:
+            _globalTemperature = -20*seasonFactorAux;
+            _globalHumidity = 0*seasonFactorAux;
+            break;
+        case SPRING:
+            _globalTemperature = 0*seasonFactorAux;
+            _globalHumidity = 15*seasonFactorAux;
+            break;
+        case SUMMER:
+            _globalTemperature = 20*seasonFactorAux;
+            _globalHumidity = 0*seasonFactorAux;
+            break;
+        case AUTUMN:
+            _globalTemperature = 0*seasonFactorAux;
+            _globalHumidity = -5*seasonFactorAux;
+            break;
+        default:
+            _globalTemperature = 0;
+            _globalHumidity = 0;
+            break;
+    }
+    _globalTemperature += (_lightFactor*14)-7;
 }

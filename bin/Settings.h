@@ -26,4 +26,7 @@ static const int GAME_WIDTH_LOW = 432;
 static const int GAME_HEIGHT_HIGH = 864;
 static const int GAME_HEIGHT_MED = 384;
 static const int GAME_HEIGHT_LOW = 216;
+
+    static const int MAX_TEMPERATURE = 70;
+    static const int MIN_TEMPERATURE = -70;
 };

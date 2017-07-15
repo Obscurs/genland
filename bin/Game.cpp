@@ -173,6 +173,14 @@ void Game::GameLoop()
             else Debuger::metric2="none";
         }
         if(Inputs::KeyBreak(Inputs::F4)) {
+            if(Debuger::metric2!="humidity")Debuger::metric2 = "humidity";
+            else Debuger::metric2="none";
+        }
+        if(Inputs::KeyBreak(Inputs::F5)) {
+            if(Debuger::metric2!="temperature")Debuger::metric2 = "temperature";
+            else Debuger::metric2="none";
+        }
+        if(Inputs::KeyBreak(Inputs::F6)) {
             if(Debuger::metric3!="id")Debuger::metric3 = "id";
             else Debuger::metric3="none";
         }

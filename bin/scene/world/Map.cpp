@@ -89,7 +89,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
             myfile.open(filename);
             std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
             sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, myfile, id_temp, *texMan);
+            Chunk *c = new Chunk(chunk_pos, &generator,std::stoi(seed), myfile, *texMan);
             chunk_mat[map_index] = c;
             myfile.close();
         }
@@ -162,7 +162,7 @@ sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f
 
 void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
     if(initialized){
-        std::cout << "calculating removed tile " << first_tile->id_temp << std::endl;
+        std::cout << "calculating removed tile " << std::endl;
         bool debug = Debuger::activated;
         std::vector<Tile *> tilesWallDebug;
         int max_left = 0;

@@ -32,6 +32,9 @@ public:
     void update(sf::RenderWindow &window,float delta);
     void saveGame();
     void draw(sf::RenderWindow &window);
+    int getTemperature(sf::Vector2f pos);
+    int getHumidity(sf::Vector2f pos);
+    float getMountFactor(sf::Vector2f pos);
     float zoom;
 };
 

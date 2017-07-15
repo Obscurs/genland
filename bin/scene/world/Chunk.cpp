@@ -223,10 +223,15 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
     Simplex2d* noise_stone_to_dirt2 = new Simplex2d(generator, 500.0f, -0.02f, 0.02f);
 
 
-    generator->seed(seed+5);
+    generator->seed(seed+3);
     Simplex2d* mount_factor = new Simplex2d(generator, 10000.0f, -1.2f, 1.0f);
-    generator->seed(seed+6);
+    generator->seed(seed+4);
     Simplex2d* mountains = new Simplex2d(generator, 500.0f, 0.4f, 0.5f);
+
+    generator->seed(seed+5);
+    Simplex2d* base_noise_temperature = new Simplex2d(generator, 25000.0f, -10, 20);
+    generator->seed(seed+6);
+    Simplex2d* noise_humidity = new Simplex2d(generator, 25000.0f, 0.0f, 100.0f);
 
     //generator->seed(seed+1);
     //Simplex2d* simCueva = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
@@ -262,8 +267,18 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             //float valReala = ((float) current_global_y/3000.0f > valFloor? 1 : 0);
             //std::cout << valFloor << std::endl;
 
-            Tile* t = new Tile(0, 0,texM);
-            Tile* t2 = new Tile(0, 1, texM);
+            int valHumidity = int(noise_humidity->valSimplex2D(0, current_global_x));
+            float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
+            int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, current_global_x));
+
+            Tile* t = new Tile(0,texM);
+            Tile* t2 = new Tile(1, texM);
+            t->_humidity = valHumidity;
+            t2->_humidity = valHumidity;
+            t2->_temperature = valTemperature;
+            t->_temperature = valTemperature;
+            t->_mountain_factor = mountains_factor;
+            t2->_mountain_factor = mountains_factor;
             if(i==N_TILES_Y-1){
                 t->rigid=true;
                 t2->rigid=true;
@@ -295,7 +310,6 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             } else{
                 t2->Reload("0");
                 t2->reach_floor = false;
-
             }
 
 
@@ -409,7 +423,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
 	
 }
 
-Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, TextureManager& texM):
+Chunk::Chunk(sf::Vector2i pos,std::mt19937 *generator,int seed, std::ifstream &myfile, TextureManager& texM):
         render_array(sf::Quads , (uint)(4)),
         sky_array(sf::Quads , (uint)(4))
 {
@@ -419,12 +433,23 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, TextureManag
     typedef std::istreambuf_iterator<char> buf_iter;
     buf_iter k(myfile), e;
 
+
+    generator->seed(seed+3);
+    Simplex2d* mount_factor = new Simplex2d(generator, 10000.0f, -1.2f, 1.0f);
+    generator->seed(seed+5);
+    Simplex2d* base_noise_temperature = new Simplex2d(generator, 25000.0f, -10, 20);
+    generator->seed(seed+6);
+    Simplex2d* noise_humidity = new Simplex2d(generator, 25000.0f, 0.0f, 100.0f);
+
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
+            int y_pos = N_TILES_Y-1-i;
+            float current_global_x = chunk_id*N_TILES_X*Settings::TILE_SIZE_HIGH+j*Settings::TILE_SIZE_HIGH;
+            float current_global_y = y_pos*Settings::TILE_SIZE_HIGH;
+            float height_factor = float(y_pos)/float(N_TILES_Y);
 
-            Tile* t = new Tile(id_temp, 0, texM);
-            Tile* t2 = new Tile(id_temp, 1,texM);
-            id_temp++;
+            Tile* t = new Tile(0, texM);
+            Tile* t2 = new Tile(1,texM);
             char c1 = *k;
             ++k;
             char c2 = *k;
@@ -435,6 +460,19 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile, int &id_temp, TextureManag
             t2->Reload(std::string(1, c2));
             t->reach_floor = true;
             t2->reach_floor = true;
+
+
+            float mountains_factor = mount_factor->valSimplex2D(0, current_global_x);
+            mountains_factor = std::max(float(0.0), mountains_factor);
+            int valHumidity = int(noise_humidity->valSimplex2D(0, current_global_x));
+            float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
+            int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, current_global_x));
+            t->_humidity = valHumidity;
+            t2->_humidity = valHumidity;
+            t2->_temperature = valTemperature;
+            t->_temperature = valTemperature;
+            t->_mountain_factor = mountains_factor;
+            t2->_mountain_factor = mountains_factor;
             //if(t->id == "0") t->reach_sun=true;
 
 

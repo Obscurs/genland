@@ -16,12 +16,14 @@
 #include "../../Resources.h"
 
 
-Tile::Tile(int id_t, int l, TextureManager &t){
+Tile::Tile(int l, TextureManager &t){
     texMan = &t;
-    id_temp = id_t;
     layer = l;
     being_removed = false;
     last_tension_debug =0;
+    _temperature = 0;
+    _mountain_factor =0;
+    _humidity = 0;
 }
 
 
@@ -452,7 +454,26 @@ void Tile::debugTile(sf::RenderTarget &target,const std::string keyDebug, sf::Te
             rectangle.setPosition(position.x,position.y);
             target.draw(rectangle);
         }
+    }else if(keyDebug == "humidity"){
+        if(layer==0){
+            float factor = (float)_humidity/100;
 
+            sf::RectangleShape rectangle;
+            rectangle.setFillColor(sf::Color(factor*255,0,255-factor*255,255/3));
+            rectangle.setSize(sf::Vector2f(size.x, size.y));
+            rectangle.setPosition(position.x,position.y);
+            target.draw(rectangle);
+        }
+    }else if(keyDebug == "temperature"){
+        if(layer==0){
+            float factor = float(_temperature+Settings::MIN_TEMPERATURE)/float(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE);
+
+            sf::RectangleShape rectangle;
+            rectangle.setFillColor(sf::Color(factor*255,0,255-factor*255,255/3));
+            rectangle.setSize(sf::Vector2f(size.x, size.y));
+            rectangle.setPosition(position.x,position.y);
+            target.draw(rectangle);
+        }
     }
 
 

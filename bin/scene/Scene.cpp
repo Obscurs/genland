@@ -107,3 +107,16 @@ void Scene::saveGame(){
 
 Scene::~Scene() {
 }
+
+int Scene::getTemperature(sf::Vector2f pos){
+    Tile *t = map_curr.getTile(pos.x,pos.y,0);
+    return t->_temperature;
+}
+int Scene::getHumidity(sf::Vector2f pos){
+    Tile *t = map_curr.getTile(pos.x,pos.y,0);
+    return t->_humidity;
+}
+float Scene::getMountFactor(sf::Vector2f pos){
+    Tile *t = map_curr.getTile(pos.x,pos.y,0);
+    return t->_mountain_factor;
+}

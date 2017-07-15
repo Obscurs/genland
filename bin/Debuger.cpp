@@ -85,6 +85,40 @@ void Debuger::DrawPlayerStats(){
     _window->draw(_text);
     _displace = _displace + DISPLACEMENT;
 }
+
+void Debuger::DrawBiomeStats(){
+    sf::View currentView    = _window->getView();
+    sf::Vector2f centerView = currentView.getCenter();
+    sf::Vector2f sizeView   = currentView.getSize();
+    _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
+    sf::Vector2f pos = _scene->player.GetPosition();
+    std::stringstream buffer;
+    int temperature = _scene->getTemperature(pos);
+    int humidity = _scene->getHumidity(pos);
+    float mountFactor = _scene->getMountFactor(pos);
+    std::string bioma = "STANDARD";
+    if(mountFactor>0) {
+        if(temperature <0) bioma = "ICE MOUNTAIN";
+        else bioma = "MOUNTAIN";
+    }
+    else{
+        if(temperature >30){
+            if(humidity >70) bioma = "JUNGLE";
+            else if(humidity <40) bioma = "DESERT";
+        }
+        else{
+            if(humidity >70) bioma = "FOREST";
+            else if(humidity <40) bioma = "PLAINS";
+        }
+    }
+    buffer << "Bioma: " << bioma << " Temperature: " << temperature <<"(" <<temperature+_scene->clock._globalTemperature <<")" << " Humidity: " << humidity <<"(" <<humidity+_scene->clock._globalHumidity <<")"<< " Mountain: " << mountFactor;
+
+    std::string string(buffer.str());
+    sf::String str(string);
+    _text.setString(str);
+    _window->draw(_text);
+    _displace = _displace + DISPLACEMENT;
+}
 void Debuger::DrawWorldStats(){
     sf::View currentView    = _window->getView();
     sf::Vector2f centerView = currentView.getCenter();
@@ -125,6 +159,7 @@ void Debuger::Draw(){
         DrawClockMarks();
         DrawPlayerStats();
         DrawWorldStats();
+        DrawBiomeStats();
     }
 }
 void Debuger::InitFpsText() {

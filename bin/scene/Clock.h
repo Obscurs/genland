@@ -38,6 +38,9 @@ public:
     float _dayTimeFactor;
     float _seasonFactor;
     float _lightFactor;
+
+    float _globalTemperature;
+    float _globalHumidity;
 private:
     float getFactorOfInterval(int (&interval)[5], float value);
 };

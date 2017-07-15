@@ -4,7 +4,7 @@
 class Tile
 {
 public:
-	Tile(int id_temp, int layer, TextureManager &t);
+	Tile(int layer, TextureManager &t);
 	~Tile();
 
 	void Reload(std::string id);
@@ -29,9 +29,11 @@ public:
 	float ms_to_remove;
 	float ms_to_be_removed;
 	bool being_removed;
+	int _temperature;
+	int _humidity;
+	float _mountain_factor;
 	std::string id; //sha de privatitzar
 	std::string id_pick; //sha de privatitzar
-    int id_temp;
 	Tile* neighbors[9] = {nullptr};
 	bool drawable();
 	void appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex, int rotation);
