@@ -159,6 +159,22 @@ void Item::Reload(std::string new_id)
 		id_set1="R";
 
 	}
+	else if(new_id == "n"){
+		max_stack_amount= 5;
+		amount = 0;
+		craft_cost["n"] = 2;
+		id_set0="n";
+		id_set1="N";
+
+	}
+	else if(new_id == "N"){
+		max_stack_amount= 5;
+		amount = 0;
+		craft_cost["n"] = 2;
+		id_set0="n";
+		id_set1="N";
+
+	}
 	else{
 		Reload("0");
 	}

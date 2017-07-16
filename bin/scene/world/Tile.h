@@ -6,6 +6,16 @@ class Tile
 public:
 	Tile(int layer, TextureManager &t);
 	~Tile();
+	enum Bioma {
+		STANDARD,
+		ICE_MOUNTAIN,
+		MOUNTAIN,
+		JUNGLE,
+		DESERT,
+		FOREST,
+		PLAINS,
+		NUM_BIOMS
+	};
 
 	void Reload(std::string id);
 	void Draw(sf::VertexArray &vertexArray);
@@ -32,6 +42,7 @@ public:
 	int _temperature;
 	int _humidity;
 	float _mountain_factor;
+	Bioma _bio;
 	std::string id; //sha de privatitzar
 	std::string id_pick; //sha de privatitzar
 	Tile* neighbors[9] = {nullptr};

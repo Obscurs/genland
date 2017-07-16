@@ -186,5 +186,27 @@ sf::Color MapViewer::getColorByTileId(std::string s){
     else if(s == "D") return sf::Color(135,102,60,150);
     else if(s == "c") return sf::Color(99,97,95,150);
     else if(s == "C") return sf::Color(145,142,139,150);
+    else if(s == "K") return sf::Color(168,111,45,150);
+    else if(s == "k") return sf::Color(244,161,66,150);
+    else if(s == "G") return sf::Color(204,201,36,150);
+    else if(s == "g") return sf::Color(255,255,0,150);
+    else if(s == "I") return sf::Color(135,122,101,150);
+    else if(s == "i") return sf::Color(175,158,130,150);
+    else if(s == "L") return sf::Color(53,48,39,150);
+    else if(s == "l") return sf::Color(73,66,54,150);
+    else if(s == "B") return sf::Color(0,0,0,150);
+    else if(s == "b") return sf::Color(0,0,0,150);
+    else if(s == "Y") return sf::Color(0,167,168,150);
+    else if(s == "y") return sf::Color(0,255,255,150);
+    else if(s == "N") return sf::Color(209,185,108,150);
+    else if(s == "n") return sf::Color(255,255,130,150);
+    else if(s == "W") return sf::Color(173,173,173,150);
+    else if(s == "w") return sf::Color(224,224,224,150);
+    else if(s == "R") return sf::Color(137,161,186,150);
+    else if(s == "r") return sf::Color(164,191,219,150);
+    else if(s == "J") return sf::Color(0,140,56,150);
+    else if(s == "j") return sf::Color(0,221,88,150);
+
     else return sf::Color(255,255,255,255);
+
 }

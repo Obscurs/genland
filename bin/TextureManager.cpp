@@ -12,8 +12,19 @@ TextureManager::TextureManager(std::string file, int size_sprite_x, int size_spr
 TextureManager::~TextureManager()
 {
 }
+
 void TextureManager::insert_map_value(std::string k, sf::Vector2i v){
     texture_map[k] = v;
+}
+void TextureManager::insert_block_all_values(std::string k,std::string k2, sf::Vector2i v, int size){
+
+    insert_map_value(k,sf::Vector2i(v.x,v.y));
+    insert_map_value(k2,sf::Vector2i(v.x+3*size,v.y));
+
+    insert_map_value((k+"_in"),sf::Vector2i(v.x+size,v.y));
+    insert_map_value((k2+"_in"),sf::Vector2i(v.x+size*4,v.y));
+    insert_map_value((k+"_out"),sf::Vector2i(v.x+size*2,v.y));
+    insert_map_value((k2+"_out"),sf::Vector2i(v.x+size*5,v.y));
 }
 sf::Vector2u TextureManager::getSizeTex(){
     return _image.getSize();

@@ -221,7 +221,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
     Simplex2d* escarp_factor = new Simplex2d(generator, 6000.0f, 0.0f, 1.0f);
     Simplex2d* noise_stone_to_dirt = new Simplex2d(generator, 50.0f, -0.01f, 0.01f);
     Simplex2d* noise_stone_to_dirt2 = new Simplex2d(generator, 500.0f, -0.02f, 0.02f);
-
+    Simplex2d* noise_transition_materials3 = new Simplex2d(generator, 200.0f, -1.0f, 1.0f);
 
     generator->seed(seed+3);
     Simplex2d* mount_factor = new Simplex2d(generator, 10000.0f, -1.2f, 1.0f);
@@ -240,8 +240,20 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
     generator->seed(seed+8);
     Simplex2d* caveFactor_x = new Simplex2d(generator, 10000.0f, 0.5f, 1.5f);
     Simplex2d* caveFactor_y = new Simplex2d(generator, 1000.0f, 0.5f, 1.5f);
-
+    generator->seed(seed+9);
     Simplex2d* caveHeight = new Simplex2d(generator, 1000.0f, -0.05f, 0.05f);
+
+    generator->seed(seed+10);
+    Simplex2d* noiseGold = new Simplex2d(generator, 400.0f, 0.0f, 1.0f);
+    generator->seed(seed+11);
+    Simplex2d* noiseCoal = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
+    generator->seed(seed+12);
+    Simplex2d* noiseIron = new Simplex2d(generator, 200.0f, 0.0f, 1.0f);
+    generator->seed(seed+13);
+    Simplex2d* noiseCuper = new Simplex2d(generator, 250.0f, 0.0f, 1.0f);
+    generator->seed(seed+14);
+    Simplex2d* noiseDiamond = new Simplex2d(generator, 500.0f, 0.0f, 1.0f);
+
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
             int y_pos = N_TILES_Y-1-i;
@@ -252,6 +264,8 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             float valEscarpAux = escarp->valSimplex2D(0, current_global_x);
             float valEscarpFact = escarp_factor->valSimplex2D(0, current_global_x);
             float valPlains = valFloor+(valEscarpAux*valEscarpFact);
+
+            float valTransition = noise_transition_materials3->valSimplex2D(0, current_global_x);
 
             float mountains_noise = mountains->valSimplex2D(0, current_global_x);
             float mountains_factor = mount_factor->valSimplex2D(0, current_global_x);
@@ -272,6 +286,14 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             float valCaveFactorX = caveFactor_x->valSimplex2D(current_global_y, current_global_x);
             float valCaveFactorY = caveFactor_y->valSimplex2D(current_global_y, current_global_x);
             bool isCave = valCave>0.7*(valCaveFactorX+valCaveFactorY)/2 && valHeightCaveMax;
+
+
+            bool isGold = noiseGold->valSimplex2D(current_global_y, current_global_x)*(std::min(1.2f-height_factor,1.0f)) >0.93;
+            isGold = isGold || noiseGold->valSimplex2D(current_global_y, current_global_x)*(std::min(0.4f+mountains_factor,1.0f)) >0.93;
+            bool isIron = noiseIron->valSimplex2D(current_global_y, current_global_x) >0.88;
+            bool isCuper = noiseCuper->valSimplex2D(current_global_y, current_global_x) >0.88;
+            bool isDiamond = (noiseDiamond->valSimplex2D(current_global_y, current_global_x) >0.96)&& height_factor<0.2;
+            bool isCoal = noiseCoal->valSimplex2D(current_global_y, current_global_x) >0.85;
             //float valStone = simStone->valSimplex2D(current_global_y, current_global_x);
 
 
@@ -290,42 +312,89 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             t->_temperature = valTemperature;
             t->_mountain_factor = mountains_factor;
             t2->_mountain_factor = mountains_factor;
-            if(i==N_TILES_Y-1){
-                t->rigid=true;
-                t2->rigid=true;
-                t->reach_floor = true;
-                t2->reach_floor = true;
+
+            Tile::Bioma bioma = Tile::STANDARD;
+            if(mountains_factor>0) {
+                if(valTemperature+valTransition*2 <0) bioma = Tile::ICE_MOUNTAIN;
+                else bioma = Tile::MOUNTAIN;
             }
-            if(valHeightMax){
-                if(valHeightStone){
-                    t->Reload("c");
+            else{
+                if(valTemperature+valTransition*2 >30){
+                    if(valHumidity+valTransition*2 >70) bioma = Tile::JUNGLE;
+                    else if(valHumidity+valTransition*2 <40) bioma = Tile::DESERT;
                 }
                 else{
-                    t->Reload("d");
+                    if(valHumidity+valTransition*2 >70) bioma = Tile::FOREST;
+                    else if(valHumidity+valTransition*2 <40) bioma = Tile::PLAINS;
                 }
-                t->reach_floor = true;
-
-            } else{
-                t->Reload("0");
-                t->reach_floor = false;
             }
+            //texMan.insert_block_all_values("K", "k", sf::Vector2i(0,32),32);    //cuper
+            //texMan.insert_block_all_values("G", "g", sf::Vector2i(0,48),48);    //gold
+            //texMan.insert_block_all_values("I", "i", sf::Vector2i(0,64),64);    //iron
+            //texMan.insert_block_all_values("L", "l", sf::Vector2i(0,80),80);    //coal
+            //texMan.insert_block_all_values("Y", "y", sf::Vector2i(0,96),96);    //diamond
 
-            if(valHeightMax){
-                if(isCave){
-                    t2->Reload("0");
-                } else{
-                    if(valHeightStone){
-                        t2->Reload("C");
+            t->_bio = bioma;
+            t2->_bio = bioma;
+            if(i==N_TILES_Y-1){
+                t->Reload("b");
+                t2->Reload("B");
+            }
+            else {
+                if (valHeightMax) {
+
+                    if (valHeightStone) {
+                        if(isDiamond) t->Reload("Y");
+                        else if(isGold)t->Reload("g");
+                        else if(isCoal)t->Reload("l");
+                        else if(isIron)t->Reload("i");
+                        else if(isCuper)t->Reload("k");
+                        else{
+                            if (t->_bio == Tile::ICE_MOUNTAIN) t->Reload("r");
+                            else t->Reload("c");
+                        }
                     }
-                    else{
-                        t2->Reload("D");
+                    else {
+                        if (t->_bio == Tile::DESERT) t->Reload("n");
+                        else if (t->_bio == Tile::JUNGLE) t->Reload("j");
+                        else if (t->_temperature < -5) t->Reload("w");
+                        else t->Reload("d");
                     }
+                    t->reach_floor = true;
+
+                } else {
+                    t->Reload("0");
+                    t->reach_floor = false;
                 }
 
-                t2->reach_floor = true;
-            } else{
-                t2->Reload("0");
-                t2->reach_floor = false;
+                if (valHeightMax) {
+                    if (isCave) {
+                        t2->Reload("0");
+                    } else {
+                        if (valHeightStone) {
+                            if(isDiamond) t2->Reload("Y");
+                            else if(isGold)t2->Reload("g");
+                            else if(isCoal)t2->Reload("l");
+                            else if(isIron)t2->Reload("i");
+                            else if(isCuper)t2->Reload("k");
+                            else{
+                                if (t2->_bio == Tile::ICE_MOUNTAIN) t2->Reload("R");
+                                else t2->Reload("C");
+                            }
+                        }
+                        else {
+                            if (t2->_bio == Tile::DESERT) t2->Reload("N");
+                            else if (t2->_bio == Tile::JUNGLE) t2->Reload("J");
+                            else if (t2->_temperature < -5) t2->Reload("W");
+                            else t2->Reload("D");
+                        }
+                    }
+
+                    t2->reach_floor = true;
+                } else {
+                    t2->Reload("0");
+                    t2->reach_floor = false;
+                }
             }
 
 
@@ -638,7 +707,7 @@ void Chunk::prepareArrays(){
             if(t1->id !="0"){
                 t1->Draw(render_array);
                 if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
-                    if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && t1->id=="D") grass_tiles.push_back(t1);
+                    if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && (t1->id=="D" ||t1->id=="J"||t1->id=="W")) grass_tiles.push_back(t1);
                 }
             }
 

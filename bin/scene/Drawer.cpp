@@ -9,7 +9,7 @@
 #include "../Debuger.h"
 
 Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c)
-        : texMan("resources/tiles2.png", 16, 16)
+        : texMan("resources/tiles4.png", 16, 16)
 {
     map_curr = m;
     player = p;
@@ -45,29 +45,32 @@ Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c)
     sun_background_shader.setParameter("windowHeight", static_cast<float>(Settings::GAME_HEIGHT)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
     tile_shader.setParameter("windowHeight", static_cast<float>(Settings::GAME_HEIGHT)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
 
-    texMan.insert_map_value("D",sf::Vector2i(0,0));
-    texMan.insert_map_value("d",sf::Vector2i(16,0));
-    texMan.insert_map_value("C",sf::Vector2i(0,16));
-    texMan.insert_map_value("c",sf::Vector2i(16,16));
+    //mayus is front insert_block_all_values
 
-    texMan.insert_map_value("D_in",sf::Vector2i(32,0));
-    texMan.insert_map_value("d_in",sf::Vector2i(64,0));
-    texMan.insert_map_value("C_in",sf::Vector2i(32,16));
-    texMan.insert_map_value("c_in",sf::Vector2i(64,16));
+    texMan.insert_block_all_values("D", "d", sf::Vector2i(0,0),16);     //dirt
+    texMan.insert_block_all_values("C", "c", sf::Vector2i(0,16),16);    //cobblestone
+    texMan.insert_block_all_values("K", "k", sf::Vector2i(0,32),16);    //cuper
+    texMan.insert_block_all_values("G", "g", sf::Vector2i(0,48),16);    //gold
+    texMan.insert_block_all_values("I", "i", sf::Vector2i(0,64),16);    //iron
+    texMan.insert_block_all_values("L", "l", sf::Vector2i(0,80),16);    //coal
+    texMan.insert_block_all_values("Y", "y", sf::Vector2i(0,96),16);    //diamond
+    texMan.insert_block_all_values("B", "b", sf::Vector2i(0,112),16);    //bedrock
+    texMan.insert_block_all_values("N", "n", sf::Vector2i(0,128),16);    //sand
+    texMan.insert_block_all_values("W", "w", sf::Vector2i(0,144),16);    //snow
+    texMan.insert_block_all_values("R", "r", sf::Vector2i(0,160),16);    //ice rock
+    texMan.insert_block_all_values("J", "j", sf::Vector2i(0,176),16);    //jungle dirt
 
-    texMan.insert_map_value("D_out",sf::Vector2i(48,0));
-    texMan.insert_map_value("d_out",sf::Vector2i(80,0));
-    texMan.insert_map_value("C_out",sf::Vector2i(48,16));
-    texMan.insert_map_value("c_out",sf::Vector2i(80,16));
-
-    texMan.insert_map_value("r",sf::Vector2i(0,32));
     texMan.insert_map_value("0",sf::Vector2i(64,32));
-    texMan.insert_map_value("s",sf::Vector2i(16,32));
-    texMan.insert_map_value("S",sf::Vector2i(32,32));
-    texMan.insert_map_value("S2",sf::Vector2i(48,32));
+    texMan.insert_map_value("s",sf::Vector2i(96,32));
+    texMan.insert_map_value("S",sf::Vector2i(112,32));
+    texMan.insert_map_value("S2",sf::Vector2i(128,32));
 
-    texMan.insert_map_value("grass0",sf::Vector2i(0,48));
-    texMan.insert_map_value("grass1",sf::Vector2i(16,48));
+    texMan.insert_map_value("grass0",sf::Vector2i(96,48));
+    texMan.insert_map_value("grass1",sf::Vector2i(112,48));
+    texMan.insert_map_value("grassIce0",sf::Vector2i(96,64));
+    texMan.insert_map_value("grassIce1",sf::Vector2i(112,64));
+    texMan.insert_map_value("grassJungle0",sf::Vector2i(96,80));
+    texMan.insert_map_value("grassJungle1",sf::Vector2i(112,80));
 
 
 }

@@ -119,6 +119,7 @@ void Debuger::DrawBiomeStats(){
     _window->draw(_text);
     _displace = _displace + DISPLACEMENT;
 }
+
 void Debuger::DrawWorldStats(){
     sf::View currentView    = _window->getView();
     sf::Vector2f centerView = currentView.getCenter();

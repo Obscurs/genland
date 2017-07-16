@@ -24,6 +24,7 @@ Tile::Tile(int l, TextureManager &t){
     _temperature = 0;
     _mountain_factor =0;
     _humidity = 0;
+    _bio = STANDARD;
 }
 
 
@@ -57,44 +58,63 @@ void Tile::Reload(std::string new_id)
         if(neighbors[8] != nullptr && !neighbors[8]->reach_floor) removeReachFloorCascade();
 	}
     else {
-        if (new_id == "D") {
-            weight = 20;
-            max_tension = 100;
-            rigid = false;
-            reach_floor = true;
-            id_pick = "D";
-            ms_to_remove = 100;
-        }
-        else if (new_id == "d") {
-            weight = 20;
-            max_tension = 100;
-            rigid = false;
-            reach_floor = false;
-            id_pick = "D";
-            ms_to_remove = 100;
-        }
-        else if (new_id == "r") {
+        reach_floor = true;
+        rigid = false;
+        if (new_id == "D" || new_id == "d") {
             weight = 10;
-            max_tension = 200;
-            rigid = false;
-            reach_floor = false;
-            id_pick = "R";
+            max_tension = 50;
+            id_pick = "D";
             ms_to_remove = 100;
-        }
-        else if (new_id == "C") {
+        }else if (new_id == "C" || new_id == "c") {
             weight = 20;
-            max_tension = 500;
-            rigid = false;
-            reach_floor = false;
+            max_tension = 300;
+            id_pick = "C";
+            ms_to_remove = 200;
+        }else if (new_id == "K" || new_id == "k") {
+            weight = 20;
+            max_tension = 300;
+            id_pick = "K";
+            ms_to_remove = 400;
+        }else if (new_id == "G" || new_id == "g") {
+            weight = 20;
+            max_tension = 300;
+            id_pick = "G";
+            ms_to_remove = 400;
+        }else if (new_id == "I" || new_id == "i") {
+            weight = 20;
+            max_tension = 300;
+            id_pick = "I";
+            ms_to_remove = 400;
+        }else if (new_id == "Y" || new_id == "y") {
+            weight = 20;
+            max_tension = 300;
+            id_pick = "Y";
+            ms_to_remove = 500;
+        }else if (new_id == "B" || new_id == "b") {
+            weight = 20;
+            max_tension = 300;
+            rigid = true;
+            id_pick = "B";
+            ms_to_remove = 500;
+        }else if (new_id == "N" || new_id == "n") {
+            weight = 10;
+            max_tension = 5;
+            id_pick = "N";
+            ms_to_remove = 50;
+        }else if (new_id == "W" || new_id == "w") {
+            weight = 5;
+            max_tension = 7;
+            id_pick = "D";
+            ms_to_remove = 50;
+        }else if (new_id == "R" || new_id == "r") {
+            weight = 20;
+            max_tension = 300;
             id_pick = "C";
             ms_to_remove = 100;
-        }
-        else if (new_id == "c") {
-            weight = 20;
-            max_tension = 500;
-            rigid = false;
-            reach_floor = false;
-            id_pick = "C";
+        }else if (new_id == "J" || new_id == "j") {
+            weight = 10;
+            max_tension = 50;
+            id_pick = "D";
             ms_to_remove = 100;
         }
         else {
@@ -184,10 +204,10 @@ void Tile::DrawOuts(sf::VertexArray &vertexArray)
     Tile* t3 = neighbors[3];
     Tile* t5 = neighbors[5];
     Tile* t7 = neighbors[7];
-    bool valid_t1= (t1 != nullptr && (t1->id =="d" || t1->id =="D" || t1->id =="c" || t1->id =="C"));
-    bool valid_t3= (t3 != nullptr && (t3->id =="d" || t3->id =="D" || t3->id =="c" || t3->id =="C"));
-    bool valid_t5= (t5 != nullptr && (t5->id =="d" || t5->id =="D" || t5->id =="c" || t5->id =="C"));
-    bool valid_t7 = (t7 != nullptr && (t7->id =="d" || t7->id =="D" || t7->id =="c" || t7->id =="C"));
+    bool valid_t1= (t1 != nullptr && (t1->id !="0"));
+    bool valid_t3= (t3 != nullptr && (t3->id !="0"));
+    bool valid_t5= (t5 != nullptr && (t5->id !="0"));
+    bool valid_t7 = (t7 != nullptr && (t7->id !="0"));
     if(valid_t1 && valid_t3 && t1->id==t3->id){
         std::string id_mini = t1->id;
         id_mini.append("_out");
@@ -317,8 +337,20 @@ void Tile::drawBorderSkyArray(sf::VertexArray &skyArray){
 
 }
 void Tile::DrawGrass(sf::VertexArray &vertexArray){
+    std::string grass0;
+    std::string grass1;
+    if(id=="D"){
+        grass0 = "grass0";
+        grass1 = "grass1";
+    } else if(id=="J"){
+        grass0 = "grassJungle0";
+        grass1 = "grassJungle1";
+    } else{
+        grass0 = "grassIce0";
+        grass1 = "grassIce1";
+    }
     sf::Vector2f pos_tex1, pos_tex2, pos_tex3, pos_tex4;
-    sf::Vector2i position_sprite = texMan->getPositionSprite("grass0");
+    sf::Vector2i position_sprite = texMan->getPositionSprite(grass0);
     pos_tex1 = sf::Vector2f(position_sprite.x, position_sprite.y);
     pos_tex2 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y);
     pos_tex3 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y+texMan->size_sprite.y);
@@ -328,8 +360,8 @@ void Tile::DrawGrass(sf::VertexArray &vertexArray){
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y-GetHeight()/2+Settings::TILE_SIZE), pos_tex3));
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Settings::TILE_SIZE-GetHeight()/2),
                                   pos_tex4));
-    if(neighbors[3]!=nullptr && (neighbors[3]->id !="D" || (neighbors[2] !=nullptr && neighbors[2]->neighbors[8]->id !="0"))){
-        sf::Vector2i position_sprite = texMan->getPositionSprite("grass1");
+    if(neighbors[3]!=nullptr && ((neighbors[3]->id !="D" && neighbors[3]->id !="J" && neighbors[3]->id !="W") || (neighbors[2] !=nullptr && neighbors[2]->neighbors[8]->id !="0"))){
+        sf::Vector2i position_sprite = texMan->getPositionSprite(grass1);
         pos_tex1 = sf::Vector2f(position_sprite.x, position_sprite.y);
         pos_tex2 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y);
         pos_tex3 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y+texMan->size_sprite.y);
@@ -339,8 +371,8 @@ void Tile::DrawGrass(sf::VertexArray &vertexArray){
         vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2+Settings::TILE_SIZE), pos_tex3));
         vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y+Settings::TILE_SIZE-GetHeight()/2), pos_tex4));
     }
-    if(neighbors[7]!=nullptr && (neighbors[7]->id !="D"|| (neighbors[0] !=nullptr && neighbors[0]->neighbors[8]->id !="0"))){
-        sf::Vector2i position_sprite = texMan->getPositionSprite("grass1");
+    if(neighbors[7]!=nullptr && ((neighbors[7]->id !="D" && neighbors[7]->id !="J" && neighbors[7]->id !="W") || (neighbors[0] !=nullptr && neighbors[0]->neighbors[8]->id !="0"))){
+        sf::Vector2i position_sprite = texMan->getPositionSprite(grass1);
         pos_tex3 = sf::Vector2f(position_sprite.x, position_sprite.y);
         pos_tex4 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y);
         pos_tex1 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y+texMan->size_sprite.y);
