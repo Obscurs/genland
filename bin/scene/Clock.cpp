@@ -3,15 +3,18 @@
 //
 
 #include "Clock.h"
+#include "../Inputs.h"
 #include <iostream>
-Clock::Clock(){
+Clock::Clock(std::string seed){
     day=0;
     hour=7;
     min=15;
+    _clockSpeed=1;
     _season = WINTER;
     _dayTime = MORNING;
     _dayTimeFactor =0;
     _lightFactor = 0;
+    _rainFactor = 0;
     UpdateDayTimeIntervals();
     _seasonTimeIntervals[0] =70;
     _seasonTimeIntervals[1] =160;
@@ -20,6 +23,9 @@ Clock::Clock(){
     _seasonTimeIntervals[4] =360;
     _globalHumidity = 0;
     _globalTemperature = 0;
+    std::mt19937 generator;
+    generator.seed(std::stoi(seed));
+    _rainSimplex = new Simplex2d(&generator, 150.0f, 0.0f, 1.0f);
 }
 
 
@@ -114,7 +120,12 @@ void Clock::UpdateDayTimeIntervals(){
     }
 }
 void Clock::Update(float delta){
-    min+=delta;
+    if (Inputs::KeyBreak(Inputs::Key::ADD)){
+        _clockSpeed +=1;
+    } else if(Inputs::KeyBreak(Inputs::Key::SUB)){
+        _clockSpeed -=1;
+    }
+    min+=delta*_clockSpeed;
     if(min>60) {
         hour+= (int)(min/60);
         min=min-60;
@@ -156,7 +167,7 @@ void Clock::Update(float delta){
             if(_dayTimeFactor>0.5){
                 _lightFactor = 0.9;
             }
-            else _lightFactor = 0.4+0.5*_dayTimeFactor*2;
+            else _lightFactor = 0.4f+0.5f*_dayTimeFactor*2.f;
             break;
     }
     float seasonFactorAux = 1-std::abs((_seasonFactor-float(0.5))*2);
@@ -183,4 +194,8 @@ void Clock::Update(float delta){
             break;
     }
     _globalTemperature += ((1-_lightFactor*14))-7;
+
+    float valRain = (_rainSimplex->valSimplex2D(0, min+60*hour+24*60*day)+_globalHumidity/100);
+    _rainFactor = std::max((valRain-0.7f)*3.3f,0.0f);
+    std::cout << valRain << std::endl;
 }

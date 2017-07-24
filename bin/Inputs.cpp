@@ -48,6 +48,8 @@ const sf::Keyboard::Key Inputs::_keyMap[NUM_KEYS] = {
         sf::Keyboard::F4,
         sf::Keyboard::F5,
         sf::Keyboard::F6,
+        sf::Keyboard::Add,
+        sf::Keyboard::Subtract,
         sf::Keyboard::M
 
 };

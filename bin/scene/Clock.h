@@ -7,10 +7,11 @@
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
+#include "world/Simplex2d.h"
 
 class Clock {
 public:
-    Clock();
+    Clock(std::string seed);
     ~Clock();
     void Update(float delta);
     void SetColorToShader(sf::Shader &shader);
@@ -34,14 +35,17 @@ public:
     int _seasonTimeIntervals[5];
     int _season;
     int _dayTime;
-
+    int _clockSpeed;
     float _dayTimeFactor;
     float _seasonFactor;
     float _lightFactor;
 
     float _globalTemperature;
     float _globalHumidity;
+
+    float _rainFactor;
 private:
+    Simplex2d *_rainSimplex;
     float getFactorOfInterval(int (&interval)[5], float value);
 };
 

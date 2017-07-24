@@ -24,6 +24,7 @@ public:
     TextureManager& getTextureManager();
     sf::Shader& getTileShader();
 private:
+    sf::Clock timer;
     Map *map_curr;
     Player *player;
     Clock *clock;
@@ -36,6 +37,7 @@ private:
     sf::Shader sun_mix_shader;
     sf::Shader mix_back_terr_shader;
     sf::Shader sun_background_shader;
+    sf::Shader rain_shader;
 
     sf::RenderTexture texture_scene;
     sf::RenderTexture texture_sun;
@@ -48,6 +50,7 @@ private:
     sf::Vector2f GetPosSprite();
     void DrawSceneTex();
     void DrawBackground();
+    void DrawRain();
     void DrawLights();
     void DrawMap(sf::RenderWindow& renderWindow, float zoom);
 };

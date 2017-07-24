@@ -423,7 +423,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
 	    //sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
 	    //float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
 
-	    if(t->id != "0") {
+	    if(t->id != "0" && t->id !="B" && t->id != "b") {
 				tile_being_removed = t;
 				if (tile_being_removed->being_removed) {
 					tile_being_removed->ms_to_be_removed -= delta*1000;

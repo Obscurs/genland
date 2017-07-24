@@ -9,7 +9,7 @@ Scene::Scene(sf::RenderWindow &window)
     : map_curr(),
       player(),
       backgrounds(),
-      clock(),
+      clock("0"),
       drawer(&map_curr,&player,&backgrounds, &clock),
       view_game(&window,MagicView::crop,sf::Vector2i(Settings::GAME_WIDTH,Settings::GAME_HEIGHT))
 {
@@ -63,7 +63,7 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
 
     WorldBackground *newBack = new WorldBackground();
     backgrounds = *newBack;
-    Clock *newClock = new Clock();
+    Clock *newClock = new Clock(seed);
     clock = *newClock;
 
     view_game.update();

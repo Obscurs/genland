@@ -20,7 +20,7 @@ Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c)
     texture_sun.create(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     texture_front = new sf::RenderTexture();
     texture_back = new sf::RenderTexture();
-
+    timer.restart();
 
     view_player.setSize(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
     view_player.setSize(Settings::GAME_WIDTH, Settings::GAME_HEIGHT);
@@ -42,8 +42,11 @@ Drawer::Drawer(Map *m,Player *p,WorldBackground *b,Clock *c)
     if (!sun_shader.loadFromFile("resources/sun.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
     if (!sun_mix_shader.loadFromFile("resources/sun_mix.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
     if (!mix_back_terr_shader.loadFromFile("resources/mix_background_terrain.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
+    if (!rain_shader.loadFromFile("resources/rain.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
     sun_background_shader.setParameter("windowHeight", static_cast<float>(Settings::GAME_HEIGHT)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
     tile_shader.setParameter("windowHeight", static_cast<float>(Settings::GAME_HEIGHT)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
+    rain_shader.setParameter("windowHeight", static_cast<float>(Settings::GAME_HEIGHT)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
+    rain_shader.setParameter("windowWidth", static_cast<float>(Settings::GAME_WIDTH)); // this must be set, but only needs to be set once (or whenever the size of the window changes)
 
     //mayus is front insert_block_all_values
 
@@ -136,6 +139,57 @@ void Drawer::DrawBackground() {
     texture_background.draw(background_sprite, states);
     texture_background.display();
 }
+
+void Drawer::DrawRain() {
+    if(clock->_rainFactor >0){
+//texture_background.clear(sf::Color(255,0,0,255));
+        sf::Sprite background_sprite(texture_background.getTexture());
+        sf::Vector2f pos_sprite = GetPosSprite();
+        background_sprite.setPosition(pos_sprite);
+        rain_shader.setParameter("time",timer.getElapsedTime().asSeconds());
+
+        rain_shader.setParameter("intensity",clock->_rainFactor);
+        //rain_shader.setParameter("LAYERS",int(clock->_rainFactor*10/2));
+
+
+        sf::Vector2f pos = player->GetPosition();
+        Tile *t = map_curr->getTile(pos.x,pos.y,0);
+        int temperature = t->_temperature;
+        int humidity = t->_humidity;
+
+        if(temperature >10){
+            if(temperature >25 && humidity<50){
+                float new_rain_factor = clock->_rainFactor-1-(humidity-50)/10;
+                rain_shader.setParameter("intensity",new_rain_factor);
+            }
+            rain_shader.setParameter("SCALE",512.0f);
+            rain_shader.setParameter("LENGTH",64.0f);
+            rain_shader.setParameter("LENGTH_SCALE",0.8f);
+            rain_shader.setParameter("SPEED",10.0f);
+        } else if(temperature < -10){
+            rain_shader.setParameter("SCALE",256.0f);
+            rain_shader.setParameter("LENGTH",2.0f);
+            rain_shader.setParameter("LENGTH_SCALE",0.8f);
+            rain_shader.setParameter("SPEED",1.0f);
+        } else{
+            float factor = float(temperature-(-10))/20.0f;
+            rain_shader.setParameter("SCALE",256.0f+256.0f*factor);
+            rain_shader.setParameter("LENGTH",2.0f+62.0f*factor);
+            rain_shader.setParameter("LENGTH_SCALE",0.8f);
+            rain_shader.setParameter("SPEED",1.0f+9.0f*factor);
+        }
+
+
+
+        sf::RenderStates states;
+        texture_background.display();
+        states.texture = &texture_background.getTexture();
+        states.shader = &rain_shader;
+        texture_background.draw(background_sprite, states);
+        texture_background.display();
+    }
+
+}
 void Drawer::DrawLights(){
 
     sf::Sprite map_without_lights(texture_scene.getTexture());
@@ -204,6 +258,7 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow,float zoom)
 
     DrawSceneTex();
     DrawBackground();
+    DrawRain();
     DrawLights();
     if(Debuger::activated && Debuger::metric1 !="none") debugMap(Debuger::metric1);
     if(Debuger::activated && Debuger::metric2 !="none") debugMap(Debuger::metric2);

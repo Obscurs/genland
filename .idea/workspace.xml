@@ -13,15 +13,15 @@
   <component name="ChangeListManager">
     <list default="true" id="f465ec9c-b195-4793-b1a1-68ed08476bd4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Debuger.cpp" afterPath="$PROJECT_DIR$/bin/Debuger.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/TextureManager.cpp" afterPath="$PROJECT_DIR$/bin/TextureManager.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/TextureManager.h" afterPath="$PROJECT_DIR$/bin/TextureManager.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Inputs.cpp" afterPath="$PROJECT_DIR$/bin/Inputs.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Inputs.h" afterPath="$PROJECT_DIR$/bin/Inputs.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Clock.cpp" afterPath="$PROJECT_DIR$/bin/scene/Clock.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Clock.h" afterPath="$PROJECT_DIR$/bin/scene/Clock.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Drawer.cpp" afterPath="$PROJECT_DIR$/bin/scene/Drawer.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/entities/Item.cpp" afterPath="$PROJECT_DIR$/bin/scene/entities/Item.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/MapView.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/MapView.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Tile.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Tile.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Tile.h" afterPath="$PROJECT_DIR$/bin/scene/world/Tile.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Drawer.h" afterPath="$PROJECT_DIR$/bin/scene/Drawer.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Player.cpp" afterPath="$PROJECT_DIR$/bin/scene/Player.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Player.h" afterPath="$PROJECT_DIR$/bin/scene/Player.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Scene.cpp" afterPath="$PROJECT_DIR$/bin/scene/Scene.cpp" />
     </list>
     <ignored path="genland.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,71 +41,41 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Chunk.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Chunk.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1679">
-              <caret line="292" column="91" selection-start-line="292" selection-start-column="91" selection-end-line="292" selection-end-column="91" />
+            <state relative-caret-position="-234">
+              <caret line="252" column="51" selection-start-line="252" selection-start-column="42" selection-end-line="252" selection-end-column="51" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Tile.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/world/Tile.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1269">
-              <caret line="338" column="20" selection-start-line="338" selection-start-column="15" selection-end-line="338" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Item.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/entities/Item.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="579">
-              <caret line="169" column="24" selection-start-line="169" selection-start-column="24" selection-end-line="169" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MapView.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/world/MapView.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1203">
-              <caret line="210" column="0" selection-start-line="210" selection-start-column="0" selection-end-line="210" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Tile.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/world/Tile.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="9" column="16" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Drawer.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Drawer.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="52" column="76" selection-start-line="52" selection-start-column="76" selection-end-line="52" selection-end-column="76" />
+            <state relative-caret-position="441">
+              <caret line="175" column="53" selection-start-line="175" selection-start-column="53" selection-end-line="175" selection-end-column="53" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TextureManager.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/TextureManager.cpp">
+      <file leaf-file-name="Scene.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/Scene.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="414">
-              <caret line="24" column="62" selection-start-line="24" selection-start-column="62" selection-end-line="24" selection-end-column="62" />
+              <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="36" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Scene.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="735">
+              <caret line="115" column="33" selection-start-line="111" selection-start-column="4" selection-end-line="120" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -114,18 +84,28 @@
       <file leaf-file-name="Player.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/scene/Player.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="426" column="0" selection-start-line="426" selection-start-column="0" selection-end-line="426" selection-end-column="0" />
+            <state relative-caret-position="378">
+              <caret line="324" column="27" selection-start-line="324" selection-start-column="20" selection-end-line="324" selection-end-column="27" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Background.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/world/Background.cpp">
+      <file leaf-file-name="Inputs.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/Inputs.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="23" column="28" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
+            <state relative-caret-position="810">
+              <caret line="45" column="8" selection-start-line="45" selection-start-column="8" selection-end-line="46" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Inputs.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/Inputs.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="556">
+              <caret line="51" column="31" selection-start-line="51" selection-start-column="31" selection-end-line="51" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -134,9 +114,33 @@
       <file leaf-file-name="Clock.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/scene/Clock.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
+            <state relative-caret-position="-510">
+              <caret line="27" column="48" selection-start-line="27" selection-start-column="48" selection-end-line="27" selection-end-column="48" />
+              <folding>
+                <element signature="e#41#59#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Inventory.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/Inventory.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="624">
+              <caret line="579" column="50" selection-start-line="579" selection-start-column="4" selection-end-line="579" selection-end-column="50" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Clock.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/Clock.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="612">
+              <caret line="37" column="19" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="19" />
+              <folding>
+                <element signature="e#89#115#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -149,7 +153,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/bin/scene/Inventory.h" />
         <option value="$PROJECT_DIR$/bin/scene/Inventory.cpp" />
         <option value="$PROJECT_DIR$/bin/menu_interface/NewGameMenu.h" />
         <option value="$PROJECT_DIR$/bin/menu_interface/NewGameMenu.cpp" />
@@ -169,37 +172,38 @@
         <option value="$PROJECT_DIR$/bin/Resources.h" />
         <option value="$PROJECT_DIR$/bin/Main.cpp" />
         <option value="$PROJECT_DIR$/bin/Resources.cpp" />
-        <option value="$PROJECT_DIR$/bin/scene/Drawer.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/AnimatedTile.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/entities/AnimatedTile.h" />
         <option value="$PROJECT_DIR$/MapViewer.hpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Map.h" />
-        <option value="$PROJECT_DIR$/bin/scene/Player.h" />
         <option value="$PROJECT_DIR$/bin/scene/world/Simplex2d.h" />
         <option value="$PROJECT_DIR$/bin/scene/world/Simplex2d.cpp" />
-        <option value="$PROJECT_DIR$/bin/Inputs.h" />
-        <option value="$PROJECT_DIR$/bin/Inputs.cpp" />
         <option value="$PROJECT_DIR$/bin/Game.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/MapView.h" />
         <option value="$PROJECT_DIR$/bin/scene/world/Chunk.h" />
         <option value="$PROJECT_DIR$/bin/scene/world/Map.cpp" />
         <option value="$PROJECT_DIR$/bin/Debuger.h" />
         <option value="$PROJECT_DIR$/bin/scene/Scene.h" />
-        <option value="$PROJECT_DIR$/bin/scene/Scene.cpp" />
         <option value="$PROJECT_DIR$/bin/Settings.h" />
-        <option value="$PROJECT_DIR$/bin/scene/Clock.h" />
-        <option value="$PROJECT_DIR$/bin/scene/Player.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Background.cpp" />
-        <option value="$PROJECT_DIR$/bin/scene/Clock.cpp" />
         <option value="$PROJECT_DIR$/bin/Debuger.cpp" />
         <option value="$PROJECT_DIR$/bin/TextureManager.h" />
         <option value="$PROJECT_DIR$/bin/TextureManager.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Tile.h" />
-        <option value="$PROJECT_DIR$/bin/scene/Drawer.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Tile.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Item.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/MapView.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Player.h" />
+        <option value="$PROJECT_DIR$/bin/scene/Player.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Scene.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Drawer.h" />
+        <option value="$PROJECT_DIR$/resources/rain.frag" />
+        <option value="$PROJECT_DIR$/bin/scene/Clock.h" />
+        <option value="$PROJECT_DIR$/bin/Inputs.h" />
+        <option value="$PROJECT_DIR$/bin/Inputs.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Clock.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Drawer.cpp" />
       </list>
     </option>
   </component>
@@ -211,7 +215,7 @@
   </component>
   <component name="OCFindUsagesOptions" text="false" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="65" />
+    <option name="x" value="1985" />
     <option name="y" value="24" />
     <option name="width" value="1855" />
     <option name="height" value="1056" />
@@ -256,6 +260,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="genland" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="genland" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="genland" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -666,24 +684,26 @@
       <workItem from="1500119284481" duration="14273000" />
       <workItem from="1500156634766" duration="48000" />
       <workItem from="1500149491042" duration="4333000" />
-      <workItem from="1500202570535" duration="12969000" />
+      <workItem from="1500202570535" duration="14475000" />
+      <workItem from="1500813271293" duration="13103000" />
+      <workItem from="1500854684339" duration="3577000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="798753000" />
+    <option name="totallyTimeSpent" value="816939000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
+    <frame x="1985" y="24" width="1855" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18113208" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3312946" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33027524" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34148827" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35474005" sideWeight="0.5018868" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19877675" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24159022" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -711,13 +731,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/bin/scene/Player.cpp</url>
-          <line>426</line>
-          <option name="timeStamp" value="206" />
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="207" />
     </breakpoint-manager>
     <watches-manager>
@@ -729,22 +742,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/bin/menu_interface/InterfaceList.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="386">
-          <caret line="82" column="42" selection-start-line="82" selection-start-column="42" selection-end-line="82" selection-end-column="42" />
-          <caret line="83" column="29" selection-start-line="83" selection-start-column="29" selection-end-line="83" selection-end-column="29" />
-          <caret line="84" column="31" selection-start-line="84" selection-start-column="31" selection-end-line="84" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/menu_interface/Button.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/menu_interface/Button.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -825,20 +822,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MapViewer.hpp" />
-    <entry file="file://$PROJECT_DIR$/bin/scene/Inventory.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10422">
-          <caret line="579" column="50" selection-start-line="579" selection-start-column="4" selection-end-line="579" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="39" column="12" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/include/c++/5/bits/stl_vector.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5742">
@@ -867,13 +850,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Player.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="11" column="40" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/world/Simplex2d.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="324">
@@ -885,27 +861,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="774">
           <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Inputs.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="562">
-          <caret line="44" column="11" selection-start-line="44" selection-start-column="11" selection-end-line="44" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Inputs.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="520">
-          <caret line="49" column="24" selection-start-line="49" selection-start-column="24" selection-end-line="49" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Game.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="169" column="9" selection-start-line="169" selection-start-column="9" selection-end-line="169" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -931,56 +886,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
-          <caret line="26" column="45" selection-start-line="26" selection-start-column="45" selection-end-line="26" selection-end-column="45" />
-          <folding>
-            <element signature="e#13#46#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="839">
-          <caret line="91" column="44" selection-start-line="91" selection-start-column="44" selection-end-line="91" selection-end-column="44" />
-          <folding>
-            <element signature="e#86#112#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2160">
-          <caret line="120" column="31" selection-start-line="120" selection-start-column="31" selection-end-line="120" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="36" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Clock.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="42" column="26" selection-start-line="42" selection-start-column="26" selection-end-line="42" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/Debuger.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="630">
           <caret line="35" column="24" selection-start-line="35" selection-start-column="18" selection-end-line="35" selection-end-column="24" />
-          <folding>
-            <element signature="e#93#119#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -996,7 +905,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
           <caret line="23" column="28" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1004,23 +912,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="9" column="82" selection-start-line="9" selection-start-column="82" selection-end-line="9" selection-end-column="82" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Debuger.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="99" column="23" selection-start-line="99" selection-start-column="23" selection-end-line="99" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Clock.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1036,7 +927,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="522">
           <caret line="29" column="40" selection-start-line="29" selection-start-column="40" selection-end-line="29" selection-end-column="40" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1048,25 +938,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Player.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="426" column="0" selection-start-line="426" selection-start-column="0" selection-end-line="426" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/TextureManager.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
+        <state relative-caret-position="432">
           <caret line="24" column="62" selection-start-line="24" selection-start-column="62" selection-end-line="24" selection-end-column="62" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/world/Tile.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1269">
+        <state relative-caret-position="6084">
           <caret line="338" column="20" selection-start-line="338" selection-start-column="15" selection-end-line="338" selection-end-column="20" />
           <folding />
         </state>
@@ -1074,7 +955,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/entities/Item.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="579">
+        <state relative-caret-position="3042">
           <caret line="169" column="24" selection-start-line="169" selection-start-column="24" selection-end-line="169" selection-end-column="24" />
           <folding />
         </state>
@@ -1082,24 +963,158 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/world/MapView.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1203">
+        <state relative-caret-position="3780">
           <caret line="210" column="0" selection-start-line="210" selection-start-column="0" selection-end-line="210" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.cpp">
+    <entry file="file://$PROJECT_DIR$/bin/scene/Player.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="52" column="76" selection-start-line="52" selection-start-column="76" selection-end-line="52" selection-end-column="76" />
+        <state relative-caret-position="180">
+          <caret line="10" column="39" selection-start-line="10" selection-start-column="39" selection-end-line="10" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="49" column="6" selection-start-line="49" selection-start-column="4" selection-end-line="49" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Game.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3042">
+          <caret line="169" column="9" selection-start-line="169" selection-start-column="9" selection-end-line="169" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1638">
+          <caret line="91" column="69" selection-start-line="91" selection-start-column="65" selection-end-line="91" selection-end-column="69" />
+          <folding>
+            <element signature="e#86#112#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/rain.frag">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="20" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="249">
+          <caret line="26" column="20" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="36" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="735">
+          <caret line="115" column="33" selection-start-line="111" selection-start-column="4" selection-end-line="120" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/sun_background.frag">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="15" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Debuger.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="93" column="48" selection-start-line="93" selection-start-column="4" selection-end-line="93" selection-end-column="52" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1679">
-          <caret line="292" column="91" selection-start-line="292" selection-start-column="91" selection-end-line="292" selection-end-column="91" />
+        <state relative-caret-position="-234">
+          <caret line="252" column="51" selection-start-line="252" selection-start-column="42" selection-end-line="252" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Inputs.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="556">
+          <caret line="51" column="31" selection-start-line="51" selection-start-column="31" selection-end-line="51" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Clock.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="37" column="19" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="19" />
+          <folding>
+            <element signature="e#89#115#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Inputs.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="810">
+          <caret line="45" column="8" selection-start-line="45" selection-start-column="8" selection-end-line="46" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Inventory.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="624">
+          <caret line="579" column="50" selection-start-line="579" selection-start-column="4" selection-end-line="579" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Player.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="324" column="27" selection-start-line="324" selection-start-column="20" selection-end-line="324" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Clock.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-510">
+          <caret line="27" column="48" selection-start-line="27" selection-start-column="48" selection-end-line="27" selection-end-column="48" />
+          <folding>
+            <element signature="e#41#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="175" column="53" selection-start-line="175" selection-start-column="53" selection-end-line="175" selection-end-column="53" />
           <folding />
         </state>
       </provider>

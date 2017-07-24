@@ -43,6 +43,8 @@ public:
 		F4,
 		F5,
 		F6,
+		ADD,
+		SUB,
 		M,
 		NUM_KEYS
 	};
