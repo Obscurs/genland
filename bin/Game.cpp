@@ -21,8 +21,7 @@
 
 
 Game::Game():
-        _window(),
-        _scene(_window)
+        _window()
 {
     _resize = false;
     _gameState = Uninitialized;
@@ -61,10 +60,11 @@ void Game::LoadData(){
 void Game::Start(void)
 {
     if(_gameState != Uninitialized) return;
+
     LoadData();
     _window.create(sf::VideoMode(Settings::SCREEN_WIDTH,Settings::SCREEN_HEIGHT,32),"Genland!");
     _gameState= Game::ShowingMenu;
-    Debuger::Init(_window, _scene);
+    Debuger::Init(_window);
     MenuMain::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     NewGameMenu::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     MenuLoadGame::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
@@ -101,7 +101,8 @@ void Game::Events(){
         else if (currentEvent.type == sf::Event::Resized){
             std::cout << "res" << std::endl;
             _resize = true;
-            Game::_scene.view_game.update();
+            Scene* scene = Scene::getScene();
+            if(scene->isInit()) scene->updateView();
         }
         else if (currentEvent.type == sf::Event::Closed)
         {
@@ -150,6 +151,7 @@ void Game::Events(){
 }
 void Game::GameLoop()
 {
+    Scene* scene = Scene::getScene();
     sf::Time deltatime = _clock.restart();
     Debuger::Update(deltatime);
     float delta = deltatime.asSeconds();
@@ -191,9 +193,9 @@ void Game::GameLoop()
         {
             if(Inputs::KeyBreak(Inputs::ESC)) _gameState = Game::ShowingMenu;
             Debuger::InsertClockMark("PreLoop");
-            Game::_scene.update(_window,delta);
+            scene->update(_window,delta);
             Debuger::InsertClockMark("Update");
-            Game::_scene.draw(_window);
+            scene->draw(_window);
             Debuger::InsertClockMark("Draw");
 
 
@@ -205,7 +207,7 @@ void Game::GameLoop()
                 MenuMain::view.update();
                 _resize = false;
             }
-            if(Inputs::KeyBreak(Inputs::ESC) && Game::_scene.map_curr.initialized) _gameState = Game::Playing;
+            if(Inputs::KeyBreak(Inputs::ESC) && scene->isInit()) _gameState = Game::Playing;
             if(MenuMain::newGameClicked()) _gameState = NewGame;
             else if(MenuMain::exitClicked()) {
                 _true_exit=true;
@@ -243,7 +245,7 @@ void Game::GameLoop()
                     if (out.size() < 10) new_game_path.append("0");
                     new_game_path.append(std::to_string(out.size()));
                     CreateNewGame(new_game_path, NewGameMenu::seed.getText(), NewGameMenu::name.getText());
-                    Game::_scene.init(new_game_path, _window, NewGameMenu::seed.getText());
+                    scene->init(new_game_path, _window, NewGameMenu::seed.getText());
 
                     _gameState = Playing;
                 } else std::cout << "demasiadas partidas guardadas" << std::endl;
@@ -285,9 +287,8 @@ void Game::GameLoop()
                         std::string data_seed= "def", data_name = "def";
                         myfile >> data_seed >> data_name;
                         myfile.close();
-
-                        Game::_scene.saveGame();
-                        Game::_scene.init(new_game_path, _window, data_seed);
+                        scene->saveGame();
+                        scene->init(new_game_path, _window, data_seed);
                         _gameState = Playing;
                     }
                     else std::cout << "ERROR: could not read file " << route << std::endl;
@@ -298,7 +299,7 @@ void Game::GameLoop()
 
                 } else std::cout << "slot demasiado grande" << std::endl;
             }
-            else if(MenuLoadGame::delClicked() && !Game::_scene.map_curr.initialized && !MenuLoadGame::save_list.elements.empty()) {
+            else if(MenuLoadGame::delClicked() && !scene->isInit() && !MenuLoadGame::save_list.elements.empty()) {
 
                 std::string folder_save = "s";
                 int slot = MenuLoadGame::save_list.selected_slot;
@@ -369,7 +370,8 @@ void Game::GameLoop()
 
 void Game::ExitGame()
 {
-    Game::_scene.saveGame();
+    Scene* scene = Scene::getScene();
+    scene->saveGame();
     _gameState = Exiting;
 }
 void Game::CreateNewGame(std::string path, std::string seed, std::string name) {

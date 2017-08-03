@@ -205,11 +205,10 @@ void Chunk::setTileNeighbors(int index_x, int index_y){
     }
 
 }
-Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &myfile, TextureManager& texM):
+Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &myfile):
         render_array(sf::Quads , (uint)(4)),
         sky_array(sf::Quads , (uint)(4))
 {
-
     is_dirty = true;
     chunk_id = pos.x;
     //std::cout  << chunk_id.x*N_TILES_X*Settings::TILE_SIZE << " " << chunk_id.y*N_TILES_Y*Settings::TILE_SIZE << std::endl;
@@ -304,8 +303,8 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
             int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, current_global_x));
 
-            Tile* t = new Tile(0,texM);
-            Tile* t2 = new Tile(1, texM);
+            Tile* t = new Tile(0);
+            Tile* t2 = new Tile(1);
             t->_humidity = valHumidity;
             t2->_humidity = valHumidity;
             t2->_temperature = valTemperature;
@@ -508,7 +507,7 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
 	
 }
 
-Chunk::Chunk(sf::Vector2i pos,std::mt19937 *generator,int seed, std::ifstream &myfile, TextureManager& texM):
+Chunk::Chunk(sf::Vector2i pos,std::mt19937 *generator,int seed, std::ifstream &myfile):
         render_array(sf::Quads , (uint)(4)),
         sky_array(sf::Quads , (uint)(4))
 {
@@ -533,8 +532,8 @@ Chunk::Chunk(sf::Vector2i pos,std::mt19937 *generator,int seed, std::ifstream &m
             float current_global_y = y_pos*Settings::TILE_SIZE_HIGH;
             float height_factor = float(y_pos)/float(N_TILES_Y);
 
-            Tile* t = new Tile(0, texM);
-            Tile* t2 = new Tile(1,texM);
+            Tile* t = new Tile(0);
+            Tile* t2 = new Tile(1);
             char c1 = *k;
             ++k;
             char c2 = *k;

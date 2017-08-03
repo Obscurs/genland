@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Resources.h"
+#include "Settings.h"
 
 #define SHADERPATH "res/Shaders/"
 #define TEXTURETPATH "res/textures/"
@@ -12,6 +13,7 @@
 std::map<std::string, sf::Font> Resources::fontsMap;
 std::map<std::string, sf::Shader> Resources::shadersMap;
 std::map<std::string, sf::Texture> Resources::texturesMap;
+std::map<std::string, TextureManager> Resources::textureManagerMap;
 std::map<std::string, std::vector<sf::Texture> > Resources::animationsMap;
 
 void printError(const std::string& s) {
@@ -26,28 +28,44 @@ void Resources::load() {
         return;
     }
     firstTimeLoadingResources = false;
-
-
-    // addTexture( "keyTexture" , "key.png" );
-    //addTexture("clockTable", "spritesheets/clock.png");
-    //addTexture("bgMap", "map0_room.png");
-    //addTexture("player", "player.png");
-
-    // addAnimation( "jumpAnimation", "jump/", "jump_", 5);
-    // addAnimation( "jumpAnimation", "jump/", "jump_", 5, ".jpg"); //if != .png
-
-
+    //FONTS
     addFont( "debugFont", "resources/font1.ttf");
+    //SHADERS
+    addShader("sun_background_shader","resources/sun_background.frag");
+    addShader("tile_shader","resources/light.frag");
+    addShader("sun_shader","resources/sun.frag");
+    addShader("sun_mix_shader","resources/sun_mix.frag");
+    addShader("mix_back_terr_shader","resources/mix_background_terrain.frag");
+    addShader("rain_shader","resources/rain.frag");
+    //TEXTURES
+    addTextureManager("tileMap","resources/tiles4.png", 16, 16);
+    TextureManager *texMan = getTextureManager("tileMap");
+    texMan->insert_block_all_values("D", "d", sf::Vector2i(0,0),16);     //dirt
+    texMan->insert_block_all_values("C", "c", sf::Vector2i(0,16),16);    //cobblestone
+    texMan->insert_block_all_values("K", "k", sf::Vector2i(0,32),16);    //cuper
+    texMan->insert_block_all_values("G", "g", sf::Vector2i(0,48),16);    //gold
+    texMan->insert_block_all_values("I", "i", sf::Vector2i(0,64),16);    //iron
+    texMan->insert_block_all_values("L", "l", sf::Vector2i(0,80),16);    //coal
+    texMan->insert_block_all_values("Y", "y", sf::Vector2i(0,96),16);    //diamond
+    texMan->insert_block_all_values("B", "b", sf::Vector2i(0,112),16);    //bedrock
+    texMan->insert_block_all_values("N", "n", sf::Vector2i(0,128),16);    //sand
+    texMan->insert_block_all_values("W", "w", sf::Vector2i(0,144),16);    //snow
+    texMan->insert_block_all_values("R", "r", sf::Vector2i(0,160),16);    //ice rock
+    texMan->insert_block_all_values("J", "j", sf::Vector2i(0,176),16);    //jungle dirt
+
+    texMan->insert_map_value("0",sf::Vector2i(64,32));
+    texMan->insert_map_value("s",sf::Vector2i(96,32));
+    texMan->insert_map_value("S",sf::Vector2i(112,32));
+    texMan->insert_map_value("S2",sf::Vector2i(128,32));
+
+    texMan->insert_map_value("grass0",sf::Vector2i(96,48));
+    texMan->insert_map_value("grass1",sf::Vector2i(112,48));
+    texMan->insert_map_value("grassIce0",sf::Vector2i(96,64));
+    texMan->insert_map_value("grassIce1",sf::Vector2i(112,64));
+    texMan->insert_map_value("grassJungle0",sf::Vector2i(96,80));
+    texMan->insert_map_value("grassJungle1",sf::Vector2i(112,80));
 
 
-    const std::string fragmentShader = \
-    "uniform sampler2D texture;" \
-    "void main()" \
-    "{"  \
-        "vec4 originalColor = texture2D(texture, gl_TexCoord[0].xy) * gl_Color;" \
-        "gl_FragColor = vec4(originalColor.r+0.7,originalColor.g,originalColor.b,originalColor.a);"  \
-    "}";
-    addShader("BlinkShader", fragmentShader);
 
     std::cout << " Resources Loaded " << std::endl;
 }
@@ -55,7 +73,10 @@ void Resources::load() {
 void Resources::addTexture(const std::string& key, const std::string& path) {
     if(! texturesMap[key].loadFromFile(TEXTURETPATH+path)) printError(path);
 }
-
+void Resources::addTextureManager(const std::string& key, const std::string& path, int sizeX, int sizeY) {
+    textureManagerMap.insert(std::pair<std::string, TextureManager>(key,TextureManager(path,sizeX, sizeY)));
+    //textureManagerMap[key] = TextureManager(path,sizeX, sizeY);
+}
 void Resources::addAnimation(const std::string& key, const std::string& path, const std::string& name, int animationFrames, const std::string& extension = ".png") {
     for(int i = 0; i < animationFrames; ++i) {
         std::string currentPath = ANIMATIONPATH+path+name+std::to_string(i)+extension;
@@ -63,9 +84,9 @@ void Resources::addAnimation(const std::string& key, const std::string& path, co
     }
 }
 
-void Resources::addShader(const std::string& key, const std::string& shader) {
+void Resources::addShader(const std::string& key, const std::string& path) {
     if(sf::Shader::isAvailable()) {
-        if (!shadersMap[key].loadFromMemory(shader, sf::Shader::Fragment)) {
+        if (!shadersMap[key].loadFromFile(path, sf::Shader::Fragment)) {
             std::cout << "error loading shader " << key << std::endl;
         }
     }
@@ -85,6 +106,10 @@ sf::Shader* Resources::getShader(const std::string& key) {
 
 sf::Texture* Resources::getTexture(const std::string& key) {
     return &texturesMap[key];
+}
+TextureManager* Resources::getTextureManager(const std::string& key) {
+
+    return &textureManagerMap.find(key)->second;
 }
 
 const std::vector<sf::Texture>& Resources::getAnimation(const std::string& key) {

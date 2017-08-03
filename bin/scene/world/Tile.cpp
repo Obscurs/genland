@@ -16,8 +16,7 @@
 #include "../../Resources.h"
 
 
-Tile::Tile(int l, TextureManager &t){
-    texMan = &t;
+Tile::Tile(int l){
     layer = l;
     being_removed = false;
     last_tension_debug =0;
@@ -230,6 +229,7 @@ void Tile::DrawOuts(sf::VertexArray &vertexArray)
     }
 }
 void Tile::appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex,int rotation){
+    TextureManager *texMan = Resources::getTextureManager("tileMap");
     float increment_x=0;
     float increment_y=0;
     float increment_x_tex=0;
@@ -337,6 +337,7 @@ void Tile::drawBorderSkyArray(sf::VertexArray &skyArray){
 
 }
 void Tile::DrawGrass(sf::VertexArray &vertexArray){
+    TextureManager *texMan = Resources::getTextureManager("tileMap");
     std::string grass0;
     std::string grass1;
     if(id=="D"){

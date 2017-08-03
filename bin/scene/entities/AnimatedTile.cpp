@@ -14,6 +14,7 @@
 #include "AnimatedTile.h"
 #include "../world/Map.h"
 #include "../../Settings.h"
+#include "../../Resources.h"
 
 
 AnimatedTile::AnimatedTile(){
@@ -90,17 +91,18 @@ void AnimatedTile::Reload(std::string new_id)
 	
 }
 
-void AnimatedTile::Draw(sf::RenderTarget & renderWindow, TextureManager &t)
+void AnimatedTile::Draw(sf::RenderTarget & renderWindow)
 {
+    TextureManager *t = Resources::getTextureManager("tileMap");
     if(deleted==0){
         sf::Sprite s;
-        s.setOrigin(size.x/2-t.size_sprite.y/2, size.y/2-t.size_sprite.y/2);
+        s.setOrigin(size.x/2-t->size_sprite.y/2, size.y/2-t->size_sprite.y/2);
         s.setRotation(rotation);
         sf::Vector2f pos_grass(position.x,position.y-GetHeight()/2);
-        t.generateSprite(id, pos_grass, s, sf::Vector2f(GetWidth(),GetHeight()));
+        t->generateSprite(id, pos_grass, s, sf::Vector2f(GetWidth(),GetHeight()));
         //
         s.setPosition(s.getPosition().x+size.x/2, s.getPosition().y+size.y/2);
-        //s.setPosition(position.x-size.x/2, position.y-size.y/2);
+        //s.setPosition(_position.x-_size.x/2, _position.y-_size.y/2);
         renderWindow.draw(s);
     }
     else{

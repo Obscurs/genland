@@ -14,7 +14,7 @@ public:
 	void Draw(sf::RenderWindow & window);
 	void Draw2(sf::RenderTexture & tex);
 	void DrawInventory(sf::RenderWindow & window);
-	void Update(float delta, Map &map, sf::RenderWindow &window, float zoom);
+	void Update(float delta, Map &map, sf::RenderWindow &window);
     int id;
 	void SetPosition(float x, float y);
 	void SetSize(float x);

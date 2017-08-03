@@ -19,23 +19,45 @@
 
 class Scene {
 public:
+
+    static Scene* getScene(){
+        static Scene* scenePointer;
+        if(! scenePointer) scenePointer = new Scene();
+        return scenePointer;
+    }
     void init(std::string path, sf::RenderWindow &window, std::string seed);
-    Scene(sf::RenderWindow &window);
+    bool isInit();
+
+    Scene();
     ~Scene();
-    Map map_curr;
-    Player player;
-    Drawer drawer;
-    WorldBackground backgrounds;
-    Clock clock;
-    std::string pathGame;
-    MagicView view_game;
+
+    Map &getMap();
+    Player &getPlayer();
+    Drawer &getDrawer();
+    WorldBackground &getBackgrounds();
+    Clock &getClock();
+    float getZoom();
+    std::string getGamePath();
+
+    void updateView();
     void update(sf::RenderWindow &window,float delta);
     void saveGame();
     void draw(sf::RenderWindow &window);
+
     int getTemperature(sf::Vector2f pos);
     int getHumidity(sf::Vector2f pos);
     float getMountFactor(sf::Vector2f pos);
-    float zoom;
+
+private:
+    std::string _pathGame;
+    MagicView _viewGame;
+    bool _initialized;
+    float _zoom;
+    Map _map_curr;
+    Player _player;
+    Drawer _drawer;
+    WorldBackground _backgrounds;
+    Clock _clock;
 };
 
 

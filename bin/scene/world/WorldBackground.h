@@ -15,8 +15,8 @@ public:
     void Draw(sf::RenderTexture &texture_plain_sprite);
 
 private:
-    std::vector<Background> backgrounds;
-    sf::CircleShape sun_sprite;
+    std::vector<Background> _backgrounds;
+    sf::CircleShape _sun_sprite;
 };
 
 

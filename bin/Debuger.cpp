@@ -17,7 +17,6 @@ std::string Debuger::metric2 = "none";
 std::string Debuger::metric3 = "none";
 sf::Clock Debuger::_clock;
 sf::RenderWindow *Debuger::_window = NULL;
-Scene *Debuger::_scene = NULL;
 bool Debuger::_is_init = false;
 bool Debuger::activated = false;
 int Debuger::_displace = 0;
@@ -28,10 +27,9 @@ void Debuger::InsertClockMark(std::string name){
     _clockNames.push_back(name);
     _clockMarks.push_back(_clock.getElapsedTime());
 }
-void Debuger::Init(sf::RenderWindow &window, Scene &scene){
+void Debuger::Init(sf::RenderWindow &window){
     _is_init = true;
     _window = &window;
-    _scene = &scene;
     _clock.restart();
     activated = false;
     InitFpsText();
@@ -71,11 +69,12 @@ void Debuger::DrawClockMarks(){
 }
 
 void Debuger::DrawPlayerStats(){
+    Scene* scene = Scene::getScene();
     sf::View currentView    = _window->getView();
     sf::Vector2f centerView = currentView.getCenter();
     sf::Vector2f sizeView   = currentView.getSize();
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
-    sf::Vector2f pos = _scene->player.GetPosition();
+    sf::Vector2f pos = scene->getPlayer().GetPosition();
     std::stringstream buffer;
     buffer << "X: " << int(pos.x) << " Y: " << int(pos.y);
 
@@ -87,15 +86,19 @@ void Debuger::DrawPlayerStats(){
 }
 
 void Debuger::DrawBiomeStats(){
+    Scene* scene = Scene::getScene();
     sf::View currentView    = _window->getView();
     sf::Vector2f centerView = currentView.getCenter();
     sf::Vector2f sizeView   = currentView.getSize();
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
-    sf::Vector2f pos = _scene->player.GetPosition();
+    sf::Vector2f pos = scene->getPlayer().GetPosition();
     std::stringstream buffer;
-    int temperature = _scene->getTemperature(pos);
-    int humidity = _scene->getHumidity(pos);
-    float mountFactor = _scene->getMountFactor(pos);
+
+
+    int temperature = scene->getTemperature(pos);
+    int humidity = scene->getHumidity(pos);
+    float mountFactor = scene->getMountFactor(pos);
+
     std::string bioma = "STANDARD";
     if(mountFactor>0) {
         if(temperature <0) bioma = "ICE MOUNTAIN";
@@ -111,7 +114,8 @@ void Debuger::DrawBiomeStats(){
             else if(humidity <40) bioma = "PLAINS";
         }
     }
-    buffer << "Bioma: " << bioma << " Temperature: " << temperature <<"(" <<temperature+_scene->clock._globalTemperature <<")" << " Humidity: " << humidity <<"(" <<humidity+_scene->clock._globalHumidity <<")"<< " Mountain: " << mountFactor;
+    Clock clk = scene->getClock();
+    buffer << "Bioma: " << bioma << " Temperature: " << temperature <<"(" <<temperature+clk._globalTemperature <<")" << " Humidity: " << humidity <<"(" <<humidity+clk._globalHumidity <<")"<< " Mountain: " << mountFactor;
 
     std::string string(buffer.str());
     sf::String str(string);
@@ -121,12 +125,14 @@ void Debuger::DrawBiomeStats(){
 }
 
 void Debuger::DrawWorldStats(){
+    Scene* scene = Scene::getScene();
     sf::View currentView    = _window->getView();
     sf::Vector2f centerView = currentView.getCenter();
     sf::Vector2f sizeView   = currentView.getSize();
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
     std::stringstream buffer;
-    buffer << "Day: " << _scene->clock.day << " Hour: " << _scene->clock.hour <<" Min: " << int(_scene->clock.min) <<  " DayTime: " << _scene->clock._dayTime << " "<< _scene->clock._dayTimeFactor<< " Season: " << _scene->clock._season<< " "<< _scene->clock._seasonFactor;
+    Clock clk = scene->getClock();
+    buffer << "Day: " << clk.day << " Hour: " << clk.hour <<" Min: " << int(clk.min) <<  " DayTime: " << clk._dayTime << " "<< clk._dayTimeFactor<< " Season: " << clk._season<< " "<< clk._seasonFactor;
     std::string string(buffer.str());
     sf::String str(string);
     _text.setString(str);

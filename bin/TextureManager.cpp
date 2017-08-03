@@ -3,11 +3,12 @@
 //
 #include "TextureManager.h"
 #include <iostream>
+
+
 TextureManager::TextureManager(std::string file, int size_sprite_x, int size_sprite_y){
     file_path=file;
     size_sprite = sf::Vector2i(size_sprite_x, size_sprite_y);
     _image.loadFromFile(file_path);
-    //if (!tile_shader.loadFromFile("resources/blur.frag", sf::Shader::Fragment)) std::cout<< "el shader no va" << std::endl;
 }
 TextureManager::~TextureManager()
 {

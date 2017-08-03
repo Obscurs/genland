@@ -5,12 +5,12 @@
 class Chunk
 {
 public:	
-	Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &myfile, TextureManager& texMan);
-    Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ifstream &myfile, TextureManager& texMan);
+	Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &myfile);
+    Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ifstream &myfile);
 	~Chunk();
 
 
-	const static int N_TILES_X = 100;
+	const static int N_TILES_X = 100;		//must be on settings
 	const static int N_TILES_Y = 300;
 	const static int N_TILES_Z = 2;
 	int chunk_id;

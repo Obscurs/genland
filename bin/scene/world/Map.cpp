@@ -23,20 +23,19 @@
 Map::Map():
         _mapViewer()
 {
-    initialized = false;
+    _initialized = false;
 }
-void Map::init(int pos, std::string path, std::string s, TextureManager& t)
+void Map::init(int pos, std::string s)
 {
-    initialized = true;
+
+    _initialized = true;
     seed = s;
-    save_path=path;
     Light l1(sf::Vector2f(+500.0,2000.0),95.0,105.0,100.0, sf::Color::Green);
     Light l2(sf::Vector2f(+550.0,2000.0),95.0,105.0,100.0, sf::Color::Red);
     Light l3(sf::Vector2f(0,0),78.0,80.0,100.0, sf::Color::Yellow);
     lights.push_back(l1);
     lights.push_back(l2);
     lights.push_back(l3);
-    texMan = &t;
 
 
     int id_temp = 0;
@@ -71,15 +70,19 @@ void Map::init(int pos, std::string path, std::string s, TextureManager& t)
 }
 
 void Map::saveMap(){
-    if(initialized){
+    if(_initialized){
+        Scene *scene = Scene::getScene();
+        std::string path = scene->getGamePath();
         for(int i=0; i<N_CHUNKS_X; i++){
-            chunk_mat[i]->saveToFile(save_path);
+            chunk_mat[i]->saveToFile(path);
         }
-    } std::cout << "canot save map, map not initialized" << std::endl;
+    } std::cout << "canot save map, map not _initialized" << std::endl;
 }
 void Map::createMap(int map_index, int chunk_index, int &id_temp){
-    if(initialized) {
-        std::string filename = save_path;
+    if(_initialized) {
+        Scene *scene = Scene::getScene();
+        std::string path = scene->getGamePath();
+        std::string filename = path;
         filename.append("/map/");
         filename.append(std::to_string(chunk_index));
         filename.append(".txt");
@@ -89,7 +92,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
             myfile.open(filename);
             std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
             sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, &generator,std::stoi(seed), myfile, *texMan);
+            Chunk *c = new Chunk(chunk_pos, &generator,std::stoi(seed), myfile);
             chunk_mat[map_index] = c;
             myfile.close();
         }
@@ -101,7 +104,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
 
 
             sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, &generator,std::stoi(seed), myfile, *texMan);
+            Chunk *c = new Chunk(chunk_pos, &generator,std::stoi(seed), myfile);
             chunk_mat[map_index] = c;
 
             myfile.close();
@@ -134,7 +137,7 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
             //chunk_mat[2]->recalcReachSun();
         }
         _mapViewer.addChunk(*chunk_mat[map_index]);
-    } else std::cout << "canot create map, map not initialized" << std::endl;
+    } else std::cout << "canot create map, map not _initialized" << std::endl;
 }
 
 Map::~Map() {
@@ -161,7 +164,7 @@ sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f
 }
 
 void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
-    if(initialized){
+    if(_initialized){
         std::cout << "calculating removed tile " << std::endl;
         bool debug = Debuger::activated;
         std::vector<Tile *> tilesWallDebug;
@@ -555,7 +558,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                 }
             }
         }
-    } else std::cout << "canot calc phisics, map no initialized " <<  std::endl;
+    } else std::cout << "canot calc phisics, map no _initialized " <<  std::endl;
 
 }
 void Map::dirtyChunks(){
@@ -619,7 +622,7 @@ int Map::getIndexMatChunk(int x){
 }
 
 void Map::checkLoadedChunks(float x, float y){
-    if(initialized){
+    if(_initialized){
         Chunk *c1 = chunk_mat[0];
         Chunk *c2 = chunk_mat[N_CHUNKS_X - 1];
         Tile *t1 = c1->getTileByIndex(0, 0, 0);
@@ -628,13 +631,14 @@ void Map::checkLoadedChunks(float x, float y){
         sf::Vector2f p2 = t2->GetPosition();
         float distance_1 = sqrt((x - p1.x) * (x - p1.x));
         float distance_2 = sqrt((x - p2.x) * (x - p2.x));
-
+        Scene *scene = Scene::getScene();
+        std::string path = scene->getGamePath();
 
         if (distance_1 < Chunk::N_TILES_X / 1.8 * Settings::TILE_SIZE) {
             //#pragma omp task
             {
 
-                c2->saveToFile(save_path);
+                c2->saveToFile(path);
                 int current_pos = c1->chunk_id;
                 int id_temp = 0;
                 Chunk *chunk_mid = chunk_mat[1];
@@ -657,7 +661,7 @@ void Map::checkLoadedChunks(float x, float y){
             //#pragma omp task
             {
 
-                c1->saveToFile(save_path);
+                c1->saveToFile(path);
                 int current_pos = c2->chunk_id;
                 int id_temp = 0;
                 Chunk *chunk_mid = chunk_mat[1];
@@ -674,7 +678,7 @@ void Map::checkLoadedChunks(float x, float y){
             }
             //std::cout << distance_1 << " " << distance_2 << std::endl;
         }
-    } else std::cout << "canot check loaded, map no initialized " <<  std::endl;
+    } else std::cout << "canot check loaded, map no _initialized " <<  std::endl;
 
 }
 
@@ -701,7 +705,7 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
 
 void Map::UpdateAll(float delta, sf::Vector2f player_pos)
 {
-    if(initialized){
+    if(_initialized){
         //BACKGROUNDS
         int x = player_pos.x;
         int y = std::max((int)player_pos.y, 0);
@@ -728,6 +732,6 @@ void Map::UpdateAll(float delta, sf::Vector2f player_pos)
                 falling_tiles.erase(falling_tiles.begin()+i);
             }
         }
-    } else std::cout << "canot update, map no initialized " <<  std::endl;
+    } else std::cout << "canot update, map no _initialized " <<  std::endl;
 
 }

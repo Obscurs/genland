@@ -711,8 +711,8 @@ void Inventory::Update(sf::RenderWindow &window)
 	sf::Vector2f centerView = currentView.getCenter();
 	sf::Vector2f sizeView = currentView.getSize();
 
-	//position.x += centerView.x-sizeView.x/2;
-	//position.y += centerView.y-sizeView.y/2;
+	//_position.x += centerView.x-sizeView.x/2;
+	//_position.y += centerView.y-sizeView.y/2;
 
 
 

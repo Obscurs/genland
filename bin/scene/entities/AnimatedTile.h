@@ -10,7 +10,7 @@ public:
 	~AnimatedTile();
 
 	void Reload(std::string id);
-	void Draw(sf::RenderTarget & window, TextureManager &t);
+	void Draw(sf::RenderTarget & window);
 	void Update(float elapsedTime, Chunk* c1,Chunk* c2,Chunk* c3 , int posMap);
 
 	void SetPosition(float x, float y);

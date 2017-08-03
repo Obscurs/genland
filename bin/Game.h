@@ -36,7 +36,6 @@ private:
 
 	GameState _gameState;
 	sf::RenderWindow _window;
-    Scene _scene;
     bool _debuger;
     sf::Font _font;
 	bool _resize;

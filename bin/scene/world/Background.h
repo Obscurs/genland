@@ -19,9 +19,9 @@ public:
     void updatePosition(sf::Vector2f playerPos);
 private:
     sf::Texture _image;
-    float distance; //factor de parallax
-    sf::Vector2f position;
-    sf::Vector2f size;
+    float _distance; //factor de parallax
+    sf::Vector2f _position;
+    sf::Vector2f _size;
 };
 
 

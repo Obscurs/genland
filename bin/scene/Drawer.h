@@ -19,25 +19,10 @@ public:
     Drawer(Map *m,Player *p,WorldBackground *b, Clock *c);
     ~Drawer();
 
-    void Draw(sf::RenderWindow &window, float zoom);
+    void Draw(sf::RenderWindow &window);
     void debugMap(const std::string keyDebug);
-    TextureManager& getTextureManager();
-    sf::Shader& getTileShader();
 private:
     sf::Clock timer;
-    Map *map_curr;
-    Player *player;
-    Clock *clock;
-    WorldBackground *backgrounds;
-
-    TextureManager texMan;
-
-    sf::Shader tile_shader;
-    sf::Shader sun_shader;
-    sf::Shader sun_mix_shader;
-    sf::Shader mix_back_terr_shader;
-    sf::Shader sun_background_shader;
-    sf::Shader rain_shader;
 
     sf::RenderTexture texture_scene;
     sf::RenderTexture texture_sun;
@@ -52,7 +37,7 @@ private:
     void DrawBackground();
     void DrawRain();
     void DrawLights();
-    void DrawMap(sf::RenderWindow& renderWindow, float zoom);
+    void DrawMap(sf::RenderWindow& renderWindow);
 };
 
 

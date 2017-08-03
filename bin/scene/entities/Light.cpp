@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Light.h"
+#include "../../Resources.h"
 
 #include <random>
 Light::Light(sf::Vector2f pos, float rad_min, float rad_max, float exp, sf::Color c) {
@@ -35,20 +36,20 @@ void Light::Update(float deltatime){
      */
 }
 
-void Light::Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::Shader &light_shader, TextureManager *t, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back,sf::RenderTexture &tex_sun){
-
-
+void Light::Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back,sf::RenderTexture &tex_sun){
+        TextureManager *texMan = Resources::getTextureManager("tileMap");
+        sf::Shader *light_shader = Resources::getShader("tile_shader");
 
         sf::RenderStates states;
-        states.texture = t->getTexture();
-        light_shader.setParameter("textureOld", tex_back->getTexture());
-        light_shader.setParameter("textureSun", tex_sun.getTexture());
-        light_shader.setParameter("color", color);
-        light_shader.setParameter("center", pos_light);
-        light_shader.setParameter("radius", radius);
-        light_shader.setParameter("expand", expand);
+        states.texture = texMan->getTexture();
+        light_shader->setParameter("textureOld", tex_back->getTexture());
+        light_shader->setParameter("textureSun", tex_sun.getTexture());
+        light_shader->setParameter("color", color);
+        light_shader->setParameter("center", pos_light);
+        light_shader->setParameter("radius", radius);
+        light_shader->setParameter("expand", expand);
 
-        states.shader = &light_shader;
+        states.shader = light_shader;
         tex_front->clear(sf::Color(0,0,0,0));
         tex_front->draw(map_without_lights, states);
         tex_front->display();

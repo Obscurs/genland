@@ -14,6 +14,7 @@
 
 #include "Player.h"
 #include "../Settings.h"
+#include "Scene.h"
 
 
 Player::Player()
@@ -301,8 +302,10 @@ void Player::DrawInventory(sf::RenderWindow & renderWindow)
 }
 
 
-void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
+void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 {
+	Scene *scene = Scene::getScene();
+	float zoom = scene->getZoom();
 	inventory->Update(window);
     sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
@@ -358,7 +361,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
 	sf::Vector2f size_aux(GetWidth(), GetHeight());
 	
 	std::vector<Tile*> tiles_col = map.getTilesCol(pos_aux, size_aux);
-	//std::cout << "number of cols" << tiles_col.size() << std::endl;
+	//std::cout << "number of cols" << tiles_col._size() << std::endl;
 	
 	//std::cout << "lel" << std::endl;
 	for(int i = 0; i< tiles_col.size(); ++i){
@@ -408,7 +411,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window, float zoom)
     //COMPROBA INPUTS
 	if (Inputs::MouseDown(Inputs::M_LEFT) && !inventory->show_inventory && viewRect.contains(position.x, position.y))
 	{
-		//std::cout << position.x << " " << position.y << std::endl;
+		//std::cout << _position.x << " " << _position.y << std::endl;
 	    Tile* t = map.getTile(position.x, position.y, 1);
 		//std::cout << t->id_temp << " " <<true_position.x << " " << true_position.y << std::endl;
 	    int position_tile = 1;

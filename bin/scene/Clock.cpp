@@ -197,5 +197,4 @@ void Clock::Update(float delta){
 
     float valRain = (_rainSimplex->valSimplex2D(0, min+60*hour+24*60*day)+_globalHumidity/100);
     _rainFactor = std::max((valRain-0.7f)*3.3f,0.0f);
-    std::cout << valRain << std::endl;
 }

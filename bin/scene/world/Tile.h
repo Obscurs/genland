@@ -4,7 +4,7 @@
 class Tile
 {
 public:
-	Tile(int layer, TextureManager &t);
+	Tile(int layer);
 	~Tile();
 	enum Bioma {
 		STANDARD,
@@ -52,7 +52,6 @@ public:
 	
 
 private:
-	TextureManager *texMan;
 	void setReachFloorCascade();
 	void removeReachFloorCascade();
     void DrawFadeOut(sf::VertexArray &vertexArray);

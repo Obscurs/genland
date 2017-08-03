@@ -11,7 +11,7 @@
 #include "Resources.h"
 class Debuger {
 public:
-    static void Init(sf::RenderWindow &window, Scene &scene);
+    static void Init(sf::RenderWindow &window);
     static void Update(const sf::Time& deltatime);
     static void Draw();
     static void InsertClockMark(std::string name);
@@ -33,7 +33,6 @@ private:
     static int _old_fps;
     static sf::Clock _clock;
     static sf::RenderWindow *_window;
-    static Scene *_scene;
     static bool _is_init;
     static void InitFpsText();
     static void UpdateFpsText(const sf::Time& deltatime);
