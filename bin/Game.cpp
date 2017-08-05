@@ -194,9 +194,9 @@ void Game::GameLoop()
             if(Inputs::KeyBreak(Inputs::ESC)) _gameState = Game::ShowingMenu;
             Debuger::InsertClockMark("PreLoop");
             scene->update(_window,delta);
-            Debuger::InsertClockMark("Update");
+            Debuger::InsertClockMark("update");
             scene->draw(_window);
-            Debuger::InsertClockMark("Draw");
+            Debuger::InsertClockMark("draw");
 
 
             break;

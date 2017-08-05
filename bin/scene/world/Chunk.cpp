@@ -205,53 +205,56 @@ void Chunk::setTileNeighbors(int index_x, int index_y){
     }
 
 }
-Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &myfile):
+Chunk::Chunk(sf::Vector2i pos, std::ofstream &myfile):
         render_array(sf::Quads , (uint)(4)),
         sky_array(sf::Quads , (uint)(4))
 {
     is_dirty = true;
     chunk_id = pos.x;
+    Scene *scene = Scene::getScene();
+    std::mt19937 generator = scene->getGenerator();
+    int seed = std::stoi(scene->getSeed());
     //std::cout  << chunk_id.x*N_TILES_X*Settings::TILE_SIZE << " " << chunk_id.y*N_TILES_Y*Settings::TILE_SIZE << std::endl;
-    generator->seed(seed);
-    Simplex2d* escarp = new Simplex2d(generator, 1000.0f, 0.0f, 0.1f);
-    generator->seed(seed+1);
-    Simplex2d* altitud = new Simplex2d(generator, 20000.0f, 0.2f, 0.5f);
-    generator->seed(seed+2);
-    Simplex2d* escarp_factor = new Simplex2d(generator, 6000.0f, 0.0f, 1.0f);
-    Simplex2d* noise_stone_to_dirt = new Simplex2d(generator, 50.0f, -0.01f, 0.01f);
-    Simplex2d* noise_stone_to_dirt2 = new Simplex2d(generator, 500.0f, -0.02f, 0.02f);
-    Simplex2d* noise_transition_materials3 = new Simplex2d(generator, 200.0f, -1.0f, 1.0f);
+    generator.seed(seed);
+    Simplex2d* escarp = new Simplex2d(&generator, 1000.0f, 0.0f, 0.1f);
+    generator.seed(seed+1);
+    Simplex2d* altitud = new Simplex2d(&generator, 20000.0f, 0.2f, 0.5f);
+    generator.seed(seed+2);
+    Simplex2d* escarp_factor = new Simplex2d(&generator, 6000.0f, 0.0f, 1.0f);
+    Simplex2d* noise_stone_to_dirt = new Simplex2d(&generator, 50.0f, -0.01f, 0.01f);
+    Simplex2d* noise_stone_to_dirt2 = new Simplex2d(&generator, 500.0f, -0.02f, 0.02f);
+    Simplex2d* noise_transition_materials3 = new Simplex2d(&generator, 200.0f, -1.0f, 1.0f);
 
-    generator->seed(seed+3);
-    Simplex2d* mount_factor = new Simplex2d(generator, 10000.0f, -1.2f, 1.0f);
-    generator->seed(seed+4);
-    Simplex2d* mountains = new Simplex2d(generator, 500.0f, 0.4f, 0.5f);
+    generator.seed(seed+3);
+    Simplex2d* mount_factor = new Simplex2d(&generator, 10000.0f, -1.2f, 1.0f);
+    generator.seed(seed+4);
+    Simplex2d* mountains = new Simplex2d(&generator, 500.0f, 0.4f, 0.5f);
 
-    generator->seed(seed+5);
-    Simplex2d* base_noise_temperature = new Simplex2d(generator, 25000.0f, -10, 20);
-    generator->seed(seed+6);
-    Simplex2d* noise_humidity = new Simplex2d(generator, 25000.0f, 0.0f, 100.0f);
+    generator.seed(seed+5);
+    Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -10, 20);
+    generator.seed(seed+6);
+    Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
 
 
 
-    generator->seed(seed+7);
-    Simplex2d* noiseCave = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
-    generator->seed(seed+8);
-    Simplex2d* caveFactor_x = new Simplex2d(generator, 10000.0f, 0.5f, 1.5f);
-    Simplex2d* caveFactor_y = new Simplex2d(generator, 1000.0f, 0.5f, 1.5f);
-    generator->seed(seed+9);
-    Simplex2d* caveHeight = new Simplex2d(generator, 1000.0f, -0.05f, 0.05f);
+    generator.seed(seed+7);
+    Simplex2d* noiseCave = new Simplex2d(&generator, 300.0f, 0.0f, 1.0f);
+    generator.seed(seed+8);
+    Simplex2d* caveFactor_x = new Simplex2d(&generator, 10000.0f, 0.5f, 1.5f);
+    Simplex2d* caveFactor_y = new Simplex2d(&generator, 1000.0f, 0.5f, 1.5f);
+    generator.seed(seed+9);
+    Simplex2d* caveHeight = new Simplex2d(&generator, 1000.0f, -0.05f, 0.05f);
 
-    generator->seed(seed+10);
-    Simplex2d* noiseGold = new Simplex2d(generator, 400.0f, 0.0f, 1.0f);
-    generator->seed(seed+11);
-    Simplex2d* noiseCoal = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
-    generator->seed(seed+12);
-    Simplex2d* noiseIron = new Simplex2d(generator, 200.0f, 0.0f, 1.0f);
-    generator->seed(seed+13);
-    Simplex2d* noiseCuper = new Simplex2d(generator, 250.0f, 0.0f, 1.0f);
-    generator->seed(seed+14);
-    Simplex2d* noiseDiamond = new Simplex2d(generator, 500.0f, 0.0f, 1.0f);
+    generator.seed(seed+10);
+    Simplex2d* noiseGold = new Simplex2d(&generator, 400.0f, 0.0f, 1.0f);
+    generator.seed(seed+11);
+    Simplex2d* noiseCoal = new Simplex2d(&generator, 300.0f, 0.0f, 1.0f);
+    generator.seed(seed+12);
+    Simplex2d* noiseIron = new Simplex2d(&generator, 200.0f, 0.0f, 1.0f);
+    generator.seed(seed+13);
+    Simplex2d* noiseCuper = new Simplex2d(&generator, 250.0f, 0.0f, 1.0f);
+    generator.seed(seed+14);
+    Simplex2d* noiseDiamond = new Simplex2d(&generator, 500.0f, 0.0f, 1.0f);
 
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
@@ -336,71 +339,73 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
             t->_bio = bioma;
             t2->_bio = bioma;
             if(i==N_TILES_Y-1){
-                t->Reload("b");
-                t2->Reload("B");
+                t->reload("b");
+                t2->reload("B");
             }
             else {
                 if (valHeightMax) {
 
                     if (valHeightStone) {
-                        if(isDiamond) t->Reload("Y");
-                        else if(isGold)t->Reload("g");
-                        else if(isCoal)t->Reload("l");
-                        else if(isIron)t->Reload("i");
-                        else if(isCuper)t->Reload("k");
+                        if(isDiamond) t->reload("Y");
+                        else if(isGold)t->reload("g");
+                        else if(isCoal)t->reload("l");
+                        else if(isIron)t->reload("i");
+                        else if(isCuper)t->reload("k");
                         else{
-                            if (t->_bio == Tile::ICE_MOUNTAIN) t->Reload("r");
-                            else t->Reload("c");
+                            if (t->_bio == Tile::ICE_MOUNTAIN) t->reload("r");
+                            else t->reload("c");
                         }
                     }
                     else {
-                        if (t->_bio == Tile::DESERT) t->Reload("n");
-                        else if (t->_bio == Tile::JUNGLE) t->Reload("j");
-                        else if (t->_temperature < -5) t->Reload("w");
-                        else t->Reload("d");
+                        if (t->_bio == Tile::DESERT) t->reload("n");
+                        else if (t->_bio == Tile::JUNGLE) t->reload("j");
+                        else if (t->_temperature < -5) t->reload("w");
+                        else t->reload("d");
                     }
                     t->reach_floor = true;
 
                 } else {
-                    t->Reload("0");
+                    t->reload("0");
                     t->reach_floor = false;
                 }
 
                 if (valHeightMax) {
                     if (isCave) {
-                        t2->Reload("0");
+                        t2->reload("0");
                     } else {
                         if (valHeightStone) {
-                            if(isDiamond) t2->Reload("Y");
-                            else if(isGold)t2->Reload("g");
-                            else if(isCoal)t2->Reload("l");
-                            else if(isIron)t2->Reload("i");
-                            else if(isCuper)t2->Reload("k");
+                            if(isDiamond) t2->reload("Y");
+                            else if(isGold)t2->reload("g");
+                            else if(isCoal)t2->reload("l");
+                            else if(isIron)t2->reload("i");
+                            else if(isCuper)t2->reload("k");
                             else{
-                                if (t2->_bio == Tile::ICE_MOUNTAIN) t2->Reload("R");
-                                else t2->Reload("C");
+                                if (t2->_bio == Tile::ICE_MOUNTAIN) t2->reload("R");
+                                else t2->reload("C");
                             }
                         }
                         else {
-                            if (t2->_bio == Tile::DESERT) t2->Reload("N");
-                            else if (t2->_bio == Tile::JUNGLE) t2->Reload("J");
-                            else if (t2->_temperature < -5) t2->Reload("W");
-                            else t2->Reload("D");
+                            if (t2->_bio == Tile::DESERT) t2->reload("N");
+                            else if (t2->_bio == Tile::JUNGLE) t2->reload("J");
+                            else if (t2->_temperature < -5) t2->reload("W");
+                            else t2->reload("D");
                         }
                     }
 
                     t2->reach_floor = true;
                 } else {
-                    t2->Reload("0");
+                    t2->reload("0");
                     t2->reach_floor = false;
                 }
             }
 
 
-            t->SetPosition(chunk_id*Settings::TILE_SIZE*N_TILES_X+j*Settings::TILE_SIZE, i*Settings::TILE_SIZE);
-            t->SetSize(Settings::TILE_SIZE);
-            t2->SetPosition(chunk_id*Settings::TILE_SIZE*N_TILES_X+j*Settings::TILE_SIZE, i*Settings::TILE_SIZE);
-            t2->SetSize(Settings::TILE_SIZE);
+            t->setPosition(chunk_id * Settings::TILE_SIZE * N_TILES_X + j * Settings::TILE_SIZE,
+                           i * Settings::TILE_SIZE);
+            t->setSize(Settings::TILE_SIZE);
+            t2->setPosition(chunk_id * Settings::TILE_SIZE * N_TILES_X + j * Settings::TILE_SIZE,
+                            i * Settings::TILE_SIZE);
+            t2->setSize(Settings::TILE_SIZE);
             tile_mat[i][j][0] = t;
             tile_mat[i][j][1] = t2;
             myfile << t->id;
@@ -416,101 +421,17 @@ Chunk::Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &
         }
     }
     recalcReachFloor();
-    /*
 
-    is_dirty = true;
-	chunk_id = pos.x;
-    //std::cout  << chunk_id.x*N_TILES_X*Settings::TILE_SIZE << " " << chunk_id.y*N_TILES_Y*Settings::TILE_SIZE << std::endl;
-    generator->seed(seed);
-    Simplex2d* sim1 = new Simplex2d(generator, 1000.0f, 0.0f, 0.1f);
-    //generator->seed(seed+1);
-    Simplex2d* sim2 = new Simplex2d(generator, 16000.0f, 0.0f, 0.9f);
-    Simplex2d* simCueva = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
-    Simplex2d* simStone = new Simplex2d(generator, 300.0f, 0.0f, 1.0f);
-    for(int i = 0; i<N_TILES_Y; ++i){
-        for(int j = 0; j<N_TILES_X; ++j){
-            float current_global_x = chunk_id*N_TILES_X*Settings::TILE_SIZE_HIGH+j*Settings::TILE_SIZE_HIGH;
-            float current_global_y = i*Settings::TILE_SIZE_HIGH;
-            float valFloor = sim1->valSimplex2D(0, current_global_x);
-            float valFloor2 = sim2->valSimplex2D(0, current_global_x);
-            float valReal1 = ((float) current_global_y/3000.0f > (valFloor+valFloor2)? 1 : 0);
-
-            float valCueva = simCueva->valSimplex2D(current_global_y, current_global_x)*2;
-
-            float valStone = simStone->valSimplex2D(current_global_y, current_global_x);
-
-            float valReal2 = valReal1 - valCueva;
-
-            //float valReala = ((float) current_global_y/3000.0f > valFloor? 1 : 0);
-            //std::cout << valFloor << std::endl;
-
-            Tile* t = new Tile(0, 0,texM);
-            Tile* t2 = new Tile(0, 1, texM);
-            if(i==N_TILES_Y-1){
-                t->rigid=true;
-                t2->rigid=true;
-                t->reach_floor = true;
-                t2->reach_floor = true;
-            }
-            if(valReal1 >0){
-                if(valStone > 0.8){
-                    t->Reload("c");
-                    t->reach_floor = true;
-                } else{
-                    t->Reload("d");
-                    t->reach_floor = true;
-                }
-
-
-            } else{
-                 t->Reload("0");
-                //t->reach_sun=true;
-                t->reach_floor = false;
-            }
-
-            if(valReal2 >0){
-                if(valStone > 0.8){
-                    t2->Reload("C");
-                    t2->reach_floor = true;
-                } else {
-                    t2->Reload("D");
-                    t2->reach_floor = true;
-                }
-
-            } else{
-                t2->Reload("0");
-                t2->reach_floor = false;
-
-            }
-
-
-            t->SetPosition(chunk_id*Settings::TILE_SIZE*N_TILES_X+j*Settings::TILE_SIZE, i*Settings::TILE_SIZE);
-            t->SetSize(Settings::TILE_SIZE);
-            t2->SetPosition(chunk_id*Settings::TILE_SIZE*N_TILES_X+j*Settings::TILE_SIZE, i*Settings::TILE_SIZE);
-            t2->SetSize(Settings::TILE_SIZE);
-            tile_mat[i][j][0] = t;
-            tile_mat[i][j][1] = t2;
-            myfile << t->id;
-            myfile << t2->id;
-            //std::cout << (valReal > 0 ? "X " : "  ");
-            //SETEJEM ELS VEINS DE CADA TILE DEL CHUNK MENYS LES COLUMNES EXTERIORS
-            if(j > 1 && i > 0){
-                setTileNeighbors(j-1,i-1);
-            }
-            if(i==Chunk::N_TILES_Y-1){
-                setTileNeighbors(j-1,i);
-            }
-        }
-    }
-    recalcReachFloor();
-     */
 	
 }
 
-Chunk::Chunk(sf::Vector2i pos,std::mt19937 *generator,int seed, std::ifstream &myfile):
+Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile):
         render_array(sf::Quads , (uint)(4)),
         sky_array(sf::Quads , (uint)(4))
 {
+    Scene *scene = Scene::getScene();
+    std::mt19937 generator = scene->getGenerator();
+    int seed = std::stoi(scene->getSeed());
     is_dirty = true;
     chunk_id = pos.x;
     std::cout << "creat" << chunk_id << std::endl;
@@ -518,12 +439,12 @@ Chunk::Chunk(sf::Vector2i pos,std::mt19937 *generator,int seed, std::ifstream &m
     buf_iter k(myfile), e;
 
 
-    generator->seed(seed+3);
-    Simplex2d* mount_factor = new Simplex2d(generator, 10000.0f, -1.2f, 1.0f);
-    generator->seed(seed+5);
-    Simplex2d* base_noise_temperature = new Simplex2d(generator, 25000.0f, -10, 20);
-    generator->seed(seed+6);
-    Simplex2d* noise_humidity = new Simplex2d(generator, 25000.0f, 0.0f, 100.0f);
+    generator.seed(seed+3);
+    Simplex2d* mount_factor = new Simplex2d(&generator, 10000.0f, -1.2f, 1.0f);
+    generator.seed(seed+5);
+    Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -10, 20);
+    generator.seed(seed+6);
+    Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
 
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
@@ -540,8 +461,8 @@ Chunk::Chunk(sf::Vector2i pos,std::mt19937 *generator,int seed, std::ifstream &m
             ++k;
             //myfile.get(c1);
             //myfile.get(c2);
-            t->Reload(std::string(1, c1));
-            t2->Reload(std::string(1, c2));
+            t->reload(std::string(1, c1));
+            t2->reload(std::string(1, c2));
             t->reach_floor = true;
             t2->reach_floor = true;
 
@@ -560,10 +481,12 @@ Chunk::Chunk(sf::Vector2i pos,std::mt19937 *generator,int seed, std::ifstream &m
             //if(t->id == "0") t->reach_sun=true;
 
 
-            t->SetPosition(chunk_id*Settings::TILE_SIZE*N_TILES_X+j*Settings::TILE_SIZE, i*Settings::TILE_SIZE);
-            t->SetSize(Settings::TILE_SIZE);
-            t2->SetPosition(chunk_id*Settings::TILE_SIZE*N_TILES_X+j*Settings::TILE_SIZE, i*Settings::TILE_SIZE);
-            t2->SetSize(Settings::TILE_SIZE);
+            t->setPosition(chunk_id * Settings::TILE_SIZE * N_TILES_X + j * Settings::TILE_SIZE,
+                           i * Settings::TILE_SIZE);
+            t->setSize(Settings::TILE_SIZE);
+            t2->setPosition(chunk_id * Settings::TILE_SIZE * N_TILES_X + j * Settings::TILE_SIZE,
+                            i * Settings::TILE_SIZE);
+            t2->setSize(Settings::TILE_SIZE);
             tile_mat[i][j][0] = t;
             tile_mat[i][j][1] = t2;
             //std::cout << (valReal > 0 ? "X " : "  ");
@@ -627,7 +550,7 @@ Tile* Chunk::getTile(float x, float y, int z){
 
         int tile_x = (((int)floorf(x)%size_chunk_x)+size_chunk_x)/Settings::TILE_SIZE;
         int tile_y = ((int)floorf(y)%size_chunk_y)/Settings::TILE_SIZE;
-        //if((int)floorf(x)%size_chunk_x==0) tile_x = 0;
+        if((int)floorf(x)%size_chunk_x==0) tile_x = 0;
 
         return tile_mat[abs(tile_y)][abs(tile_x)][z];
     }
@@ -683,10 +606,10 @@ sf::Vector2i Chunk::getTileIndex(float x, float y){
     }
 }
 
-void Chunk::DrawGrassTiles()
+void Chunk::drawGrassTiles()
 {
     for(int i=0; i<grass_tiles.size(); i++){
-        grass_tiles[i]->DrawGrass(render_array);
+        grass_tiles[i]->drawGrass(render_array);
     }
 }
 
@@ -704,7 +627,7 @@ void Chunk::prepareArrays(){
         for(int j = 0; j<Chunk::N_TILES_X; ++j){
             Tile* t1 = tile_mat[i][j][1];
             if(t1->id !="0"){
-                t1->Draw(render_array);
+                t1->draw(render_array);
                 if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
                     if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && (t1->id=="D" ||t1->id=="J"||t1->id=="W")) grass_tiles.push_back(t1);
                 }
@@ -722,14 +645,14 @@ void Chunk::prepareArrays(){
                     }
                     else t0->drawBorderSkyArray(sky_array);
                 }
-                if(t0->id != "0")t0->Draw(render_array);
-                else t0->DrawOuts(render_array);
+                if(t0->id != "0")t0->draw(render_array);
+                else t0->drawOuts(render_array);
 
-                t1->DrawOuts(render_array);
+                t1->drawOuts(render_array);
 
             }
         }
     }
-    DrawGrassTiles();
+    drawGrassTiles();
 }
 

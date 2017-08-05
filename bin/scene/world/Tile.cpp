@@ -44,7 +44,7 @@ void Tile::removeReachFloorCascade(){
     tB->reach_floor = false;
     if(neighbors[1] != nullptr && (neighbors[1]->reach_floor || neighbors[1]->neighbors[8]->reach_floor)) neighbors[1]->removeReachFloorCascade();
 }
-void Tile::Reload(std::string new_id)
+void Tile::reload(std::string new_id)
 {
     last_tension_debug =0;
 	if(new_id == "0"){
@@ -117,7 +117,7 @@ void Tile::Reload(std::string new_id)
             ms_to_remove = 100;
         }
         else {
-            Reload("0");
+            reload("0");
         }
         if(neighbors[8] != nullptr){
             reach_floor = (neighbors[8]->reach_floor || (neighbors[5] != nullptr &&
@@ -142,7 +142,7 @@ bool Tile::drawable(){
 	}
 	return res;
 }
-void Tile::DrawFadeOut(sf::VertexArray &vertexArray){
+void Tile::drawFadeOut(sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && neighbors[0]->neighbors[8]->id != "0" && !neighbors[0]->drawable()  && neighbors[7]->drawable() && neighbors[1]->drawable()){
         appendSpriteToArray( vertexArray, -1, "S2", 90);
     }
@@ -171,7 +171,7 @@ void Tile::DrawFadeOut(sf::VertexArray &vertexArray){
         appendSpriteToArray( vertexArray, -1, "S", 90);
     }
 }
-void Tile::DrawAmbientOclusion(sf::VertexArray &vertexArray){
+void Tile::drawAmbientOclusion(sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && !neighbors[0]->drawable() && neighbors[7]->drawable() && neighbors[1]->drawable()){
 
     }
@@ -197,7 +197,7 @@ void Tile::DrawAmbientOclusion(sf::VertexArray &vertexArray){
         appendSpriteToArray( vertexArray, -1, "s", 90);
     }
 }
-void Tile::DrawOuts(sf::VertexArray &vertexArray)
+void Tile::drawOuts(sf::VertexArray &vertexArray)
 {
     Tile* t1 = neighbors[1];
     Tile* t3 = neighbors[3];
@@ -282,7 +282,7 @@ void Tile::appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+Settings::TILE_SIZE/divisor,position.y+increment_y+Settings::TILE_SIZE/divisor), pos_tex3));
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x,position.y+Settings::TILE_SIZE/divisor+increment_y), pos_tex4));
 }
-void Tile::DrawIns(sf::VertexArray &vertexArray){
+void Tile::drawIns(sf::VertexArray &vertexArray){
     bool is_mini[4] ={0,0,0,0};
     if(neighbors[1] != nullptr && neighbors[1]->id=="0" && neighbors[2] != nullptr && neighbors[2]->id=="0" && neighbors[3] != nullptr && neighbors[3]->id=="0"){
         std::string id_mini = id;
@@ -336,7 +336,7 @@ void Tile::drawBorderSkyArray(sf::VertexArray &skyArray){
     skyArray.append(sf::Vertex(sf::Vector2f(position.x-Settings::TILE_SIZE*3,position.y+Settings::TILE_SIZE*4), pos_tex4));
 
 }
-void Tile::DrawGrass(sf::VertexArray &vertexArray){
+void Tile::drawGrass(sf::VertexArray &vertexArray){
     TextureManager *texMan = Resources::getTextureManager("tileMap");
     std::string grass0;
     std::string grass1;
@@ -356,10 +356,10 @@ void Tile::DrawGrass(sf::VertexArray &vertexArray){
     pos_tex2 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y);
     pos_tex3 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y+texMan->size_sprite.y);
     pos_tex4 = sf::Vector2f(position_sprite.x, position_sprite.y+texMan->size_sprite.y);
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y-GetHeight()/2), pos_tex1));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y-GetHeight()/2+Settings::TILE_SIZE), pos_tex3));
-    vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Settings::TILE_SIZE-GetHeight()/2),
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y- getHeight()/2), pos_tex1));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y- getHeight()/2), pos_tex2));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y- getHeight()/2+Settings::TILE_SIZE), pos_tex3));
+    vertexArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Settings::TILE_SIZE- getHeight()/2),
                                   pos_tex4));
     if(neighbors[3]!=nullptr && ((neighbors[3]->id !="D" && neighbors[3]->id !="J" && neighbors[3]->id !="W") || (neighbors[2] !=nullptr && neighbors[2]->neighbors[8]->id !="0"))){
         sf::Vector2i position_sprite = texMan->getPositionSprite(grass1);
@@ -367,10 +367,10 @@ void Tile::DrawGrass(sf::VertexArray &vertexArray){
         pos_tex2 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y);
         pos_tex3 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y+texMan->size_sprite.y);
         pos_tex4 = sf::Vector2f(position_sprite.x, position_sprite.y+texMan->size_sprite.y);
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y-GetHeight()/2), pos_tex1));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2), pos_tex2));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2+Settings::TILE_SIZE), pos_tex3));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+GetWidth(),position.y+Settings::TILE_SIZE-GetHeight()/2), pos_tex4));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+ getWidth(),position.y- getHeight()/2), pos_tex1));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+ getWidth()+Settings::TILE_SIZE,position.y- getHeight()/2), pos_tex2));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+ getWidth()+Settings::TILE_SIZE,position.y- getHeight()/2+Settings::TILE_SIZE), pos_tex3));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x+ getWidth(),position.y+Settings::TILE_SIZE- getHeight()/2), pos_tex4));
     }
     if(neighbors[7]!=nullptr && ((neighbors[7]->id !="D" && neighbors[7]->id !="J" && neighbors[7]->id !="W") || (neighbors[0] !=nullptr && neighbors[0]->neighbors[8]->id !="0"))){
         sf::Vector2i position_sprite = texMan->getPositionSprite(grass1);
@@ -378,21 +378,21 @@ void Tile::DrawGrass(sf::VertexArray &vertexArray){
         pos_tex4 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y);
         pos_tex1 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y+texMan->size_sprite.y);
         pos_tex2 = sf::Vector2f(position_sprite.x, position_sprite.y+texMan->size_sprite.y);
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth(),position.y-GetHeight()/2+5), pos_tex1));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2+5), pos_tex2));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth()+Settings::TILE_SIZE,position.y-GetHeight()/2+5+Settings::TILE_SIZE), pos_tex3));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x-GetWidth(),position.y+Settings::TILE_SIZE-GetHeight()/2+5), pos_tex4));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth(),position.y- getHeight()/2+5), pos_tex1));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth()+Settings::TILE_SIZE,position.y- getHeight()/2+5), pos_tex2));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth()+Settings::TILE_SIZE,position.y- getHeight()/2+5+Settings::TILE_SIZE), pos_tex3));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth(),position.y+Settings::TILE_SIZE- getHeight()/2+5), pos_tex4));
     }
 }
-void Tile::Draw(sf::VertexArray &vertexArray)
+void Tile::draw(sf::VertexArray &vertexArray)
 {
 
 
         if (layer == 1) {
             if(drawable()) {
-                if (neighbors[8] != nullptr && neighbors[8]->id != "0") neighbors[8]->Draw( vertexArray);
-                DrawIns( vertexArray);
-                DrawFadeOut(vertexArray);
+                if (neighbors[8] != nullptr && neighbors[8]->id != "0") neighbors[8]->draw(vertexArray);
+                drawIns(vertexArray);
+                drawFadeOut(vertexArray);
 
 
 
@@ -408,23 +408,23 @@ void Tile::Draw(sf::VertexArray &vertexArray)
             }
     }
     else {
-            DrawIns( vertexArray);
-            DrawAmbientOclusion( vertexArray);
+            drawIns(vertexArray);
+            drawAmbientOclusion(vertexArray);
         }
 }
 
 
-void Tile::Update(float elapsedTime)
+void Tile::update(float elapsedTime)
 {
 }
 
-void Tile::SetPosition(float x, float y)
+void Tile::setPosition(float x, float y)
 {
 
 	position.x=x;
 	position.y=y;
 }
-void Tile::SetSize(float x)
+void Tile::setSize(float x)
 {
 
 	size.x=x;
@@ -437,12 +437,12 @@ sf::Vector2f Tile::GetPosition() const
 	return position;
 }
 
-float Tile::GetHeight() const
+float Tile::getHeight() const
 {
 	return size.y;
 }
 
-float Tile::GetWidth() const
+float Tile::getWidth() const
 {
 	return size.x;
 }

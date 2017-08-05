@@ -66,7 +66,7 @@ bool Inputs::_lastButtonState[Inputs::NUM_BUTTONS] = {0};
 bool Inputs::_currentButtonState[Inputs::NUM_BUTTONS] = {0};
 
 void Inputs::Update() {
-    // Update _lastKeyState
+    // update _lastKeyState
     memcpy(_lastKeyState, _currentKeyState, sizeof(_currentKeyState));
     memcpy(_lastButtonState, _currentButtonState, sizeof(_currentButtonState));
     wheelDelta = 0;
@@ -75,7 +75,7 @@ void Inputs::Update() {
 
 void Inputs::KeyPressed(const sf::Keyboard::Key &code) {
 
-    // Update _currentKeyState
+    // update _currentKeyState
     unsigned int i;
     for (i = 0; i < NUM_KEYS; ++i) {
         Inputs::Key key = (Inputs::Key) i;
@@ -88,7 +88,7 @@ void Inputs::KeyPressed(const sf::Keyboard::Key &code) {
 }
 void Inputs::KeyReleased(const sf::Keyboard::Key &code) {
 
-    // Update _currentKeyState
+    // update _currentKeyState
     unsigned int i;
     for (i = 0; i < NUM_KEYS; ++i) {
         Inputs::Key key = (Inputs::Key) i;
@@ -102,7 +102,7 @@ void Inputs::KeyReleased(const sf::Keyboard::Key &code) {
 
 void Inputs::ButtonPressed(const sf::Mouse::Button &code) {
 
-    // Update _currentKeyState
+    // update _currentKeyState
     unsigned int i;
     for (i = 0; i < NUM_KEYS; ++i) {
         Inputs::Button key = (Inputs::Button) i;
@@ -115,7 +115,7 @@ void Inputs::ButtonPressed(const sf::Mouse::Button &code) {
 }
 void Inputs::ButtonReleased(const sf::Mouse::Button &code) {
 
-    // Update _currentKeyState
+    // update _currentKeyState
     unsigned int i;
     for (i = 0; i < NUM_KEYS; ++i) {
         Inputs::Button key = (Inputs::Button) i;

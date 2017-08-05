@@ -11,10 +11,11 @@
 
 class Clock {
 public:
-    Clock(std::string seed);
+    Clock();
     ~Clock();
-    void Update(float delta);
-    void SetColorToShader(sf::Shader &shader);
+    void init();
+    void update(float delta);
+    void setColorToShader(sf::Shader &shader);
     int day;
     int hour;
     float min;

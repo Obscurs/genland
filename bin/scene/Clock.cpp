@@ -4,8 +4,9 @@
 
 #include "Clock.h"
 #include "../Inputs.h"
+#include "Scene.h"
 #include <iostream>
-Clock::Clock(std::string seed){
+Clock::Clock(){
     day=0;
     hour=7;
     min=15;
@@ -23,16 +24,20 @@ Clock::Clock(std::string seed){
     _seasonTimeIntervals[4] =360;
     _globalHumidity = 0;
     _globalTemperature = 0;
-    std::mt19937 generator;
-    generator.seed(std::stoi(seed));
-    _rainSimplex = new Simplex2d(&generator, 150.0f, 0.0f, 1.0f);
+
 }
 
 
 Clock::~Clock() {
 }
-
-void Clock::SetColorToShader(sf::Shader &shader){
+void Clock::init(){
+    Scene *scene = Scene::getScene();
+    std::mt19937 generator = scene->getGenerator();
+    int seed = std::stoi(scene->getSeed());
+    generator.seed(seed);
+    _rainSimplex = new Simplex2d(&generator, 150.0f, 0.0f, 1.0f);
+}
+void Clock::setColorToShader(sf::Shader &shader){
     switch(_dayTime){
         case Clock::MORNING:
             shader.setParameter("color", sf::Color::Black);
@@ -119,7 +124,7 @@ void Clock::UpdateDayTimeIntervals(){
             break;
     }
 }
-void Clock::Update(float delta){
+void Clock::update(float delta){
     if (Inputs::KeyBreak(Inputs::Key::ADD)){
         _clockSpeed +=1;
     } else if(Inputs::KeyBreak(Inputs::Key::SUB)){

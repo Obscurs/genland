@@ -25,11 +25,10 @@ Map::Map():
 {
     _initialized = false;
 }
-void Map::init(int pos, std::string s)
+void Map::init(int pos)
 {
 
     _initialized = true;
-    seed = s;
     Light l1(sf::Vector2f(+500.0,2000.0),95.0,105.0,100.0, sf::Color::Green);
     Light l2(sf::Vector2f(+550.0,2000.0),95.0,105.0,100.0, sf::Color::Red);
     Light l3(sf::Vector2f(0,0),78.0,80.0,100.0, sf::Color::Yellow);
@@ -39,33 +38,25 @@ void Map::init(int pos, std::string s)
 
 
     int id_temp = 0;
-    posMap = pos;
+    _posMap = pos;
     createMap(0, pos, id_temp);
     createMap(1, pos+1, id_temp);
     createMap(2, pos+2, id_temp);
-    chunk_mat[0]->neighbors[1] = chunk_mat[1];
-    chunk_mat[1]->neighbors[0] = chunk_mat[0];
-    chunk_mat[1]->neighbors[1] = chunk_mat[2];
-    chunk_mat[2]->neighbors[0] = chunk_mat[1];
+    _chunk_mat[0]->neighbors[1] = _chunk_mat[1];
+    _chunk_mat[1]->neighbors[0] = _chunk_mat[0];
+    _chunk_mat[1]->neighbors[1] = _chunk_mat[2];
+    _chunk_mat[2]->neighbors[0] = _chunk_mat[1];
 
-    std::cout << "chunk 00000000000000" << std::endl;
-    chunk_mat[0]->calcLateralNeighborsTiles(0);
-    chunk_mat[0]->calcLateralNeighborsTiles(1);
+    _chunk_mat[0]->calcLateralNeighborsTiles(0);
+    _chunk_mat[0]->calcLateralNeighborsTiles(1);
+    _chunk_mat[1]->calcLateralNeighborsTiles(0);
+    _chunk_mat[1]->calcLateralNeighborsTiles(1);
+    _chunk_mat[2]->calcLateralNeighborsTiles(0);
+    _chunk_mat[2]->calcLateralNeighborsTiles(1);
 
-    std::cout << "chunk 111111111111111" << std::endl;
-    chunk_mat[1]->calcLateralNeighborsTiles(0);
-    chunk_mat[1]->calcLateralNeighborsTiles(1);
-    std::cout << "chunk 222222222222222" << std::endl;
-    chunk_mat[2]->calcLateralNeighborsTiles(0);
-    chunk_mat[2]->calcLateralNeighborsTiles(1);
-
-
-    std::cout << "chunk 0 recalc" << std::endl;
-    chunk_mat[0]->recalcReachFloor();
-    std::cout << "chunk 1 recalc" << std::endl;
-    chunk_mat[1]->recalcReachFloor();
-    std::cout << "chunk 2 recalc" << std::endl;
-    chunk_mat[2]->recalcReachFloor();
+    _chunk_mat[0]->recalcReachFloor();
+    _chunk_mat[1]->recalcReachFloor();
+    _chunk_mat[2]->recalcReachFloor();
 
 }
 
@@ -74,7 +65,7 @@ void Map::saveMap(){
         Scene *scene = Scene::getScene();
         std::string path = scene->getGamePath();
         for(int i=0; i<N_CHUNKS_X; i++){
-            chunk_mat[i]->saveToFile(path);
+            _chunk_mat[i]->saveToFile(path);
         }
     } std::cout << "canot save map, map not _initialized" << std::endl;
 }
@@ -92,8 +83,8 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
             myfile.open(filename);
             std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
             sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, &generator,std::stoi(seed), myfile);
-            chunk_mat[map_index] = c;
+            Chunk *c = new Chunk(chunk_pos, myfile);
+            _chunk_mat[map_index] = c;
             myfile.close();
         }
         else {
@@ -104,39 +95,39 @@ void Map::createMap(int map_index, int chunk_index, int &id_temp){
 
 
             sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, &generator,std::stoi(seed), myfile);
-            chunk_mat[map_index] = c;
+            Chunk *c = new Chunk(chunk_pos, myfile);
+            _chunk_mat[map_index] = c;
 
             myfile.close();
         }
-        if (map_index == 0 && chunk_mat[1] != nullptr) {
-            chunk_mat[0]->neighbors[1] = chunk_mat[1];
-            chunk_mat[1]->neighbors[0] = chunk_mat[0];
-            chunk_mat[0]->calcLateralNeighborsTiles(1);
-            chunk_mat[1]->calcLateralNeighborsTiles(0);
-            //chunk_mat[0]->recalcReachSun();
+        if (map_index == 0 && _chunk_mat[1] != nullptr) {
+            _chunk_mat[0]->neighbors[1] = _chunk_mat[1];
+            _chunk_mat[1]->neighbors[0] = _chunk_mat[0];
+            _chunk_mat[0]->calcLateralNeighborsTiles(1);
+            _chunk_mat[1]->calcLateralNeighborsTiles(0);
+            //_chunk_mat[0]->recalcReachSun();
         } else if (map_index == 1) {
-            if (chunk_mat[0] != nullptr) {
-                chunk_mat[0]->neighbors[1] = chunk_mat[1];
-                chunk_mat[1]->neighbors[0] = chunk_mat[0];
-                chunk_mat[0]->calcLateralNeighborsTiles(1);
-                chunk_mat[1]->calcLateralNeighborsTiles(0);
+            if (_chunk_mat[0] != nullptr) {
+                _chunk_mat[0]->neighbors[1] = _chunk_mat[1];
+                _chunk_mat[1]->neighbors[0] = _chunk_mat[0];
+                _chunk_mat[0]->calcLateralNeighborsTiles(1);
+                _chunk_mat[1]->calcLateralNeighborsTiles(0);
             }
-            if (chunk_mat[2] != nullptr) {
-                chunk_mat[1]->neighbors[1] = chunk_mat[2];
-                chunk_mat[2]->neighbors[0] = chunk_mat[1];
-                chunk_mat[1]->calcLateralNeighborsTiles(1);
-                chunk_mat[2]->calcLateralNeighborsTiles(0);
+            if (_chunk_mat[2] != nullptr) {
+                _chunk_mat[1]->neighbors[1] = _chunk_mat[2];
+                _chunk_mat[2]->neighbors[0] = _chunk_mat[1];
+                _chunk_mat[1]->calcLateralNeighborsTiles(1);
+                _chunk_mat[2]->calcLateralNeighborsTiles(0);
             }
-            //chunk_mat[1]->recalcReachSun();
-        } else if (map_index == 2 && chunk_mat[1] != nullptr) {
-            chunk_mat[2]->neighbors[0] = chunk_mat[1];
-            chunk_mat[1]->neighbors[1] = chunk_mat[2];
-            chunk_mat[1]->calcLateralNeighborsTiles(1);
-            chunk_mat[2]->calcLateralNeighborsTiles(0);
-            //chunk_mat[2]->recalcReachSun();
+            //_chunk_mat[1]->recalcReachSun();
+        } else if (map_index == 2 && _chunk_mat[1] != nullptr) {
+            _chunk_mat[2]->neighbors[0] = _chunk_mat[1];
+            _chunk_mat[1]->neighbors[1] = _chunk_mat[2];
+            _chunk_mat[1]->calcLateralNeighborsTiles(1);
+            _chunk_mat[2]->calcLateralNeighborsTiles(0);
+            //_chunk_mat[2]->recalcReachSun();
         }
-        _mapViewer.addChunk(*chunk_mat[map_index]);
+        _mapViewer.addChunk(*_chunk_mat[map_index]);
     } else std::cout << "canot create map, map not _initialized" << std::endl;
 }
 
@@ -523,7 +514,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                             float dist_x = tpos.x - center_falling_x;
                             float dist_y = max_pos.y - tpos.y;
                             falling_t->SetPosition(tpos.x, tpos.y + Settings::TILE_SIZE / 2);
-                            falling_t->SetSize(t->GetWidth());
+                            falling_t->SetSize(t->getWidth());
                             falling_t->setFactor(dist_x, dist_y);
 
                             falling_tiles.push_back(falling_t);
@@ -536,15 +527,15 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                             float dist_x = tpos.x - center_falling_x;
                             float dist_y = max_pos.y - tpos.y;
                             falling_t->SetPosition(tpos.x, tpos.y + Settings::TILE_SIZE / 2);
-                            falling_t->SetSize(t1->GetWidth());
+                            falling_t->SetSize(t1->getWidth());
                             falling_t->setFactor(dist_x, dist_y);
                             falling_tiles.push_back(falling_t);
                         }
                         else {
                             std::cout << "WHHHHHHHHHHHHAAAAAAAAAAAAT" << std::endl;
                         }
-                        t->Reload("0");
-                        t1->Reload("0");
+                        t->reload("0");
+                        t1->reload("0");
                     }
 
                     //compute border tiles
@@ -563,7 +554,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
 }
 void Map::dirtyChunks(){
     for(int i = 0 ; i<N_CHUNKS_X ; ++i){
-        chunk_mat[i]->is_dirty = true;
+        _chunk_mat[i]->is_dirty = true;
     }
 }
 void Map::removeTile2(Tile* removed_tile){
@@ -571,7 +562,7 @@ void Map::removeTile2(Tile* removed_tile){
     //if(removed_tile->layer==0) removed_reach_sun = true;
     Tile* otherLayerRemovedTile= removed_tile->neighbors[8];
     //if(!otherLayerRemovedTile->reach_floor) removeReachFloorCascade2(removed_tile->neighbors[1]);
-    removed_tile->Reload("0");
+    removed_tile->reload("0");
     //if(removed_reach_sun) removed_tile->reach_sun = true;
     Tile* removed_tile0;
     if(removed_tile->layer==0) removed_tile0 = removed_tile;
@@ -595,9 +586,9 @@ void Map::removeTile2(Tile* removed_tile){
 Tile* Map::getTile(float x, float y, int z){
 	if(y<0) y = 0;
 	int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
-	int chunk_x = (x-size_chunk_x*posMap)/size_chunk_x;
+	int chunk_x = (x-size_chunk_x*_posMap)/size_chunk_x;
     //std::cout << chunk_x << std::endl;
-	Chunk* c = chunk_mat[chunk_x];
+	Chunk* c = _chunk_mat[chunk_x];
 
 	return c->getTile(x, y, z);
 }
@@ -612,7 +603,7 @@ int Map::getChunkIndex(float x){
 int Map::getIndexMatChunk(int x){
     int final_x = -1;
     for(int i = 0 ; i<N_CHUNKS_X ; ++i){
-        int pos_x = chunk_mat[i]->chunk_id;
+        int pos_x = _chunk_mat[i]->chunk_id;
         if(pos_x == x){
             final_x = i;
         }
@@ -623,8 +614,8 @@ int Map::getIndexMatChunk(int x){
 
 void Map::checkLoadedChunks(float x, float y){
     if(_initialized){
-        Chunk *c1 = chunk_mat[0];
-        Chunk *c2 = chunk_mat[N_CHUNKS_X - 1];
+        Chunk *c1 = _chunk_mat[0];
+        Chunk *c2 = _chunk_mat[N_CHUNKS_X - 1];
         Tile *t1 = c1->getTileByIndex(0, 0, 0);
         Tile *t2 = c2->getTileByIndex(Chunk::N_TILES_X - 1, 0, 0);
         sf::Vector2f p1 = t1->GetPosition();
@@ -641,17 +632,17 @@ void Map::checkLoadedChunks(float x, float y){
                 c2->saveToFile(path);
                 int current_pos = c1->chunk_id;
                 int id_temp = 0;
-                Chunk *chunk_mid = chunk_mat[1];
+                Chunk *chunk_mid = _chunk_mat[1];
 
 
-                chunk_mat[2] = chunk_mid;
-                chunk_mat[1] = c1;
-                --posMap;
+                _chunk_mat[2] = chunk_mid;
+                _chunk_mat[1] = c1;
+                --_posMap;
                 createMap(0, current_pos - 1, id_temp);
-                chunk_mat[2]->neighbors[1] = nullptr;
-                chunk_mat[2]->calcLateralNeighborsTiles(1);
-                chunk_mat[0]->calcLateralNeighborsTiles(0);
-                chunk_mat[0]->recalcReachFloor();
+                _chunk_mat[2]->neighbors[1] = nullptr;
+                _chunk_mat[2]->calcLateralNeighborsTiles(1);
+                _chunk_mat[0]->calcLateralNeighborsTiles(0);
+                _chunk_mat[0]->recalcReachFloor();
                 delete c2;
             }
 
@@ -664,16 +655,16 @@ void Map::checkLoadedChunks(float x, float y){
                 c1->saveToFile(path);
                 int current_pos = c2->chunk_id;
                 int id_temp = 0;
-                Chunk *chunk_mid = chunk_mat[1];
+                Chunk *chunk_mid = _chunk_mat[1];
 
-                chunk_mat[0] = chunk_mid;
-                chunk_mat[1] = c2;
-                ++posMap;
+                _chunk_mat[0] = chunk_mid;
+                _chunk_mat[1] = c2;
+                ++_posMap;
                 createMap(2, current_pos + 1, id_temp);
-                chunk_mat[0]->neighbors[1] = nullptr;
-                chunk_mat[0]->calcLateralNeighborsTiles(0);
-                chunk_mat[2]->calcLateralNeighborsTiles(1);
-                chunk_mat[2]->recalcReachFloor();
+                _chunk_mat[0]->neighbors[1] = nullptr;
+                _chunk_mat[0]->calcLateralNeighborsTiles(0);
+                _chunk_mat[2]->calcLateralNeighborsTiles(1);
+                _chunk_mat[2]->recalcReachFloor();
                 delete c1;
             }
             //std::cout << distance_1 << " " << distance_2 << std::endl;
@@ -703,20 +694,20 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
 }
 
 
-void Map::UpdateAll(float delta, sf::Vector2f player_pos)
+void Map::update(float delta, sf::Vector2f player_pos)
 {
     if(_initialized){
         //BACKGROUNDS
         int x = player_pos.x;
         int y = std::max((int)player_pos.y, 0);
         int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
-        int chunk_player = (x-size_chunk_x*posMap)/size_chunk_x;
-        int idChunk = chunk_mat[chunk_player]->chunk_id;
+        int chunk_player = (x-size_chunk_x*_posMap)/size_chunk_x;
+        int idChunk = _chunk_mat[chunk_player]->chunk_id;
 
-        sf::Vector2i tile = chunk_mat[chunk_player]->getTileIndex(x, y);
-        _mapViewer.update(chunk_mat[chunk_player]->chunk_id, tile);
+        sf::Vector2i tile = _chunk_mat[chunk_player]->getTileIndex(x, y);
+        _mapViewer.update(_chunk_mat[chunk_player]->chunk_id, tile);
         for(int i = 0; i<N_CHUNKS_X; i++){
-            chunk_mat[i]->update(delta);
+            _chunk_mat[i]->update(delta);
         }
         for(int i=0; i<lights.size(); i++){
             lights[i].Update(delta);
@@ -726,7 +717,7 @@ void Map::UpdateAll(float delta, sf::Vector2f player_pos)
         lights[2].position=player_pos;
 
         for(int i=0; i<falling_tiles.size(); ++i){
-            falling_tiles[i]->Update(delta, chunk_mat[0], chunk_mat[1], chunk_mat[2], posMap);
+            falling_tiles[i]->Update(delta, _chunk_mat[0], _chunk_mat[1], _chunk_mat[2], _posMap);
             if(falling_tiles[i]->deleted==1){
                 delete falling_tiles[i];
                 falling_tiles.erase(falling_tiles.begin()+i);

@@ -17,18 +17,18 @@ public:
 		NUM_BIOMS
 	};
 
-	void Reload(std::string id);
-	void Draw(sf::VertexArray &vertexArray);
-    void DrawOuts(sf::VertexArray &vertexArray);
-    void DrawGrass(sf::VertexArray &vertexArray);
-	void Update(float elapsedTime);
+	void reload(std::string id);
+	void draw(sf::VertexArray &vertexArray);
+    void drawOuts(sf::VertexArray &vertexArray);
+    void drawGrass(sf::VertexArray &vertexArray);
+	void update(float elapsedTime);
 	void drawSkyArray(sf::VertexArray &skyArray);
 	void drawBorderSkyArray(sf::VertexArray &skyArray);
-	void SetPosition(float x, float y);
-	void SetSize(float x);
+	void setPosition(float x, float y);
+	void setSize(float x);
 	sf::Vector2f GetPosition() const;
-	float GetWidth() const;
-	float GetHeight() const;
+	float getWidth() const;
+	float getHeight() const;
 	bool reach_sun; //sha de privatitzar
 	bool rigid;
 	bool reach_floor;
@@ -54,9 +54,9 @@ public:
 private:
 	void setReachFloorCascade();
 	void removeReachFloorCascade();
-    void DrawFadeOut(sf::VertexArray &vertexArray);
-    void DrawIns(sf::VertexArray &vertexArray);
-    void DrawAmbientOclusion(sf::VertexArray &vertexArray);
+    void drawFadeOut(sf::VertexArray &vertexArray);
+    void drawIns(sf::VertexArray &vertexArray);
+    void drawAmbientOclusion(sf::VertexArray &vertexArray);
 	sf::Vector2f position;
 	sf::Vector2f size;
 

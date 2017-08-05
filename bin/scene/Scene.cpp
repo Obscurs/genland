@@ -9,11 +9,12 @@ Scene::Scene()
     : _map_curr(),
       _player(),
       _backgrounds(),
-      _clock("0"),
+      _clock(),
       _drawer(&_map_curr,&_player,&_backgrounds, &_clock),
       _viewGame()
 
 {
+    _seed = "0";
     _zoom = 1.0;
     _player.Load("blue.png");
     _player.SetPosition(0,0);
@@ -23,7 +24,7 @@ Scene::Scene()
 }
 void Scene::update(sf::RenderWindow &window,float delta){
     //sf::View currentView = window.getView();
-    //currentView.setCenter(_player.GetPosition().x+(_player.GetWidth()/2), _player.GetPosition().y+(_player.GetHeight()/2));
+    //currentView.setCenter(_player.GetPosition().x+(_player.getWidth()/2), _player.GetPosition().y+(_player.getHeight()/2));
     //window.setView(currentView);
 
     int wheel = Inputs::GetWheel();
@@ -37,9 +38,9 @@ void Scene::update(sf::RenderWindow &window,float delta){
     _player.Update(delta, _map_curr, window);
 
     _backgrounds.Update(_player.GetPosition(),_clock);
-    _map_curr.UpdateAll(delta, _player.GetPosition());
+    _map_curr.update(delta, _player.GetPosition());
 
-    _clock.Update(delta);
+    _clock.update(delta);
 
     _viewGame.setCenter(_player.GetPosition().x+(_player.GetWidth()/2), _player.GetPosition().y+(_player.GetHeight()/2));
 }
@@ -50,6 +51,7 @@ void Scene::draw(sf::RenderWindow &window){
   window.setView(aux);
 }
 void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
+    _seed = seed;
     _initialized = true;
     Player *newPlayer = new Player();
     _player = *newPlayer;
@@ -61,11 +63,12 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
 
     sf::Vector2f player_pos = _player.GetPosition();
     int chunk_player = (int)round(player_pos.x/(Settings::TILE_SIZE*Chunk::N_TILES_X));
-    _map_curr.init(chunk_player, seed);
+    _map_curr.init(chunk_player);
 
     WorldBackground *newBack = new WorldBackground();
     _backgrounds = *newBack;
-    Clock *newClock = new Clock(seed);
+    Clock *newClock = new Clock();
+    newClock->init();
     _clock = *newClock;
     _viewGame.setRenderTarget(&window);
     _viewGame.setMode(MagicView::crop);
@@ -151,4 +154,10 @@ float Scene::getZoom(){
 }
 std::string Scene::getGamePath(){
     return _pathGame;
+}
+std::string Scene::getSeed(){
+    return _seed;
+}
+std::mt19937 &Scene::getGenerator(){
+    return _generator;
 }

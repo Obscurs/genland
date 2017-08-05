@@ -38,6 +38,8 @@ public:
     Clock &getClock();
     float getZoom();
     std::string getGamePath();
+    std::string getSeed();
+    std::mt19937 &getGenerator();
 
     void updateView();
     void update(sf::RenderWindow &window,float delta);
@@ -49,6 +51,8 @@ public:
     float getMountFactor(sf::Vector2f pos);
 
 private:
+    std::mt19937 _generator;
+    std::string _seed;
     std::string _pathGame;
     MagicView _viewGame;
     bool _initialized;

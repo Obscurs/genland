@@ -70,7 +70,7 @@ void Drawer::DrawSceneTex(){
     int last_chunk = map_curr.getChunkIndex(last_x+Settings::TILE_SIZE);
     for(int i = first_chunk ; i<=last_chunk ; i = i +1) {
         int index_mat = map_curr.getIndexMatChunk(i);
-        texture_scene.draw(map_curr.chunk_mat[index_mat]->render_array, states);
+        texture_scene.draw(map_curr._chunk_mat[index_mat]->render_array, states);
     }
     for(int i = 0; i<map_curr.falling_tiles.size(); i++){
         map_curr.falling_tiles[i]->Draw(texture_scene);
@@ -82,7 +82,7 @@ void Drawer::DrawBackground() {
     Scene *scene = Scene::getScene();
     Clock &clock = scene->getClock();
     WorldBackground &backgrounds = scene->getBackgrounds();
-    clock.SetColorToShader(*sun_background_shader);
+    clock.setColorToShader(*sun_background_shader);
 
     texture_background.clear(sf::Color(255,0,0,255));
 
@@ -182,11 +182,11 @@ void Drawer::DrawLights(){
 
     for(int i = first_chunk ; i<=last_chunk ; i++) {
         int index_mat = map_curr.getIndexMatChunk(i);
-        texture_sun.draw(map_curr.chunk_mat[index_mat]->sky_array, states);
+        texture_sun.draw(map_curr._chunk_mat[index_mat]->sky_array, states);
 
     }
     texture_sun.display();
-    clock.SetColorToShader(*sun_mix_shader);
+    clock.setColorToShader(*sun_mix_shader);
     sun_mix_shader->setParameter("texture2", texture_sun.getTexture());
     states.shader = sun_mix_shader;
     texture_back->clear(sf::Color(0,0,0,0));
@@ -222,7 +222,7 @@ void Drawer::debugMap(const std::string keyDebug){
     text.setCharacterSize(12);
     text.setColor(sf::Color::Red);
     for(int i = 0 ; i<Map::N_CHUNKS_X ; i = i +1) {
-        map_curr.chunk_mat[i]->debugDraw(*texture_back, keyDebug,text);
+        map_curr._chunk_mat[i]->debugDraw(*texture_back, keyDebug,text);
     }
 }
 void Drawer::DrawMap(sf::RenderWindow& renderWindow)

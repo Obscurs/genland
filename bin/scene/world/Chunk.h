@@ -5,8 +5,8 @@
 class Chunk
 {
 public:	
-	Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ofstream &myfile);
-    Chunk(sf::Vector2i pos, std::mt19937 *generator,int seed, std::ifstream &myfile);
+	Chunk(sf::Vector2i pos, std::ofstream &myfile);
+    Chunk(sf::Vector2i pos, std::ifstream &myfile);
 	~Chunk();
 
 
@@ -14,7 +14,7 @@ public:
 	const static int N_TILES_Y = 300;
 	const static int N_TILES_Z = 2;
 	int chunk_id;
-
+    bool is_dirty;
 	Tile* getTile(float x, float y, int z);
     Tile* getTileByIndex(int x, int y, int z);
 
@@ -27,12 +27,11 @@ public:
 	void prepareArrays();
 	void update(float delta);
     void debugDraw(sf::RenderTarget &target, const std::string keyDebug,sf::Text &text);
-	bool is_dirty;
 	sf::VertexArray render_array;
 	sf::VertexArray sky_array;
 private:
 	float getChunkPos();
-	void DrawGrassTiles();
+	void drawGrassTiles();
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];
     std::vector<Tile*> grass_tiles;
 

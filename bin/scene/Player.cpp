@@ -367,7 +367,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 	for(int i = 0; i< tiles_col.size(); ++i){
 	//	//comproba colisions
 		Tile* t = tiles_col[i];
-		sf::Vector2f tile_size(t->GetWidth(), t->GetHeight());
+		sf::Vector2f tile_size(t->getWidth(), t->getHeight());
 		FixColision(pos_aux, size_aux, t->GetPosition(), tile_size, map);
 	}
     bool valid_move = true;
@@ -390,9 +390,9 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 		x = x - col_right_dist;
 	}
 	/*
-	while(!cool_trobat && pos_aux.x < sprite_pos.x+ GetWidth()){
+	while(!cool_trobat && pos_aux.x < sprite_pos.x+ getWidth()){
 		Chunk* c = map.getChunk(pos_aux.x, (pos_aux.y+GetHeight()));
-		Tile* t = c->getTile(pos_aux.x, (pos_aux.y+GetHeight()), 1);
+		Tile* t = c->getTile(pos_aux.x, (pos_aux.y+getHeight()), 1);
 	} */
 
     if(valid_move) SetPosition(x,y);
@@ -422,8 +422,8 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 			if (tile_being_removed != nullptr && t != tile_being_removed) {
 				tile_being_removed->being_removed = false;
 			}
-	    //sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
-	    //sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
+	    //sf::Vector2f playerPos((GetPosition().x+getWidth())/2,(GetPosition().y+getHeight())/2);
+	    //sf::Vector2f tilePos((t->GetPosition().x+t->getWidth())/2,(t->GetPosition().y+t->getHeight())/2);
 	    //float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
 
 	    if(t->id != "0" && t->id !="B" && t->id != "b") {
@@ -453,8 +453,8 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 	    	position_tile = 1;
 	    	t = map.getTile(position.x, position.y, 1);
 	    }
-	    //sf::Vector2f playerPos((GetPosition().x+GetWidth())/2,(GetPosition().y+GetHeight())/2);
-	    //sf::Vector2f tilePos((t->GetPosition().x+t->GetWidth())/2,(t->GetPosition().y+t->GetHeight())/2);
+	    //sf::Vector2f playerPos((GetPosition().x+getWidth())/2,(GetPosition().y+getHeight())/2);
+	    //sf::Vector2f tilePos((t->GetPosition().x+t->getWidth())/2,(t->GetPosition().y+t->getHeight())/2);
 	    //float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
 		if (t != tile_being_removed && tile_being_removed != nullptr) {
 			tile_being_removed->being_removed = false;
@@ -471,10 +471,10 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 						if (tile_being_removed->ms_to_be_removed < 0) {
 							if (position_tile == 0) {
 
-								t->Reload(inventory->getItemAtTab()->id_set0);
+                                t->reload(inventory->getItemAtTab()->id_set0);
 							}
 							else if (position_tile == 1) {
-								t->Reload(inventory->getItemAtTab()->id_set1);
+                                t->reload(inventory->getItemAtTab()->id_set1);
 							}
 							map.dirtyChunks();
 							inventory->decrementItemAtTab();
