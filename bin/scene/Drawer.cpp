@@ -120,7 +120,10 @@ void Drawer::DrawRain() {
         Tile *t = map_curr.getTile(pos.x,pos.y,0);
         int temperature = t->_temperature;
         int humidity = t->_humidity;
-
+        sf::RenderStates states;
+        texture_background.display();
+        states.texture = &texture_background.getTexture();
+        states.shader = rain_shader;
         if(temperature >10){
             if(temperature >25 && humidity<50){
                 float new_rain_factor = clock._rainFactor-1-(humidity-50)/10;
@@ -130,27 +133,41 @@ void Drawer::DrawRain() {
             rain_shader->setParameter("LENGTH",64.0f);
             rain_shader->setParameter("LENGTH_SCALE",0.8f);
             rain_shader->setParameter("SPEED",10.0f);
+            rain_shader->setParameter("ALPHA",1.f);
+            texture_background.draw(background_sprite, states);
+            texture_background.display();
         } else if(temperature < -10){
             rain_shader->setParameter("SCALE",256.0f);
             rain_shader->setParameter("LENGTH",2.0f);
             rain_shader->setParameter("LENGTH_SCALE",0.8f);
             rain_shader->setParameter("SPEED",1.0f);
+            rain_shader->setParameter("ALPHA",1.f);
+            texture_background.draw(background_sprite, states);
+            texture_background.display();
         } else{
             float factor = float(temperature-(-10))/20.0f;
-            rain_shader->setParameter("SCALE",256.0f+256.0f*factor);
-            rain_shader->setParameter("LENGTH",2.0f+62.0f*factor);
+            rain_shader->setParameter("SCALE",256.0f);
+            rain_shader->setParameter("LENGTH",2.0f);
             rain_shader->setParameter("LENGTH_SCALE",0.8f);
-            rain_shader->setParameter("SPEED",1.0f+9.0f*factor);
+            rain_shader->setParameter("SPEED",1.0f);
+            rain_shader->setParameter("ALPHA",1.0f-factor);
+            texture_background.draw(background_sprite, states);
+            texture_background.display();
+
+            rain_shader->setParameter("SCALE",512.0f);
+            rain_shader->setParameter("LENGTH",64.0f);
+            rain_shader->setParameter("LENGTH_SCALE",0.8f);
+            rain_shader->setParameter("SPEED",10.0f);
+            rain_shader->setParameter("ALPHA",factor);
+            texture_background.draw(background_sprite, states);
+            texture_background.display();
         }
 
 
 
-        sf::RenderStates states;
-        texture_background.display();
-        states.texture = &texture_background.getTexture();
-        states.shader = rain_shader;
-        texture_background.draw(background_sprite, states);
-        texture_background.display();
+
+
+
     }
 
 }

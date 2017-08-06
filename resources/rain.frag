@@ -8,7 +8,7 @@ uniform float SCALE;        // overall scale of the drops
 uniform float LENGTH;        // length of the drops
 uniform float LENGTH_SCALE;   // how much the drop length changes every layer
 
-
+uniform float ALPHA;
 uniform float SPEED;          // how fast the drops fall
 
 const vec3 DROP_COLOR = vec3(0.30, 0.5, 0.64);
@@ -60,7 +60,7 @@ void main(void)
         {
             float f = rainFactor(uv, SCALE, dropLength, vec2(SCALE * float(i), time * SPEED), 1.0-intensity*0.1/2.0);
 
-            vec4 color = vec4(DROP_COLOR, f* alpha);
+            vec4 color = vec4(DROP_COLOR, f* alpha-1.0+ALPHA);
 
             finalColor = over(finalColor, color);
 
@@ -68,7 +68,7 @@ void main(void)
             alpha *= FADE;
         }
 
-        finalColor = over(finalColor, vec4(BG_COLOR, 1.0));
+        finalColor = over(finalColor, vec4(BG_COLOR, 0.1));
 
     	gl_FragColor = finalColor;
 }
