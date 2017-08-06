@@ -47,7 +47,7 @@ public:
 	std::string id_pick; //sha de privatitzar
 	Tile* neighbors[9] = {nullptr};
 	bool drawable();
-	void appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex, int rotation);
+	void appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex, int rotation, sf::Vector2i displacement);
 	void debugTile(sf::RenderTarget &target,const std::string keyDebug, sf::Text &text, int chunk_id, sf::Vector2i posTile);
 	
 
@@ -57,6 +57,7 @@ private:
     void drawFadeOut(sf::VertexArray &vertexArray);
     void drawIns(sf::VertexArray &vertexArray);
     void drawAmbientOclusion(sf::VertexArray &vertexArray);
+    void drawAmbientOclusion2(sf::VertexArray &vertexArray);
 	sf::Vector2f position;
 	sf::Vector2f size;
 

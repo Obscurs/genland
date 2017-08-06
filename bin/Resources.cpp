@@ -38,7 +38,7 @@ void Resources::load() {
     addShader("mix_back_terr_shader","resources/mix_background_terrain.frag");
     addShader("rain_shader","resources/rain.frag");
     //TEXTURES
-    addTextureManager("tileMap","resources/tiles4.png", 16, 16);
+    addTextureManager("tileMap","resources/tiles5.png", 16, 16);
     TextureManager *texMan = getTextureManager("tileMap");
     texMan->insert_block_all_values("D", "d", sf::Vector2i(0,0),16);     //dirt
     texMan->insert_block_all_values("C", "c", sf::Vector2i(0,16),16);    //cobblestone
@@ -57,6 +57,10 @@ void Resources::load() {
     texMan->insert_map_value("s",sf::Vector2i(96,32));
     texMan->insert_map_value("S",sf::Vector2i(112,32));
     texMan->insert_map_value("S2",sf::Vector2i(128,32));
+
+    texMan->insert_map_value("Sfull",sf::Vector2i(96,112));
+    texMan->insert_map_value("Swall",sf::Vector2i(96,96));
+    texMan->insert_map_value("Scorner",sf::Vector2i(112,96));
 
     texMan->insert_map_value("grass0",sf::Vector2i(96,48));
     texMan->insert_map_value("grass1",sf::Vector2i(112,48));

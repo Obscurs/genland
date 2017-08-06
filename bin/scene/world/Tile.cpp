@@ -144,57 +144,86 @@ bool Tile::drawable(){
 }
 void Tile::drawFadeOut(sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && neighbors[0]->neighbors[8]->id != "0" && !neighbors[0]->drawable()  && neighbors[7]->drawable() && neighbors[1]->drawable()){
-        appendSpriteToArray( vertexArray, -1, "S2", 90);
+        appendSpriteToArray( vertexArray, -1, "S2", 90, sf::Vector2i(0,0));
     }
     if(neighbors[1] != nullptr && neighbors[1]->neighbors[8]->id != "0" && !neighbors[1]->drawable() ){
-        appendSpriteToArray( vertexArray, -1, "S", 180);
+        appendSpriteToArray( vertexArray, -1, "S", 180, sf::Vector2i(0,0));
     }
     if(neighbors[2] != nullptr && neighbors[2]->neighbors[8]->id != "0" && !neighbors[2]->drawable() && neighbors[3]->drawable() && neighbors[1]->drawable()){
-        appendSpriteToArray( vertexArray, -1, "S2", 180);
+        appendSpriteToArray( vertexArray, -1, "S2", 180, sf::Vector2i(0,0));
 
     }
     if(neighbors[3] != nullptr && neighbors[3]->neighbors[8]->id != "0" && !neighbors[3]->drawable()){
-        appendSpriteToArray( vertexArray, -1, "S", -90);
+        appendSpriteToArray( vertexArray, -1, "S", -90, sf::Vector2i(0,0));
     }
     if(neighbors[4] != nullptr && neighbors[4]->neighbors[8]->id != "0" && !neighbors[4]->drawable() && neighbors[3]->drawable() && neighbors[5]->drawable()){
-        appendSpriteToArray( vertexArray, -1, "S2", -90);
+        appendSpriteToArray( vertexArray, -1, "S2", -90, sf::Vector2i(0,0));
     }
     if(neighbors[5] != nullptr && neighbors[5]->neighbors[8]->id != "0" && !neighbors[5]->drawable()){
-        appendSpriteToArray( vertexArray, -1, "S", 0);
+        appendSpriteToArray( vertexArray, -1, "S", 0, sf::Vector2i(0,0));
 
     }
     if(neighbors[6] != nullptr && neighbors[6]->neighbors[8]->id != "0" && !neighbors[6]->drawable() && neighbors[5]->drawable() && neighbors[7]->drawable() ){
-        appendSpriteToArray( vertexArray, -1, "S2", 0);
+        appendSpriteToArray( vertexArray, -1, "S2", 0, sf::Vector2i(0,0));
 
     }
     if(neighbors[7] != nullptr && (neighbors[7]->neighbors[8]->id != "0") && !neighbors[7]->drawable() ){
-        appendSpriteToArray( vertexArray, -1, "S", 90);
+        appendSpriteToArray( vertexArray, -1, "S", 90, sf::Vector2i(0,0));
     }
 }
 void Tile::drawAmbientOclusion(sf::VertexArray &vertexArray){
+    Tile* uper = neighbors[8];
+    if(neighbors[0] != nullptr && !neighbors[0]->drawable() && neighbors[7]->drawable() && neighbors[1]->drawable()){
+
+    }
+    if(neighbors[1] != nullptr && uper->neighbors[1]->id!="0"){
+        appendSpriteToArray( vertexArray, -1, "Swall", 180, sf::Vector2i(0,0));
+    }
+    if(neighbors[2] != nullptr && !neighbors[2]->drawable() && neighbors[3]->drawable() && neighbors[1]->drawable()){
+
+    }
+    if(neighbors[3] != nullptr && uper->neighbors[3]->id!="0"){
+        appendSpriteToArray( vertexArray, -1, "Swall", -90, sf::Vector2i(0,0));
+    }
+    if(neighbors[4] != nullptr && !neighbors[4]->drawable() && neighbors[3]->drawable() && neighbors[5]->drawable()){
+
+    }
+    if(neighbors[5] != nullptr && uper->neighbors[5]->id!="0"){
+        appendSpriteToArray( vertexArray, -1, "Swall", 0, sf::Vector2i(0,0));
+        //appendSpriteToArray( vertexArray, -1, "Scorner", 0, sf::Vector2i(16,0));
+
+    }
+    if(neighbors[6] != nullptr && !neighbors[6]->drawable() && neighbors[5]->drawable() && neighbors[7]->drawable()){
+
+    }
+    if(neighbors[7] != nullptr && uper->neighbors[7]->id!="0"){
+        appendSpriteToArray( vertexArray, -1, "Swall", 90, sf::Vector2i(0,0));
+    }
+}
+void Tile::drawAmbientOclusion2(sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && !neighbors[0]->drawable() && neighbors[7]->drawable() && neighbors[1]->drawable()){
 
     }
     if(neighbors[1] != nullptr && neighbors[1]->neighbors[8]->id!="0"){
-        appendSpriteToArray( vertexArray, -1, "s", 180);
+        appendSpriteToArray( vertexArray, -1, "s", 180, sf::Vector2i(0,0));
     }
     if(neighbors[2] != nullptr && !neighbors[2]->drawable() && neighbors[3]->drawable() && neighbors[1]->drawable()){
 
     }
     if(neighbors[3] != nullptr && neighbors[3]->neighbors[8]->id!="0"){
-        appendSpriteToArray( vertexArray, -1, "s", -90);
+        appendSpriteToArray( vertexArray, -1, "s", -90, sf::Vector2i(0,0));
     }
     if(neighbors[4] != nullptr && !neighbors[4]->drawable() && neighbors[3]->drawable() && neighbors[5]->drawable()){
 
     }
     if(neighbors[5] != nullptr && neighbors[5]->neighbors[8]->id!="0"){
-        appendSpriteToArray( vertexArray, -1, "s", 0);
+        appendSpriteToArray( vertexArray, -1, "s", 0, sf::Vector2i(0,0));
     }
     if(neighbors[6] != nullptr && !neighbors[6]->drawable() && neighbors[5]->drawable() && neighbors[7]->drawable()){
 
     }
     if(neighbors[7] != nullptr && neighbors[7]->neighbors[8]->id!="0"){
-        appendSpriteToArray( vertexArray, -1, "s", 90);
+        appendSpriteToArray( vertexArray, -1, "s", 90, sf::Vector2i(0,0));
     }
 }
 void Tile::drawOuts(sf::VertexArray &vertexArray)
@@ -210,28 +239,28 @@ void Tile::drawOuts(sf::VertexArray &vertexArray)
     if(valid_t1 && valid_t3 && t1->id==t3->id){
         std::string id_mini = t1->id;
         id_mini.append("_out");
-        appendSpriteToArray( vertexArray, 1, id_mini, 0);
+        appendSpriteToArray( vertexArray, 1, id_mini, 0, sf::Vector2i(0,0));
     }
     if(valid_t1 && valid_t7 && t1->id==t7->id){
         std::string id_mini = t1->id;
         id_mini.append("_out");
-        appendSpriteToArray( vertexArray, 0, id_mini, 0);
+        appendSpriteToArray( vertexArray, 0, id_mini, 0, sf::Vector2i(0,0));
     }
     if(valid_t3 && valid_t5 && t3->id==t5->id){
         std::string id_mini = t3->id;
         id_mini.append("_out");
-        appendSpriteToArray( vertexArray, 3, id_mini, 0);
+        appendSpriteToArray( vertexArray, 3, id_mini, 0, sf::Vector2i(0,0));
     }
     if(valid_t7 && valid_t5 && t5->id==t7->id){
         std::string id_mini = t5->id;
         id_mini.append("_out");
-        appendSpriteToArray( vertexArray, 2, id_mini, 0);
+        appendSpriteToArray( vertexArray, 2, id_mini, 0, sf::Vector2i(0,0));
     }
 }
-void Tile::appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex,int rotation){
+void Tile::appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex,int rotation, sf::Vector2i displacement){
     TextureManager *texMan = Resources::getTextureManager("tileMap");
-    float increment_x=0;
-    float increment_y=0;
+    float increment_x=displacement.x;
+    float increment_y=displacement.y;
     float increment_x_tex=0;
     float increment_y_tex=0;
     int divisor=2;
@@ -288,33 +317,66 @@ void Tile::drawIns(sf::VertexArray &vertexArray){
         std::string id_mini = id;
         id_mini.append("_in");
         is_mini[0]=true;
-        appendSpriteToArray( vertexArray, 1, id_mini, 0);
+        appendSpriteToArray( vertexArray, 1, id_mini, 0, sf::Vector2i(0,0));
     }
     if(neighbors[3] != nullptr && neighbors[3]->id=="0" && neighbors[4] != nullptr && neighbors[4]->id=="0" && neighbors[5] != nullptr && neighbors[5]->id=="0"){
         std::string id_mini = id;
         id_mini.append("_in");
         is_mini[1]=true;
-        appendSpriteToArray( vertexArray, 3, id_mini, 0);
+        appendSpriteToArray( vertexArray, 3, id_mini, 0, sf::Vector2i(0,0));
     }
     if(neighbors[5] != nullptr && neighbors[5]->id=="0" && neighbors[6] != nullptr && neighbors[6]->id=="0" && neighbors[7] != nullptr && neighbors[7]->id=="0"){
         std::string id_mini = id;
         id_mini.append("_in");
         is_mini[2]=true;
-        appendSpriteToArray( vertexArray, 2, id_mini, 0);
+        appendSpriteToArray( vertexArray, 2, id_mini, 0, sf::Vector2i(0,0));
     }
     if(neighbors[7] != nullptr && neighbors[7]->id=="0" && neighbors[1] != nullptr && neighbors[1]->id=="0" && neighbors[0] != nullptr && neighbors[0]->id=="0"){
         std::string id_mini = id;
         id_mini.append("_in");
         is_mini[3]=true;
-        appendSpriteToArray( vertexArray, 0, id_mini, 0);
+        appendSpriteToArray( vertexArray, 0, id_mini, 0, sf::Vector2i(0,0));
     }
     if(!is_mini[0] && !is_mini[1] && !is_mini[2] && !is_mini[3]){
-        appendSpriteToArray( vertexArray, -1, id, 0);
+        appendSpriteToArray( vertexArray, -1, id, 0, sf::Vector2i(0,0));
     } else{
-        if(!is_mini[0]) appendSpriteToArray( vertexArray, 1, id, 0);
-        if(!is_mini[1]) appendSpriteToArray( vertexArray, 3, id, 0);
-        if(!is_mini[2]) appendSpriteToArray( vertexArray, 2, id, 0);
-        if(!is_mini[3]) appendSpriteToArray( vertexArray, 0, id, 0);
+        if(!is_mini[0]) appendSpriteToArray( vertexArray, 1, id, 0, sf::Vector2i(0,0));
+        if(!is_mini[1]) appendSpriteToArray( vertexArray, 3, id, 0, sf::Vector2i(0,0));
+        if(!is_mini[2]) appendSpriteToArray( vertexArray, 2, id, 0, sf::Vector2i(0,0));
+        if(!is_mini[3]) appendSpriteToArray( vertexArray, 0, id, 0, sf::Vector2i(0,0));
+    }
+    //Draw sombra full
+    Tile *uper = neighbors[8];
+    if(uper->layer && uper->id!="0" && uper->neighbors[7] != nullptr && uper->neighbors[1] != nullptr && uper->neighbors[3] != nullptr && uper->neighbors[5] != nullptr){
+        if(uper->neighbors[7]->id == "0" && uper->neighbors[1]->id == "0" && (neighbors[7]->id !="0" || neighbors[1]->id !="0")){
+            appendSpriteToArray( vertexArray, 0, "Sfull", 0, sf::Vector2i(0,0));
+        }
+        if(uper->neighbors[1]->id == "0" && uper->neighbors[3]->id == "0" && (neighbors[1]->id !="0" || neighbors[3]->id !="0")){
+            appendSpriteToArray( vertexArray, 1, "Sfull", 0, sf::Vector2i(0,0));
+            //appendSpriteToArray( vertexArray, -1, "Scorner", 0, sf::Vector2i(16,-16));
+        }
+        if(uper->neighbors[3]->id == "0" && uper->neighbors[5]->id == "0" && (neighbors[3]->id !="0" || neighbors[5]->id !="0")){
+            appendSpriteToArray( vertexArray, 3, "Sfull", 0, sf::Vector2i(0,0));
+            //appendSpriteToArray( vertexArray, -1, "Scorner", 90, sf::Vector2i(16,16));
+        }
+        if(uper->neighbors[5]->id == "0" && uper->neighbors[7]->id == "0" && (neighbors[5]->id !="0" || neighbors[7]->id !="0")){
+            appendSpriteToArray( vertexArray, 2, "Sfull", 0, sf::Vector2i(0,0));
+
+        }
+    }
+    else if(uper->layer && uper->id =="0"  && uper->neighbors[0] != nullptr && uper->neighbors[2] != nullptr && uper->neighbors[4] != nullptr && uper->neighbors[6] != nullptr){
+        if(uper->neighbors[0]->id !="0"){
+            appendSpriteToArray( vertexArray, -1, "Scorner", 90, sf::Vector2i(0,0));
+        }
+        if(uper->neighbors[2]->id !="0"){
+            appendSpriteToArray( vertexArray, -1, "Scorner", 180, sf::Vector2i(0,0));
+        }
+        if(uper->neighbors[4]->id !="0"){
+            appendSpriteToArray( vertexArray, -1, "Scorner", -90, sf::Vector2i(0,0));
+        }
+        if(uper->neighbors[6]->id !="0"){
+            appendSpriteToArray( vertexArray, -1, "Scorner", 0, sf::Vector2i(0,0));
+        }
     }
 }
 void Tile::drawSkyArray(sf::VertexArray &skyArray){
@@ -378,19 +440,22 @@ void Tile::drawGrass(sf::VertexArray &vertexArray){
         pos_tex4 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y);
         pos_tex1 = sf::Vector2f(position_sprite.x+texMan->size_sprite.x, position_sprite.y+texMan->size_sprite.y);
         pos_tex2 = sf::Vector2f(position_sprite.x, position_sprite.y+texMan->size_sprite.y);
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth(),position.y- getHeight()/2+5), pos_tex1));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth()+Settings::TILE_SIZE,position.y- getHeight()/2+5), pos_tex2));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth()+Settings::TILE_SIZE,position.y- getHeight()/2+5+Settings::TILE_SIZE), pos_tex3));
-        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth(),position.y+Settings::TILE_SIZE- getHeight()/2+5), pos_tex4));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth(),position.y- getHeight()/2+1), pos_tex1));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth()+Settings::TILE_SIZE,position.y- getHeight()/2+1), pos_tex2));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth()+Settings::TILE_SIZE,position.y- getHeight()/2+1+Settings::TILE_SIZE), pos_tex3));
+        vertexArray.append(sf::Vertex(sf::Vector2f(position.x- getWidth(),position.y+Settings::TILE_SIZE- getHeight()/2+1), pos_tex4));
     }
 }
 void Tile::draw(sf::VertexArray &vertexArray)
 {
 
 
-        if (layer == 1) {
+    if (layer == 1) {
             if(drawable()) {
-                if (neighbors[8] != nullptr && neighbors[8]->id != "0") neighbors[8]->draw(vertexArray);
+                if (neighbors[8] != nullptr && neighbors[8]->id != "0") {
+                    neighbors[8]->draw(vertexArray);
+                    //appendSpriteToArray( vertexArray, -1, "Sfull", 0, sf::Vector2i(0,0));
+                }
                 drawIns(vertexArray);
                 drawFadeOut(vertexArray);
 
