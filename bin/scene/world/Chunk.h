@@ -2,6 +2,8 @@
 #include "Tile.h"
 #include "Simplex2d.h"
 #include "../../TextureManager.h"
+#include "../entities/Tree.h"
+
 class Chunk
 {
 public:	
@@ -29,10 +31,19 @@ public:
     void debugDraw(sf::RenderTarget &target, const std::string keyDebug,sf::Text &text);
 	sf::VertexArray render_array;
 	sf::VertexArray sky_array;
+
+
+
+
 private:
 	float getChunkPos();
 	void drawGrassTiles();
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];
+    void addTreeToChunk(Tree *t);
+    void addEntitiesToChunk();
+    //array de llums
+    //array de animals
+    std::vector<Tree> _trees; //array d'abres
     std::vector<Tile*> grass_tiles;
 
 

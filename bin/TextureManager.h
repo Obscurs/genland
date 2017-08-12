@@ -8,6 +8,7 @@ class TextureManager {
         TextureManager(std::string file, int size_sprite_x, int size_sprite_y);
         ~TextureManager();
         void insert_block_all_values(std::string k,std::string k2, sf::Vector2i v, int size);
+        void insert_leaves_all_values(std::string k,std::string k2, sf::Vector2i v, int size);
         void insert_map_value(std::string k, sf::Vector2i v);
         void generateSprite(std::string key, sf::Vector2f sprite_pos, sf::Sprite &s, sf::Vector2f size);
         void generateMiniSprite(std::string key, sf::Vector2f sprite_pos, sf::Sprite &s, sf::Vector2f size, int mini_pos);

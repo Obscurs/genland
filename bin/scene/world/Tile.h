@@ -18,6 +18,7 @@ public:
 	};
 
 	void reload(std::string id);
+	void reloadLeave(std::string id,std::string density, std::string type);
 	void draw(sf::VertexArray &vertexArray);
     void drawOuts(sf::VertexArray &vertexArray);
     void drawGrass(sf::VertexArray &vertexArray);
@@ -30,6 +31,7 @@ public:
 	float getWidth() const;
 	float getHeight() const;
 	bool reach_sun; //sha de privatitzar
+	bool isVisibleSun();
 	bool rigid;
 	bool reach_floor;
 	int layer;
@@ -42,6 +44,8 @@ public:
 	int _temperature;
 	int _humidity;
 	float _mountain_factor;
+	std::string _leaveType;
+	std::string _leaveDensity;
 	Bioma _bio;
 	std::string id; //sha de privatitzar
 	std::string id_pick; //sha de privatitzar
@@ -57,7 +61,7 @@ private:
     void drawFadeOut(sf::VertexArray &vertexArray);
     void drawIns(sf::VertexArray &vertexArray);
     void drawAmbientOclusion(sf::VertexArray &vertexArray);
-    void drawAmbientOclusion2(sf::VertexArray &vertexArray);
+	void drawLeaves(sf::VertexArray &vertexArray);
 	sf::Vector2f position;
 	sf::Vector2f size;
 

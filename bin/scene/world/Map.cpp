@@ -37,11 +37,10 @@ void Map::init(int pos)
     lights.push_back(l3);
 
 
-    int id_temp = 0;
     _posMap = pos;
-    createMap(0, pos, id_temp);
-    createMap(1, pos+1, id_temp);
-    createMap(2, pos+2, id_temp);
+    createMap(0, pos);
+    createMap(1, pos+1);
+    createMap(2, pos+2);
     _chunk_mat[0]->neighbors[1] = _chunk_mat[1];
     _chunk_mat[1]->neighbors[0] = _chunk_mat[0];
     _chunk_mat[1]->neighbors[1] = _chunk_mat[2];
@@ -69,7 +68,7 @@ void Map::saveMap(){
         }
     } std::cout << "canot save map, map not _initialized" << std::endl;
 }
-void Map::createMap(int map_index, int chunk_index, int &id_temp){
+void Map::createMap(int map_index, int chunk_index){
     if(_initialized) {
         Scene *scene = Scene::getScene();
         std::string path = scene->getGamePath();
@@ -588,9 +587,12 @@ Tile* Map::getTile(float x, float y, int z){
 	int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
 	int chunk_x = (x-size_chunk_x*_posMap)/size_chunk_x;
     //std::cout << chunk_x << std::endl;
-	Chunk* c = _chunk_mat[chunk_x];
+    if(chunk_x>= N_CHUNKS_X) return nullptr;
+    else{
+        Chunk* c = _chunk_mat[chunk_x];
+        return c->getTile(x, y, z);
+    }
 
-	return c->getTile(x, y, z);
 }
 
 int Map::getChunkIndex(float x){
@@ -631,14 +633,13 @@ void Map::checkLoadedChunks(float x, float y){
 
                 c2->saveToFile(path);
                 int current_pos = c1->chunk_id;
-                int id_temp = 0;
                 Chunk *chunk_mid = _chunk_mat[1];
 
 
                 _chunk_mat[2] = chunk_mid;
                 _chunk_mat[1] = c1;
                 --_posMap;
-                createMap(0, current_pos - 1, id_temp);
+                createMap(0, current_pos - 1);
                 _chunk_mat[2]->neighbors[1] = nullptr;
                 _chunk_mat[2]->calcLateralNeighborsTiles(1);
                 _chunk_mat[0]->calcLateralNeighborsTiles(0);
@@ -660,7 +661,7 @@ void Map::checkLoadedChunks(float x, float y){
                 _chunk_mat[0] = chunk_mid;
                 _chunk_mat[1] = c2;
                 ++_posMap;
-                createMap(2, current_pos + 1, id_temp);
+                createMap(2, current_pos + 1);
                 _chunk_mat[0]->neighbors[1] = nullptr;
                 _chunk_mat[0]->calcLateralNeighborsTiles(0);
                 _chunk_mat[2]->calcLateralNeighborsTiles(1);

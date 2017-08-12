@@ -53,6 +53,9 @@ void Resources::load() {
     texMan->insert_block_all_values("R", "r", sf::Vector2i(0,160),16);    //ice rock
     texMan->insert_block_all_values("J", "j", sf::Vector2i(0,176),16);    //jungle dirt
 
+    texMan->insert_block_all_values("F", "f", sf::Vector2i(0,192),16);      //fulles
+    texMan->insert_block_all_values("T", "t", sf::Vector2i(0,208),16);      //arbre
+
     texMan->insert_map_value("0",sf::Vector2i(64,32));
     texMan->insert_map_value("s",sf::Vector2i(96,32));
     texMan->insert_map_value("S",sf::Vector2i(112,32));
@@ -69,7 +72,9 @@ void Resources::load() {
     texMan->insert_map_value("grassJungle0",sf::Vector2i(96,80));
     texMan->insert_map_value("grassJungle1",sf::Vector2i(112,80));
 
-
+    texMan->insert_leaves_all_values("L1","l1",sf::Vector2i(128,48),16);
+    texMan->insert_leaves_all_values("L2","l2",sf::Vector2i(128,64),16);
+    texMan->insert_leaves_all_values("L3","l3",sf::Vector2i(128,80),16);
 
     std::cout << " Resources Loaded " << std::endl;
 }

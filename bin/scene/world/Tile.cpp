@@ -24,6 +24,8 @@ Tile::Tile(int l){
     _mountain_factor =0;
     _humidity = 0;
     _bio = STANDARD;
+    _leaveType = "0" ;
+    _leaveDensity = "";
 }
 
 
@@ -43,6 +45,11 @@ void Tile::removeReachFloorCascade(){
     reach_floor = false;
     tB->reach_floor = false;
     if(neighbors[1] != nullptr && (neighbors[1]->reach_floor || neighbors[1]->neighbors[8]->reach_floor)) neighbors[1]->removeReachFloorCascade();
+}
+void Tile::reloadLeave(std::string id,std::string density, std::string type){
+    reload(id);
+    _leaveDensity = density;
+    _leaveType = type;
 }
 void Tile::reload(std::string new_id)
 {
@@ -116,6 +123,18 @@ void Tile::reload(std::string new_id)
             id_pick = "D";
             ms_to_remove = 100;
         }
+        else if (new_id == "T" || new_id == "t") {
+            weight = 10;
+            max_tension = 50;
+            id_pick = "T";
+            ms_to_remove = 100;
+        }
+        else if (new_id == "F" || new_id == "f") {
+            weight = 2;
+            max_tension = 5;
+            id_pick = "F";
+            ms_to_remove = 20;
+        }
         else {
             reload("0");
         }
@@ -131,16 +150,18 @@ void Tile::reload(std::string new_id)
 	
 }
 bool Tile::drawable(){
-    //if(!reach_sun) return false;
 	bool res =false;
     if(layer==1 && id=="0") return true;
 	for(int i=0; i<8; i++){
-		if(neighbors[i] !=nullptr && neighbors[i]->id=="0"){
+		if(neighbors[i] !=nullptr && (neighbors[i]->id=="0" || neighbors[i]->id=="F" || neighbors[i]->id=="f")){
 			res=true;
 			break;
 		}
 	}
 	return res;
+}
+bool Tile::isVisibleSun(){
+    return (id =="0" || id =="F" || id == "f");
 }
 void Tile::drawFadeOut(sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && neighbors[0]->neighbors[8]->id != "0" && !neighbors[0]->drawable()  && neighbors[7]->drawable() && neighbors[1]->drawable()){
@@ -198,32 +219,6 @@ void Tile::drawAmbientOclusion(sf::VertexArray &vertexArray){
     }
     if(neighbors[7] != nullptr && uper->neighbors[7]->id!="0"){
         appendSpriteToArray( vertexArray, -1, "Swall", 90, sf::Vector2i(0,0));
-    }
-}
-void Tile::drawAmbientOclusion2(sf::VertexArray &vertexArray){
-    if(neighbors[0] != nullptr && !neighbors[0]->drawable() && neighbors[7]->drawable() && neighbors[1]->drawable()){
-
-    }
-    if(neighbors[1] != nullptr && neighbors[1]->neighbors[8]->id!="0"){
-        appendSpriteToArray( vertexArray, -1, "s", 180, sf::Vector2i(0,0));
-    }
-    if(neighbors[2] != nullptr && !neighbors[2]->drawable() && neighbors[3]->drawable() && neighbors[1]->drawable()){
-
-    }
-    if(neighbors[3] != nullptr && neighbors[3]->neighbors[8]->id!="0"){
-        appendSpriteToArray( vertexArray, -1, "s", -90, sf::Vector2i(0,0));
-    }
-    if(neighbors[4] != nullptr && !neighbors[4]->drawable() && neighbors[3]->drawable() && neighbors[5]->drawable()){
-
-    }
-    if(neighbors[5] != nullptr && neighbors[5]->neighbors[8]->id!="0"){
-        appendSpriteToArray( vertexArray, -1, "s", 0, sf::Vector2i(0,0));
-    }
-    if(neighbors[6] != nullptr && !neighbors[6]->drawable() && neighbors[5]->drawable() && neighbors[7]->drawable()){
-
-    }
-    if(neighbors[7] != nullptr && neighbors[7]->neighbors[8]->id!="0"){
-        appendSpriteToArray( vertexArray, -1, "s", 90, sf::Vector2i(0,0));
     }
 }
 void Tile::drawOuts(sf::VertexArray &vertexArray)
@@ -310,6 +305,10 @@ void Tile::appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+Settings::TILE_SIZE/divisor,position.y+increment_y), pos_tex2));
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x+Settings::TILE_SIZE/divisor,position.y+increment_y+Settings::TILE_SIZE/divisor), pos_tex3));
     vertexArray.append(sf::Vertex(sf::Vector2f(position.x+increment_x,position.y+Settings::TILE_SIZE/divisor+increment_y), pos_tex4));
+}
+void Tile::drawLeaves(sf::VertexArray &vertexArray){
+    if(layer) appendSpriteToArray( vertexArray, -1, "L"+_leaveType+"_"+_leaveDensity, 0, sf::Vector2i(0,0));
+    else appendSpriteToArray( vertexArray, -1, "l"+_leaveType+"_"+_leaveDensity, 0, sf::Vector2i(0,0));
 }
 void Tile::drawIns(sf::VertexArray &vertexArray){
     bool is_mini[4] ={0,0,0,0};
@@ -457,6 +456,7 @@ void Tile::draw(sf::VertexArray &vertexArray)
                     //appendSpriteToArray( vertexArray, -1, "Sfull", 0, sf::Vector2i(0,0));
                 }
                 drawIns(vertexArray);
+                if(_leaveType != "0") drawLeaves(vertexArray);
                 drawFadeOut(vertexArray);
 
 
@@ -474,8 +474,11 @@ void Tile::draw(sf::VertexArray &vertexArray)
     }
     else {
             drawIns(vertexArray);
+            if(_leaveType != "0") drawLeaves(vertexArray);
             drawAmbientOclusion(vertexArray);
+
         }
+
 }
 
 

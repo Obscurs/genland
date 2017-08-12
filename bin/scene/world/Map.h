@@ -41,7 +41,7 @@ private:
 	MapViewer _mapViewer;		//must be on scene
     inline bool exists_file (const std::string& name);
     int _posMap;
-	void createMap(int map_index, int chunk_index, int &id_temp);
+	void createMap(int map_index, int chunk_index);
     void calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs);
 	sf::Vector2i getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal);
 

@@ -27,6 +27,16 @@ void TextureManager::insert_block_all_values(std::string k,std::string k2, sf::V
     insert_map_value((k+"_out"),sf::Vector2i(v.x+size*2,v.y));
     insert_map_value((k2+"_out"),sf::Vector2i(v.x+size*5,v.y));
 }
+void TextureManager::insert_leaves_all_values(std::string k,std::string k2, sf::Vector2i v, int size){
+    insert_map_value(k+"_1",sf::Vector2i(v.x,v.y));
+    insert_map_value(k2+"_1",sf::Vector2i(v.x+4*size,v.y));
+    insert_map_value(k+"_2",sf::Vector2i(v.x+size,v.y));
+    insert_map_value(k2+"_2",sf::Vector2i(v.x+5*size,v.y));
+    insert_map_value(k+"_3",sf::Vector2i(v.x+size*2,v.y));
+    insert_map_value(k2+"_3",sf::Vector2i(v.x+6*size,v.y));
+    insert_map_value(k+"_4",sf::Vector2i(v.x+size*3,v.y));
+    insert_map_value(k2+"_4",sf::Vector2i(v.x+7*size,v.y));
+}
 sf::Vector2u TextureManager::getSizeTex(){
     return _image.getSize();
 }

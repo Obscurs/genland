@@ -162,12 +162,6 @@ void Drawer::DrawRain() {
             texture_background.draw(background_sprite, states);
             texture_background.display();
         }
-
-
-
-
-
-
     }
 
 }

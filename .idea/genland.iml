@@ -48,9 +48,11 @@
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Drawer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Scene.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Inventory.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Tree.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Tree.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Item.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/AnimatedTile.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Light.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/AnimatedTile.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Light.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/AnimatedTile.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Item.cpp" isTestSource="false" />

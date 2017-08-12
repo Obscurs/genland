@@ -420,6 +420,7 @@ Chunk::Chunk(sf::Vector2i pos, std::ofstream &myfile):
             }
         }
     }
+    addEntitiesToChunk();
     recalcReachFloor();
 
 	
@@ -429,6 +430,8 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile):
         render_array(sf::Quads , (uint)(4)),
         sky_array(sf::Quads , (uint)(4))
 {
+    Tree *t = new Tree(1,3,1,0.8,0.2,0.9,2,2,1);
+    _trees.push_back(*t);
     Scene *scene = Scene::getScene();
     std::mt19937 generator = scene->getGenerator();
     int seed = std::stoi(scene->getSeed());
@@ -499,6 +502,7 @@ Chunk::Chunk(sf::Vector2i pos, std::ifstream &myfile):
             }
         }
     }
+    addEntitiesToChunk();
     recalcReachFloor();
 
 }
@@ -538,6 +542,8 @@ void Chunk::calcLateralNeighborsTiles(int lateral){
 }
 
 Tile* Chunk::getTile(float x, float y, int z){
+
+
 
     int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
     int size_chunk_y = Chunk::N_TILES_Y*Settings::TILE_SIZE;
@@ -619,6 +625,7 @@ void Chunk::update(float delta){
         is_dirty = false;
     }
 }
+
 void Chunk::prepareArrays(){
     grass_tiles.clear();
     render_array.clear();
@@ -631,28 +638,38 @@ void Chunk::prepareArrays(){
                 if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
                     if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && (t1->id=="D" ||t1->id=="J"||t1->id=="W")) grass_tiles.push_back(t1);
                 }
+                if(t1->isVisibleSun())t1->drawSkyArray(sky_array);
             }
 
             else{
                 Tile* t0 = tile_mat[i][j][0];
 
-                if(t0->id=="0"){
-                    if(t0->neighbors[1]!=nullptr && t0->neighbors[1]->id=="0" &&
+                if(t0->isVisibleSun()){
+                    if(
+                       t0->neighbors[1]!=nullptr && t0->neighbors[1]->id=="0" &&
                        t0->neighbors[3]!=nullptr && t0->neighbors[3]->id=="0" &&
                        t0->neighbors[5]!=nullptr && t0->neighbors[5]->id=="0" &&
                        t0->neighbors[7]!=nullptr && t0->neighbors[7]->id=="0"){
-                        t0->drawSkyArray(sky_array);
+                        t0->drawSkyArray(sky_array) ;
                     }
                     else t0->drawBorderSkyArray(sky_array);
                 }
                 if(t0->id != "0")t0->draw(render_array);
                 else t0->drawOuts(render_array);
-
                 t1->drawOuts(render_array);
-
             }
         }
     }
     drawGrassTiles();
 }
+void Chunk::addTreeToChunk(Tree *tr){
+    sf::Vector2i tileBase = tr->getPosition();
+    Tile *ti = getTile(tileBase.x,tileBase.y,0);
+    tr->treeToTiles(ti);
+}
 
+void Chunk::addEntitiesToChunk(){
+    for(int i=0; i< _trees.size(); i++){
+        addTreeToChunk(&_trees[i]);
+    }
+}
