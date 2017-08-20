@@ -12,37 +12,14 @@
 #include <iostream>
 #include <cassert>
 #include "Inventory.h"
+#include "../Resources.h"
 #include <string>
 #include <fstream>
 //#include "Game.h"
 
 Inventory::Inventory()
 {
-	texMan = new TextureManager("resources/tiles2.png", 16, 16);
-	texMan->insert_map_value("D",sf::Vector2i(0,0));
-	texMan->insert_map_value("d",sf::Vector2i(16,0));
-	texMan->insert_map_value("C",sf::Vector2i(0,16));
-	texMan->insert_map_value("c",sf::Vector2i(16,16));
-
-	texMan->insert_map_value("D_in",sf::Vector2i(32,0));
-	texMan->insert_map_value("d_in",sf::Vector2i(64,0));
-	texMan->insert_map_value("C_in",sf::Vector2i(32,16));
-	texMan->insert_map_value("c_in",sf::Vector2i(64,16));
-
-	texMan->insert_map_value("D_out",sf::Vector2i(48,0));
-	texMan->insert_map_value("d_out",sf::Vector2i(80,0));
-	texMan->insert_map_value("C_out",sf::Vector2i(48,16));
-	texMan->insert_map_value("c_out",sf::Vector2i(80,16));
-
-	texMan->insert_map_value("r",sf::Vector2i(0,32));
-	texMan->insert_map_value("0",sf::Vector2i(64,32));
-	texMan->insert_map_value("s",sf::Vector2i(16,32));
-	texMan->insert_map_value("S",sf::Vector2i(32,32));
-	texMan->insert_map_value("S2",sf::Vector2i(48,32));
-
-	texMan->insert_map_value("grass0",sf::Vector2i(0,48));
-	texMan->insert_map_value("grass1",sf::Vector2i(16,48));
-
+	texMan = Resources::getTextureManager("tileMap");
 
 	show_inventory = false;
 	show_tab = true;

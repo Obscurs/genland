@@ -75,7 +75,6 @@ void Resources::load() {
     texMan->insert_leaves_all_values("L1","l1",sf::Vector2i(128,48),16);
     texMan->insert_leaves_all_values("L2","l2",sf::Vector2i(128,64),16);
     texMan->insert_leaves_all_values("L3","l3",sf::Vector2i(128,80),16);
-
     std::cout << " Resources Loaded " << std::endl;
 }
 

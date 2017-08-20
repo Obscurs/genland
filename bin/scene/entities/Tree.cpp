@@ -5,26 +5,30 @@
 #include <cstdlib>
 #include <algorithm>
 #include "Tree.h"
+#include "../Scene.h"
+#include "../../Settings.h"
 
-Tree::Tree(int amplitud, int altura, int corba, float branchAmount, float sizeBranch, float curveBranch, int leaveDensity, int leaveAmount, int leaveType){
-    _base_tile = nullptr;
+Tree::Tree(sf::Vector2i position, int amplitud, int altura, int corba, float branchAmount, float sizeBranch, float curveBranch, int leaveDensity, int leaveAmount, int leaveType){
     if(altura==1) _height = rand()% 4 + 2;
     else if(altura==2) _height = rand() % 10 +5;
     else if(altura==3) _height = rand() % 15 +15;
-    _position = sf::Vector2i(512,2012);
+    _position = position;
     if(_height > 15) _amplitude = std::max(amplitud,2);
     else if(_height > 5) _amplitude = std::min(amplitud,2);
     else _amplitude = 1;
     _amountLeave = leaveAmount;
     _densityLeave = leaveDensity;
     _typeLeave = leaveType;
-
+    _min_x = 0;
+    _max_x = 0;
     int x_deviation = 0;
     if(corba==1) _corb = rand()% 10 -10;
     else if(corba==2) _corb = rand()% 10 -5;
     else _corb = rand()% 10 +1;
     bool left_branch_ant = false;
     bool right_branch_ant = false;
+    _left_n = nullptr;
+    _right_n = nullptr;
     for(int y = 0; y < _height; y++){
         int old_deviation = x_deviation;
         int currentSizeBranch = std::min(int(_height*sizeBranch),_height-y-1);
@@ -33,6 +37,7 @@ Tree::Tree(int amplitud, int altura, int corba, float branchAmount, float sizeBr
         } else{
             x_deviation += (-1)*(rand()% (11 +_corb) ==0);
         }
+
         if(!left_branch_ant && y>_height/5){
             bool branch = (rand()% (int((1-branchAmount)*10)+1))==0;
             if(branch) {
@@ -44,7 +49,10 @@ Tree::Tree(int amplitud, int altura, int corba, float branchAmount, float sizeBr
         if(_amplitude==1 && old_deviation !=x_deviation) _root.push_back(sf::Vector2i(old_deviation,y));
         for(int x = 0; x < _amplitude; x++){
             _root.push_back(sf::Vector2i(x+x_deviation,y));
+            if((x+x_deviation)> _max_x) _max_x =x+x_deviation;
+            if((x+x_deviation)< _min_x) _min_x =x+x_deviation;
             if(y>=_height-1) _branches.push_back(sf::Vector2i(x+x_deviation,y));
+
 
         }
         if(!right_branch_ant && y>_height/5){
@@ -111,7 +119,6 @@ bool Tree::isValidPosition(Tile *t_first){
 void Tree::treeToTiles(Tile *t_first){
     sf::Vector2i pos_ant = sf::Vector2i(0,0);
     Tile *t = t_first;
-    _base_tile = t_first;
     for(int i=0; i< _root.size(); i++){
         sf::Vector2i pos_curr = _root[i];
         for(int x=pos_ant.x; x < pos_curr.x; x++){
@@ -189,7 +196,7 @@ void Tree::growLeaves(Tile *t_first, int intensity){
         }
     }
 }
-void Tree::makeBranch(float size, float curve, sf::Vector2i initialPos, int direction){
+void Tree::makeBranch(int size, float curve, sf::Vector2i initialPos, int direction){
     int displacement_y = 0;
     for(int x = 0; x < size; x++){
         bool disp = (rand()% (int((1-curve)*10)+1))==0;
@@ -197,4 +204,43 @@ void Tree::makeBranch(float size, float curve, sf::Vector2i initialPos, int dire
         displacement_y+=disp;
         _branches.push_back(sf::Vector2i(direction*x+initialPos.x,initialPos.y+displacement_y));
     }
+    if(size+initialPos.x >_max_x ) _max_x =size+initialPos.x;
+    if(initialPos.x-size >_min_x ) _min_x =initialPos.x-size;
+}
+
+void Tree::checkTreeTiles(){
+    Map* map = Scene::getScene()->getMap();
+    int size = int(_root.size());
+    for(int i = 0; i< size; i++){
+        Tile *t = map->getTile(_position.x+_root[i].x*Settings::TILE_SIZE, _position.y-_root[i].y*Settings::TILE_SIZE,0);
+        if(t != nullptr && !t->_isTree) {
+            _root.erase(_root.begin()+i);
+            size = int(_root.size());
+            i--;
+        }
+    }
+    size = int(_branches.size());
+    for(int i = 0; i< size; i++){
+        Tile *t = map->getTile(_position.x+_branches[i].x*Settings::TILE_SIZE, _position.y-_branches[i].y*Settings::TILE_SIZE,0);
+        if(t != nullptr && !t->_isTree) {
+            _branches.erase(_branches.begin()+i);
+            size = int(_branches.size());
+            i--;
+        }
+    }
+}
+bool Tree::isDead(){
+    return (_branches.size()==0 && _root.size() ==0);
+}
+Tree* Tree::getLeftTree(){
+    return _left_n;
+}
+Tree* Tree::getRightTree(){
+    return _right_n;
+}
+void Tree::setLeftTree(Tree *t){
+    _left_n = t;
+}
+void Tree::setRightTree(Tree *t){
+    _right_n = t;
 }

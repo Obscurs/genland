@@ -206,6 +206,7 @@ sf::Color MapViewer::getColorByTileId(std::string s){
     else if(s == "r") return sf::Color(164,191,219,150);
     else if(s == "J") return sf::Color(0,140,56,150);
     else if(s == "j") return sf::Color(0,221,88,150);
+    else if(s == "t"|| s=="T"|| s=="f"|| s=="F") return sf::Color(60,170,15,150);
 
     else return sf::Color(255,255,255,255);
 

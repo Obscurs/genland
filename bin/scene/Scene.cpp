@@ -131,20 +131,20 @@ float Scene::getMountFactor(sf::Vector2f pos){
     return t->_mountain_factor;
 }
 
-Map &Scene::getMap(){
-    return _map_curr;
+Map* Scene::getMap(){
+    return &_map_curr;
 }
-WorldBackground &Scene::getBackgrounds(){
-    return _backgrounds;
+WorldBackground* Scene::getBackgrounds(){
+    return &_backgrounds;
 }
-Clock &Scene::getClock(){
-    return _clock;
+Clock* Scene::getClock(){
+    return &_clock;
 }
-Drawer &Scene::getDrawer(){
-    return _drawer;
+Drawer* Scene::getDrawer(){
+    return &_drawer;
 }
-Player &Scene::getPlayer(){
-    return _player;
+Player* Scene::getPlayer(){
+    return &_player;
 }
 bool Scene::isInit() {
     return _initialized;

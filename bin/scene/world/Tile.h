@@ -30,10 +30,11 @@ public:
 	sf::Vector2f GetPosition() const;
 	float getWidth() const;
 	float getHeight() const;
-	bool reach_sun; //sha de privatitzar
+	bool _reach_sun; //sha de privatitzar
 	bool isVisibleSun();
 	bool rigid;
 	bool reach_floor;
+    bool _isTree;
 	int layer;
 	int max_tension;
     float last_tension_debug;

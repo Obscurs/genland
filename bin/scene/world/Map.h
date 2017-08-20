@@ -28,6 +28,7 @@ public:
     std::vector<Light> lights;
     std::vector<AnimatedTile*> falling_tiles;
 	Tile* getTile(float x, float y, int z);
+	Chunk* getChunk(float x, float y, float z);
 	int getChunkIndex(float x);
     int getIndexMatChunk(int x);
     void saveMap();

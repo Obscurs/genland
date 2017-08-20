@@ -25,21 +25,23 @@ public:
 	void calcLateralNeighborsTiles(int latelal);
     void saveToFile(std::string path);
 	Chunk* neighbors[2] = { nullptr };
-	void recalcReachFloor();
+
 	void prepareArrays();
 	void update(float delta);
     void debugDraw(sf::RenderTarget &target, const std::string keyDebug,sf::Text &text);
 	sf::VertexArray render_array;
 	sf::VertexArray sky_array;
 
-
-
+    void createTree(sf::Vector2i position);
+    void addTreeToChunk(Tree *t);
 
 private:
+    void recalcReachFloor();
 	float getChunkPos();
+    void checkTreeTiles();
 	void drawGrassTiles();
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];
-    void addTreeToChunk(Tree *t);
+    int _surfacePosition[N_TILES_X];
     void addEntitiesToChunk();
     //array de llums
     //array de animals

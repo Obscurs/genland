@@ -31,11 +31,11 @@ public:
     Scene();
     ~Scene();
 
-    Map &getMap();
-    Player &getPlayer();
-    Drawer &getDrawer();
-    WorldBackground &getBackgrounds();
-    Clock &getClock();
+    Map *getMap();
+    Player *getPlayer();
+    Drawer *getDrawer();
+    WorldBackground *getBackgrounds();
+    Clock *getClock();
     float getZoom();
     std::string getGamePath();
     std::string getSeed();

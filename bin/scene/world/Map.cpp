@@ -53,9 +53,9 @@ void Map::init(int pos)
     _chunk_mat[2]->calcLateralNeighborsTiles(0);
     _chunk_mat[2]->calcLateralNeighborsTiles(1);
 
-    _chunk_mat[0]->recalcReachFloor();
-    _chunk_mat[1]->recalcReachFloor();
-    _chunk_mat[2]->recalcReachFloor();
+    //_chunk_mat[0]->recalcReachFloor();
+    //_chunk_mat[1]->recalcReachFloor();
+    //_chunk_mat[2]->recalcReachFloor();
 
 }
 
@@ -587,12 +587,23 @@ Tile* Map::getTile(float x, float y, int z){
 	int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
 	int chunk_x = (x-size_chunk_x*_posMap)/size_chunk_x;
     //std::cout << chunk_x << std::endl;
-    if(chunk_x>= N_CHUNKS_X) return nullptr;
+    if(chunk_x>= N_CHUNKS_X || chunk_x <0) return nullptr;
     else{
         Chunk* c = _chunk_mat[chunk_x];
         return c->getTile(x, y, z);
     }
 
+}
+Chunk* Map::getChunk(float x, float y, float z){
+    if(y<0) y = 0;
+    int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
+    int chunk_x = (x-size_chunk_x*_posMap)/size_chunk_x;
+    //std::cout << chunk_x << std::endl;
+    if(chunk_x>= N_CHUNKS_X || chunk_x <0) return nullptr;
+    else{
+        Chunk* c = _chunk_mat[chunk_x];
+        return c;
+    }
 }
 
 int Map::getChunkIndex(float x){
@@ -643,7 +654,7 @@ void Map::checkLoadedChunks(float x, float y){
                 _chunk_mat[2]->neighbors[1] = nullptr;
                 _chunk_mat[2]->calcLateralNeighborsTiles(1);
                 _chunk_mat[0]->calcLateralNeighborsTiles(0);
-                _chunk_mat[0]->recalcReachFloor();
+                //_chunk_mat[0]->recalcReachFloor();
                 delete c2;
             }
 
@@ -665,7 +676,7 @@ void Map::checkLoadedChunks(float x, float y){
                 _chunk_mat[0]->neighbors[1] = nullptr;
                 _chunk_mat[0]->calcLateralNeighborsTiles(0);
                 _chunk_mat[2]->calcLateralNeighborsTiles(1);
-                _chunk_mat[2]->recalcReachFloor();
+                //_chunk_mat[2]->recalcReachFloor();
                 delete c1;
             }
             //std::cout << distance_1 << " " << distance_2 << std::endl;

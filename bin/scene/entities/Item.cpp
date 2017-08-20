@@ -175,6 +175,13 @@ void Item::Reload(std::string new_id)
 		id_set1="N";
 
 	}
+	else if(new_id == "T" || new_id == "t"){
+		max_stack_amount= 20;
+		amount = 0;
+		craft_cost["n"] = 2;
+		id_set0="t";
+		id_set1="T";
+	}
 	else{
 		Reload("0");
 	}

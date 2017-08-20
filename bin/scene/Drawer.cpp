@@ -57,7 +57,7 @@ sf::Vector2f Drawer::GetPosSprite(){
 void Drawer::DrawSceneTex(){
     TextureManager *texMan = Resources::getTextureManager("tileMap");
     Scene *scene = Scene::getScene();
-    Map &map_curr = scene->getMap();
+    Map *map_curr = scene->getMap();
     texture_scene.clear(sf::Color(0,0,0,0));
     sf::RenderStates states;
     states.texture = texMan->getTexture();
@@ -66,27 +66,27 @@ void Drawer::DrawSceneTex(){
     sf::Vector2f sizeView = view_player.getSize();
     float first_x = centerView.x-(sizeView.x/2)-1;
     float last_x = centerView.x+(sizeView.x/2)+1;
-    int first_chunk = map_curr.getChunkIndex(first_x);
-    int last_chunk = map_curr.getChunkIndex(last_x+Settings::TILE_SIZE);
+    int first_chunk = map_curr->getChunkIndex(first_x);
+    int last_chunk = map_curr->getChunkIndex(last_x+Settings::TILE_SIZE);
     for(int i = first_chunk ; i<=last_chunk ; i = i +1) {
-        int index_mat = map_curr.getIndexMatChunk(i);
-        texture_scene.draw(map_curr._chunk_mat[index_mat]->render_array, states);
+        int index_mat = map_curr->getIndexMatChunk(i);
+        texture_scene.draw(map_curr->_chunk_mat[index_mat]->render_array, states);
     }
-    for(int i = 0; i<map_curr.falling_tiles.size(); i++){
-        map_curr.falling_tiles[i]->Draw(texture_scene);
+    for(int i = 0; i<map_curr->falling_tiles.size(); i++){
+        map_curr->falling_tiles[i]->Draw(texture_scene);
     }
     texture_scene.display();
 }
 void Drawer::DrawBackground() {
     sf::Shader *sun_background_shader = Resources::getShader("sun_background_shader");
     Scene *scene = Scene::getScene();
-    Clock &clock = scene->getClock();
-    WorldBackground &backgrounds = scene->getBackgrounds();
-    clock.setColorToShader(*sun_background_shader);
+    Clock* clock = scene->getClock();
+    WorldBackground* backgrounds = scene->getBackgrounds();
+    clock->setColorToShader(*sun_background_shader);
 
     texture_background.clear(sf::Color(255,0,0,255));
 
-    backgrounds.Draw(texture_background);
+    backgrounds->Draw(texture_background);
 
     sf::Sprite background_sprite(texture_background.getTexture());
     sf::Vector2f pos_sprite = GetPosSprite();
@@ -102,22 +102,22 @@ void Drawer::DrawBackground() {
 
 void Drawer::DrawRain() {
     Scene *scene = Scene::getScene();
-    Clock &clock = scene->getClock();
-    Map &map_curr = scene->getMap();
-    Player &player = scene->getPlayer();
-    if(clock._rainFactor >0){
+    Clock* clock = scene->getClock();
+    Map* map_curr = scene->getMap();
+    Player* player = scene->getPlayer();
+    if(clock->_rainFactor >0){
         sf::Shader *rain_shader = Resources::getShader("rain_shader");
         sf::Sprite background_sprite(texture_background.getTexture());
         sf::Vector2f pos_sprite = GetPosSprite();
         background_sprite.setPosition(pos_sprite);
         rain_shader->setParameter("time",timer.getElapsedTime().asSeconds());
 
-        rain_shader->setParameter("intensity",clock._rainFactor);
+        rain_shader->setParameter("intensity",clock->_rainFactor);
         //rain_shader.setParameter("LAYERS",int(_clock->_rainFactor*10/2));
 
 
-        sf::Vector2f pos = player.GetPosition();
-        Tile *t = map_curr.getTile(pos.x,pos.y,0);
+        sf::Vector2f pos = player->GetPosition();
+        Tile *t = map_curr->getTile(pos.x,pos.y,0);
         int temperature = t->_temperature;
         int humidity = t->_humidity;
         sf::RenderStates states;
@@ -126,7 +126,7 @@ void Drawer::DrawRain() {
         states.shader = rain_shader;
         if(temperature >10){
             if(temperature >25 && humidity<50){
-                float new_rain_factor = clock._rainFactor-1-(humidity-50)/10;
+                float new_rain_factor = clock->_rainFactor-1-(humidity-50)/10;
                 rain_shader->setParameter("intensity",new_rain_factor);
             }
             rain_shader->setParameter("SCALE",512.0f);
@@ -170,8 +170,8 @@ void Drawer::DrawLights(){
     sf::Shader *sun_shader = Resources::getShader("sun_shader");
     sf::Shader *sun_mix_shader = Resources::getShader("sun_mix_shader");
     Scene *scene = Scene::getScene();
-    Clock &clock = scene->getClock();
-    Map &map_curr = scene->getMap();
+    Clock* clock = scene->getClock();
+    Map* map_curr = scene->getMap();
 
     sf::Sprite map_without_lights(texture_scene.getTexture());
     sf::Vector2f pos_sprite = GetPosSprite();
@@ -188,16 +188,16 @@ void Drawer::DrawLights(){
     float first_y = centerView.y-(sizeView.y/2)-1;
     float last_x = centerView.x+(sizeView.x/2)+1;
     float last_y = centerView.y+(sizeView.y/2)+1;
-    int first_chunk = map_curr.getChunkIndex(first_x);
-    int last_chunk = map_curr.getChunkIndex(last_x+Settings::TILE_SIZE);
+    int first_chunk = map_curr->getChunkIndex(first_x);
+    int last_chunk = map_curr->getChunkIndex(last_x+Settings::TILE_SIZE);
 
     for(int i = first_chunk ; i<=last_chunk ; i++) {
-        int index_mat = map_curr.getIndexMatChunk(i);
-        texture_sun.draw(map_curr._chunk_mat[index_mat]->sky_array, states);
+        int index_mat = map_curr->getIndexMatChunk(i);
+        texture_sun.draw(map_curr->_chunk_mat[index_mat]->sky_array, states);
 
     }
     texture_sun.display();
-    clock.setColorToShader(*sun_mix_shader);
+    clock->setColorToShader(*sun_mix_shader);
     sun_mix_shader->setParameter("texture2", texture_sun.getTexture());
     states.shader = sun_mix_shader;
     texture_back->clear(sf::Color(0,0,0,0));
@@ -213,13 +213,13 @@ void Drawer::DrawLights(){
     //texture_front->setView(currentView);
 
 
-    for(int i = 0; i<map_curr.lights.size(); i++){
+    for(int i = 0; i<map_curr->lights.size(); i++){
         //for(int i = 0; i<4; i++){
-        float radius = map_curr.lights[i].radius;
-        sf::Vector2f lightpos = sf::Vector2f(map_curr.lights[i].position.x-first_x,map_curr.lights[i].position.y-first_y);
+        float radius = map_curr->lights[i].radius;
+        sf::Vector2f lightpos = sf::Vector2f(map_curr->lights[i].position.x-first_x,map_curr->lights[i].position.y-first_y);
         if(lightpos.x>0-radius*2 && lightpos.x<sizeView.x+radius*2 && lightpos.y>0-radius*2 && lightpos.y<sizeView.y+radius*2) {
 
-            map_curr.lights[i].Draw(lightpos, map_without_lights, texture_front, texture_back,texture_sun);
+            map_curr->lights[i].Draw(lightpos, map_without_lights, texture_front, texture_back,texture_sun);
             std::swap(texture_back, texture_front);
         }
     }
@@ -227,20 +227,20 @@ void Drawer::DrawLights(){
 }
 void Drawer::debugMap(const std::string keyDebug){
     Scene *scene = Scene::getScene();
-    Map &map_curr = scene->getMap();
+    Map* map_curr = scene->getMap();
     sf::Text text;
     text.setFont(*Resources::getFont("debugFont"));
     text.setCharacterSize(12);
     text.setColor(sf::Color::Red);
     for(int i = 0 ; i<Map::N_CHUNKS_X ; i = i +1) {
-        map_curr._chunk_mat[i]->debugDraw(*texture_back, keyDebug,text);
+        map_curr->_chunk_mat[i]->debugDraw(*texture_back, keyDebug,text);
     }
 }
 void Drawer::DrawMap(sf::RenderWindow& renderWindow)
 {
     sf::Shader *mix_back_terr_shader = Resources::getShader("mix_back_terr_shader");
     Scene *scene = Scene::getScene();
-    Player &player = scene->getPlayer();
+    Player* player = scene->getPlayer();
     float zoom = scene->getZoom();
     DrawSceneTex();
     DrawBackground();
@@ -251,7 +251,7 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow)
     if(Debuger::activated && Debuger::metric3 !="none") debugMap(Debuger::metric3);
 
     texture_back->display();
-    player.Draw2(*texture_back);
+    player->Draw2(*texture_back);
     sf::Sprite sprite(texture_back->getTexture());
 
     sf::Vector2f pos_sprite = GetPosSprite();
@@ -270,9 +270,9 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow)
 
 void Drawer::Draw(sf::RenderWindow &window){
     Scene *scene = Scene::getScene();
-    Map &map_curr = scene->getMap();
-    Player &player = scene->getPlayer();
-    view_player.setCenter(player.GetPosition().x+player.GetWidth()/2, player.GetPosition().y+player.GetHeight()/2);
+    Map* map_curr = scene->getMap();
+    Player* player = scene->getPlayer();
+    view_player.setCenter(player->GetPosition().x+player->GetWidth()/2, player->GetPosition().y+player->GetHeight()/2);
 
     texture_back->setView(view_player);
     texture_front->setView(view_player);
@@ -281,7 +281,7 @@ void Drawer::Draw(sf::RenderWindow &window){
     texture_background.setView(view_player);
     black_texture.setView(view_player);
     DrawMap(window);
-    player.DrawInventory(window);
-    map_curr.drawViewMap(window);
+    player->DrawInventory(window);
+    map_curr->drawViewMap(window);
 
 }

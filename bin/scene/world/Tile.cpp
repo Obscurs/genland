@@ -26,6 +26,8 @@ Tile::Tile(int l){
     _bio = STANDARD;
     _leaveType = "0" ;
     _leaveDensity = "";
+    _reach_sun = false;
+    _isTree = false;
 }
 
 
@@ -46,6 +48,7 @@ void Tile::removeReachFloorCascade(){
     tB->reach_floor = false;
     if(neighbors[1] != nullptr && (neighbors[1]->reach_floor || neighbors[1]->neighbors[8]->reach_floor)) neighbors[1]->removeReachFloorCascade();
 }
+
 void Tile::reloadLeave(std::string id,std::string density, std::string type){
     reload(id);
     _leaveDensity = density;
@@ -53,6 +56,7 @@ void Tile::reloadLeave(std::string id,std::string density, std::string type){
 }
 void Tile::reload(std::string new_id)
 {
+    _isTree = false;
     last_tension_debug =0;
 	if(new_id == "0"){
 		weight = 0;
@@ -128,6 +132,7 @@ void Tile::reload(std::string new_id)
             max_tension = 50;
             id_pick = "T";
             ms_to_remove = 100;
+            _isTree = true;
         }
         else if (new_id == "F" || new_id == "f") {
             weight = 2;
@@ -534,7 +539,7 @@ void Tile::debugTile(sf::RenderTarget &target,const std::string keyDebug, sf::Te
     else if(keyDebug == "reachFloor"){
 
         sf::RectangleShape rectangle;
-        rectangle.setFillColor(sf::Color(255-reach_floor*255,reach_floor*255,0,255/3));
+        rectangle.setFillColor(sf::Color(255-_reach_sun*255,_reach_sun*255,0,255/3));
 
         if(layer==1){
             rectangle.setSize(sf::Vector2f(size.x/2, size.y/2));

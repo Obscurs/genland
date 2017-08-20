@@ -74,7 +74,7 @@ void Debuger::DrawPlayerStats(){
     sf::Vector2f centerView = currentView.getCenter();
     sf::Vector2f sizeView   = currentView.getSize();
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
-    sf::Vector2f pos = scene->getPlayer().GetPosition();
+    sf::Vector2f pos = scene->getPlayer()->GetPosition();
     std::stringstream buffer;
     buffer << "X: " << int(pos.x) << " Y: " << int(pos.y);
 
@@ -91,7 +91,7 @@ void Debuger::DrawBiomeStats(){
     sf::Vector2f centerView = currentView.getCenter();
     sf::Vector2f sizeView   = currentView.getSize();
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
-    sf::Vector2f pos = scene->getPlayer().GetPosition();
+    sf::Vector2f pos = scene->getPlayer()->GetPosition();
     std::stringstream buffer;
 
 
@@ -114,8 +114,8 @@ void Debuger::DrawBiomeStats(){
             else if(humidity <40) bioma = "PLAINS";
         }
     }
-    Clock clk = scene->getClock();
-    buffer << "Bioma: " << bioma << " Temperature: " << temperature <<"(" <<temperature+clk._globalTemperature <<")" << " Humidity: " << humidity <<"(" <<humidity+clk._globalHumidity <<")"<< " Mountain: " << mountFactor;
+    Clock* clk = scene->getClock();
+    buffer << "Bioma: " << bioma << " Temperature: " << temperature <<"(" <<temperature+clk->_globalTemperature <<")" << " Humidity: " << humidity <<"(" <<humidity+clk->_globalHumidity <<")"<< " Mountain: " << mountFactor;
 
     std::string string(buffer.str());
     sf::String str(string);
@@ -131,8 +131,8 @@ void Debuger::DrawWorldStats(){
     sf::Vector2f sizeView   = currentView.getSize();
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
     std::stringstream buffer;
-    Clock clk = scene->getClock();
-    buffer << "Day: " << clk.day << " Hour: " << clk.hour <<" Min: " << int(clk.min) <<  " DayTime: " << clk._dayTime << " "<< clk._dayTimeFactor<< " Season: " << clk._season<< " "<< clk._seasonFactor;
+    Clock* clk = scene->getClock();
+    buffer << "Day: " << clk->day << " Hour: " << clk->hour <<" Min: " << int(clk->min) <<  " DayTime: " << clk->_dayTime << " "<< clk->_dayTimeFactor<< " Season: " << clk->_season<< " "<< clk->_seasonFactor;
     std::string string(buffer.str());
     sf::String str(string);
     _text.setString(str);
