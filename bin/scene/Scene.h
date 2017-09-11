@@ -49,6 +49,11 @@ public:
     int getTemperature(sf::Vector2f pos);
     int getHumidity(sf::Vector2f pos);
     float getMountFactor(sf::Vector2f pos);
+    sf::Vector2i getLimsBiome();
+    void addLimit(int newLimit);
+    bool firstBiomeCreated();
+    void syncTreesWithChunk(Chunk *c,int index_in_mat_chunks);
+    void syncNotRenderedTrees(Chunk *c);
 
 private:
     std::mt19937 _generator;
@@ -62,6 +67,17 @@ private:
     Drawer _drawer;
     WorldBackground _backgrounds;
     Clock _clock;
+    std::vector<int> _biomeLimitsRight;
+    std::vector<int> _biomeLimitsLeft;
+    sf::Vector2i _currentEcosystem1;
+    sf::Vector2i _currentEcosystem2;
+    bool betweenInts(sf::Vector2i interval, int i);
+    sf::Vector2i searchIntervalEcosystem(int i);
+    std::vector<Tree> _entities1;
+    std::vector<Tree> _entities2;
+    void updateEcosystems(float delta);
+    void saveEntities(bool arrayChosen);
+    void loadEntities(bool arrayChosen);
 };
 
 

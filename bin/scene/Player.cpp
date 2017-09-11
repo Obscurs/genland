@@ -488,10 +488,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 	    }
 
 	}
-    else if(Inputs::KeyBreak(Inputs::Key::TAB)){
-        Chunk *c = map.getChunk(position.x, position.y, 0);
-        c->createTree(sf::Vector2i(position.x,position.y));
-    }
+
 
 
 }

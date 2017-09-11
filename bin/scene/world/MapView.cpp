@@ -73,7 +73,7 @@ void MapViewer::draw(sf::RenderTarget &render){
 
 }
 void MapViewer::addChunk(Chunk &c){
-    int idChunk = c.chunk_id;
+    int idChunk = c._chunk_id;
     if(idChunk>=0){
         if(idChunk<_positive_map.size()){
             MapChunk *mc = &_positive_map[idChunk];

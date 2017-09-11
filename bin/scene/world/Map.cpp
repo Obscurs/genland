@@ -58,7 +58,120 @@ void Map::init(int pos)
     //_chunk_mat[2]->recalcReachFloor();
 
 }
+void Map::searchDeserts(bool left, int pos){
+    Scene *scene = Scene::getScene();
+    std::string path = scene->getGamePath();
+    std::mt19937 generator = scene->getGenerator();
+    int seed = std::stoi(scene->getSeed());
 
+    generator.seed(seed);
+    Simplex2d* escarp = new Simplex2d(&generator, 1000.0f, 0.0f, 0.1f);
+    generator.seed(seed+1);
+    Simplex2d* altitud = new Simplex2d(&generator, 20000.0f, 0.2f, 0.5f);
+    generator.seed(seed+2);
+    Simplex2d* escarp_factor = new Simplex2d(&generator, 6000.0f, 0.0f, 1.0f);
+    Simplex2d* noise_stone_to_dirt = new Simplex2d(&generator, 50.0f, -0.01f, 0.01f);
+    Simplex2d* noise_stone_to_dirt2 = new Simplex2d(&generator, 500.0f, -0.02f, 0.02f);
+    Simplex2d* noise_transition_materials3 = new Simplex2d(&generator, 200.0f, -1.0f, 1.0f);
+
+    generator.seed(seed+3);
+    Simplex2d* mount_factor = new Simplex2d(&generator, 10000.0f, -1.2f, 1.0f);
+    generator.seed(seed+4);
+    Simplex2d* mountains = new Simplex2d(&generator, 500.0f, 0.4f, 0.5f);
+
+    generator.seed(seed+5);
+    Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -10, 20);
+    generator.seed(seed+6);
+    Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
+
+    sf::Vector2i lims = scene->getLimsBiome();
+    sf::Vector2i old_lims = lims;
+
+
+    int iter = pos;
+    while(old_lims == lims){
+        std::vector<sf::Vector2i> grassTiles;
+        bool has_desert = false;
+        for(int j = 0; j<Chunk::N_TILES_X; j = j +1){
+            bool ant_terrain = true;
+            for(int i = 0; i<Chunk::N_TILES_Y; i = i +1){
+                int y_pos = Chunk::N_TILES_Y-1-i;
+                float current_global_x = iter*Chunk::N_TILES_X*Settings::TILE_SIZE_HIGH+j*Settings::TILE_SIZE_HIGH;
+                float current_global_y = i*Settings::TILE_SIZE_HIGH;
+                float height_factor = float(y_pos)/float(Chunk::N_TILES_Y);
+                float valFloor = altitud->valSimplex2D(0, current_global_x);
+                float valEscarpAux = escarp->valSimplex2D(0, current_global_x);
+                float valEscarpFact = escarp_factor->valSimplex2D(0, current_global_x);
+                float valPlains = valFloor+(valEscarpAux*valEscarpFact);
+                float valTransition = noise_transition_materials3->valSimplex2D(0, current_global_x);
+                float mountains_noise = mountains->valSimplex2D(0, current_global_x);
+                float mountains_factor = mount_factor->valSimplex2D(0, current_global_x);
+                mountains_factor = std::max(float(0.0), mountains_factor);
+                float valMountains = mountains_factor*mountains_noise;
+                float valTerrain = valMountains+valPlains;
+                bool valHeightMax = height_factor < valTerrain;
+                float valNoiseStoneDirt = noise_stone_to_dirt->valSimplex2D(0, current_global_x)+noise_stone_to_dirt2->valSimplex2D(0, current_global_x);
+                float valHeightStone = (height_factor < (valTerrain+valNoiseStoneDirt+-0.04*(1-(mountains_factor*1.6+(1-height_factor)/2)))? 1 : 0);
+                int valHumidity = int(noise_humidity->valSimplex2D(0, current_global_x));
+                float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
+                int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, current_global_x));
+                Tile::Bioma bioma = Tile::STANDARD;
+                if(mountains_factor<=0) {
+                    if(valTemperature+valTransition*2 >30){
+                        if(valHumidity+valTransition*2 >70) bioma = Tile::JUNGLE;
+                        else if(valHumidity+valTransition*2 <40) bioma = Tile::DESERT;
+                    }
+                }
+                if(ant_terrain && valHeightMax){
+                    ant_terrain = false;
+                    if(bioma == Tile::DESERT) has_desert = true;
+                    else if(!valHeightStone) grassTiles.push_back(sf::Vector2i(current_global_x,current_global_y-Settings::TILE_SIZE));
+                }
+            }
+        }
+        if(has_desert){
+            sf::Vector2i limitsBio = scene->getLimsBiome();
+            if((limitsBio.x == limitsBio.y) || (limitsBio.x -10 > iter) || (limitsBio.y +10 < iter)) scene->addLimit(iter);
+            std::string filenameEnt = path;
+            filenameEnt.append("/entities/");
+            filenameEnt.append(std::to_string(iter));
+            filenameEnt.append(".txt");
+            std::cout << filenameEnt << std::endl;
+            std::ofstream myfile;
+            myfile.open(filenameEnt);
+            myfile << "END";
+            myfile.close();
+        } else {
+            std::vector<Tree> trees;
+            if(grassTiles.size()>0){
+                Tree *t = new Tree(iter, grassTiles[rand() % grassTiles.size()],2,3,1,0.8,0.6,0.9,2,2,3);
+                trees.push_back(*t);
+            }
+            std::string filenameEnt = path;
+            filenameEnt.append("/entities/");
+            filenameEnt.append(std::to_string(iter));
+            filenameEnt.append(".txt");
+            std::cout << filenameEnt << std::endl;
+            std::ofstream myfile;
+            myfile.open(filenameEnt);
+            for(int i = 0; i< trees.size(); i++){
+                trees[i].saveToFile(iter, myfile);
+            }
+            myfile << "END";
+            myfile.close();
+            //std::cout << "lsalasldasldasl" << std::endl;
+        }
+        if(iter==0){
+                std::cout << "hola" << std::endl;
+        }
+
+        lims = scene->getLimsBiome();
+        if(left) iter = iter-1;
+        else iter = iter +1;
+    }
+
+
+}
 void Map::saveMap(){
     if(_initialized){
         Scene *scene = Scene::getScene();
@@ -72,33 +185,31 @@ void Map::createMap(int map_index, int chunk_index){
     if(_initialized) {
         Scene *scene = Scene::getScene();
         std::string path = scene->getGamePath();
-        std::string filename = path;
-        filename.append("/map/");
-        filename.append(std::to_string(chunk_index));
-        filename.append(".txt");
+        std::string filenameMap = path;
+        filenameMap.append("/map/");
+        filenameMap.append(std::to_string(chunk_index));
+        filenameMap.append(".txt");
 
-        if (exists_file(filename)) {
-            std::ifstream myfile(filename);
-            myfile.open(filename);
+        Chunk *c;
+        if (exists_file(filenameMap)) {
+            std::ifstream myfile(filenameMap);
+            myfile.open(filenameMap);
             std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
-            sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, myfile);
+            c = new Chunk(chunk_index, myfile);
             _chunk_mat[map_index] = c;
             myfile.close();
         }
         else {
-
             std::ofstream myfile;
-            myfile.open(filename);
-
-
-
-            sf::Vector2i chunk_pos(chunk_index, 0);
-            Chunk *c = new Chunk(chunk_pos, myfile);
+            myfile.open(filenameMap);
+            c = new Chunk(chunk_index, myfile);
             _chunk_mat[map_index] = c;
-
             myfile.close();
         }
+
+
+
+
         if (map_index == 0 && _chunk_mat[1] != nullptr) {
             _chunk_mat[0]->neighbors[1] = _chunk_mat[1];
             _chunk_mat[1]->neighbors[0] = _chunk_mat[0];
@@ -126,10 +237,25 @@ void Map::createMap(int map_index, int chunk_index){
             _chunk_mat[2]->calcLateralNeighborsTiles(0);
             //_chunk_mat[2]->recalcReachSun();
         }
-        _mapViewer.addChunk(*_chunk_mat[map_index]);
+        sf::Vector2i ecoLimits = scene->getLimsBiome();
+        if(ecoLimits.x != ecoLimits.y){
+            if(chunk_index > ecoLimits.y){
+                searchDeserts(0, chunk_index);
+            }
+            else if(chunk_index < ecoLimits.x){
+                searchDeserts(1, chunk_index);
+            }
+        }
     } else std::cout << "canot create map, map not _initialized" << std::endl;
 }
+void Map::syncEntitiesToChunk(int chunk){
+    _mapViewer.addChunk(*_chunk_mat[chunk]);
+    Scene *s = Scene::getScene();
+    s->syncTreesWithChunk(_chunk_mat[chunk], chunk);
+    s->syncNotRenderedTrees(_chunk_mat[1]);
 
+
+}
 Map::~Map() {
 }
 
@@ -553,7 +679,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
 }
 void Map::dirtyChunks(){
     for(int i = 0 ; i<N_CHUNKS_X ; ++i){
-        _chunk_mat[i]->is_dirty = true;
+        _chunk_mat[i]->_is_dirty = true;
     }
 }
 void Map::removeTile2(Tile* removed_tile){
@@ -616,7 +742,7 @@ int Map::getChunkIndex(float x){
 int Map::getIndexMatChunk(int x){
     int final_x = -1;
     for(int i = 0 ; i<N_CHUNKS_X ; ++i){
-        int pos_x = _chunk_mat[i]->chunk_id;
+        int pos_x = _chunk_mat[i]->_chunk_id;
         if(pos_x == x){
             final_x = i;
         }
@@ -641,9 +767,8 @@ void Map::checkLoadedChunks(float x, float y){
         if (distance_1 < Chunk::N_TILES_X / 1.8 * Settings::TILE_SIZE) {
             //#pragma omp task
             {
-
                 c2->saveToFile(path);
-                int current_pos = c1->chunk_id;
+                int current_pos = c1->_chunk_id;
                 Chunk *chunk_mid = _chunk_mat[1];
 
 
@@ -654,6 +779,7 @@ void Map::checkLoadedChunks(float x, float y){
                 _chunk_mat[2]->neighbors[1] = nullptr;
                 _chunk_mat[2]->calcLateralNeighborsTiles(1);
                 _chunk_mat[0]->calcLateralNeighborsTiles(0);
+                syncEntitiesToChunk(0);
                 //_chunk_mat[0]->recalcReachFloor();
                 delete c2;
             }
@@ -665,7 +791,7 @@ void Map::checkLoadedChunks(float x, float y){
             {
 
                 c1->saveToFile(path);
-                int current_pos = c2->chunk_id;
+                int current_pos = c2->_chunk_id;
                 int id_temp = 0;
                 Chunk *chunk_mid = _chunk_mat[1];
 
@@ -676,6 +802,7 @@ void Map::checkLoadedChunks(float x, float y){
                 _chunk_mat[0]->neighbors[1] = nullptr;
                 _chunk_mat[0]->calcLateralNeighborsTiles(0);
                 _chunk_mat[2]->calcLateralNeighborsTiles(1);
+                syncEntitiesToChunk(2);
                 //_chunk_mat[2]->recalcReachFloor();
                 delete c1;
             }
@@ -705,7 +832,9 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
     return result;
 }
 
-
+int Map::getPosMap(){
+    return _posMap;
+}
 void Map::update(float delta, sf::Vector2f player_pos)
 {
     if(_initialized){
@@ -714,10 +843,10 @@ void Map::update(float delta, sf::Vector2f player_pos)
         int y = std::max((int)player_pos.y, 0);
         int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
         int chunk_player = (x-size_chunk_x*_posMap)/size_chunk_x;
-        int idChunk = _chunk_mat[chunk_player]->chunk_id;
+        int idChunk = _chunk_mat[chunk_player]->_chunk_id;
 
         sf::Vector2i tile = _chunk_mat[chunk_player]->getTileIndex(x, y);
-        _mapViewer.update(_chunk_mat[chunk_player]->chunk_id, tile);
+        _mapViewer.update(_chunk_mat[chunk_player]->_chunk_id, tile);
         for(int i = 0; i<N_CHUNKS_X; i++){
             _chunk_mat[i]->update(delta);
         }

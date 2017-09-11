@@ -7,16 +7,16 @@
 class Chunk
 {
 public:	
-	Chunk(sf::Vector2i pos, std::ofstream &myfile);
-    Chunk(sf::Vector2i pos, std::ifstream &myfile);
+	Chunk(int pos, std::ofstream &myfile);
+    Chunk(int pos, std::ifstream &myfile);
 	~Chunk();
 
 
 	const static int N_TILES_X = 100;		//must be on settings
 	const static int N_TILES_Y = 300;
 	const static int N_TILES_Z = 2;
-	int chunk_id;
-    bool is_dirty;
+	int _chunk_id;
+    bool _is_dirty;
 	Tile* getTile(float x, float y, int z);
     Tile* getTileByIndex(int x, int y, int z);
 
@@ -32,8 +32,9 @@ public:
 	sf::VertexArray render_array;
 	sf::VertexArray sky_array;
 
-    void createTree(sf::Vector2i position);
-    void addTreeToChunk(Tree *t);
+    void addTreeToChunk(Tree *t, int index_chunk_in_mat);
+    void clearEntities();
+    void syncNotRenderedTrees();
 
 private:
     void recalcReachFloor();
@@ -45,7 +46,7 @@ private:
     void addEntitiesToChunk();
     //array de llums
     //array de animals
-    std::vector<Tree> _trees; //array d'abres
+    std::vector<Tree*> _trees; //array d'abres
     std::vector<Tile*> grass_tiles;
 
 

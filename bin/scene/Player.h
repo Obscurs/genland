@@ -8,8 +8,8 @@ class Player
 public:
 	Player();
 	~Player();
-	const static int PLAYER_SPEED_X = 300;
-	const static int PLAYER_SPEED_Y = 100;
+	const static int PLAYER_SPEED_X = 2000;
+	const static int PLAYER_SPEED_Y = 400;
 	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
 	void Draw2(sf::RenderTexture & tex);

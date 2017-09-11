@@ -404,6 +404,15 @@ void Game::CreateNewGame(std::string path, std::string seed, std::string name) {
         printf("Error creating directory map !n");
         exit(1);
     }
+    //ENTITIES FOLDER
+    std::string path_entities = path;
+    path_entities.append("/entities");
+    const int dir_err3 = mkdir(path_entities.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if (-1 == dir_err3)
+    {
+        printf("Error creating directory entities !n");
+        exit(1);
+    }
 }
 
 void Game::DeleteGame(int index, std::string path) {
