@@ -49,7 +49,30 @@ void Scene::update(sf::RenderWindow &window,float delta){
 
 }
 bool Scene::betweenInts(sf::Vector2i interval, int i){
-    return (i >= interval.x && i <= interval.y && interval.x != interval.y);
+    return (i >= interval.x && i < interval.y && interval.x != interval.y);
+}
+std::vector<std::vector<std::pair<int, bool> > >* Scene::getSurface(sf::Vector2i interval){
+    if(interval == _currentEcosystem1) return &_surface1;
+    else if(interval == _currentEcosystem2) return &_surface2;
+    else {
+        std::cout << "estas fent servir un interval incorrecte" << std::endl;
+        return nullptr;
+    }
+};
+std::vector<std::vector<std::vector<int> > >* Scene::getUnderground(sf::Vector2i interval){
+    if(interval == _currentEcosystem1) return &_underground1;
+    else if(interval == _currentEcosystem2) return &_underground2;
+    else {
+        std::cout << "estas fent servir un interval incorrecte" << std::endl;
+        return nullptr;
+    }
+}
+void Scene::addTreeToEntities(Tree t, sf::Vector2i interval){
+    //if(interval == _currentEcosystem1) _entities1.push_back(t);
+    //else if(interval == _currentEcosystem2) _entities2.push_back(t);
+    //else {
+    //    std::cout << "estas fent servir un interval incorrecte man" << std::endl;
+    //}
 }
 sf::Vector2i Scene::searchIntervalEcosystem(int ind){
     bool first_elem = true;
@@ -91,6 +114,12 @@ sf::Vector2i Scene::searchIntervalEcosystem(int ind){
         return result;
     } else return sf::Vector2i(0,0);
 }
+sf::Vector2i Scene::getIntervalEcosystem(int ind){
+    sf::Vector2i result(0,0);
+    if(betweenInts(_currentEcosystem1,ind)) return _currentEcosystem1;
+    else if(betweenInts(_currentEcosystem2,ind)) return _currentEcosystem2;
+    else return result;
+}
 void Scene::updateEcosystems(float delta){
     sf::Vector2i oldEco1 = _currentEcosystem1;
     sf::Vector2i oldEco2 = _currentEcosystem2;
@@ -118,27 +147,52 @@ void Scene::updateEcosystems(float delta){
         }
     }
     int size = int(_entities1.size());
+    bool repro = false;
     for(int i = 0; i<size; i++){
-        if(_entities1[i]._dead){
-            Tree *tl = _entities1[i].getLeftTree();
-            Tree *tr = _entities1[i].getRightTree();
-            if(tl != nullptr) tl->setRightTree(tr);
-            if(tr != nullptr) tr->setLeftTree(tl);
+        if(_entities1[i]->_dead){
+            _entities1[i]->kill();
             _entities1.erase(_entities1.begin()+i);
             i--;
             size = int(_entities1.size());
+        } else {
+            if(rand() % 1000 == 0) {
+                Tree *res = _entities1[i]->reproduce();
+                if(res != nullptr) _entities1.push_back(res);
+
+            }
         }
     }
+    for(int i = 0; i<_entities1.size(); i++){
+        if((_entities1[i]->_chunk > 30 || _entities1[i]->_chunk < -30) ||
+           (_entities1[i]->_left_n != nullptr && (_entities1[i]->_left_n->_chunk > 30 || _entities1[i]->_left_n->_chunk < -30)) ||
+           (_entities1[i]->_right_n != nullptr && (_entities1[i]->_right_n->_chunk > 30 || _entities1[i]->_right_n->_chunk < -30))
+                ){
+            std::cout << "lol" << std::endl;
+        }
+    }
+
+    for(int i = 0; i<_entities1.size(); i++){
+        if((_entities1[i]->_chunk > 30 || _entities1[i]->_chunk < -30) ||
+                (_entities1[i]->_left_n != nullptr && (_entities1[i]->_left_n->_chunk > 30 || _entities1[i]->_left_n->_chunk < -30)) ||
+                (_entities1[i]->_right_n != nullptr && (_entities1[i]->_right_n->_chunk > 30 || _entities1[i]->_right_n->_chunk < -30))
+                ){
+            std::cout << "lol" << std::endl;
+        }
+    }
+
     size = int(_entities2.size());
     for(int i = 0; i<size; i++){
-        if(_entities2[i]._dead){
-            Tree *tl = _entities2[i].getLeftTree();
-            Tree *tr = _entities2[i].getRightTree();
-            if(tl != nullptr) tl->setRightTree(tr);
-            if(tr != nullptr) tr->setLeftTree(tl);
+        if(_entities2[i]->_dead){
+            _entities2[i]->kill();
             _entities2.erase(_entities2.begin()+i);
             i--;
             size = int(_entities2.size());
+        } else {
+            if(rand() % 1000 == 0) {
+                Tree *res = _entities2[i]->reproduce();
+                if(res != nullptr) _entities2.push_back(res);
+
+            }
         }
     }
 
@@ -268,12 +322,15 @@ void Scene::saveEntities(bool arrayChosen){
         int start = _currentEcosystem1.x;
         int end = _currentEcosystem1.y;
         if(start != end){
-            std::vector<int> chunks[end-start];
+            std::vector<std::pair<int, int> > chunks[end-start];
             for(int i = 0; i<_entities1.size(); i++){
-                chunks[_entities1[i]._chunk-start].push_back(i);
+                chunks[_entities1[i]->_chunk-start].push_back(std::pair<int, int>(i, _entities1[i]->_position.x));
             }
             int index = start;
             while(index<end){
+                std::sort(chunks[index-start].begin(), chunks[index-start].end(), [](const std::pair<int,int> &left, const std::pair<int,int> &right) {
+                    return left.second < right.second;
+                });
                 std::string filenameEnt = _pathGame;
                 filenameEnt.append("/entities/");
                 filenameEnt.append(std::to_string(index));
@@ -281,9 +338,19 @@ void Scene::saveEntities(bool arrayChosen){
                 std::ofstream myfile;
                 myfile.open(filenameEnt);
                 for(int i=0; i< chunks[index-start].size(); i++){
-                    _entities1[chunks[index-start][i]].saveToFile(index,myfile);
+                    _entities1[chunks[index-start][i].first]->saveToFile(index,myfile);
                 }
                 myfile << "END";
+
+                for(int i = 0; i < Chunk::N_TILES_X; i++){
+                    myfile << " " << _surface1[index-start][i].first << " " << _surface1[index-start][i].second;
+                }
+                for(int i = 0; i < Chunk::N_TILES_X; i++){
+                    myfile << " " << _underground1[index-start][i].size();
+                    for(int j = 0; j < _underground1[index-start][i].size(); ++j){
+                        myfile << " " << _underground1[index-start][i][j];
+                    }
+                }
                 myfile.close();
                 index = index+1;
             }
@@ -292,12 +359,15 @@ void Scene::saveEntities(bool arrayChosen){
         int start = _currentEcosystem2.x;
         int end = _currentEcosystem2.y;
         if(start != end){
-            std::vector<int> chunks[end-start];
+            std::vector<std::pair<int, int> > chunks[end-start];
             for(int i = 0; i<_entities2.size(); i++){
-                chunks[_entities2[i]._chunk-start].push_back(i);
+                chunks[_entities2[i]->_chunk-start].push_back(std::pair<int, int>(i, _entities2[i]->_position.x));
             }
             int index = start;
             while(index<end){
+                std::sort(chunks[index-start].begin(), chunks[index-start].end(), [](const std::pair<int,int> &left, const std::pair<int,int> &right) {
+                    return left.second < right.second;
+                });
                 std::string filenameEnt = _pathGame;
                 filenameEnt.append("/entities/");
                 filenameEnt.append(std::to_string(index));
@@ -305,9 +375,19 @@ void Scene::saveEntities(bool arrayChosen){
                 std::ofstream myfile;
                 myfile.open(filenameEnt);
                 for(int i=0; i< chunks[index-start].size(); i++){
-                    _entities2[chunks[index-start][i]].saveToFile(index,myfile);
+                    _entities2[chunks[index-start][i].first]->saveToFile(index,myfile);
                 }
                 myfile << "END";
+                for(int i = 0; i < Chunk::N_TILES_X; i++){
+                    myfile << " " << _surface2[index-start][i].first << " " << _surface2[index-start][i].second;
+                }
+                for(int i = 0; i < Chunk::N_TILES_X; i++){
+                    myfile << " " << _underground2[index-start][i].size();
+                    for(int j = 0; j < _underground2[index-start][i].size(); ++j){
+                        myfile << " " << _underground2[index-start][i][j];
+                    }
+                }
+
                 myfile.close();
                 index = index+1;
             }
@@ -317,13 +397,16 @@ void Scene::saveEntities(bool arrayChosen){
 void Scene::loadEntities(bool arrayChosen){
     if(!arrayChosen){
         _entities1.clear();
+        _surface1.clear();
+        _underground1.clear();
         int start = _currentEcosystem1.x;
         int end = _currentEcosystem1.y;
         if(start != end){
-            while(start<end){
+            int index = start;
+            while(index<end){
                 std::string filenameEnt = _pathGame;
                 filenameEnt.append("/entities/");
-                filenameEnt.append(std::to_string(start));
+                filenameEnt.append(std::to_string(index));
                 filenameEnt.append(".txt");
                 std::ifstream myfile;
                 myfile.open(filenameEnt);
@@ -332,22 +415,58 @@ void Scene::loadEntities(bool arrayChosen){
                 while(entity != "END"){
                     Tree *t = new Tree();
                     t->loadFromFile(myfile);
-                    _entities1.push_back(*t);
+                    if(t != nullptr && (t->_chunk > 100 || t->_chunk < -100)){
+                        std::cout << "lol" << std::endl;
+                    }
+                    if(t != nullptr && t->_right_n != nullptr && (t->_right_n->_chunk > 100 || t->_right_n->_chunk < -100)){
+                        std::cout << "lol" << std::endl;
+                    }
+                    if(t != nullptr && t->_left_n != nullptr && (t->_left_n->_chunk > 100 || t->_left_n->_chunk < -100)){
+                        std::cout << "lol" << std::endl;
+                    }
+                    _entities1.push_back(t);
                     myfile >> entity;
                 }
+
+                std::vector<std::pair<int, bool> >currentSurface;
+                _surface1.push_back(currentSurface);
+                for(int i = 0; i < Chunk::N_TILES_X; i++){
+                    int pos;
+                    bool isDirt;
+                    myfile >> pos >> isDirt;
+                    _surface1[index-start].push_back(std::pair<int,bool>(pos,isDirt));
+                }
+
+                std::vector<std::vector<int> >currentUnderground;
+                _underground1.push_back(currentUnderground);
+                for(int i = 0; i < Chunk::N_TILES_X; i++){
+                    int numGrounds;
+                    myfile >> numGrounds;
+                    std::vector<int> currentY;
+                    _underground1[index-start].push_back(currentY);
+                    for(int j = 0; j<numGrounds; j++){
+                        int pos;
+                        myfile >> pos;
+                        _underground1[index-start][i].push_back(pos);
+                    }
+                }
                 myfile.close();
-                start = start+1;
+                index = index+1;
             }
         }
+        linkTrees(0);
     } else{
         _entities2.clear();
+        _surface2.clear();
+        _underground2.clear();
         int start = _currentEcosystem2.x;
         int end = _currentEcosystem2.y;
         if(start != end){
-            while(start<end){
+            int index = start;
+            while(index<end){
                 std::string filenameEnt = _pathGame;
                 filenameEnt.append("/entities/");
-                filenameEnt.append(std::to_string(start));
+                filenameEnt.append(std::to_string(index));
                 filenameEnt.append(".txt");
                 std::ifstream myfile;
                 myfile.open(filenameEnt);
@@ -356,28 +475,70 @@ void Scene::loadEntities(bool arrayChosen){
                 while(entity != "END"){
                     Tree *t = new Tree();
                     t->loadFromFile(myfile);
-                    _entities2.push_back(*t);
+                    _entities2.push_back(t);
                     myfile >> entity;
                 }
+                std::vector<std::pair<int, bool> >currentSurface;
+                _surface2.push_back(currentSurface);
+                for(int i = 0; i < Chunk::N_TILES_X; i++){
+                    int pos;
+                    bool isDirt;
+                    myfile >> pos >> isDirt;
+                    _surface2[index-start].push_back(std::pair<int,bool>(pos,isDirt));
+                }
+
+                std::vector<std::vector<int> >currentUnderground;
+                _underground2.push_back(currentUnderground);
+                for(int i = 0; i < Chunk::N_TILES_X; i++){
+                    int numGrounds;
+                    myfile >> numGrounds;
+                    std::vector<int> currentY;
+                    _underground2[index-start].push_back(currentY);
+                    for(int j = 0; j<numGrounds; j++){
+                        int pos;
+                        myfile >> pos;
+                        _underground2[index-start][i].push_back(pos);
+                    }
+                }
                 myfile.close();
-                start = start+1;
+                index = index+1;
             }
         }
+        linkTrees(1);
     }
 }
+void Scene::linkTrees(bool arrayChosen){
+    if(!arrayChosen) {
+        Tree *oldTree = nullptr;
+        for(int i=0; i<_entities1.size(); i++){
+            _entities1[i]->setLeftTree(oldTree);
+            if(oldTree != nullptr) oldTree->setRightTree(_entities1[i]);
+            oldTree = _entities1[i];
+        }
+        if(oldTree != nullptr) oldTree->setRightTree(nullptr);
+    } else{
+        Tree *oldTree = nullptr;
+        for(int i=0; i<_entities2.size(); i++){
+            _entities2[i]->setLeftTree(oldTree);
+            if(oldTree != nullptr) oldTree->setRightTree(_entities2[i]);
+            oldTree = _entities2[i];
+        }
+        if(oldTree != nullptr) oldTree->setRightTree(nullptr);
+    }
 
+}
 void Scene::syncTreesWithChunk(Chunk *c,int index_in_mat_chunks){
 
     c->clearEntities();
-    std::vector<Tree> *trees;
+    std::vector<Tree*> *trees;
     if(betweenInts(_currentEcosystem1,c->_chunk_id)){
         trees = &_entities1;
     } else if(betweenInts(_currentEcosystem2,c->_chunk_id)){
         trees = &_entities2;
     } else return;
     for(int i = 0; i<trees->size(); i++){
-        if((*trees)[i]._chunk == c->_chunk_id) {
-            c->addTreeToChunk(&(*trees)[i],index_in_mat_chunks);
+        if((*trees)[i]->_chunk == c->_chunk_id) {
+            c->addTreeToChunk((*trees)[i],index_in_mat_chunks);
         }
     }
 }

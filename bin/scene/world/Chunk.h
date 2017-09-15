@@ -31,18 +31,20 @@ public:
     void debugDraw(sf::RenderTarget &target, const std::string keyDebug,sf::Text &text);
 	sf::VertexArray render_array;
 	sf::VertexArray sky_array;
-
+    static sf::Vector2i getIndexFromGlobalPosition(sf::Vector2f pos);
     void addTreeToChunk(Tree *t, int index_chunk_in_mat);
     void clearEntities();
     void syncNotRenderedTrees();
 
 private:
+	bool _need_sync;
     void recalcReachFloor();
 	float getChunkPos();
     void checkTreeTiles();
 	void drawGrassTiles();
+    void syncSurfaceAndUnderground();
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];
-    int _surfacePosition[N_TILES_X];
+    std::pair<int,std::string> _surfacePosition[N_TILES_X];
     void addEntitiesToChunk();
     //array de llums
     //array de animals

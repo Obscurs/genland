@@ -519,7 +519,9 @@ float Tile::getWidth() const
 {
 	return size.x;
 }
-
+bool Tile::isDirt(){
+    return (id == "n" || id == "N" || id == "j" || id == "J" || id == "w" || id == "W" || id == "d" || id == "D");
+}
 void Tile::debugTile(sf::RenderTarget &target,const std::string keyDebug, sf::Text &text, int chunk_id, sf::Vector2i posTile){
     text.setPosition(position.x,position.y);
     if(keyDebug == "id"){

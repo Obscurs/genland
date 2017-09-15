@@ -54,7 +54,11 @@ public:
     bool firstBiomeCreated();
     void syncTreesWithChunk(Chunk *c,int index_in_mat_chunks);
     void syncNotRenderedTrees(Chunk *c);
-
+    void addTreeToEntities(Tree t, sf::Vector2i interval);
+    sf::Vector2i searchIntervalEcosystem(int i);
+    sf::Vector2i getIntervalEcosystem(int i);
+    std::vector<std::vector<std::pair<int, bool> > >* getSurface(sf::Vector2i interval);
+    std::vector<std::vector<std::vector<int> > >* getUnderground(sf::Vector2i interval);
 private:
     std::mt19937 _generator;
     std::string _seed;
@@ -72,12 +76,20 @@ private:
     sf::Vector2i _currentEcosystem1;
     sf::Vector2i _currentEcosystem2;
     bool betweenInts(sf::Vector2i interval, int i);
-    sf::Vector2i searchIntervalEcosystem(int i);
-    std::vector<Tree> _entities1;
-    std::vector<Tree> _entities2;
+
+    std::vector<Tree*> _entities1;
+    std::vector<Tree*> _entities2;
+    std::vector<std::vector<std::pair<int, bool> > > _surface1;
+    std::vector<std::vector<std::pair<int, bool> > >_surface2;
+    std::vector<std::vector<std::vector<int> > >_underground1;
+    std::vector<std::vector<std::vector<int> > >_underground2;
+
+
     void updateEcosystems(float delta);
     void saveEntities(bool arrayChosen);
     void loadEntities(bool arrayChosen);
+
+    void linkTrees(bool arrayChosen);
 };
 
 

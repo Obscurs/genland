@@ -11,10 +11,13 @@ Tree::Tree(): Entity(){
     _left_n = nullptr;
     _right_n = nullptr;
     _rendered = false;
-    _dead = false;
+    _dead = true;
+    _chunk = 0;
+    is_son = false;
 }
 Tree::Tree(int chunk, sf::Vector2i position, int amplitud, int altura, int corba, float branchAmount, float sizeBranch, float curveBranch, int leaveDensity, int leaveAmount, int leaveType): Entity(){
     _chunk = chunk;
+    is_son = false;
     if(altura==1) _height = rand()% 4 + 2;
     else if(altura==2) _height = rand() % 10 +5;
     else if(altura==3) _height = rand() % 15 +15;
@@ -82,6 +85,7 @@ void Tree::addBranch(sf::Vector2i branch){
     _branches.push_back(branch);
 }
 void Tree::loadFromFile(std::ifstream &myfile){
+    _dead = false;
     myfile >> _chunk;
     myfile >> _position.x;
     myfile >> _position.y;
@@ -162,9 +166,13 @@ int Tree::hasTwoChunks(){
 }
 
 void Tree::treeToTiles(Tile *t_first, int index_chunk_in_mat){
-    int chunk_mid =_position.x/(Chunk::N_TILES_X*Settings::TILE_SIZE);
-    int chunk_left =(_position.x+(_min_x-2)*Settings::TILE_SIZE)/(Chunk::N_TILES_X*Settings::TILE_SIZE);
-    int chunk_right =(_position.x+(_max_x+2)*Settings::TILE_SIZE)/(Chunk::N_TILES_X*Settings::TILE_SIZE);
+    float c_mid_aux = (float)_position.x/(Chunk::N_TILES_X*Settings::TILE_SIZE);
+    float c_left_aux =((float)_position.x+(_min_x-2)*Settings::TILE_SIZE)/(Chunk::N_TILES_X*Settings::TILE_SIZE);
+    float c_right_aux =((float)_position.x+(_max_x+2)*Settings::TILE_SIZE)/(Chunk::N_TILES_X*Settings::TILE_SIZE);
+    c_mid_aux = _position.x%(Chunk::N_TILES_X*Settings::TILE_SIZE) == 0 ? c_mid_aux+1 : c_mid_aux;
+    int chunk_mid = (c_mid_aux < 0) ? (int)c_mid_aux-1 : (int)c_mid_aux;
+    int chunk_left = (c_left_aux < 0) ? (int)c_left_aux-1 : (int)c_left_aux;
+    int chunk_right = (c_right_aux < 0) ? (int)c_right_aux-1 : (int)c_right_aux;
     if((chunk_mid == chunk_left && chunk_mid == chunk_right) ||
             index_chunk_in_mat == 1 ||
             (index_chunk_in_mat == 0 && chunk_left == chunk_mid) ||
@@ -288,6 +296,7 @@ void Tree::checkTreeTiles(){
             }
         }
     }
+    if(_root.size() ==0) _dead = true;
 
 }
 void Tree::saveToFile(int chunk, std::ofstream &myfile){
@@ -303,7 +312,9 @@ void Tree::saveToFile(int chunk, std::ofstream &myfile){
     for(int i = 0; i < _branches.size(); i++){
         myfile << _branches[i].x << " " <<_branches[i].y << " ";
     }
+
 }
+
 bool Tree::isDead(){
     if(_root.size() ==0) _dead = true;
     return (_root.size() ==0);
@@ -315,8 +326,150 @@ Tree* Tree::getRightTree(){
     return _right_n;
 }
 void Tree::setLeftTree(Tree *t){
+    if(t != nullptr && (t->_chunk > 100 || t->_chunk < -100)){
+        std::cout << "lol" << std::endl;
+    }
     _left_n = t;
 }
 void Tree::setRightTree(Tree *t){
+    if(t != nullptr && (t->_chunk > 100 || t->_chunk < -100)){
+        std::cout << "lol" << std::endl;
+    }
     _right_n = t;
+}
+void Tree::kill(){
+    Tree *tl = getLeftTree();
+    Tree *tr = getRightTree();
+    if(tl != nullptr) tl->setRightTree(tr);
+    if(tr != nullptr) tr->setLeftTree(tl);
+}
+Tree * Tree::reproduce(){
+    if(_left_n != nullptr && (_left_n->_chunk > 100 || _left_n->_chunk < -100)){
+        std::cout << "lol" << std::endl;
+    }
+    if(_right_n != nullptr && (_right_n->_chunk > 100 || _right_n->_chunk < -100)){
+        std::cout << "lol" << std::endl;
+    }
+
+    int direction = rand() % 2;
+    Tree *t_ini, *t_end;
+    Tree *resultTree = nullptr;
+    int chunk_ini, chunk_end;
+    int offset_ini, offset_end;
+    if(!direction){
+        t_ini = _left_n;
+        t_end = this;
+    } else{
+        t_ini = this;
+        t_end = _right_n;
+    }
+    Scene *s = Scene::getScene();
+    sf::Vector2i intervalEco =s->searchIntervalEcosystem(_chunk);
+    if(t_ini == nullptr) {
+        chunk_ini= intervalEco.x;
+        chunk_end = _chunk;
+        offset_ini = 0;
+        resultTree = new Tree(0, sf::Vector2i(0,0),2,3,1,0.8,0.6,0.9,2,2,3);
+        offset_end = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x+_min_x-2-resultTree->_max_x;
+    }
+    else if(t_end == nullptr){
+        chunk_ini = _chunk;
+        chunk_end = intervalEco.y;
+        offset_end = Chunk::N_TILES_X-1;
+        resultTree = new Tree(0, sf::Vector2i(0,0),2,3,1,0.8,0.6,0.9,2,2,3);
+        offset_ini = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x+_max_x+2-resultTree->_min_x;
+    } else {
+        chunk_ini = t_ini->_chunk;
+        chunk_end = t_end->_chunk;
+        resultTree = new Tree(0, sf::Vector2i(0,0),2,3,1,0.8,0.6,0.9,2,2,3);
+        offset_ini = Chunk::getIndexFromGlobalPosition(sf::Vector2f(t_ini->_position.x,t_ini->_position.y)).x+t_ini->_max_x+2-resultTree->_min_x;
+        offset_end = Chunk::getIndexFromGlobalPosition(sf::Vector2f(t_end->_position.x,t_end->_position.y)).x+t_end->_min_x-2-resultTree->_max_x;
+    }
+
+    bool valid_emplacement = true;
+    if(offset_ini > Chunk::N_TILES_X-1){
+        offset_ini = offset_ini-Chunk::N_TILES_X;
+        chunk_ini +=1;
+        if(chunk_ini>intervalEco.y) valid_emplacement = false;
+    }
+    if(offset_end<0){
+        offset_end = offset_end+Chunk::N_TILES_X;
+        chunk_end -=1;
+        if(chunk_end < intervalEco.x) valid_emplacement = false;
+    }
+    if(chunk_ini == chunk_end && offset_end <offset_ini) valid_emplacement = false;
+
+    if(valid_emplacement){
+        int current_chunk = chunk_ini;
+        std::vector<std::vector<std::pair<int, bool> > > *surface = s->getSurface(intervalEco);
+        std::vector<sf::Vector3i> grassPositions;
+        if(t_ini != nullptr && (t_ini->_chunk > 100 || t_ini->_chunk < -100)){
+            std::cout << "lol" << std::endl;
+        }
+
+        while(current_chunk < chunk_end){
+
+            if(t_ini != nullptr && (t_ini->_chunk > 100 || t_ini->_chunk < -100)){
+                std::cout << "lol" << std::endl;
+            }
+            int index_current_chunk = current_chunk-intervalEco.x;
+            for(int i=0; i<Chunk::N_TILES_X; i++){
+                if(current_chunk > 100 || current_chunk < -100){
+                    std::cout << "lol" << std::endl;
+                }
+                std::pair<int, bool> surfaceTile = (*surface)[index_current_chunk][i];
+                if(surfaceTile.second){
+
+                    if(t_ini != nullptr && (t_ini->_chunk > 100 || t_ini->_chunk < -100)){
+                        std::cout << "lol" << std::endl;
+                    }
+                    int globalPosTileY = surfaceTile.first*Settings::TILE_SIZE;
+                    int globalPosTileX = i*Settings::TILE_SIZE + current_chunk*Settings::TILE_SIZE*Chunk::N_TILES_X;
+
+                    grassPositions.push_back(sf::Vector3i(globalPosTileX,globalPosTileY,current_chunk));
+
+                    if(t_ini != nullptr && (t_ini->_chunk > 100 || t_ini->_chunk < -100)){
+                        std::cout << "lol" << std::endl;
+                    }
+
+                }
+
+            }
+            current_chunk +=1;
+
+        }
+
+        if(t_ini != nullptr && (t_ini->_chunk > 100 || t_ini->_chunk < -100)){
+            std::cout << "lol" << std::endl;
+        }
+        if(grassPositions.size()==0) valid_emplacement = false;
+        if(valid_emplacement){
+
+            if(t_ini != nullptr && (t_ini->_chunk > 100 || t_ini->_chunk < -100)){
+                std::cout << "lol" << std::endl;
+            }
+            sf::Vector3i rand_position = grassPositions[rand() % grassPositions.size()];
+
+
+            resultTree->_position = sf::Vector2i(rand_position.x,rand_position.y);
+            resultTree->_chunk = rand_position.z;
+            resultTree->setRightTree(t_end);
+            resultTree->setLeftTree(t_ini);
+            if(t_ini != nullptr && (t_ini->_chunk > 100 || t_ini->_chunk < -100)){
+                std::cout << "lol" << std::endl;
+            }
+            if(t_ini !=nullptr) t_ini->setRightTree(resultTree);
+            if(t_end !=nullptr) t_end->setLeftTree(resultTree);
+            std::cout << " tree Reproduced " << resultTree->_chunk << " " << resultTree->_position.x << " " << resultTree->_position.y << std::endl;
+            return resultTree;
+        }
+    }
+    std::cout << " imposible reproduce " << std::endl;
+    return nullptr;
+
+}
+sf::Vector2i Tree::getPositionReproduce(Tree *left, Tree *right){
+    Scene *s = Scene::getScene();
+    int chunkIni, chunkEnd;
+    //if(left != nullptr)
 }

@@ -84,16 +84,27 @@ void Map::searchDeserts(bool left, int pos){
     generator.seed(seed+6);
     Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
 
+    generator.seed(seed+7);
+    Simplex2d* noiseCave = new Simplex2d(&generator, 300.0f, 0.0f, 1.0f);
+    generator.seed(seed+8);
+    Simplex2d* caveFactor_x = new Simplex2d(&generator, 10000.0f, 0.5f, 1.5f);
+    Simplex2d* caveFactor_y = new Simplex2d(&generator, 1000.0f, 0.5f, 1.5f);
+    generator.seed(seed+9);
+    Simplex2d* caveHeight = new Simplex2d(&generator, 1000.0f, -0.05f, 0.05f);
+
     sf::Vector2i lims = scene->getLimsBiome();
     sf::Vector2i old_lims = lims;
 
 
     int iter = pos;
     while(old_lims == lims){
-        std::vector<sf::Vector2i> grassTiles;
+        std::vector<sf::Vector2i> surfaceTilesGrass;
+        std::pair<int, bool>  surfaceTiles[Chunk::N_TILES_X];
+        std::vector<int> caveTiles[Chunk::N_TILES_X];
         bool has_desert = false;
         for(int j = 0; j<Chunk::N_TILES_X; j = j +1){
             bool ant_terrain = true;
+            bool ant_cave = false;
             for(int i = 0; i<Chunk::N_TILES_Y; i = i +1){
                 int y_pos = Chunk::N_TILES_Y-1-i;
                 float current_global_x = iter*Chunk::N_TILES_X*Settings::TILE_SIZE_HIGH+j*Settings::TILE_SIZE_HIGH;
@@ -115,6 +126,13 @@ void Map::searchDeserts(bool left, int pos){
                 int valHumidity = int(noise_humidity->valSimplex2D(0, current_global_x));
                 float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
                 int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, current_global_x));
+                float valCaveHeight = caveHeight->valSimplex2D(0, current_global_x);
+                float valTerrainCaves = valTerrain+valCaveHeight-0.04;
+                bool valHeightCaveMax = height_factor < valTerrainCaves;
+                float valCave = noiseCave->valSimplex2D(current_global_y, current_global_x);
+                float valCaveFactorX = caveFactor_x->valSimplex2D(current_global_y, current_global_x);
+                float valCaveFactorY = caveFactor_y->valSimplex2D(current_global_y, current_global_x);
+                bool isCave = valCave>0.7*(valCaveFactorX+valCaveFactorY)/2 && valHeightCaveMax;
                 Tile::Bioma bioma = Tile::STANDARD;
                 if(mountains_factor<=0) {
                     if(valTemperature+valTransition*2 >30){
@@ -124,46 +142,53 @@ void Map::searchDeserts(bool left, int pos){
                 }
                 if(ant_terrain && valHeightMax){
                     ant_terrain = false;
+                    std::pair<int, bool> surfaceTile(i-1,false);
                     if(bioma == Tile::DESERT) has_desert = true;
-                    else if(!valHeightStone) grassTiles.push_back(sf::Vector2i(current_global_x,current_global_y-Settings::TILE_SIZE));
+                    else if(!valHeightStone) {
+                        surfaceTile.second = true;
+                        surfaceTilesGrass.push_back(sf::Vector2i(current_global_x,current_global_y-Settings::TILE_SIZE));
+                    }
+                    surfaceTiles[j] = surfaceTile;
                 }
+                if(!ant_terrain && isCave && !ant_cave){
+                    caveTiles[j].push_back(i);
+                }
+                ant_cave = isCave;
             }
         }
+        std::string filenameEnt = path;
+        filenameEnt.append("/entities/");
+        filenameEnt.append(std::to_string(iter));
+        filenameEnt.append(".txt");
+        std::cout << filenameEnt << std::endl;
+        std::ofstream myfile;
+        myfile.open(filenameEnt);
         if(has_desert){
             sf::Vector2i limitsBio = scene->getLimsBiome();
             if((limitsBio.x == limitsBio.y) || (limitsBio.x -10 > iter) || (limitsBio.y +10 < iter)) scene->addLimit(iter);
-            std::string filenameEnt = path;
-            filenameEnt.append("/entities/");
-            filenameEnt.append(std::to_string(iter));
-            filenameEnt.append(".txt");
-            std::cout << filenameEnt << std::endl;
-            std::ofstream myfile;
-            myfile.open(filenameEnt);
-            myfile << "END";
-            myfile.close();
+
         } else {
             std::vector<Tree> trees;
-            if(grassTiles.size()>0){
-                Tree *t = new Tree(iter, grassTiles[rand() % grassTiles.size()],2,3,1,0.8,0.6,0.9,2,2,3);
+            if(surfaceTilesGrass.size()>0){
+                Tree *t = new Tree(iter, surfaceTilesGrass[rand() % surfaceTilesGrass.size()],2,3,1,0.8,0.6,0.9,2,2,3);
                 trees.push_back(*t);
             }
-            std::string filenameEnt = path;
-            filenameEnt.append("/entities/");
-            filenameEnt.append(std::to_string(iter));
-            filenameEnt.append(".txt");
-            std::cout << filenameEnt << std::endl;
-            std::ofstream myfile;
-            myfile.open(filenameEnt);
+
             for(int i = 0; i< trees.size(); i++){
                 trees[i].saveToFile(iter, myfile);
             }
-            myfile << "END";
-            myfile.close();
-            //std::cout << "lsalasldasldasl" << std::endl;
         }
-        if(iter==0){
-                std::cout << "hola" << std::endl;
+        myfile << "END";
+        for(int i = 0; i < Chunk::N_TILES_X; i++){
+            myfile << " " << surfaceTiles[i].first << " " << surfaceTiles[i].second;
         }
+        for(int i = 0; i < Chunk::N_TILES_X; i++){
+            myfile << " " << caveTiles[i].size();
+            for(int j = 0; j < caveTiles[i].size(); ++j){
+                myfile << " " << caveTiles[i][j];
+            }
+        }
+        myfile.close();
 
         lims = scene->getLimsBiome();
         if(left) iter = iter-1;
@@ -193,7 +218,7 @@ void Map::createMap(int map_index, int chunk_index){
         Chunk *c;
         if (exists_file(filenameMap)) {
             std::ifstream myfile(filenameMap);
-            myfile.open(filenameMap);
+            //myfile.open(filenameMap);
             std::cout << map_index << " map to " << chunk_index << " " << 0 << std::endl;
             c = new Chunk(chunk_index, myfile);
             _chunk_mat[map_index] = c;
@@ -239,7 +264,7 @@ void Map::createMap(int map_index, int chunk_index){
         }
         sf::Vector2i ecoLimits = scene->getLimsBiome();
         if(ecoLimits.x != ecoLimits.y){
-            if(chunk_index > ecoLimits.y){
+            if(chunk_index >= ecoLimits.y){
                 searchDeserts(0, chunk_index);
             }
             else if(chunk_index < ecoLimits.x){

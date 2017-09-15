@@ -54,7 +54,7 @@ public:
 	bool drawable();
 	void appendSpriteToArray(sf::VertexArray &vertexArray, int mini_pos, std::string id_in_tex, int rotation, sf::Vector2i displacement);
 	void debugTile(sf::RenderTarget &target,const std::string keyDebug, sf::Text &text, int chunk_id, sf::Vector2i posTile);
-	
+	bool isDirt();
 
 private:
 	void setReachFloorCascade();

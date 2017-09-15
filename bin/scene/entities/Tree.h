@@ -29,12 +29,17 @@ public:
     int hasTwoChunks();
     bool _rendered;
     bool _dead;
+    Tree *_left_n;
+    Tree * _right_n;
+    bool is_son;
+    void kill();
+    Tree * reproduce();
 private:
 
     bool isValidPosition(Tile *t_first);
     void makeBranch(int size, float curve, sf::Vector2i initialPos, int direction);
     void growLeaves(Tile *t_first, int intensity);
-
+    sf::Vector2i getPositionReproduce(Tree *left, Tree *right);
     int _amplitude;
     int _height;
     int _corb;
@@ -43,8 +48,7 @@ private:
     int _typeLeave;
     int _min_x;
     int _max_x;
-    Tree *_left_n;
-    Tree * _right_n;
+
     std::vector<sf::Vector2i> _root;
     std::vector<sf::Vector2i> _branches;
 };

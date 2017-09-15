@@ -31,6 +31,7 @@ void Chunk::saveToFile(std::string path){
     std::ofstream myfile;
     myfile.open (filename);
 
+
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
             Tile* t0 = tile_mat[i][j][0];
@@ -211,8 +212,9 @@ void Chunk::setTileNeighbors(int index_x, int index_y){
 Chunk::Chunk(int pos, std::ofstream &myfile):
         render_array(sf::Quads , (uint)(4)),
         sky_array(sf::Quads , (uint)(4)),
-        _surfacePosition{0}
+        _surfacePosition{std::pair<int,std::string>(0,"0")}
 {
+    _need_sync = false;
     _is_dirty = true;
     _chunk_id = pos;
     Scene *scene = Scene::getScene();
@@ -411,10 +413,11 @@ Chunk::Chunk(int pos, std::ofstream &myfile):
                             i * Settings::TILE_SIZE);
             t2->setSize(Settings::TILE_SIZE);
 
-            if((_surfacePosition[j] == i-1 && t->id == "0" && t2->id == "0") || i == 0){
+            if((_surfacePosition[j].first == i-1 && t->id == "0" && t2->id == "0") || i == 0){
                 t->_reach_sun = true;
                 t2->_reach_sun = true;
-                _surfacePosition[j] = i;
+                _surfacePosition[j].first = i;
+                //_surfacePosition[j].second = t->neighbors[5]->id;
             }
             tile_mat[i][j][0] = t;
             tile_mat[i][j][1] = t2;
@@ -438,9 +441,9 @@ Chunk::Chunk(int pos, std::ofstream &myfile):
 Chunk::Chunk(int pos, std::ifstream &myfile):
         render_array(sf::Quads , (uint)(4)),
         sky_array(sf::Quads , (uint)(4)),
-        _surfacePosition{0}
+        _surfacePosition{std::pair<int,std::string>(0,"0")}
 {
-
+    _need_sync = false;
     Scene *scene = Scene::getScene();
     std::mt19937 generator = scene->getGenerator();
     int seed = std::stoi(scene->getSeed());
@@ -448,7 +451,7 @@ Chunk::Chunk(int pos, std::ifstream &myfile):
     _chunk_id = pos;
     std::cout << "creat" << _chunk_id << std::endl;
     typedef std::istreambuf_iterator<char> buf_iter;
-    buf_iter k(myfile), e;
+
 
 
     generator.seed(seed+3);
@@ -457,7 +460,7 @@ Chunk::Chunk(int pos, std::ifstream &myfile):
     Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -10, 20);
     generator.seed(seed+6);
     Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
-
+    buf_iter k(myfile), e;
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
             int y_pos = N_TILES_Y-1-i;
@@ -500,10 +503,10 @@ Chunk::Chunk(int pos, std::ifstream &myfile):
                             i * Settings::TILE_SIZE);
             t2->setSize(Settings::TILE_SIZE);
 
-            if((_surfacePosition[j] == i-1 && t->id == "0" && t2->id == "0") || i == 0){
+            if((_surfacePosition[j].first == i-1 && t->id == "0" && t2->id == "0") || i == 0){
                 t->_reach_sun = true;
                 t2->_reach_sun = true;
-                _surfacePosition[j] = i;
+                _surfacePosition[j].first = i;
             }
 
             tile_mat[i][j][0] = t;
@@ -518,7 +521,6 @@ Chunk::Chunk(int pos, std::ifstream &myfile):
             }
         }
     }
-    addEntitiesToChunk();
     recalcReachFloor();
 
 }
@@ -558,28 +560,24 @@ void Chunk::calcLateralNeighborsTiles(int lateral){
 }
 
 Tile* Chunk::getTile(float x, float y, int z){
-
-
-
+    sf::Vector2i position = getIndexFromGlobalPosition(sf::Vector2f(x,y));
+    return tile_mat[position.y][position.x][z];
+}
+sf::Vector2i Chunk::getIndexFromGlobalPosition(sf::Vector2f pos){
     int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
     int size_chunk_y = Chunk::N_TILES_Y*Settings::TILE_SIZE;
-    if(x>=0){
-        int tile_x = ((int)x%size_chunk_x)/Settings::TILE_SIZE;
-        int tile_y = ((int)y%size_chunk_y)/Settings::TILE_SIZE;
-        return tile_mat[abs(tile_y)][abs(tile_x)][z];
+    int tile_x, tile_y;
+    if(pos.x>=0){
+        tile_x = ((int)pos.x%size_chunk_x)/Settings::TILE_SIZE;
+        tile_y = ((int)pos.y%size_chunk_y)/Settings::TILE_SIZE;
     }
     else{
-
-        int tile_x = (((int)floorf(x)%size_chunk_x)+size_chunk_x)/Settings::TILE_SIZE;
-        int tile_y = ((int)floorf(y)%size_chunk_y)/Settings::TILE_SIZE;
-        if((int)floorf(x)%size_chunk_x==0) tile_x = 0;
-
-        return tile_mat[abs(tile_y)][abs(tile_x)][z];
+        tile_x = (((int)floorf(pos.x)%size_chunk_x)+size_chunk_x)/Settings::TILE_SIZE;
+        tile_y = ((int)floorf(pos.y)%size_chunk_y)/Settings::TILE_SIZE;
+        if((int)floorf(pos.x)%size_chunk_x==0) tile_x = 0;
     }
-
-
+    return sf::Vector2i(abs(tile_x),abs(tile_y));
 }
-
 void Chunk::debugDraw(sf::RenderTarget &target, const std::string keyDebug, sf::Text &text){
     if(keyDebug=="linesChunks"){
         sf::Vertex line[] = {
@@ -639,23 +637,54 @@ void Chunk::update(float delta){
     if(_is_dirty){
         checkTreeTiles();
         prepareArrays();
-
+        syncSurfaceAndUnderground();
         _is_dirty = false;
+    }
+    else if(_need_sync) syncSurfaceAndUnderground();
+}
+void Chunk::syncSurfaceAndUnderground(){
+    Scene *s = Scene::getScene();
+    sf::Vector2i interval = s->getIntervalEcosystem(_chunk_id);
+    if(interval.x != interval.y){
+        std::vector<std::vector<std::pair<int, bool> > >* surface =s->getSurface(interval);
+        std::vector<std::vector<std::vector<int> > >* underground = s->getUnderground(interval);
+        int index = _chunk_id-interval.x;
+
+        for(int i = 0; i < Chunk::N_TILES_X; i++){
+            bool is_sky = true;
+            bool is_cave = true;
+            (*underground)[index][i].clear();
+            for(int j = 0; j< Chunk::N_TILES_Y; j++){
+                if(tile_mat[j][i][0]->id != "0" && is_sky){
+                    Tile *t = tile_mat[j][i][0];
+                    (*surface)[index][i].first = j;
+                    (*surface)[index][i].second = t->isDirt();
+                    is_sky = false;
+                } else if(!is_sky && tile_mat[j][i][1]->id != "0" && is_cave){
+                    (*underground)[index][i].push_back(j);
+                }
+                is_cave = tile_mat[j][i][1]->id == "0";
+            }
+        }
+        _need_sync = false;
+    }
+    else{
+        _need_sync = true;
     }
 }
 void Chunk::checkTreeTiles(){
     int size = int(_trees.size());
     for(int i = 0; i<size; i++){
         _trees[i]->checkTreeTiles();
-        if(_trees[i]->isDead()){
+        //if(_trees[i]->isDead()){
             //Tree *tl = _trees[i]->getLeftTree();
             //Tree *tr = _trees[i]->getRightTree();
             //if(tl != nullptr) tl->setRightTree(tr);
             //if(tr != nullptr) tr->setLeftTree(tl);
-            _trees.erase(_trees.begin()+i);
-            i--;
-            size = int(_trees.size());
-        }
+        //    _trees.erase(_trees.begin()+i);
+        //    i--;
+        //    size = int(_trees.size());
+        //}
     }
     
 }
@@ -668,10 +697,11 @@ void Chunk::prepareArrays(){
         for(int j = 0; j<Chunk::N_TILES_X; ++j){
 
             Tile* t1 = tile_mat[i][j][1];
-            if((_surfacePosition[j] == i-1 && t1->id == "0" && t1->neighbors[8]->id == "0" )|| i==0){
+            if((_surfacePosition[j].first == i-1 && t1->id == "0" && t1->neighbors[8]->id == "0" )|| i==0){
                 t1->_reach_sun = true;
                 t1->neighbors[8]->_reach_sun = true;
-                _surfacePosition[j] = i;
+                _surfacePosition[j].first = i;
+                _surfacePosition[j].second = t1->neighbors[5]->id;
             } else {
                 t1->_reach_sun = false;
                 t1->neighbors[8]->_reach_sun = false;
@@ -703,7 +733,7 @@ void Chunk::prepareArrays(){
             }
         }
     }
-    drawGrassTiles();
+      drawGrassTiles();
 }
 void Chunk::syncNotRenderedTrees(){
     for(int i=0; i< _trees.size(); i++){
