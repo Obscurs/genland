@@ -8,10 +8,13 @@
 
 #include "../world/Tile.h"
 #include "Entity.h"
+#include "TreeGenetics.h"
 
 class Tree : public Entity {
 public:
     Tree();
+    Tree(TreeGenetics* t,int chunk, sf::Vector2i position);
+    Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position);
     Tree(int chunk, sf::Vector2i position, int amplitud, int altura, int corba, float branchAmount, float sizeBranch, float curveBranch, int leaveDensity, int leaveAmount, int leaveType);
     ~Tree();
     sf::Vector2i getPosition();
@@ -31,24 +34,18 @@ public:
     bool _dead;
     Tree *_left_n;
     Tree * _right_n;
-    bool is_son;
     void kill();
     Tree * reproduce();
+    TreeGenetics* getGenetics();
 private:
-
+    void buildTree();
     bool isValidPosition(Tile *t_first);
     void makeBranch(int size, float curve, sf::Vector2i initialPos, int direction);
     void growLeaves(Tile *t_first, int intensity);
     sf::Vector2i getPositionReproduce(Tree *left, Tree *right);
-    int _amplitude;
-    int _height;
-    int _corb;
-    int _densityLeave;
-    int _amountLeave;
-    int _typeLeave;
     int _min_x;
     int _max_x;
-
+    TreeGenetics _gens;
     std::vector<sf::Vector2i> _root;
     std::vector<sf::Vector2i> _branches;
 };

@@ -170,7 +170,8 @@ void Map::searchDeserts(bool left, int pos){
         } else {
             std::vector<Tree> trees;
             if(surfaceTilesGrass.size()>0){
-                Tree *t = new Tree(iter, surfaceTilesGrass[rand() % surfaceTilesGrass.size()],2,3,1,0.8,0.6,0.9,2,2,3);
+                TreeGenetics *treGen = new TreeGenetics();
+                Tree *t = new Tree(treGen,iter, surfaceTilesGrass[rand() % surfaceTilesGrass.size()]);
                 trees.push_back(*t);
             }
 

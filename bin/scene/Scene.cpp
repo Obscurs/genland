@@ -162,24 +162,6 @@ void Scene::updateEcosystems(float delta){
             }
         }
     }
-    for(int i = 0; i<_entities1.size(); i++){
-        if((_entities1[i]->_chunk > 30 || _entities1[i]->_chunk < -30) ||
-           (_entities1[i]->_left_n != nullptr && (_entities1[i]->_left_n->_chunk > 30 || _entities1[i]->_left_n->_chunk < -30)) ||
-           (_entities1[i]->_right_n != nullptr && (_entities1[i]->_right_n->_chunk > 30 || _entities1[i]->_right_n->_chunk < -30))
-                ){
-            std::cout << "lol" << std::endl;
-        }
-    }
-
-    for(int i = 0; i<_entities1.size(); i++){
-        if((_entities1[i]->_chunk > 30 || _entities1[i]->_chunk < -30) ||
-                (_entities1[i]->_left_n != nullptr && (_entities1[i]->_left_n->_chunk > 30 || _entities1[i]->_left_n->_chunk < -30)) ||
-                (_entities1[i]->_right_n != nullptr && (_entities1[i]->_right_n->_chunk > 30 || _entities1[i]->_right_n->_chunk < -30))
-                ){
-            std::cout << "lol" << std::endl;
-        }
-    }
-
     size = int(_entities2.size());
     for(int i = 0; i<size; i++){
         if(_entities2[i]->_dead){
