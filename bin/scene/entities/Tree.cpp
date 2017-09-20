@@ -39,9 +39,9 @@ void Tree::buildTree(){
     _max_x = 0;
     int x_deviation = 0;
     int corb;
-    if(_gens._corb==1) corb = rand()% 10 -10;
+    if(_gens._corb==1) corb = rand()% 9 -9;
     else if(_gens._corb==2) corb = rand()% 10 -5;
-    else corb = rand()% 10 +1;
+    else corb = rand()% 9 +1;
     bool left_branch_ant = false;
     bool right_branch_ant = false;
     _left_n = nullptr;
@@ -84,68 +84,7 @@ void Tree::buildTree(){
         else  right_branch_ant = false;
     }
 }
-/*
-Tree::Tree(int chunk, sf::Vector2i position, int amplitud, int altura, int corba, float branchAmount, float sizeBranch, float curveBranch, int leaveDensity, int leaveAmount, int leaveType): Entity(){
-    _chunk = chunk;
-    if(altura==1) _height = rand()% 4 + 2;
-    else if(altura==2) _height = rand() % 10 +5;
-    else if(altura==3) _height = rand() % 15 +15;
-    _position = position;
-    if(_height > 15) _amplitude = std::max(amplitud,2);
-    else if(_height > 5) _amplitude = std::min(amplitud,2);
-    else _amplitude = 1;
-    _gens._amountLeave = leaveAmount;
-    _gens._densityLeave = leaveDensity;
-    _gens._typeLeave = leaveType;
-    _min_x = 0;
-    _max_x = 0;
-    int x_deviation = 0;
-    if(corba==1) _corb = rand()% 10 -10;
-    else if(corba==2) _corb = rand()% 10 -5;
-    else _corb = rand()% 10 +1;
-    bool left_branch_ant = false;
-    bool right_branch_ant = false;
-    _left_n = nullptr;
-    _right_n = nullptr;
-    _rendered = false;
-    _dead = false;
-    for(int y = 0; y < _height; y++){
-        int old_deviation = x_deviation;
-        int currentSizeBranch = std::min(int(_height*sizeBranch),_height-y-1);
-        if(_corb>0){
-            x_deviation += (rand()% (11 -_corb) ==0);
-        } else{
-            x_deviation += (-1)*(rand()% (11 +_corb) ==0);
-        }
 
-        if(!left_branch_ant && y>_height/5){
-            bool branch = (rand()% (int((1-branchAmount)*10)+1))==0;
-            if(branch) {
-                left_branch_ant = true;
-                makeBranch(currentSizeBranch, curveBranch, sf::Vector2i(x_deviation,y), -1);
-            }
-        }
-        else  left_branch_ant = false;
-        if(_amplitude==1 && old_deviation !=x_deviation) _root.push_back(sf::Vector2i(old_deviation,y));
-        for(int x = 0; x < _amplitude; x++){
-            _root.push_back(sf::Vector2i(x+x_deviation,y));
-            if((x+x_deviation)> _max_x) _max_x =x+x_deviation;
-            if((x+x_deviation)< _min_x) _min_x =x+x_deviation;
-            if(y>=_height-1) _branches.push_back(sf::Vector2i(x+x_deviation,y));
-
-
-        }
-        if(!right_branch_ant && y>_height/5){
-            bool branch = (rand()% (int((1-branchAmount)*10)+1))==0;
-            if(branch) {
-                right_branch_ant = true;
-                makeBranch(currentSizeBranch, curveBranch, sf::Vector2i(x_deviation-1+_amplitude,y), 1);
-            }
-        }
-        else  right_branch_ant = false;
-    }
-}
-*/
 void Tree::addRoot(sf::Vector2i root){
     _root.push_back(root);
 }
@@ -344,6 +283,7 @@ void Tree::makeBranch(int size, float curve, sf::Vector2i initialPos, int direct
     }
 
 }
+
 
 void Tree::checkTreeTiles(){
     if(_rendered){

@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <iostream>
 #include "TreeGenetics.h"
 TreeGenetics::TreeGenetics(){
     int amounts[6] = {rand() % 100};
@@ -18,10 +19,11 @@ TreeGenetics::TreeGenetics(){
     _corb = rand() % 3 +1;
     _amountLeave = rand() % 3 +1;
     _typeLeave = rand() % 3 +1;
-    _branchAmount = float(rand() % 100)/100;
-    _sizeBranch = float(rand() % 100)/100;
-    _curveBranch = float(rand() % 100)/100;
+    _branchAmount = float(rand() % 70+10)/100;
+    _sizeBranch = float(rand() % 90+10)/100;
+    _curveBranch = float(rand() % 80+10)/100;
     setRelatedFactors();
+
 
 
 }
@@ -33,9 +35,9 @@ TreeGenetics::TreeGenetics(TreeGenetics *t1, TreeGenetics *t2, float factor){
     _reproduceFactor = (int)(t1->_reproduceFactor*factor+t2->_reproduceFactor*(1-factor));
     _strenghtGen =(int)(t1->_strenghtGen*factor+t2->_strenghtGen*(1-factor));
 
-    _corb = (int)(t1->_corb*factor+t2->_corb*(1-factor));
-    _amountLeave = (int)(t1->_amountLeave*factor+t2->_amountLeave*(1-factor));
-    _typeLeave = (int)(t1->_typeLeave*factor+t2->_typeLeave*(1-factor));
+    _corb = (int)(float(t1->_corb)*factor+float(t2->_corb)*(1-factor));
+    _amountLeave = (int)(float(t1->_amountLeave)*factor+float(t2->_amountLeave)*(1-factor));
+    _typeLeave = (int)(float(t1->_typeLeave)*factor+float(t2->_typeLeave)*(1-factor));
     _branchAmount = t1->_branchAmount*factor+t2->_branchAmount*(1-factor);
     _sizeBranch = t1->_sizeBranch*factor+t2->_sizeBranch*(1-factor);
     _curveBranch = t1->_curveBranch*factor+t2->_curveBranch*(1-factor);
@@ -53,31 +55,31 @@ TreeGenetics::TreeGenetics(TreeGenetics *t1, TreeGenetics *t2, float factor){
 }
 void TreeGenetics::mutate(){
     int atribute = rand() % 6;
-    float amount = float(rand() % 100)/100-100;
+    float amount = float(rand() % 100)/100-0.5f;
     switch(atribute){
         case 0:
             if(amount>=0) _corb = std::min(3, _corb+1);
-            else _corb = std::max(0, _corb-1);
+            else _corb = std::max(1, _corb-1);
             break;
         case 1:
             if(amount>=0) _amountLeave = std::min(3, _amountLeave+1);
-            else _amountLeave = std::max(0, _amountLeave-1);
+            else _amountLeave = std::max(1, _amountLeave-1);
             break;
         case 2:
             if(amount>=0) _typeLeave = std::min(3, _typeLeave+1);
-            else _typeLeave = std::max(0, _typeLeave-1);
+            else _typeLeave = std::max(1, _typeLeave-1);
             break;
         case 3:
-            if(amount>=0) _branchAmount = std::min(1.f, _branchAmount+amount);
-            else _branchAmount = std::max(0.f, _branchAmount-amount);
+            if(amount>=0) _branchAmount = std::min(0.8f, _branchAmount+amount);
+            else _branchAmount = std::max(0.1f, _branchAmount+amount);
             break;
         case 4:
             if(amount>=0) _sizeBranch = std::min(1.f, _sizeBranch+amount);
-            else _sizeBranch = std::max(0.f, _sizeBranch-amount);
+            else _sizeBranch = std::max(0.1f, _sizeBranch+amount);
             break;
         case 5:
-            if(amount>=0) _curveBranch = std::min(1.f, _curveBranch+amount);
-            else _curveBranch = std::max(0.f, _curveBranch-amount);
+            if(amount>=0) _curveBranch = std::min(0.9f, _curveBranch+amount);
+            else _curveBranch = std::max(0.1f, _curveBranch+amount);
             break;
         default:
             break;
@@ -116,9 +118,9 @@ void TreeGenetics::mutate(){
             atribute2 = &_strenghtGen;break;
         default:atribute2 = &_cold;break;
     }
-    int amount1 = (rand() % 100)/100-100;
-    amount1 = std::max(std::min(*atribute1+amount1,100),0)-*atribute1;
-    amount1 = std::max(std::min(*atribute2-amount1,100),0)-*atribute2;
+    int amount1 = (rand() % 50);
+    amount1 = std::min(*atribute1+amount1,100)-*atribute1;
+    amount1 = std::min(std::max(*atribute2-amount1,0)+*atribute2,amount1);
     *atribute1 +=amount1;
     *atribute2 -=amount1;
     setRelatedFactors();
@@ -147,7 +149,7 @@ void TreeGenetics::valance(int (&amounts)[6]){
         int diference = 300-sum;
         sum = 0;
         for(int i=0;i<6; i++){
-            amounts[i] = std::max(0,amounts[i]+diference/6);
+            amounts[i] = std::min(100,amounts[i]+diference/6);
             sum = sum + amounts[i];
         }
     }

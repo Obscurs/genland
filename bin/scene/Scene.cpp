@@ -147,7 +147,6 @@ void Scene::updateEcosystems(float delta){
         }
     }
     int size = int(_entities1.size());
-    bool repro = false;
     for(int i = 0; i<size; i++){
         if(_entities1[i]->_dead){
             _entities1[i]->kill();

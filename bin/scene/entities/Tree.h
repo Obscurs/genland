@@ -15,7 +15,6 @@ public:
     Tree();
     Tree(TreeGenetics* t,int chunk, sf::Vector2i position);
     Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position);
-    Tree(int chunk, sf::Vector2i position, int amplitud, int altura, int corba, float branchAmount, float sizeBranch, float curveBranch, int leaveDensity, int leaveAmount, int leaveType);
     ~Tree();
     sf::Vector2i getPosition();
     void treeToTiles(Tile *t, int index_chunk_in_mat);
