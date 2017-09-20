@@ -14,6 +14,7 @@
 #include "../../Game.h"
 #include "../../Settings.h"
 #include "../../Debuger.h"
+#include "../NoiseGenerator.h"
 
 
 //#include "Game.h"
@@ -61,36 +62,21 @@ void Map::init(int pos)
 void Map::searchDeserts(bool left, int pos){
     Scene *scene = Scene::getScene();
     std::string path = scene->getGamePath();
-    std::mt19937 generator = scene->getGenerator();
-    int seed = std::stoi(scene->getSeed());
 
-    generator.seed(seed);
-    Simplex2d* escarp = new Simplex2d(&generator, 1000.0f, 0.0f, 0.1f);
-    generator.seed(seed+1);
-    Simplex2d* altitud = new Simplex2d(&generator, 20000.0f, 0.2f, 0.5f);
-    generator.seed(seed+2);
-    Simplex2d* escarp_factor = new Simplex2d(&generator, 6000.0f, 0.0f, 1.0f);
-    Simplex2d* noise_stone_to_dirt = new Simplex2d(&generator, 50.0f, -0.01f, 0.01f);
-    Simplex2d* noise_stone_to_dirt2 = new Simplex2d(&generator, 500.0f, -0.02f, 0.02f);
-    Simplex2d* noise_transition_materials3 = new Simplex2d(&generator, 200.0f, -1.0f, 1.0f);
-
-    generator.seed(seed+3);
-    Simplex2d* mount_factor = new Simplex2d(&generator, 10000.0f, -1.2f, 1.0f);
-    generator.seed(seed+4);
-    Simplex2d* mountains = new Simplex2d(&generator, 500.0f, 0.4f, 0.5f);
-
-    generator.seed(seed+5);
-    Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -10, 20);
-    generator.seed(seed+6);
-    Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
-
-    generator.seed(seed+7);
-    Simplex2d* noiseCave = new Simplex2d(&generator, 300.0f, 0.0f, 1.0f);
-    generator.seed(seed+8);
-    Simplex2d* caveFactor_x = new Simplex2d(&generator, 10000.0f, 0.5f, 1.5f);
-    Simplex2d* caveFactor_y = new Simplex2d(&generator, 1000.0f, 0.5f, 1.5f);
-    generator.seed(seed+9);
-    Simplex2d* caveHeight = new Simplex2d(&generator, 1000.0f, -0.05f, 0.05f);
+    Simplex2d* escarp = NoiseGenerator::getNoise("escarp");
+    Simplex2d* altitud = NoiseGenerator::getNoise("altitud");
+    Simplex2d* escarp_factor =NoiseGenerator::getNoise("escarp_factor");
+    Simplex2d* noise_stone_to_dirt = NoiseGenerator::getNoise("noise_stone_to_dirt");
+    Simplex2d* noise_stone_to_dirt2 = NoiseGenerator::getNoise("noise_stone_to_dirt2");
+    Simplex2d* noise_transition_materials3 = NoiseGenerator::getNoise("noise_transition_materials3");
+    Simplex2d* mount_factor = NoiseGenerator::getNoise("mount_factor");
+    Simplex2d* mountains = NoiseGenerator::getNoise("mountains");
+    Simplex2d* base_noise_temperature = NoiseGenerator::getNoise("base_noise_temperature");
+    Simplex2d* noise_humidity = NoiseGenerator::getNoise("noise_humidity");
+    Simplex2d* noiseCave = NoiseGenerator::getNoise("noiseCave");
+    Simplex2d* caveFactor_x = NoiseGenerator::getNoise("caveFactor_x");
+    Simplex2d* caveFactor_y = NoiseGenerator::getNoise("caveFactor_y");
+    Simplex2d* caveHeight = NoiseGenerator::getNoise("caveHeight");
 
     sf::Vector2i lims = scene->getLimsBiome();
     sf::Vector2i old_lims = lims;
@@ -171,7 +157,8 @@ void Map::searchDeserts(bool left, int pos){
             std::vector<Tree> trees;
             if(surfaceTilesGrass.size()>0){
                 TreeGenetics *treGen = new TreeGenetics();
-                Tree *t = new Tree(treGen,iter, surfaceTilesGrass[rand() % surfaceTilesGrass.size()]);
+                sf::Vector2i posTree =surfaceTilesGrass[rand() % surfaceTilesGrass.size()];
+                Tree *t = new Tree(treGen,iter, posTree);
                 trees.push_back(*t);
             }
 
@@ -293,16 +280,16 @@ void Map::drawViewMap(sf::RenderTarget &render){
     _mapViewer.draw(render);
 }
 sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal){
-	//std::cout << "pos_origen_x " << pos_origen.x << " pos_origen_y " << pos_origen.y << std::endl;
-	//std::cout << "pos_goal_x " << pos_goal.x << " pos_goal_y " << pos_goal.y << std::endl;
-	pos_origen.x = pos_origen.x/Settings::TILE_SIZE;
-	pos_origen.y = pos_origen.y/Settings::TILE_SIZE;
-	pos_goal.x = pos_goal.x/Settings::TILE_SIZE;
-	pos_goal.y = pos_goal.y/Settings::TILE_SIZE;
-	sf::Vector2i result;
-	result.x = ((int)pos_goal.x)-((int)pos_origen.x);
-	result.y = ((int)pos_goal.y)-((int)pos_origen.y);
-	return result;
+    //std::cout << "pos_origen_x " << pos_origen.x << " pos_origen_y " << pos_origen.y << std::endl;
+    //std::cout << "pos_goal_x " << pos_goal.x << " pos_goal_y " << pos_goal.y << std::endl;
+    pos_origen.x = pos_origen.x/Settings::TILE_SIZE;
+    pos_origen.y = pos_origen.y/Settings::TILE_SIZE;
+    pos_goal.x = pos_goal.x/Settings::TILE_SIZE;
+    pos_goal.y = pos_goal.y/Settings::TILE_SIZE;
+    sf::Vector2i result;
+    result.x = ((int)pos_goal.x)-((int)pos_origen.x);
+    result.y = ((int)pos_goal.y)-((int)pos_origen.y);
+    return result;
 }
 
 void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
@@ -390,7 +377,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                         queue_bfs_next_left.pop();
                         sf::Vector2i u = queueAux.front();
                         Tile *tileEval0 = getTile(first_tile_global_position.x + u.x * Settings::TILE_SIZE,
-                                                 first_tile_global_position.y + u.y * Settings::TILE_SIZE, 0);
+                                                  first_tile_global_position.y + u.y * Settings::TILE_SIZE, 0);
                         Tile *tileEval1 = tileEval0->neighbors[8];
                         if(tileEval0->id !="0") tilesLimitsDebug.push_back(tileEval0);
                         if(tileEval1->id !="0") tilesLimitsDebug.push_back(tileEval1);
@@ -600,7 +587,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                           << total_tension_rigid << " left/right/top " << max_left << " " << max_right << " " << max_up
                           << std::endl;
                 double total_tension =pow((total_tension_no_rigid_left + total_tension_no_rigid_right + total_tension_no_rigid_top +
-                                        total_tension_rigid), 1.1);
+                                           total_tension_rigid), 1.1);
                 //////////////////////////////////////////
                 /////////////DEBUG////////////////////////
                 //////////////////////////////////////////
@@ -645,7 +632,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                         queue_bfs_next_top.pop();
                         Tile *ext_tile0 = getTile(act_pos_ext.x * Settings::TILE_SIZE + first_tile_global_position.x,
                                                   act_pos_ext.y * Settings::TILE_SIZE + first_tile_global_position.y +
-                                                          Settings::TILE_SIZE, 0);
+                                                  Settings::TILE_SIZE, 0);
                         border_tiles.push(ext_tile0);
                         //extension_tiles.push(ext_tile1);
                     }
@@ -735,9 +722,9 @@ void Map::removeTile2(Tile* removed_tile){
 
 
 Tile* Map::getTile(float x, float y, int z){
-	if(y<0) y = 0;
-	int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
-	int chunk_x = (x-size_chunk_x*_posMap)/size_chunk_x;
+    if(y<0) y = 0;
+    int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
+    int chunk_x = (x-size_chunk_x*_posMap)/size_chunk_x;
     //std::cout << chunk_x << std::endl;
     if(chunk_x>= N_CHUNKS_X || chunk_x <0) return nullptr;
     else{
@@ -759,10 +746,10 @@ Chunk* Map::getChunk(float x, float y, float z){
 }
 
 int Map::getChunkIndex(float x){
-	int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
-	int chunk_x = x/size_chunk_x;
+    int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
+    int chunk_x = x/size_chunk_x;
     if(x <0) --chunk_x;
-	return chunk_x;
+    return chunk_x;
 }
 
 int Map::getIndexMatChunk(int x){

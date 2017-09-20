@@ -5,6 +5,7 @@
 #include "Clock.h"
 #include "../Inputs.h"
 #include "Scene.h"
+#include "NoiseGenerator.h"
 #include <iostream>
 Clock::Clock(){
     day=0;
@@ -29,13 +30,6 @@ Clock::Clock(){
 
 
 Clock::~Clock() {
-}
-void Clock::init(){
-    Scene *scene = Scene::getScene();
-    std::mt19937 generator = scene->getGenerator();
-    int seed = std::stoi(scene->getSeed());
-    generator.seed(seed);
-    _rainSimplex = new Simplex2d(&generator, 150.0f, 0.0f, 1.0f);
 }
 void Clock::setColorToShader(sf::Shader &shader){
     switch(_dayTime){
@@ -200,6 +194,6 @@ void Clock::update(float delta){
     }
     _globalTemperature += ((1-_lightFactor*14))-7;
 
-    float valRain = (_rainSimplex->valSimplex2D(0, min+60*hour+24*60*day)+_globalHumidity/100);
+    float valRain = (NoiseGenerator::getNoise("rainSimplex")->valSimplex2D(0, min+60*hour+24*60*day)+_globalHumidity/100);
     _rainFactor = std::max((valRain-0.7f)*3.3f,0.0f);
 }

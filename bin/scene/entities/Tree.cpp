@@ -7,6 +7,8 @@
 #include "Tree.h"
 #include "../Scene.h"
 #include "../../Settings.h"
+#include "../NoiseGenerator.h"
+
 Tree::Tree(): Entity(),
     _gens(){
     _left_n = nullptr;
@@ -14,17 +16,30 @@ Tree::Tree(): Entity(),
     _rendered = false;
     _dead = true;
     _chunk = 0;
+    _life = 0;
+    _temperature = 0;
+    _humidity = 0;
 }
 Tree::Tree(TreeGenetics* t,int chunk, sf::Vector2i position): Entity(){
     _gens = *t;
     _chunk = chunk;
-    _position = position;
+    setPosition(position);
     buildTree();
 }
 Tree::Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position): Entity(),_gens(t1,t2, (float)(t1->_strenghtGen)/100){
     _chunk = chunk;
-    _position = position;
+    setPosition(position);
     buildTree();
+}
+void Tree::setPosition(sf::Vector2i position){
+    _position = position;
+    int y_pos = Chunk::N_TILES_Y-1-_position.y/Settings::TILE_SIZE_HIGH;
+    float height_factor = float(y_pos)/float(Chunk::N_TILES_Y);
+    int valHumidity = int(NoiseGenerator::getNoise("noise_humidity")->valSimplex2D(0, _position.x));
+    float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
+    int valTemperature = int(heightTemp)+int(NoiseGenerator::getNoise("base_noise_temperature")->valSimplex2D(0, _position.x));
+    _humidity = valHumidity;
+    _temperature = valTemperature;
 }
 void Tree::buildTree(){
     int height;
@@ -37,6 +52,7 @@ void Tree::buildTree(){
     else amplitude = 1;
     _min_x = 0;
     _max_x = 0;
+    _life = _gens._health;
     int x_deviation = 0;
     int corb;
     if(_gens._corb==1) corb = rand()% 9 -9;
@@ -96,6 +112,7 @@ void Tree::loadFromFile(std::ifstream &myfile){
     myfile >> _chunk;
     myfile >> _position.x;
     myfile >> _position.y;
+    myfile >> _humidity >> _temperature >> _life;
     myfile >> _gens._branchAmount >> _gens._sizeBranch >> _gens._curveBranch;
     myfile >> _gens._cold >> _gens._hot >> _gens._humidity;
     myfile >> _gens._health >> _gens._reproduceFactor >> _gens._strenghtGen;
@@ -314,6 +331,7 @@ void Tree::saveToFile(int chunk, std::ofstream &myfile){
     myfile << "tree" << " ";
     myfile << chunk << " ";
     myfile << _position.x << " " << _position.y << " ";
+    myfile << _humidity << " " << _temperature << " " << _life << " ";
     myfile << _gens._branchAmount << " " << _gens._sizeBranch << " " << _gens._curveBranch << " ";
     myfile << _gens._cold << " " << _gens._hot << " " << _gens._humidity << " ";
     myfile << _gens._health << " " << _gens._reproduceFactor << " " << _gens._strenghtGen << " ";
@@ -350,6 +368,17 @@ void Tree::kill(){
     Tree *tr = getRightTree();
     if(tl != nullptr) tl->setRightTree(tr);
     if(tr != nullptr) tr->setLeftTree(tl);
+}
+void Tree::update(float delta){
+    Scene *s = Scene::getScene();
+    int totalTemp = _temperature + s->getTemperatureGlobal(sf::Vector2f(_position));
+    int totalHum = _humidity + s->getHumidityGlobal(sf::Vector2f(_position));
+    float humDamage = totalHum*(1-float(_gens._humidity)/100)*delta;
+    float tempDamage;
+    if(totalTemp>0) tempDamage = totalTemp*(1-float(_gens._hot)/100)*delta;
+    else tempDamage = -totalTemp*(1-float(_gens._cold)/100)*delta;
+    _life -= (tempDamage+humDamage+delta)/1000;
+    if(_life<=0) _dead = true;
 }
 TreeGenetics* Tree::getGenetics(){
     return &_gens;
@@ -433,7 +462,7 @@ Tree * Tree::reproduce(){
             sf::Vector3i rand_position = grassPositions[rand() % grassPositions.size()];
 
 
-            resultTree->_position = sf::Vector2i(rand_position.x,rand_position.y);
+            resultTree->setPosition(sf::Vector2i(rand_position.x,rand_position.y));
             resultTree->_chunk = rand_position.z;
             resultTree->setRightTree(t_end);
             resultTree->setLeftTree(t_ini);
@@ -442,11 +471,11 @@ Tree * Tree::reproduce(){
             }
             if(t_ini !=nullptr) t_ini->setRightTree(resultTree);
             if(t_end !=nullptr) t_end->setLeftTree(resultTree);
-            std::cout << " tree Reproduced " << resultTree->_chunk << " " << resultTree->_position.x << " " << resultTree->_position.y << std::endl;
+            //std::cout << " tree Reproduced " << resultTree->_chunk << " " << resultTree->_position.x << " " << resultTree->_position.y << std::endl;
             return resultTree;
         }
     }
-    std::cout << " imposible reproduce " << std::endl;
+    //std::cout << " imposible reproduce " << std::endl;
     return nullptr;
 
 }

@@ -39,7 +39,6 @@ public:
     float getZoom();
     std::string getGamePath();
     std::string getSeed();
-    std::mt19937 &getGenerator();
 
     void updateView();
     void update(sf::RenderWindow &window,float delta);
@@ -47,6 +46,8 @@ public:
     void draw(sf::RenderWindow &window);
 
     int getTemperature(sf::Vector2f pos);
+    int getTemperatureGlobal(sf::Vector2f pos);
+    int getHumidityGlobal(sf::Vector2f pos);
     int getHumidity(sf::Vector2f pos);
     float getMountFactor(sf::Vector2f pos);
     sf::Vector2i getLimsBiome();
@@ -60,7 +61,6 @@ public:
     std::vector<std::vector<std::pair<int, bool> > >* getSurface(sf::Vector2i interval);
     std::vector<std::vector<std::vector<int> > >* getUnderground(sf::Vector2i interval);
 private:
-    std::mt19937 _generator;
     std::string _seed;
     std::string _pathGame;
     MagicView _viewGame;

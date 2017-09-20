@@ -13,7 +13,6 @@ class Clock {
 public:
     Clock();
     ~Clock();
-    void init();
     void update(float delta);
     void setColorToShader(sf::Shader &shader);
     int day;
@@ -46,7 +45,6 @@ public:
 
     float _rainFactor;
 private:
-    Simplex2d *_rainSimplex;
     float getFactorOfInterval(int (&interval)[5], float value);
 };
 

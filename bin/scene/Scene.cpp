@@ -4,6 +4,7 @@
 
 #include "Scene.h"
 #include "../Settings.h"
+#include "NoiseGenerator.h"
 
 Scene::Scene()
     : _map_curr(),
@@ -154,6 +155,7 @@ void Scene::updateEcosystems(float delta){
             i--;
             size = int(_entities1.size());
         } else {
+            _entities1[i]->update(delta);
             if(rand() % 1000 == 0) {
                 Tree *res = _entities1[i]->reproduce();
                 if(res != nullptr) _entities1.push_back(res);
@@ -169,6 +171,7 @@ void Scene::updateEcosystems(float delta){
             i--;
             size = int(_entities2.size());
         } else {
+            _entities2[i]->update(delta);
             if(rand() % 1000 == 0) {
                 Tree *res = _entities2[i]->reproduce();
                 if(res != nullptr) _entities2.push_back(res);
@@ -191,6 +194,7 @@ inline bool exists_file (const std::string& name) {
 }
 void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
     _seed = seed;
+    NoiseGenerator::init(_seed);
     _initialized = true;
     Player *newPlayer = new Player();
     _player = *newPlayer;
@@ -207,7 +211,6 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
     WorldBackground *newBack = new WorldBackground();
     _backgrounds = *newBack;
     Clock *newClock = new Clock();
-    newClock->init();
     _clock = *newClock;
     _viewGame.setRenderTarget(&window);
     _viewGame.setMode(MagicView::crop);
@@ -531,7 +534,9 @@ Scene::~Scene() {
 void Scene::updateView(){
     _viewGame.update();
 }
-
+int Scene::getTemperatureGlobal(sf::Vector2f pos){
+    return int(_clock._globalTemperature);
+}
 int Scene::getTemperature(sf::Vector2f pos){
     Tile *t = _map_curr.getTile(pos.x,pos.y,0);
     return t->_temperature;
@@ -540,10 +545,14 @@ int Scene::getHumidity(sf::Vector2f pos){
     Tile *t = _map_curr.getTile(pos.x,pos.y,0);
     return t->_humidity;
 }
+int Scene::getHumidityGlobal(sf::Vector2f pos){
+    return int(_clock._globalHumidity);
+}
 float Scene::getMountFactor(sf::Vector2f pos){
     Tile *t = _map_curr.getTile(pos.x,pos.y,0);
     return t->_mountain_factor;
 }
+
 
 Map* Scene::getMap(){
     return &_map_curr;
@@ -571,9 +580,6 @@ std::string Scene::getGamePath(){
 }
 std::string Scene::getSeed(){
     return _seed;
-}
-std::mt19937 &Scene::getGenerator(){
-    return _generator;
 }
 
 sf::Vector2i Scene::getLimsBiome(){

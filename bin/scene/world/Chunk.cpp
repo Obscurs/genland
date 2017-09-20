@@ -17,6 +17,7 @@
 #include "Chunk.h"
 #include "../../Settings.h"
 #include "../../Debuger.h"
+#include "../NoiseGenerator.h"
 
 
 void Chunk::saveToFile(std::string path){
@@ -217,50 +218,27 @@ Chunk::Chunk(int pos, std::ofstream &myfile):
     _need_sync = false;
     _is_dirty = true;
     _chunk_id = pos;
-    Scene *scene = Scene::getScene();
-    std::mt19937 generator = scene->getGenerator();
-    int seed = std::stoi(scene->getSeed());
-    //std::cout  << _chunk_id.x*N_TILES_X*Settings::TILE_SIZE << " " << _chunk_id.y*N_TILES_Y*Settings::TILE_SIZE << std::endl;
-    generator.seed(seed);
-    Simplex2d* escarp = new Simplex2d(&generator, 1000.0f, 0.0f, 0.1f);
-    generator.seed(seed+1);
-    Simplex2d* altitud = new Simplex2d(&generator, 20000.0f, 0.2f, 0.5f);
-    generator.seed(seed+2);
-    Simplex2d* escarp_factor = new Simplex2d(&generator, 6000.0f, 0.0f, 1.0f);
-    Simplex2d* noise_stone_to_dirt = new Simplex2d(&generator, 50.0f, -0.01f, 0.01f);
-    Simplex2d* noise_stone_to_dirt2 = new Simplex2d(&generator, 500.0f, -0.02f, 0.02f);
-    Simplex2d* noise_transition_materials3 = new Simplex2d(&generator, 200.0f, -1.0f, 1.0f);
 
-    generator.seed(seed+3);
-    Simplex2d* mount_factor = new Simplex2d(&generator, 10000.0f, -1.2f, 1.0f);
-    generator.seed(seed+4);
-    Simplex2d* mountains = new Simplex2d(&generator, 500.0f, 0.4f, 0.5f);
+    Simplex2d* escarp = NoiseGenerator::getNoise("escarp");
+    Simplex2d* altitud = NoiseGenerator::getNoise("altitud");
+    Simplex2d* escarp_factor =NoiseGenerator::getNoise("escarp_factor");
+    Simplex2d* noise_stone_to_dirt = NoiseGenerator::getNoise("noise_stone_to_dirt");
+    Simplex2d* noise_stone_to_dirt2 = NoiseGenerator::getNoise("noise_stone_to_dirt2");
+    Simplex2d* noise_transition_materials3 = NoiseGenerator::getNoise("noise_transition_materials3");
+    Simplex2d* mount_factor = NoiseGenerator::getNoise("mount_factor");
+    Simplex2d* mountains = NoiseGenerator::getNoise("mountains");
+    Simplex2d* base_noise_temperature = NoiseGenerator::getNoise("base_noise_temperature");
+    Simplex2d* noise_humidity = NoiseGenerator::getNoise("noise_humidity");
+    Simplex2d* noiseCave = NoiseGenerator::getNoise("noiseCave");
+    Simplex2d* caveFactor_x = NoiseGenerator::getNoise("caveFactor_x");
+    Simplex2d* caveFactor_y = NoiseGenerator::getNoise("caveFactor_y");
+    Simplex2d* caveHeight = NoiseGenerator::getNoise("caveHeight");
+    Simplex2d* noiseGold = NoiseGenerator::getNoise("noiseGold");
+    Simplex2d* noiseCoal = NoiseGenerator::getNoise("noiseCoal");
+    Simplex2d* noiseIron = NoiseGenerator::getNoise("noiseIron");
+    Simplex2d* noiseCuper = NoiseGenerator::getNoise("noiseCuper");
+    Simplex2d* noiseDiamond = NoiseGenerator::getNoise("noiseDiamond");
 
-    generator.seed(seed+5);
-    Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -10, 20);
-    generator.seed(seed+6);
-    Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
-
-
-
-    generator.seed(seed+7);
-    Simplex2d* noiseCave = new Simplex2d(&generator, 300.0f, 0.0f, 1.0f);
-    generator.seed(seed+8);
-    Simplex2d* caveFactor_x = new Simplex2d(&generator, 10000.0f, 0.5f, 1.5f);
-    Simplex2d* caveFactor_y = new Simplex2d(&generator, 1000.0f, 0.5f, 1.5f);
-    generator.seed(seed+9);
-    Simplex2d* caveHeight = new Simplex2d(&generator, 1000.0f, -0.05f, 0.05f);
-
-    generator.seed(seed+10);
-    Simplex2d* noiseGold = new Simplex2d(&generator, 400.0f, 0.0f, 1.0f);
-    generator.seed(seed+11);
-    Simplex2d* noiseCoal = new Simplex2d(&generator, 300.0f, 0.0f, 1.0f);
-    generator.seed(seed+12);
-    Simplex2d* noiseIron = new Simplex2d(&generator, 200.0f, 0.0f, 1.0f);
-    generator.seed(seed+13);
-    Simplex2d* noiseCuper = new Simplex2d(&generator, 250.0f, 0.0f, 1.0f);
-    generator.seed(seed+14);
-    Simplex2d* noiseDiamond = new Simplex2d(&generator, 500.0f, 0.0f, 1.0f);
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
             int y_pos = N_TILES_Y-1-i;
@@ -444,9 +422,6 @@ Chunk::Chunk(int pos, std::ifstream &myfile):
         _surfacePosition{std::pair<int,std::string>(0,"0")}
 {
     _need_sync = false;
-    Scene *scene = Scene::getScene();
-    std::mt19937 generator = scene->getGenerator();
-    int seed = std::stoi(scene->getSeed());
     _is_dirty = true;
     _chunk_id = pos;
     std::cout << "creat" << _chunk_id << std::endl;
@@ -454,12 +429,10 @@ Chunk::Chunk(int pos, std::ifstream &myfile):
 
 
 
-    generator.seed(seed+3);
-    Simplex2d* mount_factor = new Simplex2d(&generator, 10000.0f, -1.2f, 1.0f);
-    generator.seed(seed+5);
-    Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -10, 20);
-    generator.seed(seed+6);
-    Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
+    Simplex2d* mount_factor = NoiseGenerator::getNoise("mount_factor");
+    Simplex2d* base_noise_temperature = NoiseGenerator::getNoise("base_noise_temperature");
+    Simplex2d* noise_humidity = NoiseGenerator::getNoise("noise_humidity");
+
     buf_iter k(myfile), e;
     for(int i = 0; i<N_TILES_Y; ++i){
         for(int j = 0; j<N_TILES_X; ++j){
