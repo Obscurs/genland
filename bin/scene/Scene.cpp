@@ -155,11 +155,9 @@ void Scene::updateEcosystems(float delta){
             i--;
             size = int(_entities1.size());
         } else {
-            _entities1[i]->update(delta);
-            if(rand() % 1000 == 0) {
+            if(_entities1[i]->update(delta, &_clock)){
                 Tree *res = _entities1[i]->reproduce();
                 if(res != nullptr) _entities1.push_back(res);
-
             }
         }
     }
@@ -171,16 +169,38 @@ void Scene::updateEcosystems(float delta){
             i--;
             size = int(_entities2.size());
         } else {
-            _entities2[i]->update(delta);
-            if(rand() % 1000 == 0) {
+            if(_entities2[i]->update(delta, &_clock)){
                 Tree *res = _entities2[i]->reproduce();
                 if(res != nullptr) _entities2.push_back(res);
-
             }
         }
     }
 
 
+}
+void Scene::updateWithElapsedTime(std::vector<Tree*> &entities, date *d){
+    Clock *c = new Clock();
+    c->day = d->day;
+    c->min = d->min;
+    c->hour = d->hour;
+    while(c->day<_clock.day || c->hour<_clock.hour || c->min < _clock.min){
+        c->_clockSpeed = 1;
+        c->update(Settings::SYNC_UPDATE_SPEED);
+        int size = int(entities.size());
+        for(int i = 0; i<size; i++){
+            if(entities[i]->_dead){
+                entities[i]->kill();
+                entities.erase(entities.begin()+i);
+                i--;
+                size = int(entities.size());
+            } else {
+                if(entities[i]->update(Settings::SYNC_UPDATE_SPEED, c)){
+                    Tree *res = entities[i]->reproduce();
+                    if(res != nullptr) entities.push_back(res);
+                }
+            }
+        }
+    }
 }
 void Scene::draw(sf::RenderWindow &window){
   const sf::View &aux = window.getView();
@@ -232,7 +252,6 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
     _clock.min = stoi(min);
     myfile.close();
 
-
     ////////////////////////////////
     ///////// ECO //////////////////
     route = _pathGame;
@@ -245,6 +264,16 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
             myfile2 >> value;
             if(value != "END"){
                 (std::stoi(value) >= 0) ? _biomeLimitsRight.push_back(std::stoi(value)) : _biomeLimitsLeft.push_back(std::stoi(value));
+            }
+        }
+        value = "START";
+        while(value != "END"){
+            date *d = new date();
+            myfile2 >> value;
+            if(value != "END") {
+                d->interval.x = std::stoi(value);
+                myfile2  >> d->interval.y >> d->day >> d->hour >> d->min;
+                _entitiesLastUpdate.push_back(d);
             }
         }
         myfile2.close();
@@ -284,6 +313,8 @@ void Scene::saveGame(){
 
     ////////////////////////////////
     ///////// ECO //////////////////
+    saveEntities(0);
+    saveEntities(1);
     route = _pathGame;
     route.append("/ecosystems");
 
@@ -294,11 +325,15 @@ void Scene::saveGame(){
     for(int i = 0; i< _biomeLimitsRight.size(); i++){
         myfile3 << _biomeLimitsRight[i] << " ";
     }
+    myfile3 << "END ";
+    for(int i=0; i< _entitiesLastUpdate.size(); i++){
+        date *d = _entitiesLastUpdate[i];
+        myfile3 << d->interval.x << " " << d->interval.y << " " << d->day << " " << d->hour << " " << d->min << " ";
+    }
     myfile3 << "END";
     myfile3.close();
 
-    saveEntities(0);
-    saveEntities(1);
+
 }
 
 void Scene::saveEntities(bool arrayChosen){
@@ -306,6 +341,14 @@ void Scene::saveEntities(bool arrayChosen){
         int start = _currentEcosystem1.x;
         int end = _currentEcosystem1.y;
         if(start != end){
+            for(int i=0; i<_entitiesLastUpdate.size(); i++){
+                date *d = _entitiesLastUpdate[i];
+                if(d->interval == sf::Vector2i(_currentEcosystem1.x,_currentEcosystem1.y)){
+                    d->day = _clock.day;
+                    d->min = _clock.min;
+                    d->hour = _clock.hour;
+                }
+            }
             std::vector<std::pair<int, int> > chunks[end-start];
             for(int i = 0; i<_entities1.size(); i++){
                 chunks[_entities1[i]->_chunk-start].push_back(std::pair<int, int>(i, _entities1[i]->_position.x));
@@ -343,6 +386,14 @@ void Scene::saveEntities(bool arrayChosen){
         int start = _currentEcosystem2.x;
         int end = _currentEcosystem2.y;
         if(start != end){
+            for(int i=0; i<_entitiesLastUpdate.size(); i++){
+                date *d = _entitiesLastUpdate[i];
+                if(d->interval == sf::Vector2i(_currentEcosystem2.x,_currentEcosystem2.y)){
+                    d->day = _clock.day;
+                    d->min = _clock.min;
+                    d->hour = _clock.hour;
+                }
+            }
             std::vector<std::pair<int, int> > chunks[end-start];
             for(int i = 0; i<_entities2.size(); i++){
                 chunks[_entities2[i]->_chunk-start].push_back(std::pair<int, int>(i, _entities2[i]->_position.x));
@@ -386,6 +437,7 @@ void Scene::loadEntities(bool arrayChosen){
         int start = _currentEcosystem1.x;
         int end = _currentEcosystem1.y;
         if(start != end){
+
             int index = start;
             while(index<end){
                 std::string filenameEnt = _pathGame;
@@ -437,8 +489,18 @@ void Scene::loadEntities(bool arrayChosen){
                 myfile.close();
                 index = index+1;
             }
+            linkTrees(0);
+            for(int i=0; i<_entitiesLastUpdate.size(); i++){
+                date *d = _entitiesLastUpdate[i];
+                if(d->interval == sf::Vector2i(_currentEcosystem1.x,_currentEcosystem1.y)){
+
+                    updateWithElapsedTime(_entities1, d);
+                    d->day = _clock.day;
+                    d->min = _clock.min;
+                    d->hour = _clock.hour;
+                }
+            }
         }
-        linkTrees(0);
     } else{
         _entities2.clear();
         _surface2.clear();
@@ -487,8 +549,18 @@ void Scene::loadEntities(bool arrayChosen){
                 myfile.close();
                 index = index+1;
             }
+            linkTrees(1);
+            for(int i=0; i<_entitiesLastUpdate.size(); i++){
+                date *d = _entitiesLastUpdate[i];
+                if(d->interval == sf::Vector2i(_currentEcosystem2.x,_currentEcosystem2.y)){
+                    updateWithElapsedTime(_entities2, d);
+                    d->day = _clock.day;
+                    d->min = _clock.min;
+                    d->hour = _clock.hour;
+                }
+            }
         }
-        linkTrees(1);
+
     }
 }
 void Scene::linkTrees(bool arrayChosen){
@@ -592,8 +664,48 @@ sf::Vector2i Scene::getLimsBiome(){
 }
 
 void Scene::addLimit(int newLimit){
-    if(newLimit >= 0) _biomeLimitsRight.push_back(newLimit);
-    else _biomeLimitsLeft.push_back(newLimit);
+    if(newLimit >= 0) {
+        _biomeLimitsRight.push_back(newLimit);
+        if(_biomeLimitsRight.size() >1){
+            date *d = new date();
+            d->interval.x = _biomeLimitsRight[_biomeLimitsRight.size()-2];
+            d->interval.y = _biomeLimitsRight[_biomeLimitsRight.size()-1];
+            d->day = 0;
+            d->min = 0;
+            d->hour = 0;
+            _entitiesLastUpdate.push_back(d);
+        }
+        else if(_biomeLimitsLeft.size() > 0){
+            date *d = new date();
+            d->interval.x = _biomeLimitsLeft[0];
+            d->interval.y = _biomeLimitsRight[_biomeLimitsRight.size()-1];
+            d->day = 0;
+            d->min = 0;
+            d->hour = 0;
+            _entitiesLastUpdate.push_back(d);
+        }
+    }
+    else {
+        _biomeLimitsLeft.push_back(newLimit);
+        if(_biomeLimitsLeft.size() >1){
+            date *d = new date();
+            d->interval.y = _biomeLimitsLeft[_biomeLimitsRight.size()-2];
+            d->interval.x = _biomeLimitsLeft[_biomeLimitsRight.size()-1];
+            d->day = 0;
+            d->min = 0;
+            d->hour = 0;
+            _entitiesLastUpdate.push_back(d);
+        }
+        else if(_biomeLimitsRight.size() > 0){
+            date *d = new date();
+            d->interval.y = _biomeLimitsRight[0];
+            d->interval.x = _biomeLimitsLeft[_biomeLimitsLeft.size()-1];
+            d->day = 0;
+            d->min = 0;
+            d->hour = 0;
+            _entitiesLastUpdate.push_back(d);
+        }
+    }
 }
 bool Scene::firstBiomeCreated() {
     return (_biomeLimitsRight.size()+_biomeLimitsLeft.size() >=2);

@@ -692,11 +692,11 @@ void Chunk::prepareArrays(){
 
                 if(t0->isVisibleSun()){
                     if(
-                       t0->neighbors[1]!=nullptr && t0->neighbors[1]->id=="0" &&
-                       t0->neighbors[3]!=nullptr && t0->neighbors[3]->id=="0" &&
-                       t0->neighbors[5]!=nullptr && t0->neighbors[5]->id=="0" &&
-                       t0->neighbors[7]!=nullptr && t0->neighbors[7]->id=="0"){
-                        t0->drawSkyArray(sky_array) ;
+                       t0->neighbors[1]!=nullptr && t0->neighbors[1]->isVisibleSun() &&
+                       t0->neighbors[3]!=nullptr && t0->neighbors[3]->isVisibleSun() &&
+                       t0->neighbors[5]!=nullptr && t0->neighbors[5]->isVisibleSun() &&
+                       t0->neighbors[7]!=nullptr && t0->neighbors[7]->isVisibleSun()){
+                            t0->drawSkyArray(sky_array) ;
                     }
                     else t0->drawBorderSkyArray(sky_array);
                 }

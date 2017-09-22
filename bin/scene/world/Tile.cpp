@@ -166,7 +166,7 @@ bool Tile::drawable(){
 	return res;
 }
 bool Tile::isVisibleSun(){
-    return (id =="0" || id =="F" || id == "f");
+    return (id =="0" || id =="F" || id == "f" || id == "L1" || id == "L2" || id == "L3"|| id == "l1" || id == "l2" || id == "l3");
 }
 void Tile::drawFadeOut(sf::VertexArray &vertexArray){
     if(neighbors[0] != nullptr && neighbors[0]->neighbors[8]->id != "0" && !neighbors[0]->drawable()  && neighbors[7]->drawable() && neighbors[1]->drawable()){
@@ -463,9 +463,6 @@ void Tile::draw(sf::VertexArray &vertexArray)
                 drawIns(vertexArray);
                 if(_leaveType != "0") drawLeaves(vertexArray);
                 drawFadeOut(vertexArray);
-
-
-
 
             }
             else {

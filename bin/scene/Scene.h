@@ -61,6 +61,13 @@ public:
     std::vector<std::vector<std::pair<int, bool> > >* getSurface(sf::Vector2i interval);
     std::vector<std::vector<std::vector<int> > >* getUnderground(sf::Vector2i interval);
 private:
+    struct date {
+        sf::Vector2i interval;
+        int day;
+        int hour;
+        int min;
+    } ;
+    void updateWithElapsedTime(std::vector<Tree*> &entities, date *d);
     std::string _seed;
     std::string _pathGame;
     MagicView _viewGame;
@@ -79,6 +86,8 @@ private:
 
     std::vector<Tree*> _entities1;
     std::vector<Tree*> _entities2;
+
+    std::vector<date*> _entitiesLastUpdate;
     std::vector<std::vector<std::pair<int, bool> > > _surface1;
     std::vector<std::vector<std::pair<int, bool> > >_surface2;
     std::vector<std::vector<std::vector<int> > >_underground1;
@@ -90,6 +99,8 @@ private:
     void loadEntities(bool arrayChosen);
 
     void linkTrees(bool arrayChosen);
+
+
 };
 
 

@@ -29,4 +29,6 @@ static const int GAME_HEIGHT_LOW = 216;
 
     static const int MAX_TEMPERATURE = 70;
     static const int MIN_TEMPERATURE = -70;
+    static const int SYNC_UPDATE_SPEED = 35;
+    static const int GEN_SPEED = 8;
 };

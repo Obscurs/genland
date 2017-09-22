@@ -19,12 +19,15 @@ Tree::Tree(): Entity(),
     _life = 0;
     _temperature = 0;
     _humidity = 0;
+    _timeToReproduce = 0;
 }
 Tree::Tree(TreeGenetics* t,int chunk, sf::Vector2i position): Entity(){
     _gens = *t;
     _chunk = chunk;
     setPosition(position);
     buildTree();
+    _timeToReproduce = rand() % _gens._reproduceFactor + 10;
+    _life = rand() % _gens._health + 10;
 }
 Tree::Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position): Entity(),_gens(t1,t2, (float)(t1->_strenghtGen)/100){
     _chunk = chunk;
@@ -33,6 +36,7 @@ Tree::Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position):
 }
 void Tree::setPosition(sf::Vector2i position){
     _position = position;
+
     int y_pos = Chunk::N_TILES_Y-1-_position.y/Settings::TILE_SIZE_HIGH;
     float height_factor = float(y_pos)/float(Chunk::N_TILES_Y);
     int valHumidity = int(NoiseGenerator::getNoise("noise_humidity")->valSimplex2D(0, _position.x));
@@ -53,6 +57,7 @@ void Tree::buildTree(){
     _min_x = 0;
     _max_x = 0;
     _life = _gens._health;
+    _timeToReproduce =_gens._reproduceFactor+OFFSET_REPRODUCE;
     int x_deviation = 0;
     int corb;
     if(_gens._corb==1) corb = rand()% 9 -9;
@@ -64,6 +69,7 @@ void Tree::buildTree(){
     _right_n = nullptr;
     _rendered = false;
     _dead = false;
+
     for(int y = 0; y < height; y++){
         int old_deviation = x_deviation;
         int currentSizeBranch = std::min(int(height*_gens._sizeBranch),height-y-1);
@@ -112,7 +118,7 @@ void Tree::loadFromFile(std::ifstream &myfile){
     myfile >> _chunk;
     myfile >> _position.x;
     myfile >> _position.y;
-    myfile >> _humidity >> _temperature >> _life;
+    myfile >> _humidity >> _temperature >> _life >> _timeToReproduce;
     myfile >> _gens._branchAmount >> _gens._sizeBranch >> _gens._curveBranch;
     myfile >> _gens._cold >> _gens._hot >> _gens._humidity;
     myfile >> _gens._health >> _gens._reproduceFactor >> _gens._strenghtGen;
@@ -331,7 +337,7 @@ void Tree::saveToFile(int chunk, std::ofstream &myfile){
     myfile << "tree" << " ";
     myfile << chunk << " ";
     myfile << _position.x << " " << _position.y << " ";
-    myfile << _humidity << " " << _temperature << " " << _life << " ";
+    myfile << _humidity << " " << _temperature << " " << _life << " " << _timeToReproduce << " ";
     myfile << _gens._branchAmount << " " << _gens._sizeBranch << " " << _gens._curveBranch << " ";
     myfile << _gens._cold << " " << _gens._hot << " " << _gens._humidity << " ";
     myfile << _gens._health << " " << _gens._reproduceFactor << " " << _gens._strenghtGen << " ";
@@ -369,16 +375,27 @@ void Tree::kill(){
     if(tl != nullptr) tl->setRightTree(tr);
     if(tr != nullptr) tr->setLeftTree(tl);
 }
-void Tree::update(float delta){
-    Scene *s = Scene::getScene();
-    int totalTemp = _temperature + s->getTemperatureGlobal(sf::Vector2f(_position));
-    int totalHum = _humidity + s->getHumidityGlobal(sf::Vector2f(_position));
+bool Tree::update(float delta, Clock *c){
+    int totalTemp = _temperature + c->_globalTemperature;
+    int totalHum = _humidity + c->_globalHumidity;
     float humDamage = totalHum*(1-float(_gens._humidity)/100)*delta;
     float tempDamage;
     if(totalTemp>0) tempDamage = totalTemp*(1-float(_gens._hot)/100)*delta;
     else tempDamage = -totalTemp*(1-float(_gens._cold)/100)*delta;
-    _life -= (tempDamage+humDamage+delta)/1000;
-    if(_life<=0) _dead = true;
+    _life -= ((tempDamage+humDamage+delta)/2000)*Settings::GEN_SPEED;
+    if(_life<=0) {
+        std::cout << "a tree died" << std::endl;
+        _dead = true;
+        return false;
+    }
+    else {
+        _timeToReproduce -= (delta/10)*Settings::GEN_SPEED;
+        if(_timeToReproduce <0) {
+            std::cout << "new tree created" << std::endl;
+            return true;
+        }
+    }
+    return false;
 }
 TreeGenetics* Tree::getGenetics(){
     return &_gens;
@@ -399,7 +416,9 @@ Tree * Tree::reproduce(){
     }
     Scene *s = Scene::getScene();
     sf::Vector2i intervalEco =s->searchIntervalEcosystem(_chunk);
+    _timeToReproduce = _gens._reproduceFactor+OFFSET_REPRODUCE;
     if(t_ini == nullptr) {
+        t_end->_timeToReproduce = t_end->_gens._reproduceFactor+OFFSET_REPRODUCE;
         chunk_ini= intervalEco.x;
         chunk_end = _chunk;
         offset_ini = 0;
@@ -407,12 +426,15 @@ Tree * Tree::reproduce(){
         offset_end = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x+_min_x-2-resultTree->_max_x;
     }
     else if(t_end == nullptr){
+        t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
         chunk_ini = _chunk;
         chunk_end = intervalEco.y;
         offset_end = Chunk::N_TILES_X-1;
         resultTree = new Tree(t_ini->getGenetics(),t_ini->getGenetics(),0, sf::Vector2i(0,0));
         offset_ini = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x+_max_x+2-resultTree->_min_x;
     } else {
+        t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        t_end->_timeToReproduce = t_end->_gens._reproduceFactor+OFFSET_REPRODUCE;
         chunk_ini = t_ini->_chunk;
         chunk_end = t_end->_chunk;
         resultTree = new Tree(t_end->getGenetics(),t_ini->getGenetics(),0, sf::Vector2i(0,0));

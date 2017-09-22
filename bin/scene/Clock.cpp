@@ -9,8 +9,8 @@
 #include <iostream>
 Clock::Clock(){
     day=0;
-    hour=7;
-    min=15;
+    hour=0;
+    min=0;
     _clockSpeed=1;
     _season = WINTER;
     _dayTime = MORNING;
@@ -118,6 +118,8 @@ void Clock::UpdateDayTimeIntervals(){
             break;
     }
 }
+
+
 void Clock::update(float delta){
     if (Inputs::KeyBreak(Inputs::Key::ADD)){
         _clockSpeed +=1;

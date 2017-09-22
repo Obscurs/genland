@@ -9,16 +9,19 @@
 #include "../world/Tile.h"
 #include "Entity.h"
 #include "TreeGenetics.h"
+#include "../Clock.h"
 
 class Tree : public Entity {
 public:
+
+    static const int OFFSET_REPRODUCE = 50;
     Tree();
     Tree(TreeGenetics* t,int chunk, sf::Vector2i position);
     Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position);
     ~Tree();
     sf::Vector2i getPosition();
     void setPosition(sf::Vector2i position);
-    void update(float delta);
+    bool update(float delta, Clock *c);
     void treeToTiles(Tile *t, int index_chunk_in_mat);
     void checkTreeTiles();
     Tree *getLeftTree();
@@ -39,8 +42,10 @@ public:
     Tree * reproduce();
     TreeGenetics* getGenetics();
     float _life;
+    float _timeToReproduce;
     int _temperature;
     int _humidity;
+
 private:
     void buildTree();
     bool isValidPosition(Tile *t_first);
