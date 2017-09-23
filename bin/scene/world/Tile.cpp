@@ -383,11 +383,17 @@ void Tile::drawIns(sf::VertexArray &vertexArray){
         }
     }
 }
-void Tile::drawSkyArray(sf::VertexArray &skyArray){
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y), sf::Color(0,0,255,255)));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y), sf::Color(0,0,255,255)));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y+Settings::TILE_SIZE), sf::Color(0,0,255,255)));
-    skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Settings::TILE_SIZE), sf::Color(0,0,255,255)));
+void Tile::drawSkyArray(sf::VertexArray &skyArray,bool isTree){
+    sf::Color c;
+    if(isTree){
+        c = sf::Color(255,0,0,255);
+    } else{
+        c = sf::Color(0,0,255,255);
+    }
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y), c));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y), c));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x+Settings::TILE_SIZE,position.y+Settings::TILE_SIZE), c));
+    skyArray.append(sf::Vertex(sf::Vector2f(position.x,position.y+Settings::TILE_SIZE), c));
 
 }
 void Tile::drawBorderSkyArray(sf::VertexArray &skyArray){

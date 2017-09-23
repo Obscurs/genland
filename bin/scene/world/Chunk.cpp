@@ -668,8 +668,21 @@ void Chunk::prepareArrays(){
     memset(_surfacePosition,0,sizeof(_surfacePosition));
     for(int i = 0; i<Chunk::N_TILES_Y; ++i){
         for(int j = 0; j<Chunk::N_TILES_X; ++j){
-
             Tile* t1 = tile_mat[i][j][1];
+            Tile* t0 = tile_mat[i][j][0];
+
+            if(t0->id != "0" && (t0->isVisibleSun() || t0->_isTree)){
+                t1->drawSkyArray(sky_array, true);
+
+            } else if(t0->id == "0") {
+                if(t0->neighbors[1]!=nullptr && t0->neighbors[1]->id =="0" &&
+                   t0->neighbors[3]!=nullptr && t0->neighbors[3]->id =="0" &&
+                   t0->neighbors[5]!=nullptr && t0->neighbors[5]->id =="0" &&
+                   t0->neighbors[7]!=nullptr && t0->neighbors[7]->id =="0") {
+                    t1->drawSkyArray(sky_array, false);
+                }
+                else t0->drawBorderSkyArray(sky_array);
+            }
             if((_surfacePosition[j].first == i-1 && t1->id == "0" && t1->neighbors[8]->id == "0" )|| i==0){
                 t1->_reach_sun = true;
                 t1->neighbors[8]->_reach_sun = true;
@@ -684,11 +697,11 @@ void Chunk::prepareArrays(){
                 if(t1->neighbors[1] != nullptr && t1->neighbors[1]->neighbors[8] != nullptr){
                     if(t1->neighbors[1]->id=="0" && t1->neighbors[1]->neighbors[8]->id =="0" && (t1->id=="D" ||t1->id=="J"||t1->id=="W")) grass_tiles.push_back(t1);
                 }
-                if(t1->isVisibleSun())t1->drawSkyArray(sky_array);
+                //if(t1->isVisibleSun())t1->drawSkyArray(sky_array);
             }
 
             else{
-                Tile* t0 = tile_mat[i][j][0];
+
 
                 if(t0->isVisibleSun()){
                     if(
@@ -696,9 +709,9 @@ void Chunk::prepareArrays(){
                        t0->neighbors[3]!=nullptr && t0->neighbors[3]->isVisibleSun() &&
                        t0->neighbors[5]!=nullptr && t0->neighbors[5]->isVisibleSun() &&
                        t0->neighbors[7]!=nullptr && t0->neighbors[7]->isVisibleSun()){
-                            t0->drawSkyArray(sky_array) ;
+                            //t0->drawSkyArray(sky_array) ;
                     }
-                    else t0->drawBorderSkyArray(sky_array);
+                    //else t0->drawBorderSkyArray(sky_array);
                 }
                 if(t0->id != "0")t0->draw(render_array);
                 else t0->drawOuts(render_array);

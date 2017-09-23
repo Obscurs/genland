@@ -23,7 +23,7 @@ public:
     void drawOuts(sf::VertexArray &vertexArray);
     void drawGrass(sf::VertexArray &vertexArray);
 	void update(float elapsedTime);
-	void drawSkyArray(sf::VertexArray &skyArray);
+	void drawSkyArray(sf::VertexArray &skyArray,bool isTree);
 	void drawBorderSkyArray(sf::VertexArray &skyArray);
 	void setPosition(float x, float y);
 	void setSize(float x);

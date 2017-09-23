@@ -20,7 +20,7 @@ void main(void)
             gl_FragColor= mix(color_terrain,color_end,factor);
 
         }
-        else if(color_sky.z<0.85) gl_FragColor = mix(vec4(0,0,0,1),mix(color_terrain,color_end,factor),color_sky.z);
+        else if(color_sky.w<0.85) gl_FragColor = mix(vec4(0,0,0,1),mix(color_terrain,color_end,factor),color_sky.w);
         else gl_FragColor = mix(color_terrain,color_end,factor);
 
 }
