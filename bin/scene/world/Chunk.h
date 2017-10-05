@@ -3,6 +3,7 @@
 #include "Simplex2d.h"
 #include "../../TextureManager.h"
 #include "../entities/Tree.h"
+#include "../entities/AnimatedTile.h"
 
 class Chunk
 {
@@ -35,7 +36,8 @@ public:
     void addTreeToChunk(Tree *t, int index_chunk_in_mat);
     void clearEntities();
     void syncNotRenderedTrees();
-
+    std::vector<AnimatedTile*> _falling_tiles;
+    AnimatedTile* collidesWithAnimatedTile(sf::FloatRect rect);
 private:
 	bool _need_sync;
     void recalcReachFloor();
@@ -45,10 +47,10 @@ private:
     void syncSurfaceAndUnderground();
 	Tile* tile_mat[N_TILES_Y][N_TILES_X][N_TILES_Z];
     std::pair<int,std::string> _surfacePosition[N_TILES_X];
-    void addEntitiesToChunk();
     //array de llums
     //array de animals
     std::vector<Tree*> _trees; //array d'abres
+
     std::vector<Tile*> grass_tiles;
 
 

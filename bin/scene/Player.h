@@ -8,12 +8,22 @@ class Player
 public:
 	Player();
 	~Player();
-	const static int PLAYER_SPEED_X = 2000;
+	const static int PLAYER_SPEED_X = 1500;
 	const static int PLAYER_SPEED_Y = 400;
+    const static int PLAYER_SPRITE_SIZE = 64;
+    const static int PLAYER_SPRITE_MAX_TIME = 1;
+    const static int PLAYER_WIDTH = 32;
+    const static int PLAYER_HEIGHT = 48;
+    const static int MAX_HEALTH = 100;
+    const static int MAX_TEMP_BASE = 35;
+    const static int MIN_TEMP_BASE = 10;
+    enum ActionState{IDLE, WALKING};
+    enum AnimationDirection{LEFT,RIGHT};
 	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
 	void Draw2(sf::RenderTexture & tex);
 	void DrawInventory(sf::RenderWindow & window);
+    void DrawStats(sf::RenderTarget &target);
 	void Update(float delta, Map &map, sf::RenderWindow &window);
     int id;
 	void SetPosition(float x, float y);
@@ -21,15 +31,23 @@ public:
 	void saveStats(std::string pathGame);
 	void loadStats(std::string pathGame);
 	sf::Vector2f GetPosition() const;
-	float GetWidth() const;
-	float GetHeight() const;
 
 
 private:
+    void setAnimation(ActionState act);
+    void updateSprite(float delta);
+    void updateToolsAndArmors();
+    void updateHealth(float delta);
 	void FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos2, sf::Vector2f size2, Map& map);
+
 	sf::Sprite& GetSprite();
 	bool giveItem(std::string id, int amount);
-	
+
+    //STATS
+    int _resPhysics;
+    float _health;
+    int _maxTemperatureSafe;
+    int _minTemperatureSafe;
 	//PHYSICS
 	float vx;
 	float vy;
@@ -48,8 +66,17 @@ private:
 	//REMOVE AND PUT TILES;
 	Tile* tile_being_removed;
 
+
 	//SHOW
 	sf::Sprite _sprite;
 	sf::Texture _image;
 	std::string _filename;
+    sf::Vector2f _colPosition;
+    sf::Vector2f _colSize;
+    float _spriteTime;
+    ActionState _animationId;
+    AnimationDirection _playerDirection;
+    int _animationFrame;
+    int _numFramesAnimation;
+    float _toolFactor;
 };

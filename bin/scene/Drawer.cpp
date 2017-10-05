@@ -71,10 +71,11 @@ void Drawer::DrawSceneTex(){
     for(int i = first_chunk ; i<=last_chunk ; i = i +1) {
         int index_mat = map_curr->getIndexMatChunk(i);
         texture_scene.draw(map_curr->_chunk_mat[index_mat]->render_array, states);
+        for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_falling_tiles.size(); i++){
+            map_curr->_chunk_mat[index_mat]->_falling_tiles[i]->Draw(texture_scene);
+        }
     }
-    for(int i = 0; i<map_curr->falling_tiles.size(); i++){
-        map_curr->falling_tiles[i]->Draw(texture_scene);
-    }
+
     texture_scene.display();
 }
 void Drawer::DrawBackground() {
@@ -272,7 +273,7 @@ void Drawer::Draw(sf::RenderWindow &window){
     Scene *scene = Scene::getScene();
     Map* map_curr = scene->getMap();
     Player* player = scene->getPlayer();
-    view_player.setCenter(player->GetPosition().x+player->GetWidth()/2, player->GetPosition().y+player->GetHeight()/2);
+    view_player.setCenter(player->GetPosition().x+Player::PLAYER_WIDTH/2, player->GetPosition().y+Player::PLAYER_HEIGHT/2);
 
     texture_back->setView(view_player);
     texture_front->setView(view_player);
@@ -282,6 +283,7 @@ void Drawer::Draw(sf::RenderWindow &window){
     black_texture.setView(view_player);
     DrawMap(window);
     player->DrawInventory(window);
+    player->DrawStats(window);
     map_curr->drawViewMap(window);
 
 }

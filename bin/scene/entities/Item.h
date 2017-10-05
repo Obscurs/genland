@@ -6,7 +6,7 @@ class Item
 public:	
 	Item(std::string id_item);
 	~Item();
-
+    enum ItemType{TOOL, ARMOR, COLLECTABLE};
 	void Reload(std::string filename);
 
 	void SetPosition(float x, float y);
@@ -22,8 +22,8 @@ public:
 	std::string id_set1;
 	int amount; //sha de privatitzar
 	int max_stack_amount; //sha de privatitzar
-
-	void Draw(sf::RenderWindow & window, TextureManager &t, sf::Text &text);
+    ItemType type;
+	void Draw(sf::RenderWindow & window, sf::Text &text);
 
 
 

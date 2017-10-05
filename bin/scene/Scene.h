@@ -60,6 +60,10 @@ public:
     sf::Vector2i getIntervalEcosystem(int i);
     std::vector<std::vector<std::pair<int, bool> > >* getSurface(sf::Vector2i interval);
     std::vector<std::vector<std::vector<int> > >* getUnderground(sf::Vector2i interval);
+    bool _eco1Ready;
+    bool _eco2Ready;
+    bool __auxEco;
+    int __auxPos;
 private:
     struct date {
         sf::Vector2i interval;
@@ -67,6 +71,7 @@ private:
         int hour;
         int min;
     } ;
+    void changeEcosystem();
     void updateWithElapsedTime(std::vector<Tree*> &entities, date *d);
     std::string _seed;
     std::string _pathGame;
@@ -94,13 +99,14 @@ private:
     std::vector<std::vector<std::vector<int> > >_underground2;
 
 
+
     void updateEcosystems(float delta);
     void saveEntities(bool arrayChosen);
     void loadEntities(bool arrayChosen);
 
     void linkTrees(bool arrayChosen);
-
-
+    sf::Thread _threadSaveLoad0;
+    sf::Thread _threadSaveLoad1;
 };
 
 

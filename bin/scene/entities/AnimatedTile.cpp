@@ -15,10 +15,12 @@
 #include "../world/Map.h"
 #include "../../Settings.h"
 #include "../../Resources.h"
+#include "../Scene.h"
 
 
-AnimatedTile::AnimatedTile(){
-
+AnimatedTile::AnimatedTile(std::string new_id,std::string id_pick){
+    id = new_id;
+    _id_pick = id_pick;
 	colisionable = false;
     vx=0;
     vy=0;
@@ -52,49 +54,14 @@ void AnimatedTile::setFactor(float dist_x, float dist_y){
 
 
 }
-
-void AnimatedTile::Reload(std::string new_id)
-{
-	id = new_id;
-	if(new_id == "0"){
-		colisionable = false;
-		
-	}
-	else if(new_id == "d"){
-		colisionable = true;
-		
-	}
-	else if(new_id == "D"){
-		colisionable = false;
-		
-	}
-	else if(new_id == "C"){
-		colisionable = true;
-
-	}
-	else if(new_id == "c"){
-		colisionable = false;
-
-	}
-	else if(new_id == "r"){
-		colisionable = false;
-
-	}
-	else if(new_id == "red"){
-		colisionable = true;
-		
-	}
-	else{
-		Reload("0");
-	}
-
-	
+bool AnimatedTile::collideWithRectangle(sf::FloatRect rect){
+    sf::FloatRect tile(position.x-size.x,position.y-size.y,size.x*4,size.y*4);
+    return rect.intersects(tile);
 }
-
 void AnimatedTile::Draw(sf::RenderTarget & renderWindow)
 {
     TextureManager *t = Resources::getTextureManager("tileMap");
-    if(deleted==0){
+    if(deleted!=1){
         sf::Sprite s;
         s.setOrigin(size.x/2-t->size_sprite.y/2, size.y/2-t->size_sprite.y/2);
         s.setRotation(rotation);
@@ -111,27 +78,18 @@ void AnimatedTile::Draw(sf::RenderTarget & renderWindow)
 
 }
 
-bool AnimatedTile::ColideWorld(Chunk* c1,Chunk* c2,Chunk* c3, int posMap){
+bool AnimatedTile::ColideWorld(){
+    Scene *s = Scene::getScene();
+    Map *m = s->getMap();
     sf::Vector2f center_pos(position.x+size.x/2, position.y+size.y/2);
-
         if(center_pos.y<0) center_pos.y = 0;
-        int size_chunk_x = Chunk::N_TILES_X*Settings::TILE_SIZE;
-        int chunk_x = (center_pos.x-size_chunk_x*posMap)/size_chunk_x;
-
-
-        Chunk* c;
-        if(chunk_x==0) c = c1;
-        else if(chunk_x==1) c = c2;
-        else c = c3;
-
-
-        Tile* t =c->getTile(center_pos.x, center_pos.y, 1);
+        Tile* t = m->getTile(center_pos.x, center_pos.y, 1);
         if(t != nullptr && t->id !="0"){
             return true;
 
     }
 }
-void AnimatedTile::Update(float elapsedTime, Chunk* c1,Chunk* c2,Chunk* c3, int posMap)
+void AnimatedTile::Update(float elapsedTime)
 {
     if(deleted==0){
         vx =disp_factor/10;
@@ -143,9 +101,9 @@ void AnimatedTile::Update(float elapsedTime, Chunk* c1,Chunk* c2,Chunk* c3, int 
         float x = x0+vx*elapsedTime;
         float y = y0+vy*elapsedTime;
         SetPosition(x, y);
-        if(ColideWorld(c1,c2,c3, posMap)){
+        if(ColideWorld()){
             //std::cout << "YAY" << std::endl;
-            deleted = 1;
+            deleted = 2;
         }
     }
 

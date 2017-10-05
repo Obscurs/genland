@@ -12,18 +12,24 @@ Scene::Scene()
       _backgrounds(),
       _clock(),
       _drawer(&_map_curr,&_player,&_backgrounds, &_clock),
-      _viewGame()
+      _viewGame(),
+      _threadSaveLoad0(&Scene::changeEcosystem,this),
+      _threadSaveLoad1(&Scene::changeEcosystem,this)
 
 {
+    _eco1Ready = true;
+    _eco2Ready = true;
     _seed = "0";
     _zoom = 1.0;
-    _player.Load("blue.png");
+    //_player.Load("blue.png");
     _player.SetPosition(0,0);
-    _player.SetSize(32);
+    //_player.SetSize(32);
     _pathGame = "null";
     _initialized = false;
     _currentEcosystem1 = sf::Vector2i(0,0);
     _currentEcosystem2 = sf::Vector2i(0,0);
+    __auxEco =0;
+    __auxPos = 0;
 }
 void Scene::update(sf::RenderWindow &window,float delta){
     //sf::View currentView = window.getView();
@@ -45,7 +51,7 @@ void Scene::update(sf::RenderWindow &window,float delta){
 
     _clock.update(delta);
 
-    _viewGame.setCenter(_player.GetPosition().x+(_player.GetWidth()/2), _player.GetPosition().y+(_player.GetHeight()/2));
+    _viewGame.setCenter(_player.GetPosition().x+(Player::PLAYER_WIDTH/2), _player.GetPosition().y+(Player::PLAYER_HEIGHT/2));
     updateEcosystems(delta);
 
 }
@@ -121,6 +127,22 @@ sf::Vector2i Scene::getIntervalEcosystem(int ind){
     else if(betweenInts(_currentEcosystem2,ind)) return _currentEcosystem2;
     else return result;
 }
+void Scene::changeEcosystem(){
+    std::cout << "yea threads" << std::endl;
+    int eco = __auxEco;
+    int pos = __auxPos;
+    if(eco==0){
+        saveEntities(0);
+        _currentEcosystem1 = searchIntervalEcosystem(pos);
+        loadEntities(0);
+    }
+    else{
+        saveEntities(1);
+        _currentEcosystem2 = searchIntervalEcosystem(pos);
+        loadEntities(1);
+    }
+    std::cout << "yea threads ends" << std::endl;
+}
 void Scene::updateEcosystems(float delta){
     sf::Vector2i oldEco1 = _currentEcosystem1;
     sf::Vector2i oldEco2 = _currentEcosystem2;
@@ -128,53 +150,88 @@ void Scene::updateEcosystems(float delta){
     int pos1 = pos0+2;
     if(!betweenInts(oldEco1, pos0) && !betweenInts(oldEco2, pos0)){
         if(betweenInts(oldEco2, pos1)){
-            saveEntities(0);
-            _currentEcosystem1 = searchIntervalEcosystem(pos0);
-            loadEntities(0);
+            if(_eco1Ready){
+                __auxEco = 0;
+                __auxPos = pos0;
+                _threadSaveLoad0.launch();
+                std::cout << "yolo" << std::endl;
+                //changeEcosystem(0, pos0);
+            }
         } else {
-            saveEntities(1);
-            _currentEcosystem2 = searchIntervalEcosystem(pos0);
-            loadEntities(1);
+            if(_eco2Ready){
+                __auxEco = 1;
+                __auxPos = pos0;
+                _threadSaveLoad1.launch();
+                std::cout << "yolo" << std::endl;
+                //changeEcosystem(1, pos0);
+            }
         }
+        std::cout << "yolo2" << std::endl;
     } else if(!betweenInts(oldEco1, pos1) && !betweenInts(oldEco2, pos1)){
         if(betweenInts(oldEco2, pos0)){
-            saveEntities(0);
-            _currentEcosystem1 = searchIntervalEcosystem(pos1);
-            loadEntities(0);
+            if(_eco1Ready) {
+                __auxEco = 0;
+                __auxPos = pos1;
+                _threadSaveLoad0.launch();
+                std::cout << "yolo" << std::endl;
+                //changeEcosystem(0, pos1);
+            }
         } else {
-            saveEntities(1);
-            _currentEcosystem2 = searchIntervalEcosystem(pos1);
-            loadEntities(1);
+            if(_eco2Ready){
+                __auxEco = 1;
+                __auxPos = pos1;
+                _threadSaveLoad1.launch();
+                std::cout << "yolo" << std::endl;
+                //changeEcosystem(1, pos1);
+            }
         }
+        std::cout << "yolo2" << std::endl;
     }
-    int size = int(_entities1.size());
-    for(int i = 0; i<size; i++){
-        if(_entities1[i]->_dead){
-            _entities1[i]->kill();
-            _entities1.erase(_entities1.begin()+i);
-            i--;
-            size = int(_entities1.size());
-        } else {
-            if(_entities1[i]->update(delta, &_clock)){
-                Tree *res = _entities1[i]->reproduce();
-                if(res != nullptr) _entities1.push_back(res);
+    if(_eco1Ready){
+        int size = int(_entities1.size());
+        for(int i = 0; i<size; i++){
+            if(_entities1[i]->_dead){
+                _entities1[i]->kill();
+                _entities1.erase(_entities1.begin()+i);
+                i--;
+                size = int(_entities1.size());
+            } else {
+                if(_entities1[i]->update(delta, &_clock)){
+                    Tree *res = _entities1[i]->reproduce();
+                    if(res != nullptr) {
+
+
+                        _entities1.push_back(res);
+                        int index_chunk = _map_curr.getIndexMatChunk(res->_chunk);
+                        if(index_chunk != -1){
+                            _map_curr._chunk_mat[index_chunk]->addTreeToChunk(res,index_chunk);
+                            _map_curr._chunk_mat[index_chunk]->_is_dirty = true;
+                            syncNotRenderedTrees(_map_curr._chunk_mat[1]);
+
+                        }
+
+                    }
+                }
             }
         }
     }
-    size = int(_entities2.size());
-    for(int i = 0; i<size; i++){
-        if(_entities2[i]->_dead){
-            _entities2[i]->kill();
-            _entities2.erase(_entities2.begin()+i);
-            i--;
-            size = int(_entities2.size());
-        } else {
-            if(_entities2[i]->update(delta, &_clock)){
-                Tree *res = _entities2[i]->reproduce();
-                if(res != nullptr) _entities2.push_back(res);
+    if(_eco2Ready){
+        int size = int(_entities2.size());
+        for(int i = 0; i<size; i++){
+            if(_entities2[i]->_dead){
+                _entities2[i]->kill();
+                _entities2.erase(_entities2.begin()+i);
+                i--;
+                size = int(_entities2.size());
+            } else {
+                if(_entities2[i]->update(delta, &_clock)){
+                    Tree *res = _entities2[i]->reproduce();
+                    if(res != nullptr) _entities2.push_back(res);
+                }
             }
         }
     }
+
 
 
 }
@@ -218,9 +275,9 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
     _initialized = true;
     Player *newPlayer = new Player();
     _player = *newPlayer;
-    _player.Load("blue.png");
+    //_player.Load("blue.png");
     _player.SetPosition(0,0);
-    _player.SetSize(Settings::TILE_SIZE*2);
+    //_player.SetSize(64);
     _pathGame = path;
     _player.loadStats(_pathGame);
 
@@ -279,8 +336,12 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
         myfile2.close();
     }
     if(!firstBiomeCreated()){
-        _map_curr.searchDeserts(0, chunk_player-1);
-        _map_curr.searchDeserts(1, chunk_player+3);
+        __auxEco = 0;
+        __auxPos = chunk_player-1;
+        _map_curr.searchDeserts();
+        __auxEco = 1;
+        __auxPos = chunk_player+3;
+        _map_curr.searchDeserts();
 
 
     }
@@ -338,6 +399,7 @@ void Scene::saveGame(){
 
 void Scene::saveEntities(bool arrayChosen){
     if(!arrayChosen){
+        _eco1Ready = false;
         int start = _currentEcosystem1.x;
         int end = _currentEcosystem1.y;
         if(start != end){
@@ -382,7 +444,9 @@ void Scene::saveEntities(bool arrayChosen){
                 index = index+1;
             }
         }
+        _eco1Ready = true;
     } else{
+        _eco2Ready = false;
         int start = _currentEcosystem2.x;
         int end = _currentEcosystem2.y;
         if(start != end){
@@ -427,10 +491,12 @@ void Scene::saveEntities(bool arrayChosen){
                 index = index+1;
             }
         }
+        _eco2Ready = true;
     }
 }
 void Scene::loadEntities(bool arrayChosen){
     if(!arrayChosen){
+        _eco1Ready = false;
         _entities1.clear();
         _surface1.clear();
         _underground1.clear();
@@ -500,8 +566,10 @@ void Scene::loadEntities(bool arrayChosen){
                     d->hour = _clock.hour;
                 }
             }
+            _eco1Ready = true;
         }
     } else{
+        _eco2Ready = false;
         _entities2.clear();
         _surface2.clear();
         _underground2.clear();
@@ -560,6 +628,7 @@ void Scene::loadEntities(bool arrayChosen){
                 }
             }
         }
+        _eco2Ready = true;
 
     }
 }

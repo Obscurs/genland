@@ -22,8 +22,11 @@
 
 
 Map::Map():
-        _mapViewer()
+        _mapViewer(),
+        _threadSearchDeserts0(&Map::searchDeserts,this),
+        _threadSearchDeserts1(&Map::searchDeserts,this)
 {
+    _desertsReady = true;
     _initialized = false;
 }
 void Map::init(int pos)
@@ -59,8 +62,12 @@ void Map::init(int pos)
     //_chunk_mat[2]->recalcReachFloor();
 
 }
-void Map::searchDeserts(bool left, int pos){
+void Map::searchDeserts(){
+    std::cout << "searching deserts..." << std::endl;
+    _desertsReady = false;
     Scene *scene = Scene::getScene();
+    bool left = scene->__auxEco;
+    int pos = scene->__auxPos;
     std::string path = scene->getGamePath();
 
     Simplex2d* escarp = NoiseGenerator::getNoise("escarp");
@@ -182,8 +189,7 @@ void Map::searchDeserts(bool left, int pos){
         if(left) iter = iter-1;
         else iter = iter +1;
     }
-
-
+    _desertsReady = true;
 }
 void Map::saveMap(){
     if(_initialized){
@@ -251,13 +257,26 @@ void Map::createMap(int map_index, int chunk_index){
             //_chunk_mat[2]->recalcReachSun();
         }
         sf::Vector2i ecoLimits = scene->getLimsBiome();
-        if(ecoLimits.x != ecoLimits.y){
+        if(ecoLimits.x != ecoLimits.y && _desertsReady){
             if(chunk_index >= ecoLimits.y){
-                searchDeserts(0, chunk_index);
+                scene->__auxEco = 0;
+                scene->__auxPos = chunk_index;
+                std::cout << "new thread" << std::endl;
+                //sf::Thread thread(&Map::searchDeserts,this);
+                //thread.launch();
+                _threadSearchDeserts0.launch();
+                //searchDeserts();
             }
             else if(chunk_index < ecoLimits.x){
-                searchDeserts(1, chunk_index);
+                scene->__auxEco = 1;
+                scene->__auxPos = chunk_index;
+                std::cout << "new thread" << std::endl;
+                //sf::Thread thread(&Map::searchDeserts,this);
+                //thread.launch();
+                _threadSearchDeserts1.launch();
+                //searchDeserts();
             }
+            std::cout << "yay par ends" << std::endl;
         }
     } else std::cout << "canot create map, map not _initialized" << std::endl;
 }
@@ -643,9 +662,8 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                         Tile *t1 = t->neighbors[8];
                         queue_final_tiles.pop();
 
-                        if (t->id != "0" && t1->id == "0") {
-                            AnimatedTile *falling_t = new AnimatedTile();
-                            falling_t->Reload(t->id);
+                        if (t->id != "0") {
+                            AnimatedTile *falling_t = new AnimatedTile(t->id, t->id_pick);
                             falling_t->wall_left = wall_left;
                             falling_t->wall_right = wall_right;
                             sf::Vector2f tpos = t->GetPosition();
@@ -654,11 +672,11 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                             falling_t->SetPosition(tpos.x, tpos.y + Settings::TILE_SIZE / 2);
                             falling_t->SetSize(t->getWidth());
                             falling_t->setFactor(dist_x, dist_y);
-
-                            falling_tiles.push_back(falling_t);
-                        } else if (t1->id != "0") {
-                            AnimatedTile *falling_t = new AnimatedTile();
-                            falling_t->Reload(t1->id);
+                            Chunk* fallingChunk = getChunk(t->GetPosition().x,t->GetPosition().y,0);
+                            if(fallingChunk != nullptr) fallingChunk->_falling_tiles.push_back(falling_t);
+                        }
+                        if (t1->id != "0") {
+                            AnimatedTile *falling_t = new AnimatedTile(t1->id, t->id_pick);
                             falling_t->wall_left = wall_left;
                             falling_t->wall_right = wall_right;
                             sf::Vector2f tpos = t1->GetPosition();
@@ -667,10 +685,8 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                             falling_t->SetPosition(tpos.x, tpos.y + Settings::TILE_SIZE / 2);
                             falling_t->SetSize(t1->getWidth());
                             falling_t->setFactor(dist_x, dist_y);
-                            falling_tiles.push_back(falling_t);
-                        }
-                        else {
-                            std::cout << "WHHHHHHHHHHHHAAAAAAAAAAAAT" << std::endl;
+                            Chunk* fallingChunk = getChunk(t->GetPosition().x,t->GetPosition().y,0);
+                            if(fallingChunk != nullptr) fallingChunk->_falling_tiles.push_back(falling_t);
                         }
                         t->reload("0");
                         t1->reload("0");
@@ -695,12 +711,40 @@ void Map::dirtyChunks(){
         _chunk_mat[i]->_is_dirty = true;
     }
 }
+AnimatedTile* Map::collidesWithAnimatedTile(sf::FloatRect rect){
+    Chunk *c1 = getChunk(rect.left, rect.top, 0);
+    Chunk *c2 = getChunk(rect.left+rect.width, rect.top, 0);
+    AnimatedTile *t = nullptr;
+    if(c1 !=nullptr){
+        t = c1->collidesWithAnimatedTile(rect);
+    }
+    if(t == nullptr && c2 != c1){
+        t = c2->collidesWithAnimatedTile(rect);
+    }
+    return t;
+}
 void Map::removeTile2(Tile* removed_tile){
     //bool removed_reach_sun=removed_tile->reach_sun;
     //if(removed_tile->layer==0) removed_reach_sun = true;
     Tile* otherLayerRemovedTile= removed_tile->neighbors[8];
     //if(!otherLayerRemovedTile->reach_floor) removeReachFloorCascade2(removed_tile->neighbors[1]);
+    if(removed_tile->id != "0") {
+        sf::Vector2f tpos = removed_tile->GetPosition();
+        AnimatedTile *falling_t = new AnimatedTile(removed_tile->id, removed_tile->id_pick);
+        falling_t->SetPosition(tpos.x, tpos.y + Settings::TILE_SIZE / 2);
+        falling_t->SetSize(removed_tile->getWidth());
+        //falling_t->setFactor(dist_x, dist_y);
+        Chunk* fallingChunk = getChunk(removed_tile->GetPosition().x,removed_tile->GetPosition().y,0);
+        if(fallingChunk != nullptr) fallingChunk->_falling_tiles.push_back(falling_t);
+    }
     removed_tile->reload("0");
+
+
+    //float dist_x = tpos.x - center_falling_x;
+    //float dist_y = max_pos.y - tpos.y;
+
+
+
     //if(removed_reach_sun) removed_tile->reach_sun = true;
     Tile* removed_tile0;
     if(removed_tile->layer==0) removed_tile0 = removed_tile;
@@ -870,13 +914,6 @@ void Map::update(float delta, sf::Vector2f player_pos)
         player_pos.y+=16;
         lights[2].position=player_pos;
 
-        for(int i=0; i<falling_tiles.size(); ++i){
-            falling_tiles[i]->Update(delta, _chunk_mat[0], _chunk_mat[1], _chunk_mat[2], _posMap);
-            if(falling_tiles[i]->deleted==1){
-                delete falling_tiles[i];
-                falling_tiles.erase(falling_tiles.begin()+i);
-            }
-        }
     } else std::cout << "canot update, map no _initialized " <<  std::endl;
 
 }

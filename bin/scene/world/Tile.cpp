@@ -128,16 +128,22 @@ void Tile::reload(std::string new_id)
             ms_to_remove = 100;
         }
         else if (new_id == "T" || new_id == "t") {
-            weight = 10;
-            max_tension = 50;
+            weight = 7;
+            max_tension = 60;
             id_pick = "T";
             ms_to_remove = 100;
             _isTree = true;
         }
         else if (new_id == "F" || new_id == "f") {
-            weight = 2;
-            max_tension = 5;
+            weight = 1;
+            max_tension = 4;
             id_pick = "F";
+            ms_to_remove = 20;
+        }
+        else if (new_id == "A" || new_id == "a") {
+            weight = 7;
+            max_tension = 80;
+            id_pick = "A";
             ms_to_remove = 20;
         }
         else {

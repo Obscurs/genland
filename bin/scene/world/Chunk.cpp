@@ -614,11 +614,24 @@ void Chunk::update(float delta){
         _is_dirty = false;
     }
     else if(_need_sync) syncSurfaceAndUnderground();
+    for(int i=0; i<_falling_tiles.size(); ++i){
+        _falling_tiles[i]->Update(delta);
+        if(_falling_tiles[i]->deleted==1){
+            delete _falling_tiles[i];
+            _falling_tiles.erase(_falling_tiles.begin()+i);
+        }
+    }
+}
+AnimatedTile* Chunk::collidesWithAnimatedTile(sf::FloatRect rect){
+    for(int i=0; i< _falling_tiles.size(); i++){
+        if(_falling_tiles[i]->collideWithRectangle(rect)) return _falling_tiles[i];
+    }
+    return nullptr;
 }
 void Chunk::syncSurfaceAndUnderground(){
     Scene *s = Scene::getScene();
     sf::Vector2i interval = s->getIntervalEcosystem(_chunk_id);
-    if(interval.x != interval.y){
+    if(interval.x != interval.y && s->_eco1Ready && s->_eco2Ready){
         std::vector<std::vector<std::pair<int, bool> > >* surface =s->getSurface(interval);
         std::vector<std::vector<std::vector<int> > >* underground = s->getUnderground(interval);
         int index = _chunk_id-interval.x;
@@ -648,16 +661,7 @@ void Chunk::syncSurfaceAndUnderground(){
 void Chunk::checkTreeTiles(){
     int size = int(_trees.size());
     for(int i = 0; i<size; i++){
-        _trees[i]->checkTreeTiles();
-        //if(_trees[i]->isDead()){
-            //Tree *tl = _trees[i]->getLeftTree();
-            //Tree *tr = _trees[i]->getRightTree();
-            //if(tl != nullptr) tl->setRightTree(tr);
-            //if(tr != nullptr) tr->setLeftTree(tl);
-        //    _trees.erase(_trees.begin()+i);
-        //    i--;
-        //    size = int(_trees.size());
-        //}
+        if(_trees[i] !=nullptr) _trees[i]->checkTreeTiles();
     }
     
 }
@@ -665,7 +669,9 @@ void Chunk::prepareArrays(){
     grass_tiles.clear();
     render_array.clear();
     sky_array.clear();
-    memset(_surfacePosition,0,sizeof(_surfacePosition));
+    for(int i=0; i< N_TILES_X; i++){
+        _surfacePosition[i].first = 0;
+    }
     for(int i = 0; i<Chunk::N_TILES_Y; ++i){
         for(int j = 0; j<Chunk::N_TILES_X; ++j){
             Tile* t1 = tile_mat[i][j][1];
@@ -724,7 +730,7 @@ void Chunk::prepareArrays(){
 void Chunk::syncNotRenderedTrees(){
     for(int i=0; i< _trees.size(); i++){
         Tree *tr = _trees[i];
-        if(!tr->_rendered){
+        if(_trees[i] != nullptr && !tr->_rendered){
             _is_dirty = true;
             if(neighbors[0] != nullptr) neighbors[0]->_is_dirty = true;
             if(neighbors[1] != nullptr) neighbors[1]->_is_dirty = true;
@@ -747,10 +753,4 @@ void Chunk::addTreeToChunk(Tree *tr, int index_chunk_in_mat){
     int posChunk = tr->hasTwoChunks();
     if(posChunk == -1 && neighbors[0] != nullptr) neighbors[0]->_is_dirty = true;
     else if(posChunk == 1 && neighbors[1] != nullptr) neighbors[1]->_is_dirty = true;
-}
-
-void Chunk::addEntitiesToChunk(){
-    for(int i=0; i< _trees.size(); i++){
-        //addTreeToChunk(_trees[i]);
-    }
 }

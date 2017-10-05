@@ -13,7 +13,7 @@ public:
 	const static int SLOT_SIZE = 50;
 	const static int GRID_THICKNESS = 2;
 	const static int GRID_SELECTED_THICKNESS = 4;
-	const static int N_CRAFT_ITEMS = 2;
+	const static int N_CRAFT_ITEMS = 6;
 
 
 
@@ -24,6 +24,8 @@ public:
 	int stackItem(std::string id, int amount);
 	std::string getIdItemAtTab();
 	Item* getItemAtTab();
+    Item* getItemTool();
+    Item* getItemArmor();
 	void decrementItemAtTab();
 	bool show_inventory;
 	bool show_tab;
@@ -43,12 +45,16 @@ private:
 	bool existItemInventoryNoFull(std::string item_id);
 	bool isTabFull();
 	bool isInventoryFull();
+    int getToolIndex(sf::Vector2f pos);
+    int getArmorIndex(sf::Vector2f pos);
 	int getTabIndex(sf::Vector2f pos);
 	int getCraftIndex(sf::Vector2f pos);
 	sf::Vector2i getInventoryIndex(sf::Vector2f pos);
 	
 
 	Item* moveItemTab(Item* it, int tab_x);
+    Item* moveItemTool(Item* it);
+    Item* moveItemArmor(Item* it);
 	Item* moveItemInventory(Item* it, int inv_x, int inv_y);
 	void deleteItemTab(int x);
 	void deleteMouseItem();
@@ -72,6 +78,6 @@ private:
 	Item* inventory[Y_SLOTS][X_SLOTS] = { {nullptr} };
 	Item* tab[TAB_SLOTS] = { nullptr };
 	Item* mouseItem = nullptr;
-
-	TextureManager* texMan;
+    Item* armorItem = nullptr;
+    Item* toolItem = nullptr;
 };

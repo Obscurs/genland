@@ -35,11 +35,12 @@ public:
     void removeTile2(Tile* r_tile);
 	void update(float delta, sf::Vector2f player_pos);
 	void checkLoadedChunks(float x, float y);
-    void searchDeserts(bool left, int pos);
+    void searchDeserts();
     int getPosMap();
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
     Chunk* _chunk_mat[N_CHUNKS_X] = {nullptr};	//must ve value
 	void syncEntitiesToChunk(int map_index);
+	AnimatedTile* collidesWithAnimatedTile(sf::FloatRect rect);
 private:
 	bool _initialized;
 	MapViewer _mapViewer;		//must be on scene
@@ -48,8 +49,9 @@ private:
 	void createMap(int map_index, int chunk_index);
     void calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs);
 	sf::Vector2i getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f pos_goal);
-
-
+	bool _desertsReady;
+    sf::Thread _threadSearchDeserts0;
+    sf::Thread _threadSearchDeserts1;
 
 
 };

@@ -38,6 +38,8 @@ void Resources::load() {
     addShader("mix_back_terr_shader","resources/mix_background_terrain.frag");
     addShader("rain_shader","resources/rain.frag");
     //TEXTURES
+    addTexture("playerSprite", "resources/player.png");
+
     addTextureManager("tileMap","resources/tiles5.png", 16, 16);
     TextureManager *texMan = getTextureManager("tileMap");
     texMan->insert_block_all_values("D", "d", sf::Vector2i(0,0),16);     //dirt
@@ -55,6 +57,7 @@ void Resources::load() {
 
     texMan->insert_block_all_values("F", "f", sf::Vector2i(0,192),16);      //fulles
     texMan->insert_block_all_values("T", "t", sf::Vector2i(0,208),16);      //arbre
+    texMan->insert_block_all_values("A", "a", sf::Vector2i(0,224),16);      //arbre
 
     texMan->insert_map_value("0",sf::Vector2i(64,32));
     texMan->insert_map_value("s",sf::Vector2i(96,32));
@@ -75,11 +78,21 @@ void Resources::load() {
     texMan->insert_leaves_all_values("L1","l1",sf::Vector2i(128,48),16);
     texMan->insert_leaves_all_values("L2","l2",sf::Vector2i(128,64),16);
     texMan->insert_leaves_all_values("L3","l3",sf::Vector2i(128,80),16);
+
+    texMan->insert_map_value("armor",sf::Vector2i(144,0));
+    texMan->insert_map_value("armor1",sf::Vector2i(160,0));
+    texMan->insert_map_value("armor2",sf::Vector2i(176,0));
+    texMan->insert_map_value("armor3",sf::Vector2i(192,0));
+    texMan->insert_map_value("tool",sf::Vector2i(144,16));
+    texMan->insert_map_value("sword1",sf::Vector2i(160,16));
+    texMan->insert_map_value("pickaxe1",sf::Vector2i(176,16));
+    texMan->insert_map_value("stairs",sf::Vector2i(144,32));
+    texMan->insert_map_value("torx",sf::Vector2i(160,32));
     std::cout << " Resources Loaded " << std::endl;
 }
 
 void Resources::addTexture(const std::string& key, const std::string& path) {
-    if(! texturesMap[key].loadFromFile(TEXTURETPATH+path)) printError(path);
+    if(! texturesMap[key].loadFromFile(path)) printError(path);
 }
 void Resources::addTextureManager(const std::string& key, const std::string& path, int sizeX, int sizeY) {
     textureManagerMap.insert(std::pair<std::string, TextureManager>(key,TextureManager(path,sizeX, sizeY)));

@@ -19,18 +19,28 @@
 
 Inventory::Inventory()
 {
-	texMan = Resources::getTextureManager("tileMap");
 
 	show_inventory = false;
 	show_tab = true;
 	show_craft_list = false;
-	Item* craft1 = new Item("D");
-	Item* craft2 = new Item("r");
+	Item* craft1 = new Item("pickaxe1");
+	Item* craft2 = new Item("armor1");
+	Item* craft3 = new Item("sword1");
+    Item* craft4 = new Item("stairs");
+    Item* craft5 = new Item("torx");
+    Item* craft6 = new Item("A");
 	craft1->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft2->SetSize(SLOT_SIZE-GRID_THICKNESS);
+	craft3->SetSize(SLOT_SIZE-GRID_THICKNESS);
+    craft4->SetSize(SLOT_SIZE-GRID_THICKNESS);
+    craft5->SetSize(SLOT_SIZE-GRID_THICKNESS);
+    craft6->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft_list [0] = craft1;
 	craft_list [1] = craft2;
-
+	craft_list [2] = craft3;
+    craft_list [3] = craft4;
+    craft_list [4] = craft5;
+    craft_list [5] = craft6;
 	tab_item_selected = 0;
 
 }
@@ -241,12 +251,25 @@ int Inventory::stackItem(std::string id, int amount){
 	if(!isTabFull()) residue = giveItemTab(id, residue);
 	if(residue == 0) return 0;
 	return giveItemInventory(id, residue);
-	/*
-	if(!giveItemTab(id, amount)){
-		if(!giveItemInventory(id, amount)) return false;
-		else return true;
-	}
-	else return true; */
+
+}
+Item* Inventory::getItemTool(){
+    return toolItem;
+}
+Item* Inventory::getItemArmor(){
+    return armorItem;
+}
+Item* Inventory::moveItemTool(Item* it){
+    if(it != nullptr && it->type != Item::TOOL) return it;
+    Item* it_actual = toolItem;
+    toolItem = it;
+    return it_actual;
+}
+Item* Inventory::moveItemArmor(Item* it){
+    if(it != nullptr && it->type != Item::ARMOR) return it;
+    Item* it_actual = armorItem;
+    armorItem = it;
+    return it_actual;
 }
 Item* Inventory::moveItemTab(Item* it, int tab_x){
 	Item* it_actual = tab[tab_x];
@@ -306,6 +329,22 @@ int Inventory::getCraftIndex(sf::Vector2f pos){
 	else return -1;
 
 }
+int Inventory::getToolIndex(sf::Vector2f pos){
+    pos.x -= x_tab;
+    if(pos.x < 0 ) return -1;
+    int size_socket = SLOT_SIZE;
+    int tab_x = pos.x/size_socket;
+    if(tab_x==(TAB_SLOTS+1) && pos.y >= y_tab && pos.y < y_tab+SLOT_SIZE && show_tab) return 0;
+    else return -1;
+}
+int Inventory::getArmorIndex(sf::Vector2f pos){
+    pos.x -= x_tab;
+    if(pos.x < 0 ) return -1;
+    int size_socket = SLOT_SIZE;
+    int tab_x = pos.x/size_socket;
+    if(tab_x==(TAB_SLOTS+2) && pos.y >= y_tab && pos.y < y_tab+SLOT_SIZE && show_tab) return 0;
+    else return -1;
+}
 int Inventory::getTotalAmountInventory(std::string id_item){
 	int amount = 0;
 	for(int i = 0; i< Y_SLOTS; ++i){
@@ -364,25 +403,22 @@ std::string Inventory::getIdItemAtTab() {
 Item * Inventory::getItemAtTab() {
 	return tab[tab_item_selected];
 }
+
 void Inventory::inventoryClick(float x, float y, std::string key){
 	int index_tab = getTabIndex(sf::Vector2f(x,y));
 	int index_craft = getCraftIndex(sf::Vector2f(x,y));
+    int index_tool = getToolIndex(sf::Vector2f(x,y));
+    int index_armor = getArmorIndex(sf::Vector2f(x,y));
 	sf::Vector2i index_inventory = getInventoryIndex(sf::Vector2f(x,y));
 
 	//Item* mouseItem = getMouseItem();
 	if(key == "mouseLeft"){
-		if(index_tab != -1){
-			mouseItem = moveItemTab(mouseItem, index_tab);
-			
-		}
-		else if(index_inventory != sf::Vector2i(-1,-1)){
-			mouseItem = moveItemInventory(mouseItem, index_inventory.x, index_inventory.y);
-			
-			
-		} 
-		else if(index_craft != -1){
-			craftItem(getIdCraftItem(index_craft));
-		}
+		if(index_tab != -1) mouseItem = moveItemTab(mouseItem, index_tab);
+		else if(index_inventory != sf::Vector2i(-1,-1)) mouseItem = moveItemInventory(mouseItem, index_inventory.x, index_inventory.y);
+        else if(index_tool != -1) mouseItem = moveItemTool(mouseItem);
+        else if(index_armor != -1) mouseItem = moveItemArmor(mouseItem);
+		else if(index_craft != -1) craftItem(getIdCraftItem(index_craft));
+
 	} else if(key == "mouseRight"){
 		if(index_tab != -1){
 			Item* pos_item = tab[index_tab];
@@ -590,7 +626,7 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 					std::string string(c);
 					sf::String str(string);
 					text.setString(str);
-					item->Draw(renderWindow, *texMan, text);
+					item->Draw(renderWindow, text);
 
 
 
@@ -605,7 +641,21 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 			rectangle.setPosition(sf::Vector2f(i*SLOT_SIZE+x_tab, y_tab));
 			renderWindow.draw(rectangle);
 		}
+        TextureManager *t = Resources::getTextureManager("tileMap");
 
+
+        rectangle.setPosition(sf::Vector2f((TAB_SLOTS+1)*SLOT_SIZE+x_tab, y_tab));
+        renderWindow.draw(rectangle);
+        sf::Sprite s1;
+        sf::Vector2f item_pos1(sf::Vector2f((TAB_SLOTS+1)*SLOT_SIZE+x_tab, y_tab));
+        t->generateSprite("tool", item_pos1, s1, sf::Vector2f(SLOT_SIZE,SLOT_SIZE));
+        renderWindow.draw(s1);
+        rectangle.setPosition(sf::Vector2f((TAB_SLOTS+2)*SLOT_SIZE+x_tab, y_tab));
+        renderWindow.draw(rectangle);
+        sf::Sprite s2;
+        sf::Vector2f item_pos2(sf::Vector2f((TAB_SLOTS+2)*SLOT_SIZE+x_tab, y_tab));
+        t->generateSprite("armor", item_pos2, s2, sf::Vector2f(SLOT_SIZE,SLOT_SIZE));
+        renderWindow.draw(s2);
 		for(int i = 0; i<TAB_SLOTS; ++i){
 
 			Item* item = tab[i];
@@ -617,7 +667,7 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 				std::string string(c);
 				sf::String str(string);
 				text.setString(str);
-				item->Draw(renderWindow, *texMan, text);
+				item->Draw(renderWindow, text);
 
 			}
 		}
@@ -627,6 +677,25 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 		selected.setOutlineThickness(GRID_SELECTED_THICKNESS);
 		selected.setOutlineColor(sf::Color(210, 160, 70));
 		renderWindow.draw(selected);
+
+        Item* item = toolItem;
+        if(item != nullptr) {
+            item->SetPosition((TAB_SLOTS+1)*SLOT_SIZE+x_tab, y_tab);
+            std::string string = "";
+            sf::String str(string);
+            text.setString(str);
+            item->Draw(renderWindow, text);
+
+
+        }
+        item = armorItem;
+        if(item != nullptr) {
+            item->SetPosition((TAB_SLOTS+2)*SLOT_SIZE+x_tab, y_tab);
+            std::string string = "";
+            sf::String str(string);
+            text.setString(str);
+            item->Draw(renderWindow, text);
+        }
 	}
 	if(show_craft_list){
 		
@@ -641,7 +710,7 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 			std::string string(c);
 			sf::String str(string);
 			text.setString(str);
-			item->Draw(renderWindow, *texMan, text);
+			item->Draw(renderWindow, text);
 
 
 			int j=0;
@@ -656,7 +725,7 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 				std::string string(c);
 				sf::String str(string);
 				text.setString(str);
-				item2->Draw(renderWindow, *texMan, text);
+				item2->Draw(renderWindow, text);
 				++j;
 
 
@@ -675,7 +744,7 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 		std::string string(c);
 		sf::String str(string);
 		text.setString(str);
-		mouseItem->Draw(renderWindow, *texMan, text);
+		mouseItem->Draw(renderWindow, text);
 	}
 }
 
@@ -684,9 +753,8 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 void Inventory::Update(sf::RenderWindow &window)
 {
 	sf::Vector2f position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-	sf::View currentView = window.getView();
-	sf::Vector2f centerView = currentView.getCenter();
-	sf::Vector2f sizeView = currentView.getSize();
+
+
 
 	//_position.x += centerView.x-sizeView.x/2;
 	//_position.y += centerView.y-sizeView.y/2;
@@ -744,6 +812,13 @@ void Inventory::saveData(std::ofstream &myfile){
 		else myfile << it->id << " " << it->amount << " ";
 
 	}
+    myfile << "\n";
+    Item *it =toolItem;
+    if(it==nullptr) myfile << -1 << " " << -1 << " ";
+    else myfile << it->id << " " << it->amount << " ";
+    it =armorItem;
+    if(it==nullptr) myfile << -1 << " " << -1 << " ";
+    else myfile << it->id << " " << it->amount << " ";
 }
 void Inventory::loadData(std::ifstream &myfile){
 
@@ -779,4 +854,20 @@ void Inventory::loadData(std::ifstream &myfile){
 		}
 
 	}
+    std::string item;
+    std::string amount;
+    myfile >> item >> amount;
+    if(item != "-1") {
+        Item *it = new Item(item);
+        it->amount = stoi(amount);
+        it->SetSize(SLOT_SIZE-GRID_THICKNESS);
+        toolItem = it;
+    }
+    myfile >> item >> amount;
+    if(item != "-1") {
+        Item *it = new Item(item);
+        it->amount = stoi(amount);
+        it->SetSize(SLOT_SIZE-GRID_THICKNESS);
+        armorItem = it;
+    }
 }

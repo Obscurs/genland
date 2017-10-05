@@ -13,6 +13,7 @@
 
 
 #include "Item.h"
+#include "../../Resources.h"
 
 
 Item::Item(std::string id_item)
@@ -24,6 +25,7 @@ Item::Item(std::string id_item)
 	id_set1="-1";
 	Reload(id_item);
 	amount = 0;
+
 
 	/*
 	if (!font.loadFromFile("resources/font1.ttf"))
@@ -50,12 +52,12 @@ Item* Item::getItemCopy(){
 }
 
 
-void Item::Draw(sf::RenderWindow& renderWindow, TextureManager &t, sf::Text &text)
+void Item::Draw(sf::RenderWindow& renderWindow, sf::Text &text)
 {
-
+	TextureManager *t = Resources::getTextureManager("tileMap");
 		sf::Sprite s;
 		sf::Vector2f item_pos = GetPosition();
-		t.generateSprite(id, item_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
+		t->generateSprite(id, item_pos, s, sf::Vector2f(GetWidth(),GetHeight()));
 		renderWindow.draw(s);
 
 
@@ -117,6 +119,7 @@ float Item::GetWidth() const
 
 void Item::Reload(std::string new_id)
 {
+    type = COLLECTABLE;
 	id = new_id;
 	if(new_id == "0"){
 		max_stack_amount= 10;
@@ -125,7 +128,7 @@ void Item::Reload(std::string new_id)
 		id_set1="0";
 
 	}
-	else if(new_id == "D"){
+	else if(new_id == "D" || new_id == "d"){
 		max_stack_amount= 10;
 		amount=0;
 		id_set0="d";
@@ -133,25 +136,13 @@ void Item::Reload(std::string new_id)
 		craft_cost["r"] = 2;
 		craft_cost["d"] = 3;
 	}
-	else if(new_id == "d"){
-		max_stack_amount= 10;
-		amount = 0;
-		id_set0="d";
-		id_set1="D";
-	}
-	else if(new_id == "c"){
+	else if(new_id == "c" || new_id == "C"){
 		max_stack_amount= 10;
 		amount = 0;
 		id_set0="c";
 		id_set1="C";
 	}
-	else if(new_id == "C"){
-		max_stack_amount= 5;
-		amount = 0;
-		id_set0="c";
-		id_set1="C";
-	}
-	else if(new_id == "r"){
+	else if(new_id == "r" || new_id == "R"){
 		max_stack_amount= 5;
 		amount = 0;
 		craft_cost["d"] = 5;
@@ -159,15 +150,7 @@ void Item::Reload(std::string new_id)
 		id_set1="R";
 
 	}
-	else if(new_id == "n"){
-		max_stack_amount= 5;
-		amount = 0;
-		craft_cost["n"] = 2;
-		id_set0="n";
-		id_set1="N";
-
-	}
-	else if(new_id == "N"){
+	else if(new_id == "n" || new_id == "N"){
 		max_stack_amount= 5;
 		amount = 0;
 		craft_cost["n"] = 2;
@@ -179,10 +162,117 @@ void Item::Reload(std::string new_id)
 		max_stack_amount= 20;
 		amount = 0;
 		craft_cost["n"] = 2;
-		id_set0="t";
-		id_set1="T";
+		id_set0="-1";
+		id_set1="-1";
 	}
+    else if(new_id == "F" || new_id == "f"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="-1";
+        id_set1="-1";
+    }
+    else if(new_id == "K" || new_id == "k"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="k";
+        id_set1="K";
+    }
+    else if(new_id == "G" || new_id == "g"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="g";
+        id_set1="G";
+    }
+    else if(new_id == "I" || new_id == "i"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="i";
+        id_set1="I";
+    }
+    else if(new_id == "L" || new_id == "l"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="i";
+        id_set1="I";
+    }
+    else if(new_id == "Y" || new_id == "y"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="y";
+        id_set1="Y";
+    }
+    else if(new_id == "B" || new_id == "b"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="b";
+        id_set1="B";
+    }
+    else if(new_id == "W" || new_id == "w"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="w";
+        id_set1="W";
+    }
+    else if(new_id == "J" || new_id == "j"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["n"] = 2;
+        id_set0="j";
+        id_set1="J";
+    }
+    else if(new_id == "A" || new_id == "a"){
+        max_stack_amount= 20;
+        amount = 0;
+        craft_cost["T"] = 10;
+        id_set0="a";
+        id_set1="A";
+    }
+    else if(new_id == "sword1"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 20;
+        id_set0="-1";
+        id_set1="-1";
+        type = TOOL;
+    }
+    else if(new_id == "pickaxe1"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 20;
+        id_set0="-1";
+        id_set1="-1";
+        type = TOOL;
+    }
+    else if(new_id == "armor1"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 100;
+        id_set0="-1";
+        id_set1="-1";
+        type = ARMOR;
+    }else if(new_id == "stairs"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 40;
+        id_set0="-1";
+        id_set1="-1";
+    }else if(new_id == "torx"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 10;
+        id_set0="-1";
+        id_set1="-1";
+    }
 	else{
+        std::cout << "item " << new_id << " dont exist" << std::endl;
 		Reload("0");
 	}
 

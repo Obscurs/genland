@@ -1,17 +1,16 @@
 
 #pragma once
 #include "../../TextureManager.h"
-#include "../world/Chunk.h"
+
 
 class AnimatedTile
 {
 public:
-	AnimatedTile();
+	AnimatedTile(std::string new_id,std::string id_pick);
 	~AnimatedTile();
 
-	void Reload(std::string id);
 	void Draw(sf::RenderTarget & window);
-	void Update(float elapsedTime, Chunk* c1,Chunk* c2,Chunk* c3 , int posMap);
+	void Update(float elapsedTime);
 
 	void SetPosition(float x, float y);
 	void SetSize(float x);
@@ -21,10 +20,11 @@ public:
 	float GetHeight() const;
 	bool colisionable; //sha de privatitzar
 	std::string id; //sha de privatitzar
+    std::string _id_pick;
     bool wall_left;
     bool wall_right;
     int deleted;
-	
+	bool collideWithRectangle(sf::FloatRect rect);
 
 private:
 
@@ -34,6 +34,6 @@ private:
     float rotation;
     sf::Vector2f position;
     sf::Vector2f size;
-    bool ColideWorld(Chunk* c1,Chunk* c2,Chunk* c3, int posMap);
+    bool ColideWorld();
 };
 
