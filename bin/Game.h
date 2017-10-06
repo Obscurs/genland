@@ -36,7 +36,6 @@ private:
 
 	GameState _gameState;
 	sf::RenderWindow _window;
-    bool _debuger;
     sf::Font _font;
 	bool _resize;
     sf::Clock _clock;

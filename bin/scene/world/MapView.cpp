@@ -6,6 +6,7 @@
 #include "../../Settings.h"
 #include "../../MagicView.h"
 #include "../../Inputs.h"
+#include "../../Debuger.h"
 
 MapViewer::MapViewer(){
     _texture.create(Chunk::N_TILES_X*10, Chunk::N_TILES_Y);
@@ -29,10 +30,10 @@ void MapViewer::update(int currentChunk, sf::Vector2i tilePlayer){
             _displace +=1;
             drawOnTexture(1);
         }
-        if(Inputs::KeyBreak(Inputs::M)){
+        if(Inputs::KeyBreak(Inputs::M) && !Debuger::isTerminalActive()){
             _visible=false;
         }
-    } else if(Inputs::KeyBreak(Inputs::M)) {
+    } else if(Inputs::KeyBreak(Inputs::M) && !Debuger::isTerminalActive()) {
         _visible = true;
         int firstChunkId=0;
         if(_negative_map.size() >0) firstChunkId = _negative_map[_negative_map.size()-1].idChunk;

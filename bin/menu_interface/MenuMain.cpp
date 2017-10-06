@@ -4,6 +4,7 @@
 
 #include "MenuMain.h"
 #include "../Game.h"
+#include "../Inputs.h"
 
 void MenuMain::Draw(sf::RenderWindow &window, const sf::Font& font)
 {

@@ -16,6 +16,8 @@
 #include "../Settings.h"
 #include "Scene.h"
 #include "../Resources.h"
+#include "../Inputs.h"
+#include "../Debuger.h"
 
 
 Player::Player()
@@ -430,10 +432,10 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
     position = position_zoomed;
 
 
-	if (Inputs::KeyDown(Inputs::A)){
+	if (Inputs::KeyDown(Inputs::A) && !Debuger::isTerminalActive()){
 		vx = -PLAYER_SPEED_X;
 	}
-	else if (Inputs::KeyDown(Inputs::D)){
+	else if (Inputs::KeyDown(Inputs::D)&& !Debuger::isTerminalActive()){
 		vx = PLAYER_SPEED_X;
 	} 
 	else {
@@ -446,7 +448,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 		//}
 	}
 	else{
-		if (Inputs::KeyDown(Inputs::SPACE)){
+		if (Inputs::KeyDown(Inputs::SPACE)&& !Debuger::isTerminalActive()){
 			vy = -PLAYER_SPEED_Y;
 		}
 		else{
@@ -661,6 +663,7 @@ void Player::saveStats(std::string pathGame){
 	std::string x = std::to_string(_colPosition.x);
 	std::string y = std::to_string(_colPosition.y);
 	myfile << x << " " << y << "\n";
+    myfile << _health << "\n";
 	inventory->saveData(myfile);
 	myfile.close();
 }
@@ -675,6 +678,7 @@ void Player::loadStats(std::string pathGame){
 		std::string x;
 		std::string y;
 		myfile >> x >> y;
+        myfile >> _health;
 		SetPosition(std::stof(x),std::stof(y));
 
         inventory->loadData(myfile);

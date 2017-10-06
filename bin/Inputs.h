@@ -2,6 +2,7 @@
 #define __INPUTS_H__
 
 #include <vector>
+#include <SFML/Window.hpp>
 class Inputs {
 public:
     static void Update();
@@ -46,6 +47,7 @@ public:
 		ADD,
 		SUB,
 		M,
+		T,
 		NUM_KEYS
 	};
     enum Button {

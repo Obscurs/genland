@@ -6,7 +6,6 @@
 #define GENLAND_MENUCONFIG_H
 
 #include "Button.h"
-#include "../Inputs.h"
 #include "../MagicView.h"
 #include "InterfaceList.h"
 class MenuConfigGame {

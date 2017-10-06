@@ -6,7 +6,6 @@
 #define GENLAND_MENUMAIN_H
 
 #include "Button.h"
-#include "../Inputs.h"
 #include "../MagicView.h"
 
 class MenuMain {

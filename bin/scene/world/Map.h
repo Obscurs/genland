@@ -41,6 +41,7 @@ public:
     Chunk* _chunk_mat[N_CHUNKS_X] = {nullptr};	//must ve value
 	void syncEntitiesToChunk(int map_index);
 	AnimatedTile* collidesWithAnimatedTile(sf::FloatRect rect);
+    void setThreadParams(bool left, int pos);
 private:
 	bool _initialized;
 	MapViewer _mapViewer;		//must be on scene
@@ -53,5 +54,7 @@ private:
     sf::Thread _threadSearchDeserts0;
     sf::Thread _threadSearchDeserts1;
 
+    bool __left;
+    int __pos;
 
 };

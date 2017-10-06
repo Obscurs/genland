@@ -6,7 +6,6 @@
 #define GENLAND_MENULOADGAME_H
 
 #include "Button.h"
-#include "../Inputs.h"
 #include "../MagicView.h"
 #include "InterfaceList.h"
 class MenuLoadGame {

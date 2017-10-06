@@ -3,6 +3,7 @@
 //
 
 #include "InterfaceList.h"
+#include "../Inputs.h"
 #include <iostream>
 InterfaceList::InterfaceList(sf::Vector2f pos, sf::Vector2f s, int tp, int vis_slots, std::vector<std::string> &elems)
 {

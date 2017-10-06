@@ -18,6 +18,7 @@
 #include "Game.h"
 #include "Settings.h"
 #include "functions.h"
+#include "Inputs.h"
 
 
 Game::Game():
@@ -26,7 +27,6 @@ Game::Game():
     _resize = false;
     _gameState = Uninitialized;
     _true_exit=false;
-    _debuger = false;
     if (!_font.loadFromFile("resources/font1.ttf"))
     {
         std::cout << "font error" << std::endl;
@@ -73,7 +73,7 @@ void Game::Start(void)
     {
         _window.clear(sf::Color(0,255,0));
         GameLoop();
-        if(_debuger) Debuger::Draw();
+        Debuger::Draw();
         _window.display();
     }
 
@@ -108,7 +108,7 @@ void Game::Events(){
         {
             _true_exit=true;
             Game::ExitGame();
-        } else if (currentEvent.type == sf::Event::KeyPressed) {
+        } if (currentEvent.type == sf::Event::KeyPressed) {
             Inputs::KeyPressed(currentEvent.key.code);
         }
         else if (currentEvent.type == sf::Event::KeyReleased) {
@@ -118,7 +118,7 @@ void Game::Events(){
         }
         else if (currentEvent.type == sf::Event::MouseButtonReleased) {
             Inputs::ButtonReleased(currentEvent.mouseButton.button);
-        } else if(currentEvent.type == sf::Event::TextEntered && _gameState == Game::NewGame)
+        }  if(currentEvent.type == sf::Event::TextEntered && _gameState == Game::NewGame)
         {
             if(((currentEvent.text.unicode < 58 && currentEvent.text.unicode >= 48) || currentEvent.text.unicode == 8 ) && NewGameMenu::seed.selected)
             {
@@ -146,6 +146,27 @@ void Game::Events(){
                 }
                 NewGameMenu::name.setText( name );
             }
+        }else if(currentEvent.type == sf::Event::TextEntered && _gameState == Game::Playing && Debuger::isTerminalActive())
+        {
+            if(((currentEvent.text.unicode < 128 && currentEvent.text.unicode >= 48) || currentEvent.text.unicode == 8  || currentEvent.text.unicode == 32 || currentEvent.text.unicode == 13))
+            {
+                std::string instruction = Debuger::getTerminalText();
+                if( currentEvent.text.unicode == 13 ) // return key
+                {
+                    Debuger::sendTerminalInstruction( );
+                } else if( currentEvent.text.unicode == 8 ) { // backspace
+                    if( instruction.size() > 0 ) {
+                        instruction.resize( instruction.size() - 1 );
+                    }
+                    Debuger::setTerminalText( instruction );
+                } else if(instruction.size()<64){
+                    instruction += static_cast<char>(currentEvent.text.unicode);
+                    Debuger::setTerminalText( instruction );
+                } else {
+                    Debuger::setTerminalText( instruction );
+                }
+
+            }
         }
     }
 }
@@ -157,36 +178,6 @@ void Game::GameLoop()
     float delta = deltatime.asSeconds();
     Inputs::Update();
     Events();
-    if(Inputs::KeyBreak(Inputs::TAB)) {
-        Debuger::activated = !Debuger::activated;
-        _debuger = !_debuger;
-    }
-    if(Debuger::activated){
-        if(Inputs::KeyBreak(Inputs::F1)) {
-            if(Debuger::metric1!="linesChunks")Debuger::metric1 = "linesChunks";
-            else Debuger::metric1="none";
-        }
-        if(Inputs::KeyBreak(Inputs::F2)) {
-            if(Debuger::metric2!="tension")Debuger::metric2 = "tension";
-            else Debuger::metric2="none";
-        }
-        if(Inputs::KeyBreak(Inputs::F3)) {
-            if(Debuger::metric2!="reachFloor")Debuger::metric2 = "reachFloor";
-            else Debuger::metric2="none";
-        }
-        if(Inputs::KeyBreak(Inputs::F4)) {
-            if(Debuger::metric2!="humidity")Debuger::metric2 = "humidity";
-            else Debuger::metric2="none";
-        }
-        if(Inputs::KeyBreak(Inputs::F5)) {
-            if(Debuger::metric2!="temperature")Debuger::metric2 = "temperature";
-            else Debuger::metric2="none";
-        }
-        if(Inputs::KeyBreak(Inputs::F6)) {
-            if(Debuger::metric3!="id")Debuger::metric3 = "id";
-            else Debuger::metric3="none";
-        }
-    }
     switch(_gameState)
     {
         case Game::Playing:

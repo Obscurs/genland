@@ -7,7 +7,6 @@
 
 #include "Button.h"
 #include "TextInput.h"
-#include "../Inputs.h"
 #include "../MagicView.h"
 class NewGameMenu {
 public:

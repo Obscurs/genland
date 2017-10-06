@@ -4,6 +4,7 @@
 
 #include "MenuLoadGame.h"
 #include "../Game.h"
+#include "../Inputs.h"
 
 void MenuLoadGame::Draw(sf::RenderWindow &window, sf::Font font)
 {

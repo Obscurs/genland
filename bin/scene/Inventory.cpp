@@ -13,6 +13,8 @@
 #include <cassert>
 #include "Inventory.h"
 #include "../Resources.h"
+#include "../Inputs.h"
+#include "../Debuger.h"
 #include <string>
 #include <fstream>
 //#include "Game.h"
@@ -769,7 +771,7 @@ void Inventory::Update(sf::RenderWindow &window)
 	else if(Inputs::MouseBreak(Inputs::M_RIGHT)){
 		inventoryClick(position.x, position.y, "mouseRight");
 	}
-	if(Inputs::KeyBreak(Inputs::Q)){
+	if(Inputs::KeyBreak(Inputs::Q)&& !Debuger::isTerminalActive()){
 		if(show_inventory) {
 			show_inventory = false;
 			show_craft_list = false;

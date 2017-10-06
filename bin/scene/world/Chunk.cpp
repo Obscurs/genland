@@ -18,6 +18,7 @@
 #include "../../Settings.h"
 #include "../../Debuger.h"
 #include "../NoiseGenerator.h"
+#include "../Scene.h"
 
 
 void Chunk::saveToFile(std::string path){
@@ -631,7 +632,7 @@ AnimatedTile* Chunk::collidesWithAnimatedTile(sf::FloatRect rect){
 void Chunk::syncSurfaceAndUnderground(){
     Scene *s = Scene::getScene();
     sf::Vector2i interval = s->getIntervalEcosystem(_chunk_id);
-    if(interval.x != interval.y && s->_eco1Ready && s->_eco2Ready){
+    if(interval.x != interval.y && s->ecosystemsReady()){
         std::vector<std::vector<std::pair<int, bool> > >* surface =s->getSurface(interval);
         std::vector<std::vector<std::vector<int> > >* underground = s->getUnderground(interval);
         int index = _chunk_id-interval.x;

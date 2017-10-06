@@ -7,8 +7,9 @@
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
-#include "scene/Scene.h"
 #include "Resources.h"
+#include "Terminal.h"
+
 class Debuger {
 public:
     static void Init(sf::RenderWindow &window);
@@ -20,12 +21,17 @@ public:
     static std::string metric1;
     static std::string metric2;
     static std::string metric3;
-
+    static bool isTerminalActive();
+    static void setTerminalText(std::string s);
+    static std::string getTerminalText();
+    static void sendTerminalInstruction();
+    static void interpInstruction(std::string s);
 private:
 
     static std::vector<sf::Time> _clockMarks;
     static std::vector<std::string> _clockNames;
     static sf::Text _text;
+    static Terminal _terminal;
     static float _fpsTimer;
     static int _fpsCount;
     static int _fpsCount2;

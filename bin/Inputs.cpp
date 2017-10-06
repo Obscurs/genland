@@ -50,7 +50,8 @@ const sf::Keyboard::Key Inputs::_keyMap[NUM_KEYS] = {
         sf::Keyboard::F6,
         sf::Keyboard::Add,
         sf::Keyboard::Subtract,
-        sf::Keyboard::M
+        sf::Keyboard::M,
+        sf::Keyboard::T
 
 };
 const sf::Mouse::Button Inputs::_mouseMap[NUM_BUTTONS] = {

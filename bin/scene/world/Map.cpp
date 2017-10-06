@@ -28,6 +28,8 @@ Map::Map():
 {
     _desertsReady = true;
     _initialized = false;
+    __left = 0;
+    __pos = 0;
 }
 void Map::init(int pos)
 {
@@ -66,8 +68,8 @@ void Map::searchDeserts(){
     std::cout << "searching deserts..." << std::endl;
     _desertsReady = false;
     Scene *scene = Scene::getScene();
-    bool left = scene->__auxEco;
-    int pos = scene->__auxPos;
+    bool left = __left;
+    int pos = __pos;
     std::string path = scene->getGamePath();
 
     Simplex2d* escarp = NoiseGenerator::getNoise("escarp");
@@ -259,8 +261,8 @@ void Map::createMap(int map_index, int chunk_index){
         sf::Vector2i ecoLimits = scene->getLimsBiome();
         if(ecoLimits.x != ecoLimits.y && _desertsReady){
             if(chunk_index >= ecoLimits.y){
-                scene->__auxEco = 0;
-                scene->__auxPos = chunk_index;
+                __left = 0;
+                __pos = chunk_index;
                 std::cout << "new thread" << std::endl;
                 //sf::Thread thread(&Map::searchDeserts,this);
                 //thread.launch();
@@ -268,8 +270,8 @@ void Map::createMap(int map_index, int chunk_index){
                 //searchDeserts();
             }
             else if(chunk_index < ecoLimits.x){
-                scene->__auxEco = 1;
-                scene->__auxPos = chunk_index;
+                __left = 1;
+                __pos = chunk_index;
                 std::cout << "new thread" << std::endl;
                 //sf::Thread thread(&Map::searchDeserts,this);
                 //thread.launch();
@@ -283,8 +285,8 @@ void Map::createMap(int map_index, int chunk_index){
 void Map::syncEntitiesToChunk(int chunk){
     _mapViewer.addChunk(*_chunk_mat[chunk]);
     Scene *s = Scene::getScene();
-    s->syncTreesWithChunk(_chunk_mat[chunk], chunk);
-    s->syncNotRenderedTrees(_chunk_mat[1]);
+    s->syncEntitiesWithLoadedChunk(_chunk_mat[chunk], chunk);
+    _chunk_mat[1]->syncNotRenderedTrees();
 
 
 }
@@ -310,7 +312,10 @@ sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f
     result.y = ((int)pos_goal.y)-((int)pos_origen.y);
     return result;
 }
-
+void Map::setThreadParams(bool left, int pos){
+    __left = left;
+    __pos = pos;
+}
 void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
     if(_initialized){
         std::cout << "calculating removed tile " << std::endl;

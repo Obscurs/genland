@@ -3,6 +3,7 @@
 //
 
 #include "MenuConfigGame.h"
+#include "../Inputs.h"
 
 void MenuConfigGame::Draw(sf::RenderWindow &window, sf::Font font)
 {

@@ -3,6 +3,8 @@
 //
 
 #include "Debuger.h"
+#include "Inputs.h"
+#include "scene/Scene.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -20,6 +22,7 @@ sf::RenderWindow *Debuger::_window = NULL;
 bool Debuger::_is_init = false;
 bool Debuger::activated = false;
 int Debuger::_displace = 0;
+Terminal Debuger::_terminal;
 std::vector<sf::Time> Debuger::_clockMarks;
 std::vector<std::string> Debuger::_clockNames;
 
@@ -34,13 +37,50 @@ void Debuger::Init(sf::RenderWindow &window){
     activated = false;
     InitFpsText();
 }
+bool Debuger::isTerminalActive(){
+    return _terminal.isActive();
+}
+void Debuger::setTerminalText(std::string s) {
+    _terminal.setText(s);
+}
+std::string Debuger::getTerminalText(){
+    return _terminal.getText();
+}
+void Debuger::interpInstruction(std::string s){
+    if(s == "show chunk lines"){
+        Debuger::metric1 = "linesChunks";
+    } else if(s == "show tension"){
+        Debuger::metric2 = "tension";
+    } else if(s == "show reach floor"){
+        Debuger::metric2 = "reachFloor";
+    } else if(s == "show humidity"){
+        Debuger::metric2 = "humidity";
+    }else if(s == "show temperature"){
+        Debuger::metric2 = "temperature";
+    }
+    else if(s == "show id tiles"){
+        Debuger::metric3 = "id";
+    }
+    else if(s == "disable all metrics"){
+        Debuger::metric1="none";
+        Debuger::metric2="none";
+        Debuger::metric3="none";
+    }
+}
 void Debuger::Update(const sf::Time& deltatime){
     if(_is_init){
-        _displace = 0;
-        UpdateFpsText(deltatime);
-        _clockMarks.clear();
-        _clockNames.clear();
-        _clock.restart();
+        if(Inputs::KeyBreak(Inputs::TAB)) {
+            activated = !activated;
+        }
+        if(activated){
+            _displace = 0;
+            UpdateFpsText(deltatime);
+            _clockMarks.clear();
+            _clockNames.clear();
+            _terminal.Update();
+            _clock.restart();
+        }
+
     }
 }
 void Debuger::DrawClockMarks(){
@@ -139,6 +179,9 @@ void Debuger::DrawWorldStats(){
     _window->draw(_text);
     _displace = _displace + DISPLACEMENT;
 }
+void Debuger::sendTerminalInstruction(){
+    _terminal.sendTerminalInstruction();
+}
 void Debuger::DrawFps(){
     sf::View currentView    = _window->getView();
     sf::Vector2f centerView = currentView.getCenter();
@@ -160,13 +203,13 @@ void Debuger::DrawFps(){
     _displace = _displace +DISPLACEMENT;
 }
 void Debuger::Draw(){
-    if(_is_init){
-
+    if(_is_init && activated){
         DrawFps();
         DrawClockMarks();
         DrawPlayerStats();
         DrawWorldStats();
         DrawBiomeStats();
+        _terminal.draw(*_window,_text);
     }
 }
 void Debuger::InitFpsText() {

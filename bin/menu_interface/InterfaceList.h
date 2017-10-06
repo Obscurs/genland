@@ -8,7 +8,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
-#include "../Inputs.h"
 class InterfaceList {
 public:
     const static int GRID_THICKNESS = 2;

@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "../Settings.h"
 #include "NoiseGenerator.h"
+#include "../Inputs.h"
 
 Scene::Scene()
     : _map_curr(),
@@ -12,13 +13,12 @@ Scene::Scene()
       _backgrounds(),
       _clock(),
       _drawer(&_map_curr,&_player,&_backgrounds, &_clock),
-      _viewGame(),
-      _threadSaveLoad0(&Scene::changeEcosystem,this),
-      _threadSaveLoad1(&Scene::changeEcosystem,this)
-
+      _viewGame()
 {
-    _eco1Ready = true;
-    _eco2Ready = true;
+    Ecosystem *e0 = new Ecosystem(sf::Vector2i(0,0));
+    Ecosystem *e1 = new Ecosystem(sf::Vector2i(0,0));
+    _ecosystems.first = e0;
+    _ecosystems.second = e1;
     _seed = "0";
     _zoom = 1.0;
     //_player.Load("blue.png");
@@ -26,10 +26,6 @@ Scene::Scene()
     //_player.SetSize(32);
     _pathGame = "null";
     _initialized = false;
-    _currentEcosystem1 = sf::Vector2i(0,0);
-    _currentEcosystem2 = sf::Vector2i(0,0);
-    __auxEco =0;
-    __auxPos = 0;
 }
 void Scene::update(sf::RenderWindow &window,float delta){
     //sf::View currentView = window.getView();
@@ -52,35 +48,45 @@ void Scene::update(sf::RenderWindow &window,float delta){
     _clock.update(delta);
 
     _viewGame.setCenter(_player.GetPosition().x+(Player::PLAYER_WIDTH/2), _player.GetPosition().y+(Player::PLAYER_HEIGHT/2));
-    updateEcosystems(delta);
+
+    checkEcosystems();
+    _ecosystems.first->update(delta);
+    _ecosystems.second->update(delta);
 
 }
 bool Scene::betweenInts(sf::Vector2i interval, int i){
     return (i >= interval.x && i < interval.y && interval.x != interval.y);
 }
 std::vector<std::vector<std::pair<int, bool> > >* Scene::getSurface(sf::Vector2i interval){
+    /*
     if(interval == _currentEcosystem1) return &_surface1;
     else if(interval == _currentEcosystem2) return &_surface2;
+    else {
+        std::cout << "estas fent servir un interval incorrecte" << std::endl;
+        return nullptr;
+    } */
+    if(interval == _ecosystems.first->getInterval()) return _ecosystems.first->getSurface();
+    else if(interval == _ecosystems.second->getInterval()) return _ecosystems.second->getSurface();
     else {
         std::cout << "estas fent servir un interval incorrecte" << std::endl;
         return nullptr;
     }
 };
 std::vector<std::vector<std::vector<int> > >* Scene::getUnderground(sf::Vector2i interval){
-    if(interval == _currentEcosystem1) return &_underground1;
+    /*if(interval == _currentEcosystem1) return &_underground1;
     else if(interval == _currentEcosystem2) return &_underground2;
+    else {
+        std::cout << "estas fent servir un interval incorrecte" << std::endl;
+        return nullptr;
+    }*/
+    if(interval == _ecosystems.first->getInterval()) return _ecosystems.first->getUnderground();
+    else if(interval == _ecosystems.second->getInterval()) return _ecosystems.second->getUnderground();
     else {
         std::cout << "estas fent servir un interval incorrecte" << std::endl;
         return nullptr;
     }
 }
-void Scene::addTreeToEntities(Tree t, sf::Vector2i interval){
-    //if(interval == _currentEcosystem1) _entities1.push_back(t);
-    //else if(interval == _currentEcosystem2) _entities2.push_back(t);
-    //else {
-    //    std::cout << "estas fent servir un interval incorrecte man" << std::endl;
-    //}
-}
+
 sf::Vector2i Scene::searchIntervalEcosystem(int ind){
     bool first_elem = true;
     bool first_elem2 = true;
@@ -123,142 +129,44 @@ sf::Vector2i Scene::searchIntervalEcosystem(int ind){
 }
 sf::Vector2i Scene::getIntervalEcosystem(int ind){
     sf::Vector2i result(0,0);
-    if(betweenInts(_currentEcosystem1,ind)) return _currentEcosystem1;
-    else if(betweenInts(_currentEcosystem2,ind)) return _currentEcosystem2;
+    if(betweenInts(_ecosystems.first->getInterval(),ind)) return _ecosystems.first->getInterval();
+    else if(betweenInts(_ecosystems.second->getInterval(),ind)) return _ecosystems.second->getInterval();
     else return result;
 }
-void Scene::changeEcosystem(){
-    std::cout << "yea threads" << std::endl;
-    int eco = __auxEco;
-    int pos = __auxPos;
-    if(eco==0){
-        saveEntities(0);
-        _currentEcosystem1 = searchIntervalEcosystem(pos);
-        loadEntities(0);
-    }
-    else{
-        saveEntities(1);
-        _currentEcosystem2 = searchIntervalEcosystem(pos);
-        loadEntities(1);
-    }
-    std::cout << "yea threads ends" << std::endl;
-}
-void Scene::updateEcosystems(float delta){
-    sf::Vector2i oldEco1 = _currentEcosystem1;
-    sf::Vector2i oldEco2 = _currentEcosystem2;
+
+void Scene::checkEcosystems(){
+    sf::Vector2i oldEco1 = _ecosystems.first->getInterval();
+    sf::Vector2i oldEco2 = _ecosystems.second->getInterval();
     int pos0 = _map_curr.getPosMap();
     int pos1 = pos0+2;
     if(!betweenInts(oldEco1, pos0) && !betweenInts(oldEco2, pos0)){
         if(betweenInts(oldEco2, pos1)){
-            if(_eco1Ready){
-                __auxEco = 0;
-                __auxPos = pos0;
-                _threadSaveLoad0.launch();
-                std::cout << "yolo" << std::endl;
-                //changeEcosystem(0, pos0);
+            if(_ecosystems.first->isReady()){
+                _ecosystems.first->setThreadData(pos0);
+                _ecosystems.first->launchSaveLoadThread();
             }
         } else {
-            if(_eco2Ready){
-                __auxEco = 1;
-                __auxPos = pos0;
-                _threadSaveLoad1.launch();
-                std::cout << "yolo" << std::endl;
-                //changeEcosystem(1, pos0);
+            if(_ecosystems.second->isReady()){
+                _ecosystems.second->setThreadData(pos0);
+                _ecosystems.second->launchSaveLoadThread();
             }
         }
-        std::cout << "yolo2" << std::endl;
     } else if(!betweenInts(oldEco1, pos1) && !betweenInts(oldEco2, pos1)){
         if(betweenInts(oldEco2, pos0)){
-            if(_eco1Ready) {
-                __auxEco = 0;
-                __auxPos = pos1;
-                _threadSaveLoad0.launch();
-                std::cout << "yolo" << std::endl;
-                //changeEcosystem(0, pos1);
+            if(_ecosystems.first->isReady()) {
+                _ecosystems.first->setThreadData(pos1);
+                _ecosystems.first->launchSaveLoadThread();
             }
         } else {
-            if(_eco2Ready){
-                __auxEco = 1;
-                __auxPos = pos1;
-                _threadSaveLoad1.launch();
-                std::cout << "yolo" << std::endl;
-                //changeEcosystem(1, pos1);
-            }
-        }
-        std::cout << "yolo2" << std::endl;
-    }
-    if(_eco1Ready){
-        int size = int(_entities1.size());
-        for(int i = 0; i<size; i++){
-            if(_entities1[i]->_dead){
-                _entities1[i]->kill();
-                _entities1.erase(_entities1.begin()+i);
-                i--;
-                size = int(_entities1.size());
-            } else {
-                if(_entities1[i]->update(delta, &_clock)){
-                    Tree *res = _entities1[i]->reproduce();
-                    if(res != nullptr) {
-
-
-                        _entities1.push_back(res);
-                        int index_chunk = _map_curr.getIndexMatChunk(res->_chunk);
-                        if(index_chunk != -1){
-                            _map_curr._chunk_mat[index_chunk]->addTreeToChunk(res,index_chunk);
-                            _map_curr._chunk_mat[index_chunk]->_is_dirty = true;
-                            syncNotRenderedTrees(_map_curr._chunk_mat[1]);
-
-                        }
-
-                    }
-                }
+            if(_ecosystems.second->isReady()){
+                _ecosystems.second->setThreadData(pos1);
+                _ecosystems.second->launchSaveLoadThread();
             }
         }
     }
-    if(_eco2Ready){
-        int size = int(_entities2.size());
-        for(int i = 0; i<size; i++){
-            if(_entities2[i]->_dead){
-                _entities2[i]->kill();
-                _entities2.erase(_entities2.begin()+i);
-                i--;
-                size = int(_entities2.size());
-            } else {
-                if(_entities2[i]->update(delta, &_clock)){
-                    Tree *res = _entities2[i]->reproduce();
-                    if(res != nullptr) _entities2.push_back(res);
-                }
-            }
-        }
-    }
-
-
 
 }
-void Scene::updateWithElapsedTime(std::vector<Tree*> &entities, date *d){
-    Clock *c = new Clock();
-    c->day = d->day;
-    c->min = d->min;
-    c->hour = d->hour;
-    while(c->day<_clock.day || c->hour<_clock.hour || c->min < _clock.min){
-        c->_clockSpeed = 1;
-        c->update(Settings::SYNC_UPDATE_SPEED);
-        int size = int(entities.size());
-        for(int i = 0; i<size; i++){
-            if(entities[i]->_dead){
-                entities[i]->kill();
-                entities.erase(entities.begin()+i);
-                i--;
-                size = int(entities.size());
-            } else {
-                if(entities[i]->update(Settings::SYNC_UPDATE_SPEED, c)){
-                    Tree *res = entities[i]->reproduce();
-                    if(res != nullptr) entities.push_back(res);
-                }
-            }
-        }
-    }
-}
+
 void Scene::draw(sf::RenderWindow &window){
   const sf::View &aux = window.getView();
   window.setView(_viewGame);
@@ -325,7 +233,7 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
         }
         value = "START";
         while(value != "END"){
-            date *d = new date();
+            Date *d = new Date();
             myfile2 >> value;
             if(value != "END") {
                 d->interval.x = std::stoi(value);
@@ -336,19 +244,17 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
         myfile2.close();
     }
     if(!firstBiomeCreated()){
-        __auxEco = 0;
-        __auxPos = chunk_player-1;
+        _map_curr.setThreadParams(0,chunk_player-1);
         _map_curr.searchDeserts();
-        __auxEco = 1;
-        __auxPos = chunk_player+3;
+        _map_curr.setThreadParams(1,chunk_player+3);
         _map_curr.searchDeserts();
-
-
     }
-    _currentEcosystem1 = searchIntervalEcosystem(chunk_player);
-    if(searchIntervalEcosystem(chunk_player+2) !=_currentEcosystem1) _currentEcosystem2 = searchIntervalEcosystem(chunk_player+2);
-    loadEntities(0);
-    loadEntities(1);
+    sf::Vector2i i0 = searchIntervalEcosystem(chunk_player);
+    sf::Vector2i i1 = searchIntervalEcosystem(chunk_player+2);
+    _ecosystems.first->setInterval(i0);
+    if(i0 != i1) _ecosystems.first->setInterval(i1);
+    _ecosystems.first->loadEntities();
+    _ecosystems.second->loadEntities();
     _map_curr.syncEntitiesToChunk(0);
     _map_curr.syncEntitiesToChunk(1);
     _map_curr.syncEntitiesToChunk(2);
@@ -374,8 +280,8 @@ void Scene::saveGame(){
 
     ////////////////////////////////
     ///////// ECO //////////////////
-    saveEntities(0);
-    saveEntities(1);
+    _ecosystems.first->saveEntities();
+    _ecosystems.second->saveEntities();
     route = _pathGame;
     route.append("/ecosystems");
 
@@ -388,7 +294,7 @@ void Scene::saveGame(){
     }
     myfile3 << "END ";
     for(int i=0; i< _entitiesLastUpdate.size(); i++){
-        date *d = _entitiesLastUpdate[i];
+        Date *d = _entitiesLastUpdate[i];
         myfile3 << d->interval.x << " " << d->interval.y << " " << d->day << " " << d->hour << " " << d->min << " ";
     }
     myfile3 << "END";
@@ -397,278 +303,18 @@ void Scene::saveGame(){
 
 }
 
-void Scene::saveEntities(bool arrayChosen){
-    if(!arrayChosen){
-        _eco1Ready = false;
-        int start = _currentEcosystem1.x;
-        int end = _currentEcosystem1.y;
-        if(start != end){
-            for(int i=0; i<_entitiesLastUpdate.size(); i++){
-                date *d = _entitiesLastUpdate[i];
-                if(d->interval == sf::Vector2i(_currentEcosystem1.x,_currentEcosystem1.y)){
-                    d->day = _clock.day;
-                    d->min = _clock.min;
-                    d->hour = _clock.hour;
-                }
-            }
-            std::vector<std::pair<int, int> > chunks[end-start];
-            for(int i = 0; i<_entities1.size(); i++){
-                chunks[_entities1[i]->_chunk-start].push_back(std::pair<int, int>(i, _entities1[i]->_position.x));
-            }
-            int index = start;
-            while(index<end){
-                std::sort(chunks[index-start].begin(), chunks[index-start].end(), [](const std::pair<int,int> &left, const std::pair<int,int> &right) {
-                    return left.second < right.second;
-                });
-                std::string filenameEnt = _pathGame;
-                filenameEnt.append("/entities/");
-                filenameEnt.append(std::to_string(index));
-                filenameEnt.append(".txt");
-                std::ofstream myfile;
-                myfile.open(filenameEnt);
-                for(int i=0; i< chunks[index-start].size(); i++){
-                    _entities1[chunks[index-start][i].first]->saveToFile(index,myfile);
-                }
-                myfile << "END";
-
-                for(int i = 0; i < Chunk::N_TILES_X; i++){
-                    myfile << " " << _surface1[index-start][i].first << " " << _surface1[index-start][i].second;
-                }
-                for(int i = 0; i < Chunk::N_TILES_X; i++){
-                    myfile << " " << _underground1[index-start][i].size();
-                    for(int j = 0; j < _underground1[index-start][i].size(); ++j){
-                        myfile << " " << _underground1[index-start][i][j];
-                    }
-                }
-                myfile.close();
-                index = index+1;
-            }
-        }
-        _eco1Ready = true;
-    } else{
-        _eco2Ready = false;
-        int start = _currentEcosystem2.x;
-        int end = _currentEcosystem2.y;
-        if(start != end){
-            for(int i=0; i<_entitiesLastUpdate.size(); i++){
-                date *d = _entitiesLastUpdate[i];
-                if(d->interval == sf::Vector2i(_currentEcosystem2.x,_currentEcosystem2.y)){
-                    d->day = _clock.day;
-                    d->min = _clock.min;
-                    d->hour = _clock.hour;
-                }
-            }
-            std::vector<std::pair<int, int> > chunks[end-start];
-            for(int i = 0; i<_entities2.size(); i++){
-                chunks[_entities2[i]->_chunk-start].push_back(std::pair<int, int>(i, _entities2[i]->_position.x));
-            }
-            int index = start;
-            while(index<end){
-                std::sort(chunks[index-start].begin(), chunks[index-start].end(), [](const std::pair<int,int> &left, const std::pair<int,int> &right) {
-                    return left.second < right.second;
-                });
-                std::string filenameEnt = _pathGame;
-                filenameEnt.append("/entities/");
-                filenameEnt.append(std::to_string(index));
-                filenameEnt.append(".txt");
-                std::ofstream myfile;
-                myfile.open(filenameEnt);
-                for(int i=0; i< chunks[index-start].size(); i++){
-                    _entities2[chunks[index-start][i].first]->saveToFile(index,myfile);
-                }
-                myfile << "END";
-                for(int i = 0; i < Chunk::N_TILES_X; i++){
-                    myfile << " " << _surface2[index-start][i].first << " " << _surface2[index-start][i].second;
-                }
-                for(int i = 0; i < Chunk::N_TILES_X; i++){
-                    myfile << " " << _underground2[index-start][i].size();
-                    for(int j = 0; j < _underground2[index-start][i].size(); ++j){
-                        myfile << " " << _underground2[index-start][i][j];
-                    }
-                }
-
-                myfile.close();
-                index = index+1;
-            }
-        }
-        _eco2Ready = true;
-    }
+bool Scene::ecosystemsReady() {
+    return _ecosystems.first->isReady() && _ecosystems.second->isReady();
 }
-void Scene::loadEntities(bool arrayChosen){
-    if(!arrayChosen){
-        _eco1Ready = false;
-        _entities1.clear();
-        _surface1.clear();
-        _underground1.clear();
-        int start = _currentEcosystem1.x;
-        int end = _currentEcosystem1.y;
-        if(start != end){
-
-            int index = start;
-            while(index<end){
-                std::string filenameEnt = _pathGame;
-                filenameEnt.append("/entities/");
-                filenameEnt.append(std::to_string(index));
-                filenameEnt.append(".txt");
-                std::ifstream myfile;
-                myfile.open(filenameEnt);
-                std::string entity;
-                myfile >> entity;
-                while(entity != "END"){
-                    Tree *t = new Tree();
-                    t->loadFromFile(myfile);
-                    if(t != nullptr && (t->_chunk > 100 || t->_chunk < -100)){
-                        std::cout << "lol" << std::endl;
-                    }
-                    if(t != nullptr && t->_right_n != nullptr && (t->_right_n->_chunk > 100 || t->_right_n->_chunk < -100)){
-                        std::cout << "lol" << std::endl;
-                    }
-                    if(t != nullptr && t->_left_n != nullptr && (t->_left_n->_chunk > 100 || t->_left_n->_chunk < -100)){
-                        std::cout << "lol" << std::endl;
-                    }
-                    _entities1.push_back(t);
-                    myfile >> entity;
-                }
-
-                std::vector<std::pair<int, bool> >currentSurface;
-                _surface1.push_back(currentSurface);
-                for(int i = 0; i < Chunk::N_TILES_X; i++){
-                    int pos;
-                    bool isDirt;
-                    myfile >> pos >> isDirt;
-                    _surface1[index-start].push_back(std::pair<int,bool>(pos,isDirt));
-                }
-
-                std::vector<std::vector<int> >currentUnderground;
-                _underground1.push_back(currentUnderground);
-                for(int i = 0; i < Chunk::N_TILES_X; i++){
-                    int numGrounds;
-                    myfile >> numGrounds;
-                    std::vector<int> currentY;
-                    _underground1[index-start].push_back(currentY);
-                    for(int j = 0; j<numGrounds; j++){
-                        int pos;
-                        myfile >> pos;
-                        _underground1[index-start][i].push_back(pos);
-                    }
-                }
-                myfile.close();
-                index = index+1;
-            }
-            linkTrees(0);
-            for(int i=0; i<_entitiesLastUpdate.size(); i++){
-                date *d = _entitiesLastUpdate[i];
-                if(d->interval == sf::Vector2i(_currentEcosystem1.x,_currentEcosystem1.y)){
-
-                    updateWithElapsedTime(_entities1, d);
-                    d->day = _clock.day;
-                    d->min = _clock.min;
-                    d->hour = _clock.hour;
-                }
-            }
-            _eco1Ready = true;
-        }
-    } else{
-        _eco2Ready = false;
-        _entities2.clear();
-        _surface2.clear();
-        _underground2.clear();
-        int start = _currentEcosystem2.x;
-        int end = _currentEcosystem2.y;
-        if(start != end){
-            int index = start;
-            while(index<end){
-                std::string filenameEnt = _pathGame;
-                filenameEnt.append("/entities/");
-                filenameEnt.append(std::to_string(index));
-                filenameEnt.append(".txt");
-                std::ifstream myfile;
-                myfile.open(filenameEnt);
-                std::string entity;
-                myfile >> entity;
-                while(entity != "END"){
-                    Tree *t = new Tree();
-                    t->loadFromFile(myfile);
-                    _entities2.push_back(t);
-                    myfile >> entity;
-                }
-                std::vector<std::pair<int, bool> >currentSurface;
-                _surface2.push_back(currentSurface);
-                for(int i = 0; i < Chunk::N_TILES_X; i++){
-                    int pos;
-                    bool isDirt;
-                    myfile >> pos >> isDirt;
-                    _surface2[index-start].push_back(std::pair<int,bool>(pos,isDirt));
-                }
-
-                std::vector<std::vector<int> >currentUnderground;
-                _underground2.push_back(currentUnderground);
-                for(int i = 0; i < Chunk::N_TILES_X; i++){
-                    int numGrounds;
-                    myfile >> numGrounds;
-                    std::vector<int> currentY;
-                    _underground2[index-start].push_back(currentY);
-                    for(int j = 0; j<numGrounds; j++){
-                        int pos;
-                        myfile >> pos;
-                        _underground2[index-start][i].push_back(pos);
-                    }
-                }
-                myfile.close();
-                index = index+1;
-            }
-            linkTrees(1);
-            for(int i=0; i<_entitiesLastUpdate.size(); i++){
-                date *d = _entitiesLastUpdate[i];
-                if(d->interval == sf::Vector2i(_currentEcosystem2.x,_currentEcosystem2.y)){
-                    updateWithElapsedTime(_entities2, d);
-                    d->day = _clock.day;
-                    d->min = _clock.min;
-                    d->hour = _clock.hour;
-                }
-            }
-        }
-        _eco2Ready = true;
-
-    }
+std::vector<Date*>* Scene::getEcosystemLastUpdateList(){
+    return &_entitiesLastUpdate;
 }
-void Scene::linkTrees(bool arrayChosen){
-    if(!arrayChosen) {
-        Tree *oldTree = nullptr;
-        for(int i=0; i<_entities1.size(); i++){
-            _entities1[i]->setLeftTree(oldTree);
-            if(oldTree != nullptr) oldTree->setRightTree(_entities1[i]);
-            oldTree = _entities1[i];
-        }
-        if(oldTree != nullptr) oldTree->setRightTree(nullptr);
-    } else{
-        Tree *oldTree = nullptr;
-        for(int i=0; i<_entities2.size(); i++){
-            _entities2[i]->setLeftTree(oldTree);
-            if(oldTree != nullptr) oldTree->setRightTree(_entities2[i]);
-            oldTree = _entities2[i];
-        }
-        if(oldTree != nullptr) oldTree->setRightTree(nullptr);
-    }
-
-}
-void Scene::syncTreesWithChunk(Chunk *c,int index_in_mat_chunks){
-
-    c->clearEntities();
-    std::vector<Tree*> *trees;
-    if(betweenInts(_currentEcosystem1,c->_chunk_id)){
-        trees = &_entities1;
-    } else if(betweenInts(_currentEcosystem2,c->_chunk_id)){
-        trees = &_entities2;
+void Scene::syncEntitiesWithLoadedChunk(Chunk *c,int index_in_mat_chunks){
+    if(betweenInts(_ecosystems.first->getInterval(),c->_chunk_id)){
+        _ecosystems.first->syncTreesWithChunk(c, index_in_mat_chunks);
+    } else if(betweenInts(_ecosystems.second->getInterval(),c->_chunk_id)){
+        _ecosystems.second->syncTreesWithChunk(c, index_in_mat_chunks);
     } else return;
-    for(int i = 0; i<trees->size(); i++){
-        if((*trees)[i]->_chunk == c->_chunk_id) {
-            c->addTreeToChunk((*trees)[i],index_in_mat_chunks);
-        }
-    }
-}
-void Scene::syncNotRenderedTrees(Chunk *c){
-    c->syncNotRenderedTrees();
 }
 Scene::~Scene() {
 }
@@ -736,7 +382,7 @@ void Scene::addLimit(int newLimit){
     if(newLimit >= 0) {
         _biomeLimitsRight.push_back(newLimit);
         if(_biomeLimitsRight.size() >1){
-            date *d = new date();
+            Date *d = new Date();
             d->interval.x = _biomeLimitsRight[_biomeLimitsRight.size()-2];
             d->interval.y = _biomeLimitsRight[_biomeLimitsRight.size()-1];
             d->day = 0;
@@ -745,7 +391,7 @@ void Scene::addLimit(int newLimit){
             _entitiesLastUpdate.push_back(d);
         }
         else if(_biomeLimitsLeft.size() > 0){
-            date *d = new date();
+            Date *d = new Date();
             d->interval.x = _biomeLimitsLeft[0];
             d->interval.y = _biomeLimitsRight[_biomeLimitsRight.size()-1];
             d->day = 0;
@@ -757,7 +403,7 @@ void Scene::addLimit(int newLimit){
     else {
         _biomeLimitsLeft.push_back(newLimit);
         if(_biomeLimitsLeft.size() >1){
-            date *d = new date();
+            Date *d = new Date();
             d->interval.y = _biomeLimitsLeft[_biomeLimitsRight.size()-2];
             d->interval.x = _biomeLimitsLeft[_biomeLimitsRight.size()-1];
             d->day = 0;
@@ -766,7 +412,7 @@ void Scene::addLimit(int newLimit){
             _entitiesLastUpdate.push_back(d);
         }
         else if(_biomeLimitsRight.size() > 0){
-            date *d = new date();
+            Date *d = new Date();
             d->interval.y = _biomeLimitsRight[0];
             d->interval.x = _biomeLimitsLeft[_biomeLimitsLeft.size()-1];
             d->day = 0;
