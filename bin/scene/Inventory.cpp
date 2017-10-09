@@ -29,20 +29,26 @@ Inventory::Inventory()
 	Item* craft2 = new Item("armor1");
 	Item* craft3 = new Item("sword1");
     Item* craft4 = new Item("stairs");
-    Item* craft5 = new Item("torx");
+    Item* craft5 = new Item("torch");
     Item* craft6 = new Item("A");
+	Item* craft7 = new Item("armor2");
+	Item* craft8 = new Item("armor3");
 	craft1->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft2->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft3->SetSize(SLOT_SIZE-GRID_THICKNESS);
     craft4->SetSize(SLOT_SIZE-GRID_THICKNESS);
     craft5->SetSize(SLOT_SIZE-GRID_THICKNESS);
     craft6->SetSize(SLOT_SIZE-GRID_THICKNESS);
+	craft7->SetSize(SLOT_SIZE-GRID_THICKNESS);
+	craft8->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft_list [0] = craft1;
 	craft_list [1] = craft2;
 	craft_list [2] = craft3;
     craft_list [3] = craft4;
     craft_list [4] = craft5;
     craft_list [5] = craft6;
+	craft_list [6] = craft7;
+	craft_list [7] = craft8;
 	tab_item_selected = 0;
 
 }

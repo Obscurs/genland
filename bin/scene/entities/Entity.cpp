@@ -2,15 +2,44 @@
 // Created by arnito on 9/09/17.
 //
 
+#include <iostream>
 #include "Entity.h"
 
-Entity::Entity(){
-
+Entity::Entity(std::string type){
+    _typeEntity = type;
+    _position = sf::Vector2i(0,0);
+    _positionCol = sf::Vector2i(0,0);
+    _sizeCol = sf::Vector2i(0,0);
+    _removed = false;
 }
 
 void Entity::saveToFile(int chunk, std::ofstream &myfile){
-
+    std::cout << "mala señal 1" << std::endl;
 }
 void Entity::loadFromFile(std::ifstream &myfile){
+    std::cout << "mala señal 2" << std::endl;
+}
+void Entity::draw(sf::RenderTarget & renderTar){
+    std::cout << "mala señal 3" << std::endl;
+}
+bool Entity::pointHitsEntity(sf::FloatRect pos){
+    sf::FloatRect boundingBox(_positionCol.x, _positionCol.y,_sizeCol.x,_sizeCol.y);
+    return boundingBox.intersects(pos);
+}
+void Entity::setPosition(int x, int y)
+{
+    _position.x=x;
+    _position.y=y;
+}
+void Entity::setPositionCol(int x, int y)
+{
+    _positionCol.x=x;
+    _positionCol.y=y;
+}
+sf::Vector2i Entity::getPosition(){
+    return _position;
+}
 
+sf::Vector2i Entity::getPositionCol(){
+    return _positionCol;
 }

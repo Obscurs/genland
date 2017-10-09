@@ -54,6 +54,14 @@ void Scene::update(sf::RenderWindow &window,float delta){
     _ecosystems.second->update(delta);
 
 }
+Entity *Scene::getEntity(sf::FloatRect pos){
+    Entity *e = nullptr;
+    int chunk = _map_curr.getChunkIndex(pos.left);
+    sf::Vector2i result(0,0);
+    if(betweenInts(_ecosystems.first->getInterval(),chunk)) return _ecosystems.first->getEntity(pos);
+    else if(betweenInts(_ecosystems.second->getInterval(),chunk)) return _ecosystems.second->getEntity(pos);
+
+}
 bool Scene::betweenInts(sf::Vector2i interval, int i){
     return (i >= interval.x && i < interval.y && interval.x != interval.y);
 }
@@ -311,15 +319,26 @@ std::vector<Date*>* Scene::getEcosystemLastUpdateList(){
 }
 void Scene::syncEntitiesWithLoadedChunk(Chunk *c,int index_in_mat_chunks){
     if(betweenInts(_ecosystems.first->getInterval(),c->_chunk_id)){
-        _ecosystems.first->syncTreesWithChunk(c, index_in_mat_chunks);
+        _ecosystems.first->syncEntitiesWithChunk(c, index_in_mat_chunks);
     } else if(betweenInts(_ecosystems.second->getInterval(),c->_chunk_id)){
-        _ecosystems.second->syncTreesWithChunk(c, index_in_mat_chunks);
+        _ecosystems.second->syncEntitiesWithChunk(c, index_in_mat_chunks);
     } else return;
 }
 Scene::~Scene() {
 }
 void Scene::updateView(){
     _viewGame.update();
+}
+void Scene::addEntity(Entity *e) {
+    if(betweenInts(_ecosystems.first->getInterval(),e->_chunk)){
+        _ecosystems.first->addEntity(e);
+    } else if(betweenInts(_ecosystems.second->getInterval(),e->_chunk)){
+        _ecosystems.second->addEntity(e);
+    } else {
+        std::cout << "incorrect chunk to add entity" << std::endl;
+        return;
+    }
+
 }
 int Scene::getTemperatureGlobal(sf::Vector2f pos){
     return int(_clock._globalTemperature);

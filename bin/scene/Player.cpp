@@ -18,6 +18,8 @@
 #include "../Resources.h"
 #include "../Inputs.h"
 #include "../Debuger.h"
+#include "entities/Stairs.h"
+#include "entities/Torch.h"
 
 
 Player::Player()
@@ -33,6 +35,8 @@ Player::Player()
 	col_right_dist = 0;
 	_sprite.setPosition(0,0);
     _sprite.setTexture(*Resources::getTexture("playerSprite"));
+    _spriteTool.setPosition(_sprite.getPosition());
+    _spriteTool.setTexture(*Resources::getTexture("playerSprite"));
     _resPhysics = 0;
     _health = MAX_HEALTH;
     _maxTemperatureSafe =MAX_TEMP_BASE;
@@ -47,7 +51,11 @@ Player::Player()
     _numFramesAnimation = 1;
     _colPosition = sf::Vector2f(0,0);
     _playerDirection = LEFT;
+    _armor = NONE_A;
+    _tool = NONE_T;
     _toolFactor = 1;
+    _attacking = false;
+    _mining = false;
 }
 
 
@@ -300,6 +308,7 @@ void Player::Load(std::string filename)
 	else
 	{
 		_sprite.setTexture(_image);
+        _spriteTool.setTexture(_image);
 
 	}
 }
@@ -307,10 +316,12 @@ void Player::Load(std::string filename)
 void Player::Draw(sf::RenderWindow & renderWindow)
 {
 	renderWindow.draw(_sprite);
+    if(_tool != NONE_T) renderWindow.draw(_spriteTool);
 }
 void Player::Draw2(sf::RenderTexture & tex)
 {
 	tex.draw(_sprite);
+    if(_tool != NONE_T) tex.draw(_spriteTool);
 }
 void Player::DrawStats(sf::RenderTarget &target){
     sf::View currentView = target.getView();
@@ -351,6 +362,15 @@ void Player::setAnimation(ActionState act){
             case WALKING:
                 _numFramesAnimation =6;
                 break;
+            case FALLING:
+                _numFramesAnimation =1;
+                break;
+            case ATTACKING:
+                _numFramesAnimation =4;
+                break;
+            case STAIRS:
+                _numFramesAnimation =4;
+                break;
             default:
                 break;
         }
@@ -358,26 +378,117 @@ void Player::setAnimation(ActionState act){
 }
 void Player::updateSprite(float delta){
     _spriteTime += delta;
+
+    Entity *e = Scene::getScene()->getEntity(sf::FloatRect(_colPosition.x,_colPosition.y,PLAYER_WIDTH,PLAYER_HEIGHT));
+    if(e != nullptr && e->_typeEntity =="stairs"){
+        setAnimation(STAIRS);
+    } else {
+        if(_animationId == STAIRS) _animationId = IDLE;
+    }
     float maxtime = float(PLAYER_SPRITE_MAX_TIME)/10.0f;
     if(_spriteTime > maxtime){
         _spriteTime -= maxtime;
-        _animationFrame +=1;
-        if(_animationFrame >=_numFramesAnimation){
-            _animationFrame = 0;
+        if(_animationId==STAIRS){
+            if(vy !=0){
+                _animationFrame +=1;
+                if(_animationFrame >=_numFramesAnimation){
+                    _animationFrame = 0;
+                }
+            }
+        }else{
+            _animationFrame +=1;
+            if(_animationFrame >=_numFramesAnimation){
+                _animationFrame = 0;
+            }
         }
+
     }
-    _sprite.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*_animationFrame,PLAYER_SPRITE_SIZE*_animationId,PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
-    if(vx >0) {
-        setAnimation(WALKING);
+    int armorOffset = _armor*6;
+    _sprite.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*_animationFrame,PLAYER_SPRITE_SIZE*(_animationId+armorOffset),PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
+    //direction
+    if(vx >0 && _animationId != STAIRS) {
         _playerDirection = RIGHT;
     }
-    else if(vx < 0) {
-        setAnimation(WALKING);
+    else if(vx < 0 && _animationId != STAIRS) {
         _playerDirection = LEFT;
     }
-    else {
+    //animation
+    if(_attacking || _mining){
+        setAnimation(ATTACKING);
+    }
+    else if(vx >0 && _animationId != STAIRS && vy ==0) {
+        setAnimation(WALKING);
+    }
+    else if(vx < 0 && _animationId != STAIRS && vy ==0) {
+        setAnimation(WALKING);
+    }
+    else if(_animationId != STAIRS && vy ==0){
         setAnimation(IDLE);
     }
+    else if(_animationId != STAIRS && vy !=0){
+        setAnimation(FALLING);
+    } else {
+        setAnimation(STAIRS);
+    }
+    switch(_tool){
+        case W_PICKAXE:
+        {
+            int row =0;
+            int col;
+            switch(_animationId){
+                case IDLE:
+                    col = 8;
+                    break;
+                case FALLING:
+                    col = 12;
+                    break;
+                case WALKING:
+                    col = 9 + (_animationFrame % 3);
+                    break;
+                case STAIRS:
+                    col = 7;
+                    break;
+                case ATTACKING:
+                    col = 13 + (_animationFrame % 3);
+                    break;
+                default:
+                    break;
+            }
+            _spriteTool.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*col,PLAYER_SPRITE_SIZE*row,PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
+        }
+            break;
+        case W_SWORD:
+        {
+            int row =1;
+            int col;
+            switch(_animationId){
+                case IDLE:
+                    col = 8;
+                    break;
+                case FALLING:
+                    col = 12;
+                    break;
+                case WALKING:
+                    col = 9 + (_animationFrame % 3);
+                    break;
+                case STAIRS:
+                    col = 7;
+                    break;
+                case ATTACKING:
+                    col = 13 + (_animationFrame % 3);
+                    break;
+                default:
+                    break;
+            }
+            _spriteTool.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*col,PLAYER_SPRITE_SIZE*row,PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
+        }
+            break;
+        case NONE_T:
+            break;
+        default:
+            break;
+    }
+
 }
 void Player::updateToolsAndArmors() {
     Item* currentTool = inventory->getItemTool();
@@ -385,23 +496,40 @@ void Player::updateToolsAndArmors() {
     if(currentTool != nullptr){
         if(currentTool->id == "pickaxe1"){
             _toolFactor = 2;
+            _tool = W_PICKAXE;
+        } else if(currentTool->id == "sword1"){
+            _toolFactor = 1;
+            _tool = W_SWORD;
         } else {
             _toolFactor = 1;
+            _tool = NONE_T;
         }
     } else {
         _toolFactor = 1;
+        _tool = NONE_T;
     }
     if(currentArmor != nullptr){
         if(currentArmor->id == "armor1"){
             _maxTemperatureSafe = MAX_TEMP_BASE + 10;
             _minTemperatureSafe = MIN_TEMP_BASE - 20;
-        } else {
+            _armor = ARMOR2;
+        } else if(currentArmor->id == "armor2"){
+            _maxTemperatureSafe = MAX_TEMP_BASE + 10;
+            _minTemperatureSafe = MIN_TEMP_BASE - 20;
+            _armor = ARMOR1;
+        } else if(currentArmor->id == "armor3"){
+            _maxTemperatureSafe = MAX_TEMP_BASE + 10;
+            _minTemperatureSafe = MIN_TEMP_BASE - 20;
+            _armor = ARMOR3;
+        }else {
             _maxTemperatureSafe = MAX_TEMP_BASE;
             _minTemperatureSafe = MIN_TEMP_BASE;
+            _armor = NONE_A;
         }
     } else {
         _maxTemperatureSafe = MAX_TEMP_BASE;
         _minTemperatureSafe = MIN_TEMP_BASE;
+        _armor = NONE_A;
     }
 }
 void Player::updateHealth(float delta){
@@ -441,21 +569,33 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 	else {
 		vx = 0;
 	}
-	if(col_bottom==0){
-		vy = (float)9.8*delta*100 + vy;
-		//if (Inputs::KeyBreak(Inputs::SPACE)){
-		//	vy = -PLAYER_SPEED_Y;
-		//}
-	}
-	else{
-		if (Inputs::KeyDown(Inputs::SPACE)&& !Debuger::isTerminalActive()){
-			vy = -PLAYER_SPEED_Y;
-		}
-		else{
-			vy = 0;
-		}
-		
-	}
+    if(_animationId == STAIRS){
+        if (Inputs::KeyDown(Inputs::W)&& !Debuger::isTerminalActive()){
+            vy = -PLAYER_SPEED_X;
+        } else if (Inputs::KeyDown(Inputs::S)&& !Debuger::isTerminalActive()){
+            vy = +PLAYER_SPEED_X;
+        } else {
+            vy = 0;
+        }
+    }
+    else{
+        if(col_bottom==0){
+            vy = (float)9.8*delta*100 + vy;
+            //if (Inputs::KeyBreak(Inputs::SPACE)){
+            //	vy = -PLAYER_SPEED_Y;
+            //}
+        }
+        else{
+            if (Inputs::KeyDown(Inputs::SPACE)&& !Debuger::isTerminalActive()){
+                vy = -PLAYER_SPEED_Y;
+            }
+            else{
+                vy = 0;
+            }
+
+        }
+    }
+
 	if(col_top != 0){
 		vy = 0;
 	}
@@ -530,40 +670,55 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 	if (Inputs::MouseDown(Inputs::M_LEFT) && !inventory->show_inventory && viewRect.contains(position.x, position.y))
 	{
 		//std::cout << _position.x << " " << _position.y << std::endl;
-	    Tile* t = map.getTile(position.x, position.y, 1);
-		//std::cout << t->id_temp << " " <<true_position.x << " " << true_position.y << std::endl;
-	    int position_tile = 1;
-	    if(t->id == "0"){
-	    	position_tile = 0;
-	    	t = map.getTile(position.x, position.y, 0);
-	    }
-			if (tile_being_removed != nullptr && t != tile_being_removed) {
-				tile_being_removed->being_removed = false;
-			}
-	    //sf::Vector2f playerPos((GetPosition().x+getWidth())/2,(GetPosition().y+getHeight())/2);
-	    //sf::Vector2f tilePos((t->GetPosition().x+t->getWidth())/2,(t->GetPosition().y+t->getHeight())/2);
-	    //float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
+        Entity *e = scene->getEntity(sf::FloatRect(position.x,position.y,1,1));
+        if(e != nullptr){
+            e->_removed = true;
+            Tile* t = map.getTile(position.x, position.y, 1);
+            int chunkE = map.getChunkIndex(t->GetPosition().x);
+            int index_chunk = map.getIndexMatChunk(chunkE);
+            if(index_chunk != -1) {
+                map._chunk_mat[index_chunk]->addFallingTile(e->_typeEntity,e->_typeEntity,position,Settings::TILE_SIZE);
+            }
+        } else {
+            Tile* t = map.getTile(position.x, position.y, 1);
+            //std::cout << t->id_temp << " " <<true_position.x << " " << true_position.y << std::endl;
+            int position_tile = 1;
+            if(t->id == "0"){
+                position_tile = 0;
+                t = map.getTile(position.x, position.y, 0);
+            }
+            if (tile_being_removed != nullptr && t != tile_being_removed) {
+                tile_being_removed->being_removed = false;
+            }
+            //sf::Vector2f playerPos((GetPosition().x+getWidth())/2,(GetPosition().y+getHeight())/2);
+            //sf::Vector2f tilePos((t->GetPosition().x+t->getWidth())/2,(t->GetPosition().y+t->getHeight())/2);
+            //float dist = sqrt((playerPos.x-tilePos.x)*(playerPos.x-tilePos.x) + (playerPos.y-tilePos.y)*(playerPos.y-tilePos.y));
 
-	    if(t->id != "0" && t->id !="B" && t->id != "b") {
-				tile_being_removed = t;
-				if (tile_being_removed->being_removed) {
-					tile_being_removed->ms_to_be_removed -= delta*1000*_toolFactor;
-					if (tile_being_removed->ms_to_be_removed < 0) {
+            if(t->id != "0" && t->id !="B" && t->id != "b") {
+                tile_being_removed = t;
+                if (tile_being_removed->being_removed) {
+                    tile_being_removed->ms_to_be_removed -= delta*1000*_toolFactor;
+                    if (tile_being_removed->ms_to_be_removed < 0) {
                         map.removeTile2(t);
                         map.dirtyChunks();
 
-					}
-				}
-				else {
-					tile_being_removed->being_removed = true;
-					tile_being_removed->ms_to_be_removed = tile_being_removed->ms_to_remove;
-				}
-	    }
+                    }
+                }
+                else {
+                    tile_being_removed->being_removed = true;
+                    tile_being_removed->ms_to_be_removed = tile_being_removed->ms_to_remove;
+                }
+                _mining = true;
+            }
+            _attacking = false;
+        }
+
 
 	}
 	else if (Inputs::MouseDown(Inputs::M_RIGHT) && !inventory->show_inventory && viewRect.contains(position.x, position.y))
 	{
-
+        _attacking = false;
+        _mining = false;
 	    Tile* t = map.getTile(position.x, position.y, 0);
 	    int position_tile = 0;
 	    if(t->id != "0") {
@@ -589,11 +744,41 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
                             std::string idItemInventory;
 							if (position_tile == 0) idItemInventory = inventory->getItemAtTab()->id_set0;
 							else idItemInventory = inventory->getItemAtTab()->id_set1;
-                            if(idItemInventory != "-1"){
-                                t->reload(idItemInventory);
-                                map.dirtyChunks();
-                                inventory->decrementItemAtTab();
-                            }
+                            Entity *e = scene->getEntity(sf::FloatRect(t->GetPosition().x,t->GetPosition().y,Settings::TILE_SIZE,Settings::TILE_SIZE));
+							if(idItemInventory != "-1" && e == nullptr){
+								if(inventory->getItemAtTab()->_isEntity){
+									if(idItemInventory=="stairs"){
+										Stairs *st = new Stairs();
+										st->setPosition(t->GetPosition().x,t->GetPosition().y);
+                                        st->setPositionCol(t->GetPosition().x,t->GetPosition().y);
+										st->_chunk = map.getChunkIndex(t->GetPosition().x);
+										scene->addEntity(st);
+										int index_chunk = map.getIndexMatChunk(st->_chunk);
+										if(index_chunk != -1){
+											map._chunk_mat[index_chunk]->addEntityToChunk(st,index_chunk);
+											map._chunk_mat[index_chunk]->_is_dirty = true;
+										}
+									}
+                                    else if(idItemInventory=="torch"){
+                                        Torch *st = new Torch();
+                                        st->setPosition(t->GetPosition().x,t->GetPosition().y);
+                                        st->setPositionCol(t->GetPosition().x,t->GetPosition().y);
+                                        st->_chunk = map.getChunkIndex(t->GetPosition().x);
+                                        scene->addEntity(st);
+                                        int index_chunk = map.getIndexMatChunk(st->_chunk);
+                                        if(index_chunk != -1){
+                                            map._chunk_mat[index_chunk]->addEntityToChunk(st,index_chunk);
+                                            map._chunk_mat[index_chunk]->_is_dirty = true;
+                                        }
+                                    }
+								}
+								else{
+									t->reload(idItemInventory);
+								}
+								map.dirtyChunks();
+								inventory->decrementItemAtTab();
+							}
+
 
 						}
 					}
@@ -604,7 +789,10 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 				}
 	    }
 
-	}
+	} else {
+        _attacking = false;
+        _mining = false;
+    }
 	AnimatedTile* at =map.collidesWithAnimatedTile(sf::FloatRect(GetPosition().x, GetPosition().y,PLAYER_WIDTH, PLAYER_HEIGHT));
 	if(at != nullptr){
         if(giveItem(at->_id_pick, 1)){
@@ -631,13 +819,15 @@ void Player::SetPosition(float x, float y)
             _sprite.setScale(sf::Vector2f(-1,1));
             _sprite.setPosition(x-(PLAYER_SPRITE_SIZE-PLAYER_WIDTH-PLAYER_WIDTH/2)+64,y-(PLAYER_SPRITE_SIZE-PLAYER_HEIGHT));
         }
-
+        _spriteTool.setScale(_sprite.getScale());
+        _spriteTool.setPosition(_sprite.getPosition());
         _colPosition = sf::Vector2f(x,y);
 }
 void Player::SetSize(float x)
 {
 	sf::Vector2f new_scale(x/PLAYER_SPRITE_SIZE, x/PLAYER_SPRITE_SIZE);
 	_sprite.setScale(new_scale);
+    _spriteTool.setScale(_sprite.getScale());
 }
 
 sf::Vector2f Player::GetPosition() const

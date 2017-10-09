@@ -24,12 +24,16 @@ public:
     void setInterval(sf::Vector2i new_int);
     void saveEntities();
     void loadEntities();
-    void syncTreesWithChunk(Chunk *c,int index_in_mat_chunks);
+    void syncEntitiesWithChunk(Chunk *c, int index_in_mat_chunks);
+    void addEntity(Entity *e);
+    Entity *getEntity(sf::FloatRect pos);
 private:
     std::vector<Tree*> _trees;
+    std::vector<Entity*> _entities;
     sf::Vector2i _interval;
     std::vector<std::vector<std::pair<int, bool> > > _surface;
     std::vector<std::vector<std::vector<int> > >_underground;
+
     void changeEcosystem();
     void linkTrees();
     void updateWithElapsedTime(Date *d);

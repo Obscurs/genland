@@ -23,8 +23,10 @@ Item::Item(std::string id_item)
 	max_stack_amount= 1;
 	id_set0="-1";
 	id_set1="-1";
+    _isEntity = false;
 	Reload(id_item);
 	amount = 0;
+
 
 
 	/*
@@ -121,6 +123,7 @@ void Item::Reload(std::string new_id)
 {
     type = COLLECTABLE;
 	id = new_id;
+    _isEntity = false;
 	if(new_id == "0"){
 		max_stack_amount= 10;
 		amount=0;
@@ -258,18 +261,37 @@ void Item::Reload(std::string new_id)
         id_set0="-1";
         id_set1="-1";
         type = ARMOR;
-    }else if(new_id == "stairs"){
-        max_stack_amount= 1;
-        amount = 0;
-        craft_cost["F"] = 40;
-        id_set0="-1";
-        id_set1="-1";
-    }else if(new_id == "torx"){
+        _isEntity = true;
+    }else if(new_id == "armor2"){
         max_stack_amount= 1;
         amount = 0;
         craft_cost["F"] = 10;
         id_set0="-1";
         id_set1="-1";
+        type = ARMOR;
+        _isEntity = true;
+    }else if(new_id == "armor3"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 10;
+        id_set0="-1";
+        id_set1="-1";
+        type = ARMOR;
+        _isEntity = true;
+    }else if(new_id == "stairs"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 40;
+        id_set0="-1";
+        id_set1="stairs";
+        _isEntity = true;
+    }else if(new_id == "torch"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 10;
+        id_set0="-1";
+        id_set1="torch";
+        _isEntity = true;
     }
 	else{
         std::cout << "item " << new_id << " dont exist" << std::endl;

@@ -8,7 +8,7 @@ class Player
 public:
 	Player();
 	~Player();
-	const static int PLAYER_SPEED_X = 1500;
+	const static int PLAYER_SPEED_X = 150;
 	const static int PLAYER_SPEED_Y = 400;
     const static int PLAYER_SPRITE_SIZE = 64;
     const static int PLAYER_SPRITE_MAX_TIME = 1;
@@ -17,8 +17,10 @@ public:
     const static int MAX_HEALTH = 100;
     const static int MAX_TEMP_BASE = 35;
     const static int MIN_TEMP_BASE = 10;
-    enum ActionState{IDLE, WALKING};
+    enum ActionState{IDLE, WALKING,ATTACKING,STAIRS, FALLING};
     enum AnimationDirection{LEFT,RIGHT};
+    enum EquipTool {W_PICKAXE,W_SWORD, NONE_T};
+    enum EquipArmor {NONE_A,ARMOR1,ARMOR2,ARMOR3};
 	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
 	void Draw2(sf::RenderTexture & tex);
@@ -59,7 +61,8 @@ private:
 	float col_top_dist;
 	float col_left_dist;
 	float col_right_dist;
-
+    bool _attacking;
+    bool _mining;
 	//INVENTORY
 	Inventory* inventory;
 
@@ -69,6 +72,7 @@ private:
 
 	//SHOW
 	sf::Sprite _sprite;
+    sf::Sprite _spriteTool;
 	sf::Texture _image;
 	std::string _filename;
     sf::Vector2f _colPosition;
@@ -76,7 +80,10 @@ private:
     float _spriteTime;
     ActionState _animationId;
     AnimationDirection _playerDirection;
+    EquipTool _tool;
+    EquipArmor _armor;
     int _animationFrame;
     int _numFramesAnimation;
     float _toolFactor;
+
 };

@@ -9,7 +9,7 @@
 #include "../../Settings.h"
 #include "../NoiseGenerator.h"
 
-Tree::Tree(): Entity(),
+Tree::Tree(): Entity("tree"),
     _gens(){
     _left_n = nullptr;
     _right_n = nullptr;
@@ -21,7 +21,7 @@ Tree::Tree(): Entity(),
     _humidity = 0;
     _timeToReproduce = 0;
 }
-Tree::Tree(TreeGenetics* t,int chunk, sf::Vector2i position): Entity(){
+Tree::Tree(TreeGenetics* t,int chunk, sf::Vector2i position): Entity("tree"){
     _gens = *t;
     _chunk = chunk;
     setPosition(position);
@@ -29,7 +29,7 @@ Tree::Tree(TreeGenetics* t,int chunk, sf::Vector2i position): Entity(){
     _timeToReproduce = rand() % _gens._reproduceFactor + 10;
     _life = rand() % _gens._health + 10;
 }
-Tree::Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position): Entity(),_gens(t1,t2, (float)(t1->_strenghtGen)/100){
+Tree::Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position): Entity("tree"),_gens(t1,t2, (float)(t1->_strenghtGen)/100){
     _chunk = chunk;
     setPosition(position);
     buildTree();

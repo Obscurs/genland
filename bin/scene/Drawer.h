@@ -18,7 +18,7 @@ class Drawer {
 public:
     Drawer(Map *m,Player *p,WorldBackground *b, Clock *c);
     ~Drawer();
-
+    void addLight(Light *l);
     void Draw(sf::RenderWindow &window);
     void debugMap(const std::string keyDebug);
 private:
@@ -30,7 +30,7 @@ private:
     sf::RenderTexture *texture_back;
     sf::RenderTexture black_texture;
     sf::RenderTexture texture_background;
-
+    std::vector<Light*> _lights;
     sf::View view_player;
     sf::Vector2f GetPosSprite();
     void DrawSceneTex();

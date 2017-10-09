@@ -74,6 +74,9 @@ void Drawer::DrawSceneTex(){
         for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_falling_tiles.size(); i++){
             map_curr->_chunk_mat[index_mat]->_falling_tiles[i]->Draw(texture_scene);
         }
+        for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_entities.size(); i++){
+            map_curr->_chunk_mat[index_mat]->_entities[i]->draw(texture_scene);
+        }
     }
 
     texture_scene.display();
@@ -214,17 +217,21 @@ void Drawer::DrawLights(){
     //texture_front->setView(currentView);
 
 
-    for(int i = 0; i<map_curr->lights.size(); i++){
+    for(int i = 0; i<_lights.size(); i++){
         //for(int i = 0; i<4; i++){
-        float radius = map_curr->lights[i].radius;
-        sf::Vector2f lightpos = sf::Vector2f(map_curr->lights[i].position.x-first_x,map_curr->lights[i].position.y-first_y);
+        float radius = _lights[i]->radius;
+        sf::Vector2f lightpos = sf::Vector2f(_lights[i]->position.x-first_x,_lights[i]->position.y-first_y);
         if(lightpos.x>0-radius*2 && lightpos.x<sizeView.x+radius*2 && lightpos.y>0-radius*2 && lightpos.y<sizeView.y+radius*2) {
 
-            map_curr->lights[i].Draw(lightpos, map_without_lights, texture_front, texture_back,texture_sun);
+            _lights[i]->Draw(lightpos, map_without_lights, texture_front, texture_back,texture_sun);
             std::swap(texture_back, texture_front);
         }
     }
+    _lights.clear();
 
+}
+void Drawer::addLight(Light *l){
+    _lights.push_back(l);
 }
 void Drawer::debugMap(const std::string keyDebug){
     Scene *scene = Scene::getScene();

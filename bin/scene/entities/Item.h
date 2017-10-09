@@ -24,6 +24,7 @@ public:
 	int max_stack_amount; //sha de privatitzar
     ItemType type;
 	void Draw(sf::RenderWindow & window, sf::Text &text);
+	bool _isEntity;
 
 
 

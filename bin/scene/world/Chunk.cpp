@@ -19,6 +19,7 @@
 #include "../../Debuger.h"
 #include "../NoiseGenerator.h"
 #include "../Scene.h"
+#include "../entities/Torch.h"
 
 
 void Chunk::saveToFile(std::string path){
@@ -622,6 +623,15 @@ void Chunk::update(float delta){
             _falling_tiles.erase(_falling_tiles.begin()+i);
         }
     }
+    for(int i = 0; i<_entities.size(); i++){
+        if(!_entities[i]->_removed){
+            if(_entities[i]->_typeEntity=="torch"){
+                Torch* tor = static_cast<Torch*>(_entities[i]);
+                Light *l = tor->getLight();
+                Scene::getScene()->getDrawer()->addLight(l);
+            }
+        }
+    }
 }
 AnimatedTile* Chunk::collidesWithAnimatedTile(sf::FloatRect rect){
     for(int i=0; i< _falling_tiles.size(); i++){
@@ -744,8 +754,14 @@ void Chunk::syncNotRenderedTrees(){
 }
 void Chunk::clearEntities(){
     _trees.clear();
+    _entities.clear();
 }
-
+void Chunk::addFallingTile(std::string id,std::string id_pick, sf::Vector2f pos, int size){
+    AnimatedTile *falling_t = new AnimatedTile(id, id_pick);
+    falling_t->SetPosition(pos.x, pos.y);
+    falling_t->SetSize(size);
+    _falling_tiles.push_back(falling_t);
+}
 void Chunk::addTreeToChunk(Tree *tr, int index_chunk_in_mat){
     sf::Vector2i tileBase = tr->getPosition();
     Tile *ti = getTile(tileBase.x,tileBase.y,0);
@@ -754,4 +770,7 @@ void Chunk::addTreeToChunk(Tree *tr, int index_chunk_in_mat){
     int posChunk = tr->hasTwoChunks();
     if(posChunk == -1 && neighbors[0] != nullptr) neighbors[0]->_is_dirty = true;
     else if(posChunk == 1 && neighbors[1] != nullptr) neighbors[1]->_is_dirty = true;
+}
+void Chunk::addEntityToChunk(Entity *tr, int index_chunk_in_mat){
+    _entities.push_back(tr);
 }

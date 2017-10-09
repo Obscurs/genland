@@ -34,10 +34,13 @@ public:
 	sf::VertexArray sky_array;
     static sf::Vector2i getIndexFromGlobalPosition(sf::Vector2f pos);
     void addTreeToChunk(Tree *t, int index_chunk_in_mat);
+	void addEntityToChunk(Entity *t, int index_chunk_in_mat);
     void clearEntities();
     void syncNotRenderedTrees();
     std::vector<AnimatedTile*> _falling_tiles;
+	std::vector<Entity*> _entities;
     AnimatedTile* collidesWithAnimatedTile(sf::FloatRect rect);
+    void addFallingTile(std::string id,std::string id_pick, sf::Vector2f pos, int size);
 private:
 	bool _need_sync;
     void recalcReachFloor();

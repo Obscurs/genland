@@ -61,6 +61,8 @@ public:
     std::vector<std::vector<std::pair<int, bool> > >* getSurface(sf::Vector2i interval);
     std::vector<std::vector<std::vector<int> > >* getUnderground(sf::Vector2i interval);
     bool ecosystemsReady();
+    void addEntity(Entity *e);
+    Entity *getEntity(sf::FloatRect pos);
 private:
     std::string _seed;
     std::string _pathGame;

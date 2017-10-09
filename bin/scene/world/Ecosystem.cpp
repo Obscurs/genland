@@ -5,6 +5,7 @@
 #include "Ecosystem.h"
 #include "../Scene.h"
 #include "../../Settings.h"
+#include "../entities/Stairs.h"
 
 Ecosystem::Ecosystem(sf::Vector2i interval):
     _threadSaveLoad(&Ecosystem::changeEcosystem,this){
@@ -46,16 +47,24 @@ void Ecosystem::update(float delta){
                 }
             }
         }
-    }
 
+    }
 }
-void Ecosystem::syncTreesWithChunk(Chunk *c,int index_in_mat_chunks){
+void Ecosystem::syncEntitiesWithChunk(Chunk *c, int index_in_mat_chunks){
     c->clearEntities();
     for(int i = 0; i<_trees.size(); i++){
         if(_trees[i]->_chunk == c->_chunk_id) {
             c->addTreeToChunk(_trees[i],index_in_mat_chunks);
         }
     }
+    for(int i = 0; i<_entities.size(); i++){
+        if(_entities[i]->_chunk == c->_chunk_id) {
+            c->addEntityToChunk(_entities[i],index_in_mat_chunks);
+        }
+    }
+}
+void Ecosystem::addEntity(Entity *e){
+    _entities.push_back(e);
 }
 void Ecosystem::updateWithElapsedTime(Date *d){
     Clock *cGame = Scene::getScene()->getClock();
@@ -108,7 +117,12 @@ void Ecosystem::changeEcosystem(){
     loadEntities();
 }
 
-
+Entity *Ecosystem::getEntity(sf::FloatRect pos){
+    for(int i=0; i<_entities.size(); ++i){
+        if(_entities[i]->pointHitsEntity(pos) && !_entities[i]->_removed) return _entities[i];
+    }
+    return nullptr;
+}
 void Ecosystem::saveEntities(){
     _ecoReady = false;
     int start = _interval.x;
@@ -125,13 +139,17 @@ void Ecosystem::saveEntities(){
                 d->hour = c->hour;
             }
         }
-        std::vector<std::pair<int, int> > chunks[end-start];
+        std::vector<std::pair<int, int> > chunksTrees[end-start];
+        std::vector<std::pair<int, int> > chunksEntities[end-start];
         for(int i = 0; i<_trees.size(); i++){
-            chunks[_trees[i]->_chunk-start].push_back(std::pair<int, int>(i, _trees[i]->_position.x));
+            chunksTrees[_trees[i]->_chunk-start].push_back(std::pair<int, int>(i, _trees[i]->_position.x));
+        }
+        for(int i = 0; i<_entities.size(); i++){
+            chunksEntities[_entities[i]->_chunk-start].push_back(std::pair<int, int>(i, _entities[i]->_position.x));
         }
         int index = start;
         while(index<end){
-            std::sort(chunks[index-start].begin(), chunks[index-start].end(), [](const std::pair<int,int> &left, const std::pair<int,int> &right) {
+            std::sort(chunksTrees[index-start].begin(), chunksTrees[index-start].end(), [](const std::pair<int,int> &left, const std::pair<int,int> &right) {
                 return left.second < right.second;
             });
             std::string filenameEnt = s->getGamePath();
@@ -140,8 +158,11 @@ void Ecosystem::saveEntities(){
             filenameEnt.append(".txt");
             std::ofstream myfile;
             myfile.open(filenameEnt);
-            for(int i=0; i< chunks[index-start].size(); i++){
-                _trees[chunks[index-start][i].first]->saveToFile(index,myfile);
+            for(int i=0; i< chunksTrees[index-start].size(); i++){
+                _trees[chunksTrees[index-start][i].first]->saveToFile(index,myfile);
+            }
+            for(int i=0; i< chunksEntities[index-start].size(); i++){
+                _entities[chunksEntities[index-start][i].first]->saveToFile(index,myfile);
             }
             myfile << "END";
 
@@ -163,6 +184,7 @@ void Ecosystem::saveEntities(){
 }
 void Ecosystem::loadEntities(){
     _ecoReady = false;
+    _entities.clear();
     _trees.clear();
     _surface.clear();
     _underground.clear();
@@ -181,18 +203,16 @@ void Ecosystem::loadEntities(){
             std::string entity;
             myfile >> entity;
             while(entity != "END"){
-                Tree *t = new Tree();
-                t->loadFromFile(myfile);
-                if(t != nullptr && (t->_chunk > 100 || t->_chunk < -100)){
-                    std::cout << "lol" << std::endl;
+                if(entity =="tree"){
+                    Tree *t = new Tree();
+                    t->loadFromFile(myfile);
+                    _trees.push_back(t);
                 }
-                if(t != nullptr && t->_right_n != nullptr && (t->_right_n->_chunk > 100 || t->_right_n->_chunk < -100)){
-                    std::cout << "lol" << std::endl;
+                else if(entity == "stairs"){
+                    Stairs *e = new Stairs();
+                    e->loadFromFile(myfile);
+                    _entities.push_back(e);
                 }
-                if(t != nullptr && t->_left_n != nullptr && (t->_left_n->_chunk > 100 || t->_left_n->_chunk < -100)){
-                    std::cout << "lol" << std::endl;
-                }
-                _trees.push_back(t);
                 myfile >> entity;
             }
 

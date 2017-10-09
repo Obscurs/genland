@@ -39,6 +39,7 @@ void Resources::load() {
     addShader("rain_shader","resources/rain.frag");
     //TEXTURES
     addTexture("playerSprite", "resources/player.png");
+    addTexture("entities", "resources/entities.png");
 
     addTextureManager("tileMap","resources/tiles5.png", 16, 16);
     TextureManager *texMan = getTextureManager("tileMap");
@@ -87,7 +88,7 @@ void Resources::load() {
     texMan->insert_map_value("sword1",sf::Vector2i(160,16));
     texMan->insert_map_value("pickaxe1",sf::Vector2i(176,16));
     texMan->insert_map_value("stairs",sf::Vector2i(144,32));
-    texMan->insert_map_value("torx",sf::Vector2i(160,32));
+    texMan->insert_map_value("torch",sf::Vector2i(160,32));
     std::cout << " Resources Loaded " << std::endl;
 }
 
