@@ -12,15 +12,22 @@
 
 class Torch : public Entity{
 public:
+    const static int SPRITE_MAX_TIME = 1;
+    const static int SPRITE_SIZE = 16;
     Torch();
     Light *getLight();
+    void update(float delta);
     void setPosition(int x, int y);
     void draw(sf::RenderTarget & renderTar);
     void saveToFile(int chunk, std::ofstream &myfile);
     void loadFromFile(std::ifstream &myfile);
 private:
+    sf::Sprite _sprite;
     Light _light;
     sf::Vector2f size;
+    float _spriteTime;
+    int _animationFrame;
+    int _numFramesAnimation;
 };
 
 

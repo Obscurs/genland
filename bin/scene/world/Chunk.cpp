@@ -627,6 +627,7 @@ void Chunk::update(float delta){
         if(!_entities[i]->_removed){
             if(_entities[i]->_typeEntity=="torch"){
                 Torch* tor = static_cast<Torch*>(_entities[i]);
+                tor->update(delta);
                 Light *l = tor->getLight();
                 Scene::getScene()->getDrawer()->addLight(l);
             }

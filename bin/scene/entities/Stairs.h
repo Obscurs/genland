@@ -10,12 +10,16 @@
 
 class Stairs : public Entity{
 public:
+
     Stairs();
     void draw(sf::RenderTarget & renderTar);
     void saveToFile(int chunk, std::ofstream &myfile);
     void loadFromFile(std::ifstream &myfile);
 private:
     sf::Vector2f size;
+    float _spriteTime;
+    int _animationFrame;
+    int _numFramesAnimation;
 };
 
 

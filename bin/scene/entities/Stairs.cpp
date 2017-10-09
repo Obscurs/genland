@@ -8,7 +8,9 @@
 
 Stairs::Stairs(): Entity("stairs"){
     _positionCol = _position;
-    _sizeCol = sf::Vector2i(64,64);
+    _sizeCol = sf::Vector2i(32,32);
+    _numFramesAnimation = 1;
+    _animationFrame = 0;
 }
 void Stairs::draw(sf::RenderTarget & renderTar) {
     if (!_removed) {

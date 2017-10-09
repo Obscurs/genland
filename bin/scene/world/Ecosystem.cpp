@@ -6,6 +6,7 @@
 #include "../Scene.h"
 #include "../../Settings.h"
 #include "../entities/Stairs.h"
+#include "../entities/Torch.h"
 
 Ecosystem::Ecosystem(sf::Vector2i interval):
     _threadSaveLoad(&Ecosystem::changeEcosystem,this){
@@ -210,6 +211,10 @@ void Ecosystem::loadEntities(){
                 }
                 else if(entity == "stairs"){
                     Stairs *e = new Stairs();
+                    e->loadFromFile(myfile);
+                    _entities.push_back(e);
+                } else if(entity == "torch"){
+                    Torch *e = new Torch();
                     e->loadFromFile(myfile);
                     _entities.push_back(e);
                 }

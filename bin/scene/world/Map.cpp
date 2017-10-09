@@ -662,11 +662,20 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                     }
                     //add falling tiles and remove tiles
                     float center_falling_x = (max_pos.x - min_pos.x) / 2 + min_pos.x;
+                    Scene *scene = Scene::getScene();
                     while (!queue_final_tiles.empty()) {
                         Tile *t = queue_final_tiles.front();
                         Tile *t1 = t->neighbors[8];
                         queue_final_tiles.pop();
-
+                        Entity *e = scene->getEntity(sf::FloatRect(t->GetPosition().x,t->GetPosition().y,Settings::TILE_SIZE, Settings::TILE_SIZE));
+                        if(e != nullptr && !e->_removed){
+                            e->_removed = true;
+                            int chunkE = getChunkIndex(t->GetPosition().x);
+                            int index_chunk = getIndexMatChunk(chunkE);
+                            if(index_chunk != -1) {
+                                _chunk_mat[index_chunk]->addFallingTile(e->_typeEntity,e->_typeEntity,t->GetPosition(),Settings::TILE_SIZE);
+                            }
+                        }
                         if (t->id != "0") {
                             AnimatedTile *falling_t = new AnimatedTile(t->id, t->id_pick);
                             falling_t->wall_left = wall_left;
