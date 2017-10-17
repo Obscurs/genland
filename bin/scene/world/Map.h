@@ -29,7 +29,7 @@ public:
     std::vector<AnimatedTile*> falling_tiles;
 	Tile* getTile(float x, float y, int z);
 	Chunk* getChunk(float x, float y, float z);
-	int getChunkIndex(float x);
+	static int getChunkIndex(float x);
     int getIndexMatChunk(int x);
     void saveMap();
     void removeTile2(Tile* r_tile);
@@ -37,6 +37,7 @@ public:
 	void checkLoadedChunks(float x, float y);
     void searchDeserts();
     int getPosMap();
+	static sf::Vector2i getGlobalPositionOfIndex(sf::Vector2i index, int chunk);
 	std::vector<Tile*> getTilesCol(sf::Vector2f pos, sf::Vector2f size);
     Chunk* _chunk_mat[N_CHUNKS_X] = {nullptr};	//must ve value
 	void syncEntitiesToChunk(int map_index);

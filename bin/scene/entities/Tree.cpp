@@ -29,13 +29,14 @@ Tree::Tree(TreeGenetics* t,int chunk, sf::Vector2i position): Entity("tree"){
     _timeToReproduce = rand() % _gens._reproduceFactor + 10;
     _life = rand() % _gens._health + 10;
 }
-Tree::Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position): Entity("tree"),_gens(t1,t2, (float)(t1->_strenghtGen)/100){
+Tree::Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position, int index): Entity("tree"),_gens(t1,t2, (float)(t1->_strenghtGen)/100){
     _chunk = chunk;
     setPosition(position);
+    setEcosystemIndex(index);
     buildTree();
 }
 void Tree::setPosition(sf::Vector2i position){
-    _position = position;
+    _position = sf::Vector2f(position);
 
     int y_pos = Chunk::N_TILES_Y-1-_position.y/Settings::TILE_SIZE_HIGH;
     float height_factor = float(y_pos)/float(Chunk::N_TILES_Y);
@@ -143,7 +144,7 @@ Tree::~Tree(){
 
 }
 sf::Vector2i Tree::getPosition(){
-    return _position;
+    return sf::Vector2i(_position);
 }
 bool Tree::isValidPosition(Tile *t_first){
     sf::Vector2i pos_ant = sf::Vector2i(0,0);
@@ -202,7 +203,7 @@ void Tree::treeToTiles(Tile *t_first, int index_chunk_in_mat){
     float c_mid_aux = (float)_position.x/(Chunk::N_TILES_X*Settings::TILE_SIZE);
     float c_left_aux =((float)_position.x+(_min_x-2)*Settings::TILE_SIZE)/(Chunk::N_TILES_X*Settings::TILE_SIZE);
     float c_right_aux =((float)_position.x+(_max_x+2)*Settings::TILE_SIZE)/(Chunk::N_TILES_X*Settings::TILE_SIZE);
-    c_mid_aux = _position.x%(Chunk::N_TILES_X*Settings::TILE_SIZE) == 0 ? c_mid_aux+1 : c_mid_aux;
+    c_mid_aux = int(_position.x)%(Chunk::N_TILES_X*Settings::TILE_SIZE) == 0 ? c_mid_aux+1 : c_mid_aux;
     int chunk_mid = (c_mid_aux < 0) ? (int)c_mid_aux-1 : (int)c_mid_aux;
     int chunk_left = (c_left_aux < 0) ? (int)c_left_aux-1 : (int)c_left_aux;
     int chunk_right = (c_right_aux < 0) ? (int)c_right_aux-1 : (int)c_right_aux;
@@ -422,7 +423,7 @@ Tree * Tree::reproduce(){
         chunk_ini= intervalEco.x;
         chunk_end = _chunk;
         offset_ini = 0;
-        resultTree = new Tree(t_end->getGenetics(),t_end->getGenetics(),0, sf::Vector2i(0,0));
+        resultTree = new Tree(t_end->getGenetics(),t_end->getGenetics(),0, sf::Vector2i(0,0), t_end->getEcosystemIndex());
         offset_end = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x+_min_x-2-resultTree->_max_x;
     }
     else if(t_end == nullptr){
@@ -430,14 +431,14 @@ Tree * Tree::reproduce(){
         chunk_ini = _chunk;
         chunk_end = intervalEco.y;
         offset_end = Chunk::N_TILES_X-1;
-        resultTree = new Tree(t_ini->getGenetics(),t_ini->getGenetics(),0, sf::Vector2i(0,0));
+        resultTree = new Tree(t_ini->getGenetics(),t_ini->getGenetics(),0, sf::Vector2i(0,0),t_ini->getEcosystemIndex());
         offset_ini = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x+_max_x+2-resultTree->_min_x;
     } else {
         t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
         t_end->_timeToReproduce = t_end->_gens._reproduceFactor+OFFSET_REPRODUCE;
         chunk_ini = t_ini->_chunk;
         chunk_end = t_end->_chunk;
-        resultTree = new Tree(t_end->getGenetics(),t_ini->getGenetics(),0, sf::Vector2i(0,0));
+        resultTree = new Tree(t_end->getGenetics(),t_ini->getGenetics(),0, sf::Vector2i(0,0),t_ini->getEcosystemIndex());
         offset_ini = Chunk::getIndexFromGlobalPosition(sf::Vector2f(t_ini->_position.x,t_ini->_position.y)).x+t_ini->_max_x+2-resultTree->_min_x;
         offset_end = Chunk::getIndexFromGlobalPosition(sf::Vector2f(t_end->_position.x,t_end->_position.y)).x+t_end->_min_x-2-resultTree->_max_x;
     }

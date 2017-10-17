@@ -4,15 +4,22 @@
 
 #include <iostream>
 #include "Entity.h"
+#include "../world/Ecosystem.h"
 
 Entity::Entity(std::string type){
     _typeEntity = type;
-    _position = sf::Vector2i(0,0);
-    _positionCol = sf::Vector2i(0,0);
+    _position = sf::Vector2f(0,0);
+    _positionCol = sf::Vector2f(0,0);
     _sizeCol = sf::Vector2i(0,0);
     _removed = false;
+    _ecosystemIndex = -1;
 }
-
+void Entity::setEcosystemIndex(int ind) {
+    _ecosystemIndex = ind;
+}
+int Entity::getEcosystemIndex() {
+    return _ecosystemIndex;
+}
 void Entity::saveToFile(int chunk, std::ofstream &myfile){
     std::cout << "mala señal 1" << std::endl;
 }
@@ -36,10 +43,10 @@ void Entity::setPositionCol(int x, int y)
     _positionCol.x=x;
     _positionCol.y=y;
 }
-sf::Vector2i Entity::getPosition(){
+sf::Vector2f Entity::getPosition(){
     return _position;
 }
 
-sf::Vector2i Entity::getPositionCol(){
+sf::Vector2f Entity::getPositionCol(){
     return _positionCol;
 }

@@ -77,8 +77,12 @@ void Drawer::DrawSceneTex(){
         for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_entities.size(); i++){
             map_curr->_chunk_mat[index_mat]->_entities[i]->draw(texture_scene);
         }
+        for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_mobs.size(); i++){
+            map_curr->_chunk_mat[index_mat]->_mobs[i]->draw(texture_scene);
+        }
     }
-
+    Player* player = scene->getPlayer();
+    player->Draw2(texture_scene);
     texture_scene.display();
 }
 void Drawer::DrawBackground() {
@@ -199,7 +203,19 @@ void Drawer::DrawLights(){
         int index_mat = map_curr->getIndexMatChunk(i);
         texture_sun.draw(map_curr->_chunk_mat[index_mat]->sky_array, states);
 
+        for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_falling_tiles.size(); i++){
+            map_curr->_chunk_mat[index_mat]->_falling_tiles[i]->Draw(texture_sun);
+        }
+        for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_entities.size(); i++){
+            map_curr->_chunk_mat[index_mat]->_entities[i]->draw(texture_sun);
+        }
+        for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_mobs.size(); i++){
+            map_curr->_chunk_mat[index_mat]->_mobs[i]->draw(texture_sun);
+        }
     }
+    Player* player = scene->getPlayer();
+    player->Draw2(texture_sun);
+
     texture_sun.display();
     clock->setColorToShader(*sun_mix_shader);
     sun_mix_shader->setParameter("texture2", texture_sun.getTexture());
@@ -253,13 +269,15 @@ void Drawer::DrawMap(sf::RenderWindow& renderWindow)
     DrawSceneTex();
     DrawBackground();
     DrawRain();
+    //texture_back->display();
+    //player->Draw2(*texture_back);
     DrawLights();
     if(Debuger::activated && Debuger::metric1 !="none") debugMap(Debuger::metric1);
     if(Debuger::activated && Debuger::metric2 !="none") debugMap(Debuger::metric2);
     if(Debuger::activated && Debuger::metric3 !="none") debugMap(Debuger::metric3);
 
     texture_back->display();
-    player->Draw2(*texture_back);
+    //player->Draw2(*texture_back);
     sf::Sprite sprite(texture_back->getTexture());
 
     sf::Vector2f pos_sprite = GetPosSprite();

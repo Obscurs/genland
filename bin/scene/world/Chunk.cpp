@@ -633,6 +633,11 @@ void Chunk::update(float delta){
             }
         }
     }
+    for(int i = 0; i<_mobs.size(); i++){
+        if(!_mobs[i]->_removed){
+            _mobs[i]->updateVisible(delta);
+        }
+    }
 }
 AnimatedTile* Chunk::collidesWithAnimatedTile(sf::FloatRect rect){
     for(int i=0; i< _falling_tiles.size(); i++){
@@ -756,6 +761,7 @@ void Chunk::syncNotRenderedTrees(){
 void Chunk::clearEntities(){
     _trees.clear();
     _entities.clear();
+    _mobs.clear();
 }
 void Chunk::addFallingTile(std::string id,std::string id_pick, sf::Vector2f pos, int size){
     AnimatedTile *falling_t = new AnimatedTile(id, id_pick);
@@ -774,4 +780,7 @@ void Chunk::addTreeToChunk(Tree *tr, int index_chunk_in_mat){
 }
 void Chunk::addEntityToChunk(Entity *tr, int index_chunk_in_mat){
     _entities.push_back(tr);
+}
+void Chunk::addMobToChunk(Mob *tr, int index_chunk_in_mat){
+    _mobs.push_back(tr);
 }

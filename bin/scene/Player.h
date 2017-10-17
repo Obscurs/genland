@@ -2,8 +2,9 @@
 #include "world/Map.h"
 #include "world/Background.h"
 #include "Inventory.h"
+#include "Colisionable.h"
 #include <vector>
-class Player
+class Player: public Colisionable
 {
 public:
 	Player();
@@ -40,7 +41,6 @@ private:
     void updateSprite(float delta);
     void updateToolsAndArmors();
     void updateHealth(float delta);
-	void FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector2f pos2, sf::Vector2f size2, Map& map);
 
 	sf::Sprite& GetSprite();
 	bool giveItem(std::string id, int amount);
@@ -53,14 +53,6 @@ private:
 	//PHYSICS
 	float vx;
 	float vy;
-	int col_bottom;
-	int col_top;
-	int col_left;
-	int col_right;
-	float col_bottom_dist;
-	float col_top_dist;
-	float col_left_dist;
-	float col_right_dist;
     bool _attacking;
     bool _mining;
 	//INVENTORY

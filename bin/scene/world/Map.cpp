@@ -164,15 +164,24 @@ void Map::searchDeserts(){
 
         } else {
             std::vector<Tree> trees;
+            std::vector<Mob> mobs;
             if(surfaceTilesGrass.size()>0){
                 TreeGenetics *treGen = new TreeGenetics();
                 sf::Vector2i posTree =surfaceTilesGrass[rand() % surfaceTilesGrass.size()];
                 Tree *t = new Tree(treGen,iter, posTree);
                 trees.push_back(*t);
             }
-
+            MobGenetics *mobGen = new MobGenetics();
+            int posSurfaceInd = rand() % Chunk::N_TILES_X;
+            sf::Vector2i posMobLocal(posSurfaceInd,surfaceTiles[posSurfaceInd].first);
+            sf::Vector2i posMob = Map::getGlobalPositionOfIndex(posMobLocal,iter);
+            Mob *m = new Mob(mobGen,iter, sf::Vector2f(posMob));
+            mobs.push_back(*m);
             for(int i = 0; i< trees.size(); i++){
                 trees[i].saveToFile(iter, myfile);
+            }
+            for(int i = 0; i< mobs.size(); i++){
+                mobs[i].saveToFile(iter, myfile);
             }
         }
         myfile << "END";
@@ -315,6 +324,11 @@ sf::Vector2i Map::getCordinatesRespectTile(sf::Vector2f pos_origen, sf::Vector2f
 void Map::setThreadParams(bool left, int pos){
     __left = left;
     __pos = pos;
+}
+sf::Vector2i Map::getGlobalPositionOfIndex(sf::Vector2i index, int chunk){
+    int offset = Settings::TILE_SIZE*Chunk::N_TILES_X*chunk;
+    return sf::Vector2i(offset+Settings::TILE_SIZE*index.x,Settings::TILE_SIZE*index.y);
+
 }
 void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
     if(_initialized){
@@ -894,7 +908,7 @@ std::vector<Tile*> Map::getTilesCol(sf::Vector2f pos, sf::Vector2f size){
     for(int i = firstPos.x; i<=lastPos.x; i++){
         for(int j = firstPos.y; j<=lastPos.y; j++){
             Tile* t = getTile(i*Settings::TILE_SIZE, j*Settings::TILE_SIZE, 1);
-            if(t->id !="0") {
+            if(t != nullptr && t->id !="0") {
                 result.push_back(t);
             }
         }

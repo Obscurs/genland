@@ -4,6 +4,7 @@
 #include "../../TextureManager.h"
 #include "../entities/Tree.h"
 #include "../entities/AnimatedTile.h"
+#include "../entities/Mob.h"
 
 class Chunk
 {
@@ -35,10 +36,12 @@ public:
     static sf::Vector2i getIndexFromGlobalPosition(sf::Vector2f pos);
     void addTreeToChunk(Tree *t, int index_chunk_in_mat);
 	void addEntityToChunk(Entity *t, int index_chunk_in_mat);
+	void addMobToChunk(Mob *t, int index_chunk_in_mat);
     void clearEntities();
     void syncNotRenderedTrees();
     std::vector<AnimatedTile*> _falling_tiles;
 	std::vector<Entity*> _entities;
+	std::vector<Mob*> _mobs;
     AnimatedTile* collidesWithAnimatedTile(sf::FloatRect rect);
     void addFallingTile(std::string id,std::string id_pick, sf::Vector2f pos, int size);
 private:

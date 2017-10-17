@@ -15,8 +15,8 @@ Scene::Scene()
       _drawer(&_map_curr,&_player,&_backgrounds, &_clock),
       _viewGame()
 {
-    Ecosystem *e0 = new Ecosystem(sf::Vector2i(0,0));
-    Ecosystem *e1 = new Ecosystem(sf::Vector2i(0,0));
+    Ecosystem *e0 = new Ecosystem(sf::Vector2i(0,0), 0);
+    Ecosystem *e1 = new Ecosystem(sf::Vector2i(0,0), 1);
     _ecosystems.first = e0;
     _ecosystems.second = e1;
     _seed = "0";
@@ -217,7 +217,7 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
 
     std::ifstream myfile(route);
     std::string data_seed= "def", data_name = "def";
-    std::string day= "0", hour= "0", min = "0";
+    std::string day= "0", hour= "6", min = "0";
     myfile >> data_seed >> data_name;
     myfile >> day >> hour >> min;
     _clock.day = stoi(day);
@@ -331,8 +331,10 @@ void Scene::updateView(){
 }
 void Scene::addEntity(Entity *e) {
     if(betweenInts(_ecosystems.first->getInterval(),e->_chunk)){
+        e->setEcosystemIndex(0);
         _ecosystems.first->addEntity(e);
     } else if(betweenInts(_ecosystems.second->getInterval(),e->_chunk)){
+        e->setEcosystemIndex(1);
         _ecosystems.second->addEntity(e);
     } else {
         std::cout << "incorrect chunk to add entity" << std::endl;
@@ -340,6 +342,21 @@ void Scene::addEntity(Entity *e) {
     }
 
 }
+void Scene::getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius, int indexEcosystem){
+    if(indexEcosystem==0){
+        _ecosystems.first->getMobsOnArea(mobs,position,radius);
+    } else if(indexEcosystem==-1){
+        _ecosystems.second->getMobsOnArea(mobs,position,radius);
+    } else std::cout << "alguna entitat te ecosystem index -1" << std::endl;
+}
+void Scene::getPositionsOnArea(std::vector<sf::Vector2i> &positions,sf::Vector2i position, int radius, int indexEcosystem){
+    if(indexEcosystem==0){
+        _ecosystems.first->getPositionsOnArea(positions,position,radius);
+    } else if(indexEcosystem==-1){
+        _ecosystems.second->getPositionsOnArea(positions,position,radius);
+    } else std::cout << "alguna entitat te ecosystem index -1" << std::endl;
+}
+
 int Scene::getTemperatureGlobal(sf::Vector2f pos){
     return int(_clock._globalTemperature);
 }

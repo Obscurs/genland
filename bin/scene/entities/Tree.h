@@ -17,7 +17,7 @@ public:
     static const int OFFSET_REPRODUCE = 50;
     Tree();
     Tree(TreeGenetics* t,int chunk, sf::Vector2i position);
-    Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position);
+    Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position, int index);
     ~Tree();
     sf::Vector2i getPosition();
     void setPosition(sf::Vector2i position);
