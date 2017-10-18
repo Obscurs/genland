@@ -6,8 +6,11 @@
 #define GENLAND_MOBGENETICS_H
 
 
+#include <vector>
+
 class MobGenetics {
 public:
+    const static int MOB_RACES = 15;
     MobGenetics();
     MobGenetics(MobGenetics *t1, MobGenetics *t2, float factor);
 
@@ -22,11 +25,26 @@ public:
     int _strenghtGen;
     int _distanceMaxMove;
     int _distanceMaxReproduce;
+    int _strenght;
+    int _jump;
+    int _speed;
+    int _atackSpeed;
+    int _foodNeeds;
 
+    int _size;
+
+    int _race;
+    std::vector<int> _friends;
+    std::vector<int> _enemys;
+    std::vector<int> _food;
+    std::vector<int> _neutral;
     void mutate();
 private:
-    void valance(int (&amounts)[8]);
+    void mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float factor);
+    void mutateRaces();
+    void valance(int (&amounts)[13]);
     void setRelatedFactors();
+
 };
 
 
