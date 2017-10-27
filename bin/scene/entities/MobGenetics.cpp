@@ -36,6 +36,7 @@ MobGenetics::MobGenetics(){
         }
     }
     setRelatedFactors();
+
 }
 void MobGenetics::mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float factor){
     std::vector<std::pair<int, int> > nonShared1;
@@ -161,6 +162,7 @@ MobGenetics::MobGenetics(MobGenetics *t1, MobGenetics *t2, float factor){
     _foodNeeds = amounts[12];
     setRelatedFactors();
     mutate();
+
 }
 void MobGenetics::mutateRaces(){
     if(rand() % 2 ==0){
@@ -252,6 +254,7 @@ void MobGenetics::mutate(){
     *atribute2 -=amount1;
     mutateRaces();
     setRelatedFactors();
+
 }
 void MobGenetics::valance(int (&amounts)[13]){
     int sum =0;

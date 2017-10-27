@@ -179,6 +179,42 @@ void Debuger::DrawWorldStats(){
     _window->draw(_text);
     _displace = _displace + DISPLACEMENT;
 }
+void Debuger::DrawEntitiesStats(int eco){
+    sf::View currentView    = _window->getView();
+    sf::Vector2f centerView = currentView.getCenter();
+    sf::Vector2f sizeView   = currentView.getSize();
+    _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
+    std::stringstream buffer;
+
+    Scene* s = Scene::getScene();
+    Ecosystem *e1 = s->getEcosystem(eco);
+
+    buffer << "Ecosystem " << eco << " (" << e1->getInterval().x << " - " << e1->getInterval().y <<") Num entities: " << e1->getMobPopulationAndTreshold().x <<  "/" << e1->getMobPopulationAndTreshold().y;
+    std::string string(buffer.str());
+    sf::String str(string);
+    _text.setString(str);
+    _window->draw(_text);
+    _displace = _displace + DISPLACEMENT;
+
+    sf::Vector2f position = _window->mapPixelToCoords(sf::Mouse::getPosition(*_window));
+    float zoom = s->getZoom();
+    sf::Vector2f position_center = sf::Vector2f(s->getPlayer()->GetPosition().x+Player::PLAYER_WIDTH/2,s->getPlayer()->GetPosition().y+Player::PLAYER_WIDTH/2);
+    sf::Vector2f position_zoomed = (position-position_center)/zoom +position_center;
+    position = position_zoomed;
+    std::vector<Mob*> mobs;
+    std::cout << sf::Vector2i(position).x<< " " << sf::Vector2i(position).y << std::endl;
+    s->getMobsOnArea(mobs,sf::Vector2i(position),100,eco);
+    if(mobs.size()>0) {
+        std::stringstream buffer2;
+        buffer2 << "Position colision: " << mobs[0]->_positionCol.x << " " << mobs[0]->_positionCol.y;
+        std::string string(buffer2.str());
+        sf::String str(string);
+        _text.setString(str);
+        _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
+        _window->draw(_text);
+        _displace = _displace + DISPLACEMENT;
+    }
+}
 void Debuger::sendTerminalInstruction(){
     _terminal.sendTerminalInstruction();
 }
@@ -209,6 +245,8 @@ void Debuger::Draw(){
         DrawPlayerStats();
         DrawWorldStats();
         DrawBiomeStats();
+        DrawEntitiesStats(0);
+        DrawEntitiesStats(1);
         _terminal.draw(*_window,_text);
     }
 }

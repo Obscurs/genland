@@ -25,6 +25,7 @@
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Drawer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Stairs.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Stairs.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobModule.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobGenetics.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Tree.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Item.cpp" isTestSource="false" />
@@ -37,6 +38,7 @@
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/TreeGenetics.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Item.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/TreeGenetics.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobModule.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Entity.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Torch.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Tree.cpp" isTestSource="false" />

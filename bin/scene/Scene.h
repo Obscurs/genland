@@ -63,7 +63,9 @@ public:
     bool ecosystemsReady();
     void addEntity(Entity *e);
     Entity *getEntity(sf::FloatRect pos);
+    Ecosystem* getEcosystem(int index);
     void getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius, int indexEcosystem);
+    void getEntityesArea(std::vector<Entity*> &entities, sf::Vector2i position, int radius, int indexEcosystem);
     void getPositionsOnArea(std::vector<sf::Vector2i> &positions,sf::Vector2i position, int radius, int indexEcosystem);
 private:
     std::string _seed;

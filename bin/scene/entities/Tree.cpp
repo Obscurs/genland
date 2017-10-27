@@ -385,14 +385,14 @@ bool Tree::update(float delta, Clock *c){
     else tempDamage = -totalTemp*(1-float(_gens._cold)/100)*delta;
     _life -= ((tempDamage+humDamage+delta)/2000)*Settings::GEN_SPEED;
     if(_life<=0) {
-        std::cout << "a tree died" << std::endl;
+        //std::cout << "a tree died" << std::endl;
         _dead = true;
         return false;
     }
     else {
         _timeToReproduce -= (delta/10)*Settings::GEN_SPEED;
         if(_timeToReproduce <0) {
-            std::cout << "new tree created" << std::endl;
+            //std::cout << "new tree created" << std::endl;
             return true;
         }
     }

@@ -12,8 +12,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f465ec9c-b195-4793-b1a1-68ed08476bd4" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bin/scene/entities/MobModule.cpp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bin/scene/entities/MobModule.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/genland.iml" afterPath="$PROJECT_DIR$/.idea/genland.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Debuger.cpp" afterPath="$PROJECT_DIR$/bin/Debuger.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Debuger.h" afterPath="$PROJECT_DIR$/bin/Debuger.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Resources.cpp" afterPath="$PROJECT_DIR$/bin/Resources.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Drawer.cpp" afterPath="$PROJECT_DIR$/bin/scene/Drawer.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Scene.cpp" afterPath="$PROJECT_DIR$/bin/scene/Scene.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/Scene.h" afterPath="$PROJECT_DIR$/bin/scene/Scene.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/entities/Mob.cpp" afterPath="$PROJECT_DIR$/bin/scene/entities/Mob.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/entities/Mob.h" afterPath="$PROJECT_DIR$/bin/scene/entities/Mob.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/entities/MobGenetics.cpp" afterPath="$PROJECT_DIR$/bin/scene/entities/MobGenetics.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/entities/MobGenetics.h" afterPath="$PROJECT_DIR$/bin/scene/entities/MobGenetics.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/entities/Tree.cpp" afterPath="$PROJECT_DIR$/bin/scene/entities/Tree.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Ecosystem.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Ecosystem.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Ecosystem.h" afterPath="$PROJECT_DIR$/bin/scene/world/Ecosystem.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Map.cpp" afterPath="$PROJECT_DIR$/bin/scene/world/Map.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/scene/world/Map.h" afterPath="$PROJECT_DIR$/bin/scene/world/Map.h" />
     </list>
     <ignored path="genland.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,26 +50,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Ecosystem.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/world/Ecosystem.cpp">
+      <file leaf-file-name="Player.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/Player.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5670">
-              <caret line="315" column="144" selection-start-line="315" selection-start-column="12" selection-end-line="315" selection-end-column="149" />
-              <folding>
-                <element signature="e#39#56#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Mob.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/entities/Mob.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="177" column="21" selection-start-line="177" selection-start-column="21" selection-end-line="177" selection-end-column="21" />
-              <folding>
-                <element signature="e#40#58#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="146">
+              <caret line="310" column="4" selection-start-line="310" selection-start-column="4" selection-end-line="310" selection-end-column="34" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -60,8 +63,8 @@
       <file leaf-file-name="Mob.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/scene/entities/Mob.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="655">
-              <caret line="43" column="36" selection-start-line="43" selection-start-column="36" selection-end-line="43" selection-end-column="36" />
+            <state relative-caret-position="576">
+              <caret line="32" column="44" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
               <folding>
                 <element signature="e#87#106#0" expanded="true" />
               </folding>
@@ -69,21 +72,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MobGenetics.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/entities/MobGenetics.h">
+      <file leaf-file-name="Debuger.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/Debuger.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
-              <caret line="27" column="4" selection-start-line="27" selection-start-column="4" selection-end-line="31" selection-end-column="19" />
+            <state relative-caret-position="720">
+              <caret line="40" column="36" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="36" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MobGenetics.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/bin/scene/entities/MobGenetics.cpp">
+      <file leaf-file-name="Mob.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/entities/Mob.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="556">
-              <caret line="287" column="32" selection-start-line="287" selection-start-column="32" selection-end-line="287" selection-end-column="32" />
+            <state relative-caret-position="146">
+              <caret line="379" column="0" selection-start-line="379" selection-start-column="0" selection-end-line="379" selection-end-column="0" />
+              <folding>
+                <element signature="e#40#58#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Chunk.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="635" column="26" selection-start-line="635" selection-start-column="21" selection-end-line="635" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -92,18 +107,48 @@
       <file leaf-file-name="Entity.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bin/scene/entities/Entity.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="24" column="16" selection-start-line="24" selection-start-column="16" selection-end-line="24" selection-end-column="16" />
+            <state relative-caret-position="450">
+              <caret line="25" column="17" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Entity.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bin/scene/entities/Entity.cpp">
+      <file leaf-file-name="Scene.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="882">
-              <caret line="49" column="12" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
+            <state relative-caret-position="210">
+              <caret line="398" column="3" selection-start-line="398" selection-start-column="0" selection-end-line="398" selection-end-column="3" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Map.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="277">
+              <caret line="175" column="86" selection-start-line="175" selection-start-column="86" selection-end-line="175" selection-end-column="86" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Ecosystem.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/world/Ecosystem.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4572">
+              <caret line="254" column="0" selection-start-line="254" selection-start-column="0" selection-end-line="254" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Drawer.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -117,8 +162,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/bin/menu_interface/MenuLoadGame.h" />
-        <option value="$PROJECT_DIR$/bin/menu_interface/MenuMain.h" />
         <option value="$PROJECT_DIR$/bin/menu_interface/NewGameMenu.h" />
         <option value="$PROJECT_DIR$/bin/menu_interface/InterfaceList.h" />
         <option value="$PROJECT_DIR$/bin/menu_interface/MenuLoadGame.cpp" />
@@ -127,11 +170,8 @@
         <option value="$PROJECT_DIR$/bin/menu_interface/MenuMain.cpp" />
         <option value="$PROJECT_DIR$/bin/menu_interface/MenuConfigGame.cpp" />
         <option value="$PROJECT_DIR$/bin/Terminal.h" />
-        <option value="$PROJECT_DIR$/bin/Game.cpp" />
         <option value="$PROJECT_DIR$/bin/Terminal.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/MapView.cpp" />
-        <option value="$PROJECT_DIR$/bin/Debuger.h" />
-        <option value="$PROJECT_DIR$/bin/Debuger.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/Inventory.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/AnimatedTile.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Light.h" />
@@ -141,33 +181,38 @@
         <option value="$PROJECT_DIR$/bin/scene/Drawer.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Item.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/Inventory.cpp" />
-        <option value="$PROJECT_DIR$/bin/Resources.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Stairs.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Stairs.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Torch.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Torch.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Tree.h" />
-        <option value="$PROJECT_DIR$/bin/scene/Scene.h" />
-        <option value="$PROJECT_DIR$/bin/scene/world/Map.h" />
         <option value="$PROJECT_DIR$/bin/scene/world/Chunk.h" />
-        <option value="$PROJECT_DIR$/bin/scene/Drawer.cpp" />
         <option value="$PROJECT_DIR$/resources/sun_mix.frag" />
-        <option value="$PROJECT_DIR$/bin/scene/world/Ecosystem.h" />
         <option value="$PROJECT_DIR$/bin/scene/Colisionable.h" />
-        <option value="$PROJECT_DIR$/bin/scene/Player.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Chunk.cpp" />
-        <option value="$PROJECT_DIR$/bin/scene/Scene.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/Player.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Entity.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Entity.h" />
+        <option value="$PROJECT_DIR$/bin/scene/Colisionable.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/entities/MobGenetics.h" />
+        <option value="$PROJECT_DIR$/bin/scene/world/Map.h" />
+        <option value="$PROJECT_DIR$/bin/Resources.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Player.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/entities/MobModule.h" />
+        <option value="$PROJECT_DIR$/bin/Game.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/entities/MobModule.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Scene.h" />
+        <option value="$PROJECT_DIR$/bin/scene/Scene.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/world/Ecosystem.h" />
+        <option value="$PROJECT_DIR$/bin/Debuger.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/Tree.cpp" />
         <option value="$PROJECT_DIR$/bin/scene/world/Ecosystem.cpp" />
-        <option value="$PROJECT_DIR$/bin/scene/world/Map.cpp" />
-        <option value="$PROJECT_DIR$/bin/scene/Colisionable.cpp" />
-        <option value="$PROJECT_DIR$/bin/scene/entities/Mob.h" />
-        <option value="$PROJECT_DIR$/bin/scene/entities/Mob.cpp" />
-        <option value="$PROJECT_DIR$/bin/scene/entities/MobGenetics.h" />
         <option value="$PROJECT_DIR$/bin/scene/entities/MobGenetics.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/entities/Mob.h" />
+        <option value="$PROJECT_DIR$/bin/Debuger.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/Drawer.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/entities/Mob.cpp" />
+        <option value="$PROJECT_DIR$/bin/scene/world/Map.cpp" />
       </list>
     </option>
   </component>
@@ -341,7 +386,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bots" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///home/arnito/ClionProjects/genland/bin/scene/Scene.h" />
   </component>
   <component name="RecentsManager">
@@ -736,34 +781,44 @@
       <workItem from="1508173962069" duration="7339000" />
       <workItem from="1508259311769" duration="14114000" />
       <workItem from="1508332478053" duration="5465000" />
+      <workItem from="1508428928520" duration="4417000" />
+      <workItem from="1508717615651" duration="388000" />
+      <workItem from="1508710816022" duration="1607000" />
+      <workItem from="1508775219289" duration="200000" />
+      <workItem from="1508779248198" duration="58000" />
+      <workItem from="1508863963907" duration="6393000" />
+      <workItem from="1508922119887" duration="6235000" />
+      <workItem from="1508942887420" duration="12899000" />
+      <workItem from="1509021220142" duration="7546000" />
+      <workItem from="1509103060759" duration="4803000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1251918000" />
+    <option name="totallyTimeSpent" value="1296464000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19892183" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.206469" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32212028" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34148827" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35474005" sideWeight="0.5018868" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30988786" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32925585" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16411825" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25382262" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28848115" sideWeight="0.49811321" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29357797" sideWeight="0.49811321" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32925585" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30988786" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -796,78 +851,20 @@
         <breakpoint enabled="true" type="CidrWatchpoint">
           <option name="timeStamp" value="511" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/bin/scene/entities/Mob.cpp</url>
+          <line>377</line>
+          <option name="timeStamp" value="751" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="701" />
+      <option name="time" value="752" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/MapView.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="35" column="73" selection-start-line="35" selection-start-column="73" selection-end-line="35" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Debuger.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Debuger.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="69" column="48" selection-start-line="69" selection-start-column="48" selection-end-line="69" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Terminal.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="471">
-          <caret line="37" column="34" selection-start-line="37" selection-start-column="34" selection-end-line="37" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Inventory.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="38" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Light.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Light.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="13" column="7" selection-start-line="13" selection-start-column="7" selection-end-line="13" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/AnimatedTile.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="14" column="39" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/AnimatedTile.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="111" column="0" selection-start-line="111" selection-start-column="0" selection-end-line="116" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/Inputs.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
@@ -893,13 +890,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5166">
           <caret line="287" column="29" selection-start-line="287" selection-start-column="29" selection-end-line="287" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/Resources.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1620">
-          <caret line="90" column="59" selection-start-line="90" selection-start-column="59" selection-end-line="90" selection-end-column="59" />
         </state>
       </provider>
     </entry>
@@ -935,20 +925,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
           <caret line="13" column="7" selection-start-line="13" selection-start-column="7" selection-end-line="13" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="66" column="28" selection-start-line="66" selection-start-column="28" selection-end-line="66" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Tree.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="507">
-          <caret line="42" column="4" selection-start-line="42" selection-start-column="4" selection-end-line="42" selection-end-column="32" />
         </state>
       </provider>
     </entry>
@@ -1008,47 +984,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="774">
-          <caret line="43" column="28" selection-start-line="43" selection-start-column="28" selection-end-line="43" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Ecosystem.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="40" column="31" selection-start-line="40" selection-start-column="9" selection-end-line="40" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/5/bits/stl_vector.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="779" column="0" selection-start-line="779" selection-start-column="0" selection-end-line="779" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-319">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/Colisionable.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="15" column="11" selection-start-line="15" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="219" column="34" selection-start-line="219" selection-start-column="34" selection-end-line="219" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -1059,85 +998,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="381">
-          <caret line="216" column="4" selection-start-line="216" selection-start-column="4" selection-end-line="216" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Entity.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="24" column="16" selection-start-line="24" selection-start-column="16" selection-end-line="24" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Tree.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-23">
-          <caret line="205" column="32" selection-start-line="205" selection-start-column="32" selection-end-line="205" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="536" column="13" selection-start-line="536" selection-start-column="13" selection-end-line="536" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Entity.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="882">
-          <caret line="49" column="12" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="904" column="13" selection-start-line="903" selection-start-column="4" selection-end-line="904" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/Colisionable.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1260">
           <caret line="70" column="18" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
-          <folding>
-            <element signature="e#41#66#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/world/Ecosystem.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5670">
-          <caret line="315" column="144" selection-start-line="315" selection-start-column="12" selection-end-line="315" selection-end-column="149" />
-          <folding>
-            <element signature="e#39#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Player.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1314">
-          <caret line="73" column="4" selection-start-line="73" selection-start-column="4" selection-end-line="73" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/Player.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="167" column="4" selection-start-line="167" selection-start-column="4" selection-end-line="172" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1145,42 +1009,248 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="489">
           <caret line="518" column="0" selection-start-line="518" selection-start-column="0" selection-end-line="518" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/entities/MobGenetics.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="27" column="4" selection-start-line="27" selection-start-column="4" selection-end-line="31" selection-end-column="19" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="648">
+          <caret line="41" column="28" selection-start-line="41" selection-start-column="16" selection-end-line="41" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="33" column="19" selection-start-line="33" selection-start-column="19" selection-end-line="33" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Resources.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="335">
+          <caret line="41" column="39" selection-start-line="41" selection-start-column="39" selection-end-line="41" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Resources.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Player.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="71" column="22" selection-start-line="71" selection-start-column="4" selection-end-line="71" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/5/bits/basic_string.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="4912" column="0" selection-start-line="4912" selection-start-column="0" selection-end-line="4912" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/SFML/Graphics/Rect.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="551">
+          <caret line="194" column="0" selection-start-line="194" selection-start-column="0" selection-end-line="194" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Entity.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="882">
+          <caret line="49" column="21" selection-start-line="49" selection-start-column="21" selection-end-line="49" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/entities/MobModule.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="29" column="67" selection-start-line="29" selection-start-column="67" selection-end-line="29" selection-end-column="67" />
+          <folding>
+            <element signature="e#99#124#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Game.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="915">
+          <caret line="189" column="0" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="558">
+          <caret line="65" column="4" selection-start-line="65" selection-start-column="4" selection-end-line="65" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Ecosystem.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Tree.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="42" column="4" selection-start-line="42" selection-start-column="4" selection-end-line="42" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Tree.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="357" column="25" selection-start-line="357" selection-start-column="25" selection-end-line="357" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/5/bits/stl_vector.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="779" column="0" selection-start-line="779" selection-start-column="0" selection-end-line="779" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Entity.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="25" column="17" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/entities/MobModule.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="81" column="55" selection-start-line="81" selection-start-column="54" selection-end-line="81" selection-end-column="55" />
+          <folding>
+            <element signature="e#41#60#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/Debuger.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="40" column="36" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Ecosystem.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4572">
+          <caret line="254" column="0" selection-start-line="254" selection-start-column="0" selection-end-line="254" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/SFML/System/Vector2.inl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/entities/Mob.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="655">
-          <caret line="43" column="36" selection-start-line="43" selection-start-column="36" selection-end-line="43" selection-end-column="36" />
+        <state relative-caret-position="576">
+          <caret line="32" column="44" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
           <folding>
             <element signature="e#87#106#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Mob.cpp">
+    <entry file="file://$PROJECT_DIR$/bin/Debuger.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="177" column="21" selection-start-line="177" selection-start-column="21" selection-end-line="177" selection-end-column="21" />
-          <folding>
-            <element signature="e#40#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/scene/entities/MobGenetics.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="27" column="4" selection-start-line="27" selection-start-column="4" selection-end-line="31" selection-end-column="19" />
+        <state relative-caret-position="472">
+          <caret line="208" column="39" selection-start-line="208" selection-start-column="39" selection-end-line="208" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/scene/entities/MobGenetics.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="556">
-          <caret line="287" column="32" selection-start-line="287" selection-start-column="32" selection-end-line="287" selection-end-column="32" />
+        <state relative-caret-position="666">
+          <caret line="256" column="0" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Player.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="310" column="4" selection-start-line="310" selection-start-column="4" selection-end-line="310" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Chunk.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="635" column="26" selection-start-line="635" selection-start-column="21" selection-end-line="635" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Drawer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/Scene.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="398" column="3" selection-start-line="398" selection-start-column="0" selection-end-line="398" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/entities/Mob.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="379" column="0" selection-start-line="379" selection-start-column="0" selection-end-line="379" selection-end-column="0" />
+          <folding>
+            <element signature="e#40#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/scene/world/Map.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="277">
+          <caret line="175" column="86" selection-start-line="175" selection-start-column="86" selection-end-line="175" selection-end-column="86" />
           <folding />
         </state>
       </provider>

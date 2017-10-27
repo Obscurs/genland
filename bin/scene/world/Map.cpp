@@ -175,6 +175,7 @@ void Map::searchDeserts(){
             int posSurfaceInd = rand() % Chunk::N_TILES_X;
             sf::Vector2i posMobLocal(posSurfaceInd,surfaceTiles[posSurfaceInd].first);
             sf::Vector2i posMob = Map::getGlobalPositionOfIndex(posMobLocal,iter);
+
             Mob *m = new Mob(mobGen,iter, sf::Vector2f(posMob));
             mobs.push_back(*m);
             for(int i = 0; i< trees.size(); i++){

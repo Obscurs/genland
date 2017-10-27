@@ -29,8 +29,8 @@ public:
     std::vector<AnimatedTile*> falling_tiles;
 	Tile* getTile(float x, float y, int z);
 	Chunk* getChunk(float x, float y, float z);
-	static int getChunkIndex(float x);
-    int getIndexMatChunk(int x);
+	static int getChunkIndex(float globalx);
+    int getIndexMatChunk(int chunk);
     void saveMap();
     void removeTile2(Tile* r_tile);
 	void update(float delta, sf::Vector2f player_pos);

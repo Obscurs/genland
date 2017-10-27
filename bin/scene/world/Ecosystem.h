@@ -27,8 +27,9 @@ public:
     void syncEntitiesWithChunk(Chunk *c, int index_in_mat_chunks);
     void addEntity(Entity *e);
     void getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius);
+    void getEntitiesOnArea(std::vector<Entity*> &mobs, sf::Vector2i position, int radius);
     void getPositionsOnArea(std::vector<sf::Vector2i> &positions,sf::Vector2i position, int radius);
-
+    sf::Vector2i getMobPopulationAndTreshold();
     Entity *getEntity(sf::FloatRect pos);
 private:
     std::vector<Tree*> _trees;

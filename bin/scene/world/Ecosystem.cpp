@@ -27,7 +27,7 @@ void Ecosystem::update(float delta){
         Scene *s = Scene::getScene();
         Clock *c = s->getClock();
         Map *m = s->getMap();
-        if(_mobs.size()< (_interval.y-_interval.x *2)) spawnMobOnLessPoblated((_interval.y-_interval.x *2));
+        if(_mobs.size()< (_interval.y-_interval.x)*2) spawnMobOnLessPoblated((_interval.y-_interval.x)*2);
         int size = int(_trees.size());
         for(int i = 0; i<size; i++){
             if(_trees[i]->_dead){
@@ -54,22 +54,26 @@ void Ecosystem::update(float delta){
         size = int(_mobs.size());
         for(int i = 0; i<size; i++){
             if(_mobs[i]->_dead){
+
                 _mobs[i]->kill();
                 _mobs.erase(_mobs.begin()+i);
                 i--;
                 size = int(_mobs.size());
+                std::cout << "mob removed " << _mobs.size() << std::endl;
             } else {
                 if(_mobs[i]->update(delta, c)){
                     Mob *res = _mobs[i]->reproduce();
                     if(res != nullptr) {
 
                         _mobs.push_back(res);
+                        std::cout << "new mob created " << _mobs.size() << std::endl;
                         int index_chunk = m->getIndexMatChunk(res->_chunk);
                         if(index_chunk != -1){
                             m->_chunk_mat[index_chunk]->addMobToChunk(res,index_chunk);
                             m->_chunk_mat[index_chunk]->_is_dirty = true;
                         }
                     }
+                    //else std::cout << "mob no created" << std::endl;
                 }
             }
         }
@@ -120,6 +124,7 @@ void Ecosystem::updateWithElapsedTime(Date *d){
                 }
             }
         }
+        if(_mobs.size()< (_interval.y-_interval.x)*2) spawnMobOnLessPoblated((_interval.y-_interval.x)*2);
         size = int(_mobs.size());
         for(int i = 0; i<size; i++){
             if(_mobs[i]->_dead){
@@ -135,6 +140,9 @@ void Ecosystem::updateWithElapsedTime(Date *d){
             }
         }
     }
+}
+sf::Vector2i Ecosystem::getMobPopulationAndTreshold(){
+    return sf::Vector2i(_mobs.size(),(_interval.y-_interval.x)*2);
 }
 void Ecosystem::launchSaveLoadThread(){
     _threadSaveLoad.launch();
@@ -233,6 +241,13 @@ void Ecosystem::saveEntities(){
     }
     _ecoReady = true;
 
+}
+void Ecosystem::getEntitiesOnArea(std::vector<Entity*> &mobs, sf::Vector2i position, int radius){
+    for(int i = 0; i<_entities.size(); i++){
+        sf::Vector2f posMob = _entities[i]->getPositionCol();
+        int distance = sqrt((posMob.x-position.x)*(posMob.x-position.x)+(posMob.y-position.y)*(posMob.y-position.y));
+        if(distance < radius) mobs.push_back(_entities[i]);
+    }
 }
 void Ecosystem::getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius){
     for(int i = 0; i<_mobs.size(); i++){

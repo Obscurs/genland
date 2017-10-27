@@ -40,6 +40,7 @@ void Resources::load() {
     //TEXTURES
     addTexture("playerSprite", "resources/player.png");
     addTexture("entities", "resources/entities.png");
+    addTexture("mobs", "resources/mobs.png");
 
     addTextureManager("tileMap","resources/tiles5.png", 16, 16);
     TextureManager *texMan = getTextureManager("tileMap");

@@ -342,6 +342,13 @@ void Scene::addEntity(Entity *e) {
     }
 
 }
+void Scene::getEntityesArea(std::vector<Entity*> &entities, sf::Vector2i position, int radius, int indexEcosystem){
+    if(indexEcosystem==0){
+        _ecosystems.first->getEntitiesOnArea(entities,position,radius);
+    } else if(indexEcosystem==-1){
+        _ecosystems.second->getEntitiesOnArea(entities,position,radius);
+    } else std::cout << "alguna entitat te ecosystem index -1" << std::endl;
+}
 void Scene::getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius, int indexEcosystem){
     if(indexEcosystem==0){
         _ecosystems.first->getMobsOnArea(mobs,position,radius);
@@ -376,7 +383,10 @@ float Scene::getMountFactor(sf::Vector2f pos){
     return t->_mountain_factor;
 }
 
-
+Ecosystem* Scene::getEcosystem(int index){
+    if(index==0) return _ecosystems.first;
+    else return _ecosystems.second;
+}
 Map* Scene::getMap(){
     return &_map_curr;
 }

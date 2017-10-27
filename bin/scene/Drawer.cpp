@@ -203,6 +203,10 @@ void Drawer::DrawLights(){
         int index_mat = map_curr->getIndexMatChunk(i);
         texture_sun.draw(map_curr->_chunk_mat[index_mat]->sky_array, states);
 
+    }
+    /*
+    for(int i = first_chunk ; i<=last_chunk ; i++) {
+        int index_mat = map_curr->getIndexMatChunk(i);
         for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_falling_tiles.size(); i++){
             map_curr->_chunk_mat[index_mat]->_falling_tiles[i]->Draw(texture_sun);
         }
@@ -213,6 +217,7 @@ void Drawer::DrawLights(){
             map_curr->_chunk_mat[index_mat]->_mobs[i]->draw(texture_sun);
         }
     }
+    */
     Player* player = scene->getPlayer();
     player->Draw2(texture_sun);
 

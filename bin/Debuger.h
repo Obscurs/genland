@@ -47,6 +47,7 @@ private:
     static void DrawPlayerStats();
     static void DrawWorldStats();
     static void DrawBiomeStats();
+    static void DrawEntitiesStats(int eco);
 };
 
 

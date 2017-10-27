@@ -10,10 +10,12 @@
 #include "../Clock.h"
 #include "MobGenetics.h"
 #include "../Colisionable.h"
+#include "MobModule.h"
 
 class Mob : public Entity, public Colisionable {
 public:
     static const int OFFSET_REPRODUCE = 50;
+    static const int DISTANCE_NEAR = 128;
     Mob();
     ~Mob();
     Mob(MobGenetics* t,int chunk, sf::Vector2f position);
@@ -31,17 +33,30 @@ public:
     void draw(sf::RenderTarget & renderTar);
     bool _dead;
     float _life;
+    float _hunger;
     float _timeToReproduce;
 private:
+    sf::FloatRect getBoundingBox();
+    Entity* _target;
+    int getRelationMob(int idRace);
+    void searchNeighbors(std::vector<Mob*> enemys,std::vector<Mob*> friends,std::vector<Mob*> neutral,std::vector<Mob*> food);
+    void targetAction();
+    void attack(Mob* m);
+    void simulateCombat(Mob* m);
+    Entity* searchFoodTarget();
+    Mob* searchMobTarget(std::vector<Mob*> &mobs);
+    bool isNearTarget();
     float vx;
     float vy;
+    float _attackColdown;
     sf::Vector2i _positionSpawn;
     MobGenetics _gens;
     sf::Sprite _sprite;
     sf::Vector2f size;
     Decision _mobDecision;
-
     AnimationDirection _mobDirection;
+    std::vector<MobModule*> _modules;
+    void ___addModules();
 };
 
 
