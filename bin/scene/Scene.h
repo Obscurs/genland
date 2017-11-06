@@ -65,8 +65,10 @@ public:
     Entity *getEntity(sf::FloatRect pos);
     Ecosystem* getEcosystem(int index);
     void getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius, int indexEcosystem);
+    void getTreesOnArea(std::vector<Tree*> &trees, sf::Vector2i position, int radius, int indexEcosystem);
     void getEntityesArea(std::vector<Entity*> &entities, sf::Vector2i position, int radius, int indexEcosystem);
     void getPositionsOnArea(std::vector<sf::Vector2i> &positions,sf::Vector2i position, int radius, int indexEcosystem);
+    void getFallingTilesArea(std::vector<AnimatedTile*> &entities, sf::Vector2i position, int radius);
 private:
     std::string _seed;
     std::string _pathGame;

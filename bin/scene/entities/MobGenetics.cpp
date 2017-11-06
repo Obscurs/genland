@@ -48,17 +48,18 @@ void MobGenetics::mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float fac
     int auxFood[MOB_RACES] = {0};
     int auxNeutral[MOB_RACES] = {0};
     for(int i=0; i< t1->_enemys.size(); i++){
-        auxEnemys[t1->_enemys[i]] -= 1;
+        auxEnemys[t1->_enemys[i]] = -2;
     }
     for(int i=0; i< t1->_friends.size(); i++){
-        auxFriends[t1->_friends[i]] -= 1;
+        auxFriends[t1->_friends[i]] = -2;
     }
     for(int i=0; i< t1->_food.size(); i++){
-        auxFood[t1->_food[i]] -= 1;
+        auxFood[t1->_food[i]] = -2;
     }
     for(int i=0; i< t1->_neutral.size(); i++){
-        auxNeutral[t1->_neutral[i]] -= 1;
+        auxNeutral[t1->_neutral[i]] = -2;
     }
+
     for(int i=0; i< t2->_enemys.size(); i++){
         auxEnemys[t2->_enemys[i]] += 1;
     }
@@ -72,30 +73,30 @@ void MobGenetics::mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float fac
         auxNeutral[t2->_neutral[i]] += 1;
     }
     for(int i=0; i< MOB_RACES; i++){
-        if(auxEnemys[i]==0){
+        if(auxEnemys[i]==-1){
             _enemys.push_back(i);
-        } else if(auxEnemys[i]==-1){
+        } else if(auxEnemys[i]==-2){
             nonShared1.push_back(std::pair<int,int>(i,0));
         } else if(auxEnemys[i]==1){
             nonShared2.push_back(std::pair<int,int>(i,0));
         }
-        if(auxFriends[i]==0){
+        if(auxFriends[i]==-1){
             _friends.push_back(i);
-        } else if(auxFriends[i]==-1){
+        } else if(auxFriends[i]==-2){
             nonShared1.push_back(std::pair<int,int>(i,1));
         } else if(auxFriends[i]==1){
             nonShared2.push_back(std::pair<int,int>(i,1));
         }
-        if(auxFood[i]==0){
+        if(auxFood[i]==-1){
             _food.push_back(i);
-        } else if(auxFood[i]==-1){
+        } else if(auxFood[i]==-2){
             nonShared1.push_back(std::pair<int,int>(i,2));
         } else if(auxFood[i]==1){
             nonShared2.push_back(std::pair<int,int>(i,2));
         }
-        if(auxNeutral[i]==0){
+        if(auxNeutral[i]==-1){
             _neutral.push_back(i);
-        } else if(auxNeutral[i]==-1){
+        } else if(auxNeutral[i]==-2){
             nonShared1.push_back(std::pair<int,int>(i,3));
         } else if(auxNeutral[i]==1){
             nonShared2.push_back(std::pair<int,int>(i,3));

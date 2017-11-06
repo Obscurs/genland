@@ -5,6 +5,7 @@
 #ifndef GENLAND_FUNCTIONS_H
 #define GENLAND_FUNCTIONS_H
 #include <dirent.h>
+#include <cstring>
 
 inline bool exists_file (const std::string& name) {
     struct stat buffer;

@@ -17,8 +17,8 @@
 #include "Debuger.h"
 #include "Game.h"
 #include "Settings.h"
-#include "functions.h"
 #include "Inputs.h"
+#include "functions.h"
 
 
 Game::Game():

@@ -66,7 +66,9 @@ sf::Vector2f Colisionable::evalCollisions(sf::Vector2f posOld, sf::Vector2f posN
             posNew.x = posNew.x - col_right_dist;
         }
         if(valid_move) return posNew;
-        else return posOld;
+        else {
+            return posOld;
+        }
     }
     return posOld;
 }

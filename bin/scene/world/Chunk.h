@@ -44,6 +44,7 @@ public:
 	std::vector<Mob*> _mobs;
     AnimatedTile* collidesWithAnimatedTile(sf::FloatRect rect);
     void addFallingTile(std::string id,std::string id_pick, sf::Vector2f pos, int size);
+	void drawTreesSpawn(sf::RenderTarget & renderTar);
 private:
 	bool _need_sync;
     void recalcReachFloor();

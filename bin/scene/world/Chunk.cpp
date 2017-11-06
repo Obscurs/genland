@@ -289,6 +289,7 @@ Chunk::Chunk(int pos, std::ofstream &myfile):
 
             int valHumidity = int(noise_humidity->valSimplex2D(0, current_global_x));
             float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
+            //float heightTemp = 0;
             int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, current_global_x));
 
             Tile* t = new Tile(0);
@@ -461,6 +462,7 @@ Chunk::Chunk(int pos, std::ifstream &myfile):
             mountains_factor = std::max(float(0.0), mountains_factor);
             int valHumidity = int(noise_humidity->valSimplex2D(0, current_global_x));
             float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
+            //float heightTemp = 0;
             int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, current_global_x));
             t->_humidity = valHumidity;
             t2->_humidity = valHumidity;
@@ -607,7 +609,11 @@ void Chunk::drawGrassTiles()
         grass_tiles[i]->drawGrass(render_array);
     }
 }
-
+void Chunk::drawTreesSpawn(sf::RenderTarget & renderTar){
+    for(int i = 0; i<_trees.size(); i++){
+        _trees[i]->draw(renderTar);
+    }
+}
 void Chunk::update(float delta){
     if(_is_dirty){
         checkTreeTiles();
@@ -618,7 +624,7 @@ void Chunk::update(float delta){
     else if(_need_sync) syncSurfaceAndUnderground();
     for(int i=0; i<_falling_tiles.size(); ++i){
         _falling_tiles[i]->Update(delta);
-        if(_falling_tiles[i]->deleted==1){
+        if(_falling_tiles[i]->_removed){
             delete _falling_tiles[i];
             _falling_tiles.erase(_falling_tiles.begin()+i);
         }

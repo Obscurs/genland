@@ -26,6 +26,18 @@ Terminal Debuger::_terminal;
 std::vector<sf::Time> Debuger::_clockMarks;
 std::vector<std::string> Debuger::_clockNames;
 
+void explodeString(std::vector<std::string>& result, std::string s, char separator){
+    std::stringstream ss(s);
+    std::string word;
+    if (!s.empty())
+    {
+        while(std::getline(ss,word,separator)){
+            result.push_back(word);
+        }
+    } else {
+        std::cout << "estas llegint una linia buida" << std::endl;
+    }
+}
 void Debuger::InsertClockMark(std::string name){
     _clockNames.push_back(name);
     _clockMarks.push_back(_clock.getElapsedTime());
@@ -47,25 +59,48 @@ std::string Debuger::getTerminalText(){
     return _terminal.getText();
 }
 void Debuger::interpInstruction(std::string s){
-    if(s == "show chunk lines"){
-        Debuger::metric1 = "linesChunks";
-    } else if(s == "show tension"){
-        Debuger::metric2 = "tension";
-    } else if(s == "show reach floor"){
-        Debuger::metric2 = "reachFloor";
-    } else if(s == "show humidity"){
-        Debuger::metric2 = "humidity";
-    }else if(s == "show temperature"){
-        Debuger::metric2 = "temperature";
+    if(s.size()>0){
+        std::vector<std::string> args;
+        explodeString(args,s,' ');
+        if(args.size()==1){
+            if(args[0]== "show_chunk_lines"){
+                Debuger::metric1 = "linesChunks";
+            } else if(args[0]== "show_tension"){
+                Debuger::metric2 = "tension";
+            } else if(args[0]== "show_reach_floor"){
+                Debuger::metric2 = "reachFloor";
+            } else if(args[0]== "show_humidity"){
+                Debuger::metric2 = "humidity";
+            }else if(args[0]== "show_temperature"){
+                Debuger::metric2 = "temperature";
+            }
+            else if(args[0]== "show_id_tiles"){
+                Debuger::metric3 = "id";
+            }
+            else if(args[0]== "disable_all_metrics"){
+                Debuger::metric1="none";
+                Debuger::metric2="none";
+                Debuger::metric3="none";
+            }
+        } else {
+            if(args[0]== "set_day"){
+                Scene *scene = Scene::getScene();
+                Clock *c = scene->getClock();
+                Date *d = new Date();
+                d->day = c->day;
+                d->min = c->min;
+                d->hour = c->hour;
+                c->day = stoi(args[1]);
+                scene->getEcosystem(0)->updateWithElapsedTime(d);
+                scene->getEcosystem(1)->updateWithElapsedTime(d);
+                scene->getMap()->_chunk_mat[0]->_is_dirty = true;
+                scene->getMap()->_chunk_mat[1]->_is_dirty = true;
+                scene->getMap()->_chunk_mat[2]->_is_dirty = true;
+            }
+        }
     }
-    else if(s == "show id tiles"){
-        Debuger::metric3 = "id";
-    }
-    else if(s == "disable all metrics"){
-        Debuger::metric1="none";
-        Debuger::metric2="none";
-        Debuger::metric3="none";
-    }
+
+
 }
 void Debuger::Update(const sf::Time& deltatime){
     if(_is_init){
@@ -116,7 +151,7 @@ void Debuger::DrawPlayerStats(){
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
     sf::Vector2f pos = scene->getPlayer()->GetPosition();
     std::stringstream buffer;
-    buffer << "X: " << int(pos.x) << " Y: " << int(pos.y);
+    buffer << "Chunk: " << Map::getChunkIndex(int(pos.x)) << " X: " << int(pos.x) << " Y: " << int(pos.y);
 
     std::string string(buffer.str());
     sf::String str(string);
@@ -189,7 +224,7 @@ void Debuger::DrawEntitiesStats(int eco){
     Scene* s = Scene::getScene();
     Ecosystem *e1 = s->getEcosystem(eco);
 
-    buffer << "Ecosystem " << eco << " (" << e1->getInterval().x << " - " << e1->getInterval().y <<") Num entities: " << e1->getMobPopulationAndTreshold().x <<  "/" << e1->getMobPopulationAndTreshold().y;
+    buffer << "Ecosystem " << eco << " (" << e1->getInterval().x << " - " << e1->getInterval().y <<") Num Mobs: " << e1->getMobPopulationAndTreshold().x <<  "/" << e1->getMobPopulationAndTreshold().y <<  "/" << e1->getMobPopulationAndTreshold().z << "Num Trees: " << e1->getTreePopulationAndTreshold().x <<  "/" << e1->getTreePopulationAndTreshold().y <<  "/" << e1->getTreePopulationAndTreshold().z;
     std::string string(buffer.str());
     sf::String str(string);
     _text.setString(str);
@@ -202,17 +237,76 @@ void Debuger::DrawEntitiesStats(int eco){
     sf::Vector2f position_zoomed = (position-position_center)/zoom +position_center;
     position = position_zoomed;
     std::vector<Mob*> mobs;
-    std::cout << sf::Vector2i(position).x<< " " << sf::Vector2i(position).y << std::endl;
     s->getMobsOnArea(mobs,sf::Vector2i(position),100,eco);
-    if(mobs.size()>0) {
+    if(false) {
         std::stringstream buffer2;
-        buffer2 << "Position colision: " << mobs[0]->_positionCol.x << " " << mobs[0]->_positionCol.y;
+        buffer2 << "Mob Position colision: " << mobs[0]->_positionCol.x << " " << mobs[0]->_positionCol.y << " Size colision: " << mobs[0]->_sizeCol.x << " " << mobs[0]->_sizeCol.y;
         std::string string(buffer2.str());
         sf::String str(string);
         _text.setString(str);
         _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
         _window->draw(_text);
         _displace = _displace + DISPLACEMENT;
+
+        std::stringstream buffer3;
+        buffer3 << "Race: " << mobs[0]->getGenetics()->_race << " Life: " << mobs[0]->_life << "/" << mobs[0]->getGenetics()->_health << " Hunger: " << mobs[0]->_hunger << "/" << mobs[0]->getGenetics()->_foodNeeds;
+        std::string string3(buffer3.str());
+        sf::String str3(string3);
+        _text.setString(str3);
+        _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
+        _window->draw(_text);
+        _displace = _displace + DISPLACEMENT;
+
+        std::stringstream buffer4;
+        buffer4 << "Food: ";
+        for(int i =0; i< mobs[0]->getGenetics()->_food.size();i++){
+            buffer4 << mobs[0]->getGenetics()->_food[i] << " ";
+        }
+        buffer4 << "\n Enemys: ";
+        for(int i =0; i< mobs[0]->getGenetics()->_enemys.size();i++){
+            buffer4 << mobs[0]->getGenetics()->_enemys[i] << " ";
+        }
+        buffer4 << "\n Friends: ";
+        for(int i =0; i< mobs[0]->getGenetics()->_friends.size();i++){
+            buffer4 << mobs[0]->getGenetics()->_friends[i] << " ";
+        }
+        buffer4 << "\n Neutral: ";
+        for(int i =0; i< mobs[0]->getGenetics()->_neutral.size();i++){
+            buffer4 << mobs[0]->getGenetics()->_neutral[i] << " ";
+        }
+        std::string string4(buffer4.str());
+        sf::String str4(string4);
+        _text.setString(str4);
+        _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
+        _window->draw(_text);
+        _displace = _displace + DISPLACEMENT*4;
+    } else {
+
+        std::vector<Tree*> trees;
+        s->getTreesOnArea(trees,sf::Vector2i(position),100,eco);
+        if(trees.size() >0){
+            int pos_l = 0;
+            int pos_r = 0;
+            if(trees[0]->_left_n != nullptr) pos_l = trees[0]->_left_n->_position.x;
+            if(trees[0]->_right_n != nullptr) pos_r = trees[0]->_right_n->_position.x;
+            std::stringstream buffer2;
+            buffer2 << "Tree Position: " << trees[0]->_position.x << " " << trees[0]->_position.y << " padding: " << trees[0]->_min_x << ", " << trees[0]->_max_x <<" Health: " << trees[0]->_life <<" Reproduce countdown: " << trees[0]->_timeToReproduce << "\n";
+            buffer2 << "Damage time: " << trees[0]->_debug_last_damage_time << " Damage distance: " << trees[0]->_debug_last_damage_distance << " Damage temp: " << trees[0]->_debug_last_damage_temp << " Damage humid " << trees[0]->_debug_last_damage_hum << "\n";
+            buffer2 << "Tree Fathers: " << pos_l << " " << pos_r << "\n";
+            TreeGenetics *gens = trees[0]->getGenetics();
+            buffer2 << "Tree corb: " << gens->_corb << " Tree amplitude: " << gens->_amplitude << " Tree height: " << gens->_height << "\n";
+            buffer2 << "Branch amount: " << gens->_branchAmount << " Curve branch: " << gens->_curveBranch << " Branch size: " << gens->_sizeBranch << "\n";
+            buffer2 << "Type leave: " << gens->_typeLeave << " Amount leave: " << gens->_amountLeave << " Density leave: " << gens->_densityLeave << "\n";
+            buffer2 << "Life: " << gens->_health << " Cold res " << gens->_cold << " Hot res " << gens->_hot << " Humidity res " << gens->_humidity << " Gen strenght " << gens->_strenghtGen << " Reproduce freq " << gens->_reproduceFactor;
+            std::string string(buffer2.str());
+            sf::String str(string);
+            _text.setString(str);
+            _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
+            _window->draw(_text);
+            _displace = _displace + DISPLACEMENT*7;
+        }
+
+
     }
 }
 void Debuger::sendTerminalInstruction(){

@@ -18,7 +18,7 @@
 #include "../Scene.h"
 
 
-AnimatedTile::AnimatedTile(std::string new_id,std::string id_pick){
+AnimatedTile::AnimatedTile(std::string new_id,std::string id_pick): Entity("fallingTile"){
     id = new_id;
     _id_pick = id_pick;
 	colisionable = false;
@@ -55,7 +55,7 @@ void AnimatedTile::setFactor(float dist_x, float dist_y){
 
 }
 bool AnimatedTile::collideWithRectangle(sf::FloatRect rect){
-    sf::FloatRect tile(position.x-size.x,position.y-size.y,size.x*4,size.y*4);
+    sf::FloatRect tile(_position.x-_sizeCol.x,_position.y-_sizeCol.y,_sizeCol.x*4,_sizeCol.y*4);
     return rect.intersects(tile);
 }
 void AnimatedTile::Draw(sf::RenderTarget & renderWindow)
@@ -63,13 +63,13 @@ void AnimatedTile::Draw(sf::RenderTarget & renderWindow)
     TextureManager *t = Resources::getTextureManager("tileMap");
     if(deleted!=1){
         sf::Sprite s;
-        s.setOrigin(size.x/2-t->size_sprite.y/2, size.y/2-t->size_sprite.y/2);
+        s.setOrigin(_sizeCol.x/2-t->size_sprite.y/2, _sizeCol.y/2-t->size_sprite.y/2);
         s.setRotation(rotation);
-        sf::Vector2f pos_grass(position.x,position.y-GetHeight()/2);
+        sf::Vector2f pos_grass(_position.x,_position.y-GetHeight()/2);
         t->generateSprite(id, pos_grass, s, sf::Vector2f(GetWidth(),GetHeight()));
         //
-        s.setPosition(s.getPosition().x+size.x/2, s.getPosition().y+size.y/2);
-        //s.setPosition(_position.x-_size.x/2, _position.y-_size.y/2);
+        s.setPosition(s.getPosition().x+_sizeCol.x/2, s.getPosition().y+_sizeCol.y/2);
+        //s.setPosition(__position.x-_size.x/2, __position.y-_size.y/2);
         renderWindow.draw(s);
     }
     else{
@@ -81,7 +81,7 @@ void AnimatedTile::Draw(sf::RenderTarget & renderWindow)
 bool AnimatedTile::ColideWorld(){
     Scene *s = Scene::getScene();
     Map *m = s->getMap();
-    sf::Vector2f center_pos(position.x+size.x/2, position.y+size.y/2);
+    sf::Vector2f center_pos(_positionCol.x+_sizeCol.x/2, _positionCol.y+_sizeCol.y/2);
         if(center_pos.y<0) center_pos.y = 0;
         Tile* t = m->getTile(center_pos.x, center_pos.y, 1);
         if(t != nullptr && t->id !="0"){
@@ -95,8 +95,8 @@ void AnimatedTile::Update(float elapsedTime)
         vx =disp_factor/10;
         vy = 1*elapsedTime*100 + vy;
         rotation += elapsedTime*disp_factor;
-        float x0 = position.x;
-        float y0 = position.y;
+        float x0 = _position.x;
+        float y0 = _position.y;
 
         float x = x0+vx*elapsedTime;
         float y = y0+vy*elapsedTime;
@@ -105,21 +105,23 @@ void AnimatedTile::Update(float elapsedTime)
             //std::cout << "YAY" << std::endl;
             deleted = 2;
         }
-    }
+    } else if(deleted==1) _removed = true;
 
 }
 
 void AnimatedTile::SetPosition(float x, float y)
 {
 
-    position.x=x;
-    position.y=y;
+    _position.x=x;
+    _position.y=y;
+    _positionCol.x=x;
+    _positionCol.y=y;
 }
 void AnimatedTile::SetSize(float x)
 {
 
-    size.x=x;
-    size.y=x;
+    _sizeCol.x=x;
+    _sizeCol.y=x;
 }
 
 sf::Vector2f AnimatedTile::GetPosition() const
@@ -129,17 +131,17 @@ sf::Vector2f AnimatedTile::GetPosition() const
     {
         return _sprite.getPosition();
     }*/
-    return position;
+    return _position;
 }
 
 float AnimatedTile::GetHeight() const
 {
-    return size.y;
+    return _sizeCol.y;
     //return _sprite.getTexture()->getSize().y*_sprite.getScale().y;
 }
 
 float AnimatedTile::GetWidth() const
 {
-    return size.x;
+    return _sizeCol.x;
     //return _sprite.getTexture()->getSize().x*_sprite.getScale().x;
 }

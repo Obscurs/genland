@@ -120,6 +120,7 @@ void Map::searchDeserts(){
                 float valHeightStone = (height_factor < (valTerrain+valNoiseStoneDirt+-0.04*(1-(mountains_factor*1.6+(1-height_factor)/2)))? 1 : 0);
                 int valHumidity = int(noise_humidity->valSimplex2D(0, current_global_x));
                 float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
+                //float heightTemp = 0;
                 int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, current_global_x));
                 float valCaveHeight = caveHeight->valSimplex2D(0, current_global_x);
                 float valTerrainCaves = valTerrain+valCaveHeight-0.04;

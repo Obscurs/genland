@@ -11,6 +11,11 @@
 
 class MobModule {
 public:
+    static const int NUM_HEADS = 3;
+    static const int NUM_BODIES = 3;
+    static const int NUM_HANDS = 2;
+    static const int NUM_LEGS = 6;
+    static const int NUM_COMPLEMENTS = 3;
     struct Animation{
         std::string a_name;
         int a_frameIni;
@@ -23,11 +28,17 @@ public:
     void draw(sf::RenderTarget & renderTar);
     void update(float delta, sf::Vector2f mobPosition, float scale, std::string currentAnimation, int direction);
     void addAnimation(std::string name, int frameIni, int numFrames);
+    bool hasAnimation(std::string name);
+    void saveToFile(std::ofstream &myfile);
+    bool die(float delta, float positionFloor);
+    int getIdModule();
     sf::Vector2f _position;
     sf::Vector2f _positionCol;
     sf::Vector2i _sizeCol;
     std::string _typeModule;
     sf::FloatRect getBoundingBox(sf::Vector2f position, float scale);
+    sf::Vector2f getOffset();
+    float getScale();
 
 private:
 
@@ -40,6 +51,7 @@ private:
     std::vector<Animation*> _animations;
     Animation* _currentAnimation;
     bool _initialized;
+    void setAnimations();
 
 };
 

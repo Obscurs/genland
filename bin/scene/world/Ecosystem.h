@@ -26,10 +26,13 @@ public:
     void loadEntities();
     void syncEntitiesWithChunk(Chunk *c, int index_in_mat_chunks);
     void addEntity(Entity *e);
+    void getTreesOnArea(std::vector<Tree*> &trees, sf::Vector2i position, int radius);
     void getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius);
     void getEntitiesOnArea(std::vector<Entity*> &mobs, sf::Vector2i position, int radius);
     void getPositionsOnArea(std::vector<sf::Vector2i> &positions,sf::Vector2i position, int radius);
-    sf::Vector2i getMobPopulationAndTreshold();
+    void updateWithElapsedTime(Date *d);
+    sf::Vector3i getMobPopulationAndTreshold();
+    sf::Vector3i getTreePopulationAndTreshold();
     Entity *getEntity(sf::FloatRect pos);
 private:
     std::vector<Tree*> _trees;
@@ -40,9 +43,10 @@ private:
     std::vector<std::vector<std::vector<int> > >_underground;
     int getSizeUnderground();
     void spawnMobOnLessPoblated(int num_candidates);
+    void spawnTreeOnLessPoblated(int num_candidates);
     void changeEcosystem();
     void linkTrees();
-    void updateWithElapsedTime(Date *d);
+
 
     sf::Thread _threadSaveLoad;
     int __auxPos;

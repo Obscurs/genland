@@ -27,7 +27,8 @@ void Ecosystem::update(float delta){
         Scene *s = Scene::getScene();
         Clock *c = s->getClock();
         Map *m = s->getMap();
-        if(_mobs.size()< (_interval.y-_interval.x)*2) spawnMobOnLessPoblated((_interval.y-_interval.x)*2);
+        if(_mobs.size()< (_interval.y-_interval.x)*Settings::MIN_MOBS_ECO) spawnMobOnLessPoblated((_interval.y-_interval.x)*Settings::MIN_MOBS_ECO);
+        if(_trees.size()< (_interval.y-_interval.x)*Settings::MIN_TREES_ECO) spawnTreeOnLessPoblated((_interval.y-_interval.x)*Settings::MIN_TREES_ECO);
         int size = int(_trees.size());
         for(int i = 0; i<size; i++){
             if(_trees[i]->_dead){
@@ -37,9 +38,14 @@ void Ecosystem::update(float delta){
                 size = int(_trees.size());
             } else {
                 if(_trees[i]->update(delta, c)){
-                    Tree *res = _trees[i]->reproduce();
-                    if(res != nullptr) {
-
+                    //int direction = rand() % 2;
+                    Tree *res = _trees[i]->reproduce2();
+                    //if(direction==0) direction = 1;
+                    //else direction = 0;
+                    //if(res==nullptr) res = _trees[i]->reproduce(direction);
+                    if(res != nullptr  && _trees.size()< (_interval.y-_interval.x)*Settings::MAX_TREES_ECO) {
+                        if(res->_left_n !=nullptr)res->_left_n->setRightTree(res);
+                        if(res->_right_n !=nullptr)res->_right_n->setLeftTree(res);
                         _trees.push_back(res);
                         int index_chunk = m->getIndexMatChunk(res->_chunk);
                         if(index_chunk != -1){
@@ -63,7 +69,7 @@ void Ecosystem::update(float delta){
             } else {
                 if(_mobs[i]->update(delta, c)){
                     Mob *res = _mobs[i]->reproduce();
-                    if(res != nullptr) {
+                    if(res != nullptr && _mobs.size()< (_interval.y-_interval.x)*Settings::MAX_MOBS_ECO) {
 
                         _mobs.push_back(res);
                         std::cout << "new mob created " << _mobs.size() << std::endl;
@@ -102,47 +108,61 @@ void Ecosystem::addEntity(Entity *e){
     _entities.push_back(e);
 }
 void Ecosystem::updateWithElapsedTime(Date *d){
-    Clock *cGame = Scene::getScene()->getClock();
-    Clock *c = new Clock();
-    c->day = d->day;
-    c->min = d->min;
-    c->hour = d->hour;
-    while(c->day<cGame->day || c->hour<cGame->hour || c->min < cGame->min){
-        c->_clockSpeed = 1;
-        c->update(Settings::SYNC_UPDATE_SPEED);
-        int size = int(_trees.size());
-        for(int i = 0; i<size; i++){
-            if(_trees[i]->_dead){
-                _trees[i]->kill();
-                _trees.erase(_trees.begin()+i);
-                i--;
-                size = int(_trees.size());
-            } else {
-                if(_trees[i]->update(Settings::SYNC_UPDATE_SPEED, c)){
-                    Tree *res = _trees[i]->reproduce();
-                    if(res != nullptr) _trees.push_back(res);
+    if(_interval.x != _interval.y){
+        Clock *cGame = Scene::getScene()->getClock();
+        Clock *c = new Clock();
+        c->day = d->day;
+        c->min = d->min;
+        c->hour = d->hour;
+        while(c->day<cGame->day || c->hour<cGame->hour || c->min < cGame->min){
+            c->_clockSpeed = 1;
+            c->update(Settings::SYNC_UPDATE_SPEED);
+            std::random_shuffle ( _trees.begin(), _trees.end());
+            std::random_shuffle ( _mobs.begin(), _mobs.end());
+            int size = int(_trees.size());
+            if(_trees.size()< (_interval.y-_interval.x)*Settings::MIN_TREES_ECO) spawnTreeOnLessPoblated((_interval.y-_interval.x)*Settings::MIN_TREES_ECO);
+            if(_mobs.size()< (_interval.y-_interval.x)*Settings::MIN_MOBS_ECO) spawnMobOnLessPoblated((_interval.y-_interval.x)*Settings::MIN_MOBS_ECO);
+            for(int i = 0; i<size; i++){
+                if(_trees[i]->_dead){
+                    _trees[i]->kill();
+                    _trees.erase(_trees.begin()+i);
+                    i--;
+                    size = int(_trees.size());
+                } else {
+                    if(_trees[i]->update(Settings::SYNC_UPDATE_SPEED, c)){
+                        Tree *res = _trees[i]->reproduce2();
+                        if(res != nullptr  && _trees.size()< (_interval.y-_interval.x)*Settings::MAX_TREES_ECO) {
+                            if(res->_left_n !=nullptr)res->_left_n->setRightTree(res);
+                            if(res->_right_n !=nullptr)res->_right_n->setLeftTree(res);
+                            _trees.push_back(res);
+                        }
+                    }
                 }
             }
-        }
-        if(_mobs.size()< (_interval.y-_interval.x)*2) spawnMobOnLessPoblated((_interval.y-_interval.x)*2);
-        size = int(_mobs.size());
-        for(int i = 0; i<size; i++){
-            if(_mobs[i]->_dead){
-                _mobs[i]->kill();
-                _mobs.erase(_mobs.begin()+i);
-                i--;
-                size = int(_mobs.size());
-            } else {
-                if(_mobs[i]->update(Settings::SYNC_UPDATE_SPEED, c)){
-                    Mob *res = _mobs[i]->reproduce();
-                    if(res != nullptr) _mobs.push_back(res);
+
+            size = int(_mobs.size());
+            for(int i = 0; i<size; i++){
+                if(_mobs[i]->_dead){
+                    _mobs[i]->kill();
+                    _mobs.erase(_mobs.begin()+i);
+                    i--;
+                    size = int(_mobs.size());
+                } else {
+                    if(_mobs[i]->update(Settings::SYNC_UPDATE_SPEED, c)){
+                        Mob *res = _mobs[i]->reproduce();
+                        if(res != nullptr && _mobs.size()< (_interval.y-_interval.x)*Settings::MAX_MOBS_ECO) _mobs.push_back(res);
+                    }
                 }
             }
         }
     }
+
 }
-sf::Vector2i Ecosystem::getMobPopulationAndTreshold(){
-    return sf::Vector2i(_mobs.size(),(_interval.y-_interval.x)*2);
+sf::Vector3i Ecosystem::getMobPopulationAndTreshold(){
+    return sf::Vector3i(_mobs.size(),(_interval.y-_interval.x)*Settings::MIN_MOBS_ECO,(_interval.y-_interval.x)*Settings::MAX_MOBS_ECO);
+}
+sf::Vector3i Ecosystem::getTreePopulationAndTreshold(){
+    return sf::Vector3i(_trees.size(),(_interval.y-_interval.x)*Settings::MIN_TREES_ECO,(_interval.y-_interval.x)*Settings::MAX_TREES_ECO);
 }
 void Ecosystem::launchSaveLoadThread(){
     _threadSaveLoad.launch();
@@ -256,6 +276,13 @@ void Ecosystem::getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, in
         if(distance < radius) mobs.push_back(_mobs[i]);
     }
 }
+void Ecosystem::getTreesOnArea(std::vector<Tree*> &trees, sf::Vector2i position, int radius){
+    for(int i = 0; i<_trees.size(); i++){
+        sf::Vector2f posMob = _trees[i]->_position;
+        int distance = sqrt((posMob.x-position.x)*(posMob.x-position.x)+(posMob.y-position.y)*(posMob.y-position.y));
+        if(distance < radius) trees.push_back(_trees[i]);
+    }
+}
 void Ecosystem::spawnMobOnLessPoblated(int num_candidates){
     int distances[num_candidates] = {-1};
     sf::Vector2i positions[num_candidates];
@@ -308,6 +335,69 @@ void Ecosystem::spawnMobOnLessPoblated(int num_candidates){
             m->_chunk_mat[index_chunk]->_is_dirty = true;
         }
     }
+
+}
+
+
+void Ecosystem::spawnTreeOnLessPoblated(int num_candidates){
+    int distances[num_candidates] = {-1};
+    sf::Vector2i positions[num_candidates];
+    std::vector<std::vector<sf::Vector2i > > _grassPositions;
+    int numPlaces =0;
+    for(int i=0; i< _surface.size(); i++){
+        for(int j=0; j< _surface[i].size();j++){
+            if(_surface[i][j].second) {
+                numPlaces++;
+                _grassPositions[i].push_back(sf::Vector2i(j,_surface[i][j].first));
+            }
+        }
+    }
+    for(int i=0; i<num_candidates; i++){
+        int randChunk = rand() % _grassPositions.size();
+        int randInd = rand() % _grassPositions[randChunk].size();
+
+        sf::Vector2i posTileIndex = _grassPositions[randChunk][randInd];
+        sf::Vector2i posTileGlobal = Map::getGlobalPositionOfIndex(posTileIndex,randChunk+_interval.x);
+        positions[i] = posTileGlobal;
+
+    }
+    for(int i = 0; i<_trees.size(); i++){
+        if(!_trees[i]->_removed && !_trees[i]->_dead){
+            for(int j=0; j<num_candidates; j++){
+                sf::Vector2f position = _trees[i]->_position;
+                sf::Vector2i posTileGlobal = positions[j];
+                int distance = sqrt((posTileGlobal.x-position.x)*(posTileGlobal.x-position.x)+(posTileGlobal.y-position.y)*(posTileGlobal.y-position.y));
+                if(distances[j] <0 || distance < distances[j]) distances[j] = distance;
+            }
+        }
+    }
+    int max_dist = 0;
+    sf::Vector2i positionNewTree;
+    for(int i=0; i<num_candidates; i++){
+        if(distances[i] > max_dist){
+            max_dist = distances[i];
+            positionNewTree = positions[i];
+        }
+    }
+    if(max_dist >0){
+        std::cout << "repoblating tree at position: " << positionNewTree.x << " " << positionNewTree.y << std::endl;
+
+        TreeGenetics *treGen = new TreeGenetics();
+        Tree *t = new Tree(treGen,Map::getChunkIndex(positionNewTree.x), positionNewTree);
+        t->setEcosystemIndex(_index);
+        _trees.push_back(t);
+
+
+        Map *m = Scene::getScene()->getMap();
+        int index_chunk = m->getIndexMatChunk(Map::getChunkIndex(positionNewTree.x));
+        if(index_chunk != -1){
+            m->_chunk_mat[index_chunk]->addTreeToChunk(t,index_chunk);
+            m->_chunk_mat[0]->_is_dirty = true;
+            m->_chunk_mat[1]->_is_dirty = true;
+            m->_chunk_mat[2]->_is_dirty = true;
+        }
+    }
+    linkTrees();
 
 }
 int Ecosystem::getSizeUnderground(){
@@ -426,8 +516,8 @@ void Ecosystem::loadEntities(){
                 d->hour = c->hour;
             }
         }
-        _ecoReady = true;
     }
+    _ecoReady = true;
 
 }
 void Ecosystem::linkTrees(){

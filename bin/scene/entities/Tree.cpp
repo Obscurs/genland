@@ -8,6 +8,7 @@
 #include "../Scene.h"
 #include "../../Settings.h"
 #include "../NoiseGenerator.h"
+#include "../../Resources.h"
 
 Tree::Tree(): Entity("tree"),
     _gens(){
@@ -20,20 +21,53 @@ Tree::Tree(): Entity("tree"),
     _temperature = 0;
     _humidity = 0;
     _timeToReproduce = 0;
+    _keyframe = 0;
+    _spriteTime = 0;
+
+    _debug_last_damage_distance=0;
+    _debug_last_damage_hum = 0;
+    _debug_last_damage_temp = 0;
+    _debug_last_damage_time = 0;
 }
 Tree::Tree(TreeGenetics* t,int chunk, sf::Vector2i position): Entity("tree"){
     _gens = *t;
     _chunk = chunk;
     setPosition(position);
     buildTree();
-    _timeToReproduce = rand() % _gens._reproduceFactor + 10;
+    _timeToReproduce = rand() % (100-_gens._reproduceFactor) + 10;
+    //_timeToReproduce = 100;
     _life = rand() % _gens._health + 10;
+    //_life = 70;
+    _keyframe = 0;
+    _spriteTime = 0;
+
+    _debug_last_damage_distance=0;
+    _debug_last_damage_hum = 0;
+    _debug_last_damage_temp = 0;
+    _debug_last_damage_time = 0;
 }
 Tree::Tree(TreeGenetics* t1, TreeGenetics* t2,int chunk, sf::Vector2i position, int index): Entity("tree"),_gens(t1,t2, (float)(t1->_strenghtGen)/100){
     _chunk = chunk;
     setPosition(position);
     setEcosystemIndex(index);
     buildTree();
+    _keyframe = 0;
+    _spriteTime = 0;
+
+    _debug_last_damage_distance=0;
+    _debug_last_damage_hum = 0;
+    _debug_last_damage_temp = 0;
+    _debug_last_damage_time = 0;
+}
+void Tree::draw(sf::RenderTarget & renderTar){
+    if(_keyframe<10){
+        sf::Texture *t = Resources::getTexture("entities");
+        _spriteSpawn.setTexture(*t);
+        _spriteSpawn.setTextureRect(sf::IntRect(0,128,64,64));
+        _spriteSpawn.setPosition(_position.x, _position.y+_sizeCol.y);
+        _spriteSpawn.setTextureRect(sf::IntRect(64*_keyframe,64*3,64,64));
+        renderTar.draw(_spriteSpawn);
+    }
 }
 void Tree::setPosition(sf::Vector2i position){
     _position = sf::Vector2f(position);
@@ -48,17 +82,19 @@ void Tree::setPosition(sf::Vector2i position){
 }
 void Tree::buildTree(){
     int height;
-    if(_gens._height==1) height = rand()% 4 + 2;
-    else if(_gens._height==2) height = rand() % 10 +5;
-    else if(_gens._height==3) height = rand() % 15 +15;
+    if(_gens._height==1) height = rand()% 4 + 4;
+    else if(_gens._height==2) height = rand() % 10 +7;
+    else if(_gens._height==3) height = rand() % 15 +17;
     int amplitude;
     if(height > 15) amplitude = std::max(_gens._amplitude,2);
-    else if(height > 5) amplitude = std::min(_gens._amplitude,2);
+    else if(height > 7) amplitude = std::min(_gens._amplitude,2);
     else amplitude = 1;
     _min_x = 0;
     _max_x = 0;
     _life = _gens._health;
-    _timeToReproduce =_gens._reproduceFactor+OFFSET_REPRODUCE;
+    //_life = 70;
+    _timeToReproduce = (100-_gens._reproduceFactor)+OFFSET_REPRODUCE;
+    //_timeToReproduce = 100;
     int x_deviation = 0;
     int corb;
     if(_gens._corb==1) corb = rand()% 9 -9;
@@ -377,33 +413,206 @@ void Tree::kill(){
     if(tr != nullptr) tr->setLeftTree(tl);
 }
 bool Tree::update(float delta, Clock *c){
-    int totalTemp = _temperature + c->_globalTemperature;
-    int totalHum = _humidity + c->_globalHumidity;
-    float humDamage = totalHum*(1-float(_gens._humidity)/100)*delta;
-    float tempDamage;
-    if(totalTemp>0) tempDamage = totalTemp*(1-float(_gens._hot)/100)*delta;
-    else tempDamage = -totalTemp*(1-float(_gens._cold)/100)*delta;
-    _life -= ((tempDamage+humDamage+delta)/2000)*Settings::GEN_SPEED;
-    if(_life<=0) {
-        //std::cout << "a tree died" << std::endl;
-        _dead = true;
-        return false;
+    delta = delta*Settings::GEN_SPEED;
+    _spriteTime += delta;
+    float maxtime = float(SPAWN_SPRITE_MAX_TIME)/10.0f;
+    if(_spriteTime > maxtime && _keyframe <10){
+        _spriteTime -= maxtime;
+        {
+            _keyframe +=1;
+        }
+
     }
-    else {
-        _timeToReproduce -= (delta/10)*Settings::GEN_SPEED;
-        if(_timeToReproduce <0) {
-            //std::cout << "new tree created" << std::endl;
-            return true;
+    if(false){
+        int totalTemp = 10;
+        int totalHum = 50;
+        float humDamage = totalHum*(1-float(50)/100)*delta;
+        float tempDamage;
+        if(totalTemp>0) tempDamage = totalTemp*(1-float(50)/100)*delta;
+        else tempDamage = -totalTemp*(1-float(50)/100)*delta;
+        _life -= ((tempDamage+humDamage+delta)/2000)*Settings::GEN_SPEED;
+        if(_life<=0) {
+            //std::cout << "a tree died" << std::endl;
+            _dead = true;
+            return false;
+        }
+        else {
+            _timeToReproduce -= (delta/10)*Settings::GEN_SPEED;
+            if(_timeToReproduce <0) {
+                //std::cout << "new tree created" << std::endl;
+                return true;
+            }
+        }
+    } else{
+
+        int totalTemp = _temperature + c->_globalTemperature;
+        int totalHum = _humidity + c->_globalHumidity;
+        float humDamage;
+        if(totalHum >50) humDamage = std::max((totalHum-_gens._humidity)*delta/100.f,0.f);
+        else humDamage = std::max(((50-totalHum-(100-_gens._humidity))*delta)/100.f,0.f);
+
+        float tempDamage;
+        if(totalTemp>10) tempDamage = std::max((totalTemp-10-_gens._hot*0.6f)*delta/100.f,0.f);
+        else tempDamage = std::max((std::abs(totalTemp)+10-_gens._cold*0.6f)*delta/100.f,0.f);
+        float oldDamage = delta/50;
+        float damageLeft = 0;
+        float damageRight = 0;
+        int rangeDistDamage = Settings::DISTANCE_DAMAGE_TREE*Settings::TILE_SIZE;
+        if(_left_n != nullptr) {
+            float dist = _position.x-_left_n->_position.x-_left_n->_max_x*Settings::TILE_SIZE +_min_x*Settings::TILE_SIZE;
+            float disty = std::max(_left_n->_gens._health - _gens._height,0)+1;
+            if(dist<rangeDistDamage){
+                damageLeft = ((rangeDistDamage-dist)*5/rangeDistDamage)*disty*delta/1000.f;
+            }
+
+        }
+        if(_right_n != nullptr) {
+            float dist = _right_n->_position.x-_position.x+_right_n->_min_x*Settings::TILE_SIZE +_max_x*Settings::TILE_SIZE;
+            float disty = std::max(_right_n->_gens._health - _gens._height,0)+1;
+            if(dist<rangeDistDamage){
+                damageRight = ((rangeDistDamage-dist)*5/rangeDistDamage)*disty*delta/1000.f;
+            }
+        }
+        _debug_last_damage_distance= damageRight*100+damageLeft*100;
+        _debug_last_damage_hum = humDamage*100;
+        _debug_last_damage_temp = tempDamage*100;
+        _debug_last_damage_time = oldDamage*100;
+        _life -= ((tempDamage+humDamage+oldDamage+damageRight+damageLeft)/6);
+        if(_life<=0) {
+            //std::cout << "a tree died" << std::endl;
+            _dead = true;
+            return false;
+        }
+        else {
+            _timeToReproduce -= (delta/10);
+            if(_timeToReproduce <0) {
+                //std::cout << "new tree created" << std::endl;
+                return true;
+            }
         }
     }
+
     return false;
 }
 TreeGenetics* Tree::getGenetics(){
     return &_gens;
 }
-Tree * Tree::reproduce(){
 
-    int direction = rand() % 2;
+Tree * Tree::reproduce2(){
+
+
+    Tree *t_ini1, *t_end1;
+    Tree *t_ini2, *t_end2;
+    Tree *resultTree = nullptr;
+    int chunk_ini1, chunk_end1;
+    int offset_ini1, offset_end1;
+    int chunk_ini2, chunk_end2;
+    int offset_ini2, offset_end2;
+    t_ini1 = _left_n;
+    t_end1 = this;
+    t_ini2 = this;
+    t_end2 = _right_n;
+    Scene *s = Scene::getScene();
+    sf::Vector2i intervalEco =s->searchIntervalEcosystem(_chunk);
+    _timeToReproduce = _gens._reproduceFactor+OFFSET_REPRODUCE;
+    if(t_ini1 == nullptr) {
+        chunk_ini1= intervalEco.x;
+        chunk_end1 = _chunk;
+        offset_ini1 = 0;
+        offset_end1 = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x;
+    }
+    else if(t_end1 == nullptr){
+        //t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        chunk_ini1 = _chunk;
+        chunk_end1 = intervalEco.y;
+        offset_end1 = Chunk::N_TILES_X-1;
+        offset_ini1 = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x;
+    } else {
+        chunk_ini1 = t_ini1->_chunk;
+        chunk_end1 = t_end1->_chunk;
+        offset_ini1 = Chunk::getIndexFromGlobalPosition(sf::Vector2f(t_ini1->_position.x,t_ini1->_position.y)).x;
+        offset_end1 = Chunk::getIndexFromGlobalPosition(sf::Vector2f(t_end1->_position.x,t_end1->_position.y)).x;
+    }
+
+    if(t_ini2 == nullptr) {
+        chunk_ini2= intervalEco.x;
+        chunk_end2 = _chunk;
+        offset_ini2 = 0;
+        offset_end2 = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x;
+    }
+    else if(t_end2 == nullptr){
+        //t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        chunk_ini2 = _chunk;
+        chunk_end2 = intervalEco.y;
+        offset_end2 = Chunk::N_TILES_X-1;
+        offset_ini2 = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x;
+    } else {
+        chunk_ini2 = t_ini2->_chunk;
+        chunk_end2 = t_end2->_chunk;
+        offset_ini2 = Chunk::getIndexFromGlobalPosition(sf::Vector2f(t_ini2->_position.x,t_ini2->_position.y)).x;
+        offset_end2 = Chunk::getIndexFromGlobalPosition(sf::Vector2f(t_end2->_position.x,t_end2->_position.y)).x;
+    }
+    std::vector<std::vector<std::pair<int, bool> > > *surface = s->getSurface(intervalEco);
+
+        int current_chunk1 = chunk_ini1;
+
+        std::vector<sf::Vector3i> grassPositions1;
+        if(chunk_end1>=intervalEco.y) --chunk_end1;
+        while(current_chunk1 <= chunk_end1){
+
+            int index_current_chunk = current_chunk1-intervalEco.x;
+            int start =0;
+            int end = Chunk::N_TILES_X;
+            if(current_chunk1==chunk_ini1) start = offset_ini1;
+            if(current_chunk1==chunk_end1) end = offset_end1;
+            for(int i=start; i<end; i++){
+                std::pair<int, bool> surfaceTile = (*surface)[index_current_chunk][i];
+                if(surfaceTile.second){
+
+                    int globalPosTileY = surfaceTile.first*Settings::TILE_SIZE;
+                    int globalPosTileX = i*Settings::TILE_SIZE + current_chunk1*Settings::TILE_SIZE*Chunk::N_TILES_X;
+
+                    grassPositions1.push_back(sf::Vector3i(globalPosTileX,globalPosTileY,current_chunk1));
+
+                }
+
+            }
+            current_chunk1 +=1;
+
+        }
+
+    int current_chunk2 = chunk_ini2;
+    std::vector<sf::Vector3i> grassPositions2;
+    if(chunk_end2>=intervalEco.y) --chunk_end2;
+    while(current_chunk2 <= chunk_end2){
+
+        int index_current_chunk = current_chunk2-intervalEco.x;
+        int start =0;
+        int end = Chunk::N_TILES_X;
+        if(current_chunk2==chunk_ini2) start = offset_ini2;
+        if(current_chunk2==chunk_end2) end = offset_end2;
+        for(int i=start; i<end; i++){
+            std::pair<int, bool> surfaceTile = (*surface)[index_current_chunk][i];
+            if(surfaceTile.second){
+
+                int globalPosTileY = surfaceTile.first*Settings::TILE_SIZE;
+                int globalPosTileX = i*Settings::TILE_SIZE + current_chunk2*Settings::TILE_SIZE*Chunk::N_TILES_X;
+
+                grassPositions2.push_back(sf::Vector3i(globalPosTileX,globalPosTileY,current_chunk2));
+
+            }
+
+        }
+        current_chunk2 +=1;
+
+    }
+    if(grassPositions1.size() > grassPositions2.size()) return reproduce(0);
+    else return reproduce(1);
+
+}
+Tree * Tree::reproduce(int direction){
+
+
     Tree *t_ini, *t_end;
     Tree *resultTree = nullptr;
     int chunk_ini, chunk_end;
@@ -417,9 +626,9 @@ Tree * Tree::reproduce(){
     }
     Scene *s = Scene::getScene();
     sf::Vector2i intervalEco =s->searchIntervalEcosystem(_chunk);
-    _timeToReproduce = _gens._reproduceFactor+OFFSET_REPRODUCE;
+    _timeToReproduce = (100-_gens._reproduceFactor)+OFFSET_REPRODUCE;
     if(t_ini == nullptr) {
-        t_end->_timeToReproduce = t_end->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        //t_end->_timeToReproduce = t_end->_gens._reproduceFactor+OFFSET_REPRODUCE;
         chunk_ini= intervalEco.x;
         chunk_end = _chunk;
         offset_ini = 0;
@@ -427,15 +636,15 @@ Tree * Tree::reproduce(){
         offset_end = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x+_min_x-2-resultTree->_max_x;
     }
     else if(t_end == nullptr){
-        t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        //t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
         chunk_ini = _chunk;
         chunk_end = intervalEco.y;
         offset_end = Chunk::N_TILES_X-1;
         resultTree = new Tree(t_ini->getGenetics(),t_ini->getGenetics(),0, sf::Vector2i(0,0),t_ini->getEcosystemIndex());
         offset_ini = Chunk::getIndexFromGlobalPosition(sf::Vector2f(_position.x,_position.y)).x+_max_x+2-resultTree->_min_x;
     } else {
-        t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
-        t_end->_timeToReproduce = t_end->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        //t_ini->_timeToReproduce = t_ini->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        //t_end->_timeToReproduce = t_end->_gens._reproduceFactor+OFFSET_REPRODUCE;
         chunk_ini = t_ini->_chunk;
         chunk_end = t_end->_chunk;
         resultTree = new Tree(t_end->getGenetics(),t_ini->getGenetics(),0, sf::Vector2i(0,0),t_ini->getEcosystemIndex());
@@ -454,16 +663,21 @@ Tree * Tree::reproduce(){
         chunk_end -=1;
         if(chunk_end < intervalEco.x) valid_emplacement = false;
     }
-    if(chunk_ini == chunk_end && offset_end <offset_ini) valid_emplacement = false;
+    if(chunk_ini == chunk_end && offset_end - offset_ini < resultTree->_max_x-resultTree->_min_x) valid_emplacement = false;
 
     if(valid_emplacement){
         int current_chunk = chunk_ini;
         std::vector<std::vector<std::pair<int, bool> > > *surface = s->getSurface(intervalEco);
         std::vector<sf::Vector3i> grassPositions;
-        while(current_chunk < chunk_end){
+        if(chunk_end>=intervalEco.y) --chunk_end;
+        while(current_chunk <= chunk_end){
 
             int index_current_chunk = current_chunk-intervalEco.x;
-            for(int i=0; i<Chunk::N_TILES_X; i++){
+            int start =0;
+            int end = Chunk::N_TILES_X;
+            if(current_chunk==chunk_ini) start = offset_ini;
+            if(current_chunk==chunk_end) end = offset_end;
+            for(int i=start; i<end; i++){
                 std::pair<int, bool> surfaceTile = (*surface)[index_current_chunk][i];
                 if(surfaceTile.second){
 
@@ -492,9 +706,15 @@ Tree * Tree::reproduce(){
             if(t_ini != nullptr && (t_ini->_chunk > 100 || t_ini->_chunk < -100)){
                 std::cout << "lol" << std::endl;
             }
-            if(t_ini !=nullptr) t_ini->setRightTree(resultTree);
-            if(t_end !=nullptr) t_end->setLeftTree(resultTree);
+            //if(t_ini !=nullptr) t_ini->setRightTree(resultTree);
+            //if(t_end !=nullptr) t_end->setLeftTree(resultTree);
             //std::cout << " tree Reproduced " << resultTree->_chunk << " " << resultTree->_position.x << " " << resultTree->_position.y << std::endl;
+            //if(resultTree->_left_n != nullptr &&  resultTree->_position.x < resultTree->_left_n->_position.x){
+            //    std::cout << "error left" << std::endl;
+            //}
+            //if(resultTree->_right_n != nullptr && resultTree->_position.x > resultTree->_right_n->_position.x){
+            //    std::cout << "error right" << std::endl;
+            //}
             return resultTree;
         }
     }

@@ -24,7 +24,7 @@ void NoiseGenerator::init(std::string sseed){
     generator.seed(seed+4);
     Simplex2d* mountains = new Simplex2d(&generator, 500.0f, 0.4f, 0.5f);
     generator.seed(seed+5);
-    Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -10, 20);
+    Simplex2d* base_noise_temperature = new Simplex2d(&generator, 25000.0f, -20, 30);
     generator.seed(seed+6);
     Simplex2d* noise_humidity = new Simplex2d(&generator, 25000.0f, 0.0f, 100.0f);
     generator.seed(seed+7);

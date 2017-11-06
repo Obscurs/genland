@@ -1,9 +1,10 @@
 
 #pragma once
 #include "../../TextureManager.h"
+#include "Entity.h"
 
 
-class AnimatedTile
+class AnimatedTile: public Entity
 {
 public:
 	AnimatedTile(std::string new_id,std::string id_pick);
@@ -32,8 +33,6 @@ private:
 	float vy;
     float disp_factor;
     float rotation;
-    sf::Vector2f position;
-    sf::Vector2f size;
     bool ColideWorld();
 };
 

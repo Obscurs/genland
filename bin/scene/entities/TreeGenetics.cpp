@@ -162,18 +162,18 @@ void TreeGenetics::valance(int (&amounts)[6]){
     }
 }
 void TreeGenetics::setRelatedFactors(){
-    if(_cold >70) _height = 3;
-    else if(_cold >40) _height = 2;
+    if((_cold >70 || _health > 70) && _reproduceFactor <40) _height = 3;
+    else if((_cold >30 || _health > 50) && _reproduceFactor <60) _height = 2;
     else _height = 1;
 
 
-    if(_hot >70) _amplitude = 1;
+    if(_hot >70 || _strenghtGen < 30) _amplitude = 1;
     else if(_hot >40) _amplitude = 2;
     else _amplitude = 3;
 
 
-    if(_humidity >70) _densityLeave = 3;
-    else if(_humidity >40) _densityLeave = 2;
+    if(_humidity >70 || _reproduceFactor > 70) _densityLeave = 3;
+    else if(_humidity >40 || _reproduceFactor > 60) _densityLeave = 2;
     else _densityLeave = 1;
 }
 

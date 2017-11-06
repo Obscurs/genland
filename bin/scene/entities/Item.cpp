@@ -279,18 +279,25 @@ void Item::Reload(std::string new_id)
         type = ARMOR;
         _isEntity = true;
     }else if(new_id == "stairs"){
-        max_stack_amount= 1;
+        max_stack_amount= 10;
         amount = 0;
         craft_cost["F"] = 40;
         id_set0="-1";
         id_set1="stairs";
         _isEntity = true;
     }else if(new_id == "torch"){
-        max_stack_amount= 1;
+        max_stack_amount= 10;
         amount = 0;
         craft_cost["F"] = 10;
         id_set0="-1";
         id_set1="torch";
+        _isEntity = true;
+    } else if(new_id == "food"){
+        max_stack_amount= 10;
+        amount = 0;
+        craft_cost["F"] = 10;
+        id_set0="-1";
+        id_set1="-1";
         _isEntity = true;
     }
 	else{

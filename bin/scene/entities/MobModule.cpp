@@ -5,25 +5,44 @@
 #include <iostream>
 #include "MobModule.h"
 #include "../../Resources.h"
-
+#include <fstream>
+#include <sstream>
 MobModule::MobModule(std::string type, int id, sf::Vector2f offset, float localScale){
-    sf::Texture *t = Resources::getTexture("mobs");
-    _sprite.setTexture(*t);
+    sf::Texture *t;
+
     _idModule = id;
     _keyframe = 0;
     _offset = offset;
     _typeModule = type;
+    if(_typeModule == "head"){
+        t = Resources::getTexture("mobsHeads");
+    } else if(_typeModule == "hand"){
+        t = Resources::getTexture("mobsHands");
+    } else if(_typeModule == "body"){
+        t = Resources::getTexture("mobsBodies");
+    } else if(_typeModule == "complement"){
+        t = Resources::getTexture("mobsComplements");
+    } else if(_typeModule == "leg" || _typeModule == "legBack" ){
+        t = Resources::getTexture("mobsLegs");
+    }
+    _sprite.setTexture(*t);
     _localScale = localScale;
     sf::Vector2f _position(0,0);
-    sf::Vector2f _sizeCol(0,0);
+    sf::Vector2f _sizeCol(MOB_SPRITE_SIZE,MOB_SPRITE_SIZE);
     sf::Vector2f _positionCol(0,0);
     _currentAnimation = nullptr;
     _sprite.setPosition(_position.x,_position.y);
     _spriteTime = 0;
     _initialized = false;
+    setAnimations();
 }
 MobModule::~MobModule(){
 
+}
+bool MobModule::die(float delta, float positionFloor){
+    if(_positionCol.y+_sizeCol.y< positionFloor) _positionCol.y+=delta;
+    else return true;
+    return true;
 }
 void MobModule::addAnimation(std::string name, int frameIni, int numFrames){
     Animation *a = new Animation;
@@ -39,6 +58,9 @@ void MobModule::draw(sf::RenderTarget & renderTar){
     }
 
 }
+int MobModule::getIdModule() {
+    return _idModule;
+}
 sf::FloatRect MobModule::getBoundingBox(sf::Vector2f position, float scale){
     float totalScale = scale*_localScale;
     float left = _offset.x*totalScale+position.x;
@@ -46,6 +68,43 @@ sf::FloatRect MobModule::getBoundingBox(sf::Vector2f position, float scale){
     float top = _offset.y*totalScale+position.y;
     float height = MOB_SPRITE_SIZE*totalScale+top;
     return sf::FloatRect(left,top,width,height);
+}
+bool MobModule::hasAnimation(std::string name){
+    for(int i=0; i<_animations.size(); i++){
+        if(_animations[i]->a_name==name) return true;
+    }
+    return false;
+}
+void MobModule::saveToFile(std::ofstream &myfile){
+    myfile << _typeModule << " " << _idModule << " " << _offset.x << " " << _offset.y << " " <<_localScale << " ";
+}
+void MobModule::setAnimations(){
+
+    if(_typeModule == "head"){
+        addAnimation("idle",0,1);
+        addAnimation("attacking",1,2);
+    } else if(_typeModule == "hand"){
+        addAnimation("idle",0,1);
+        addAnimation("walking",1,3);
+    } else if(_typeModule == "body"){
+        addAnimation("idle",0,1);
+    } else if(_typeModule == "complement"){
+        addAnimation("idle",0,1);
+    } else if(_typeModule == "leg"){
+        addAnimation("idle",0,1);
+        addAnimation("walking",1,3);
+    } else if(_typeModule == "legBack"){
+        addAnimation("idle",4,1);
+        addAnimation("walking",5,3);
+    }
+
+
+}
+sf::Vector2f MobModule::getOffset() {
+    return _offset;
+}
+float MobModule::getScale() {
+    return _localScale;
 }
 void MobModule::update(float delta, sf::Vector2f mobPosition, float scale, std::string currentAnimation, int direction){
     float final_scale = scale*_localScale;

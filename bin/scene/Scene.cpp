@@ -345,23 +345,40 @@ void Scene::addEntity(Entity *e) {
 void Scene::getEntityesArea(std::vector<Entity*> &entities, sf::Vector2i position, int radius, int indexEcosystem){
     if(indexEcosystem==0){
         _ecosystems.first->getEntitiesOnArea(entities,position,radius);
-    } else if(indexEcosystem==-1){
+    } else if(indexEcosystem==1){
         _ecosystems.second->getEntitiesOnArea(entities,position,radius);
     } else std::cout << "alguna entitat te ecosystem index -1" << std::endl;
+}
+void Scene::getFallingTilesArea(std::vector<AnimatedTile*> &entities, sf::Vector2i position, int radius){
+
+    for(int i=0; i<Map::N_CHUNKS_X; ++i){
+        for(int j=0; j< _map_curr._chunk_mat[i]->_falling_tiles.size(); j++){
+            sf::Vector2f posEnt = _map_curr._chunk_mat[i]->_falling_tiles[j]->getPositionCol();
+            int distance = sqrt((posEnt.x-position.x)*(posEnt.x-position.x)+(posEnt.y-position.y)*(posEnt.y-position.y));
+            if(distance < radius) entities.push_back(_map_curr._chunk_mat[i]->_falling_tiles[j]);
+        }
+    }
+}
+void Scene::getTreesOnArea(std::vector<Tree*> &trees, sf::Vector2i position, int radius, int indexEcosystem){
+    if(indexEcosystem==0){
+        _ecosystems.first->getTreesOnArea(trees,position,radius);
+    } else if(indexEcosystem==1){
+        _ecosystems.second->getTreesOnArea(trees,position,radius);
+    } else std::cout << "algun tree te ecosystem index -1" << std::endl;
 }
 void Scene::getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius, int indexEcosystem){
     if(indexEcosystem==0){
         _ecosystems.first->getMobsOnArea(mobs,position,radius);
-    } else if(indexEcosystem==-1){
+    } else if(indexEcosystem==1){
         _ecosystems.second->getMobsOnArea(mobs,position,radius);
-    } else std::cout << "alguna entitat te ecosystem index -1" << std::endl;
+    } else std::cout << "algun mob te ecosystem index -1" << std::endl;
 }
 void Scene::getPositionsOnArea(std::vector<sf::Vector2i> &positions,sf::Vector2i position, int radius, int indexEcosystem){
     if(indexEcosystem==0){
         _ecosystems.first->getPositionsOnArea(positions,position,radius);
-    } else if(indexEcosystem==-1){
+    } else if(indexEcosystem==1){
         _ecosystems.second->getPositionsOnArea(positions,position,radius);
-    } else std::cout << "alguna entitat te ecosystem index -1" << std::endl;
+    } else std::cout << "alguna posicio te ecosystem index -1" << std::endl;
 }
 
 int Scene::getTemperatureGlobal(sf::Vector2f pos){

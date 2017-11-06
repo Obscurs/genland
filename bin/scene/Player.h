@@ -9,8 +9,8 @@ class Player: public Colisionable
 public:
 	Player();
 	~Player();
-	const static int PLAYER_SPEED_X = 150;
-	const static int PLAYER_SPEED_Y = 400;
+	const static int PLAYER_SPEED_X = 1500;
+	const static int PLAYER_SPEED_Y = 600;
     const static int PLAYER_SPRITE_SIZE = 64;
     const static int PLAYER_SPRITE_MAX_TIME = 1;
     const static int PLAYER_WIDTH = 32;
