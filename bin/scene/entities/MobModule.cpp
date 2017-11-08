@@ -61,11 +61,17 @@ void MobModule::draw(sf::RenderTarget & renderTar){
 int MobModule::getIdModule() {
     return _idModule;
 }
-sf::FloatRect MobModule::getBoundingBox(sf::Vector2f position, float scale){
+sf::FloatRect MobModule::getBoundingBox(sf::Vector2f position, float scale,int direction){
     float totalScale = scale*_localScale;
-    float left = _offset.x*totalScale+position.x;
-    float width = MOB_SPRITE_SIZE*totalScale+left;
+    float left;
+    if(direction==0) {
+        left = _offset.x*totalScale+position.x;
+    }
+    else {
+        left = position.x-_offset.x*totalScale+(1-totalScale)*MOB_SPRITE_SIZE;
+    }
     float top = _offset.y*totalScale+position.y;
+    float width = MOB_SPRITE_SIZE*totalScale+left;
     float height = MOB_SPRITE_SIZE*totalScale+top;
     return sf::FloatRect(left,top,width,height);
 }

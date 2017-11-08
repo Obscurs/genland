@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <iostream>
 MobGenetics::MobGenetics(){
-    int amounts[13] = {rand() % 100};
+    int amounts[14] = {rand() % 100};
     valance(amounts);
     _cold = amounts[0];
     _hot = amounts[1];
@@ -22,6 +22,7 @@ MobGenetics::MobGenetics(){
     _speed = amounts[10];
     _atackSpeed = amounts[11];
     _foodNeeds = amounts[12];
+    _age = amounts[13];
     _race = rand() % MOB_RACES;
     for(int i=0; i<MOB_RACES; i++){
         int place = rand() %4;
@@ -145,8 +146,9 @@ MobGenetics::MobGenetics(MobGenetics *t1, MobGenetics *t2, float factor){
     _speed = (int)(t1->_speed*factor+t2->_speed*(1-factor));
     _atackSpeed = (int)(t1->_atackSpeed*factor+t2->_atackSpeed*(1-factor));
     _foodNeeds =(int)(t1->_foodNeeds*factor+t2->_foodNeeds*(1-factor));
+    _age = (int)(t1->_age*factor+t2->_age*(1-factor));
     mixRacePreferences(t1,t2,factor);
-    int amounts[13] = {_cold,_hot,_humidity,_health,_reproduceFactor,_strenghtGen,_distanceMaxMove,_distanceMaxReproduce,_strenght,_jump,_speed,_atackSpeed,_foodNeeds};
+    int amounts[14] = {_cold,_hot,_humidity,_health,_reproduceFactor,_strenghtGen,_distanceMaxMove,_distanceMaxReproduce,_strenght,_jump,_speed,_atackSpeed,_foodNeeds, _age};
     valance(amounts);
     _cold = amounts[0];
     _hot = amounts[1];
@@ -161,6 +163,7 @@ MobGenetics::MobGenetics(MobGenetics *t1, MobGenetics *t2, float factor){
     _speed = amounts[10];
     _atackSpeed = amounts[11];
     _foodNeeds = amounts[12];
+    _age = amounts[13];
     setRelatedFactors();
     mutate();
 
@@ -187,9 +190,9 @@ void MobGenetics::mutateRaces(){
 void MobGenetics::mutate(){
 
     int *atribute1, *atribute2;
-    int atribute1ind = rand() % 13;
-    int atribute2ind = rand() % 13;
-    if(atribute1ind==atribute2ind) atribute2ind = atribute2ind % 13;
+    int atribute1ind = rand() % 14;
+    int atribute2ind = rand() % 14;
+    if(atribute1ind==atribute2ind) atribute2ind = atribute2ind % 14;
     switch(atribute1ind){
         case 0:
             atribute1 = &_cold;break;
@@ -217,6 +220,8 @@ void MobGenetics::mutate(){
             atribute1 = &_atackSpeed;break;
         case 12:
             atribute1 = &_foodNeeds;break;
+        case 13:
+            atribute1 = &_age;break;
         default:atribute1 = &_cold;
     }
     switch(atribute2ind){
@@ -246,6 +251,8 @@ void MobGenetics::mutate(){
             atribute2 = &_atackSpeed;break;
         case 12:
             atribute2 = &_foodNeeds;break;
+        case 13:
+            atribute2 = &_age;break;
         default:atribute2 = &_cold;break;
     }
     int amount1 = (rand() % 50);
@@ -257,36 +264,36 @@ void MobGenetics::mutate(){
     setRelatedFactors();
 
 }
-void MobGenetics::valance(int (&amounts)[13]){
+void MobGenetics::valance(int (&amounts)[14]){
     int sum =0;
-    for(int i=0;i<13; i++){
+    for(int i=0;i<14; i++){
         sum = sum + amounts[i];
     }
-    if(sum > 650){
-        int diference = sum-650;
+    if(sum > 700){
+        int diference = sum-700;
         sum = 0;
-        for(int i=0;i<13; i++){
-            amounts[i] = std::max(0,amounts[i]-diference/13);
+        for(int i=0;i<14; i++){
+            amounts[i] = std::max(0,amounts[i]-diference/14);
             sum = sum + amounts[i];
         }
     }
-    while(sum > 650){
-        int index = std::rand() % 13;
+    while(sum > 700){
+        int index = std::rand() % 14;
         if(amounts[index] >0){
             sum = sum-1;
             amounts[index] -= 1;
         }
     }
-    if(sum < 650){
-        int diference = 650-sum;
+    if(sum < 700){
+        int diference = 700-sum;
         sum = 0;
-        for(int i=0;i<13; i++){
-            amounts[i] = std::min(100,amounts[i]+diference/13);
+        for(int i=0;i<14; i++){
+            amounts[i] = std::min(100,amounts[i]+diference/14);
             sum = sum + amounts[i];
         }
     }
-    while(sum < 650){
-        int index = std::rand() % 13;
+    while(sum < 700){
+        int index = std::rand() % 14;
         if(amounts[index] <100){
             sum = sum+1;
             amounts[index] += 1;

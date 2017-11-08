@@ -238,9 +238,12 @@ void Debuger::DrawEntitiesStats(int eco){
     position = position_zoomed;
     std::vector<Mob*> mobs;
     s->getMobsOnArea(mobs,sf::Vector2i(position),100,eco);
-    if(false) {
+    for(int i =0; i<mobs.size();i++){
+        mobs[i]->_focusDebug = true;
+    }
+    if(mobs.size()>0) {
         std::stringstream buffer2;
-        buffer2 << "Mob Position colision: " << mobs[0]->_positionCol.x << " " << mobs[0]->_positionCol.y << " Size colision: " << mobs[0]->_sizeCol.x << " " << mobs[0]->_sizeCol.y;
+        buffer2 << "Mob Position colision: " << mobs[0]->_positionCol.x << " " << mobs[0]->_positionCol.y << " Size colision: " << mobs[0]->_sizeCol.x << " " << mobs[0]->_sizeCol.y << " Radius: " << mobs[0]->getGenetics()->_distanceMaxReproduce << "/" << mobs[0]->getGenetics()->_distanceMaxMove;
         std::string string(buffer2.str());
         sf::String str(string);
         _text.setString(str);
@@ -249,7 +252,7 @@ void Debuger::DrawEntitiesStats(int eco){
         _displace = _displace + DISPLACEMENT;
 
         std::stringstream buffer3;
-        buffer3 << "Race: " << mobs[0]->getGenetics()->_race << " Life: " << mobs[0]->_life << "/" << mobs[0]->getGenetics()->_health << " Hunger: " << mobs[0]->_hunger << "/" << mobs[0]->getGenetics()->_foodNeeds;
+        buffer3 << "Race: " << mobs[0]->getGenetics()->_race << " Life: " << mobs[0]->_life << "/" << mobs[0]->getGenetics()->_health << " Hunger: " << mobs[0]->_hunger << "/" << mobs[0]->getGenetics()->_foodNeeds << " Age: " << mobs[0]->_age << "/" << mobs[0]->getGenetics()->_age;
         std::string string3(buffer3.str());
         sf::String str3(string3);
         _text.setString(str3);

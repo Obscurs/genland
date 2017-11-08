@@ -27,6 +27,7 @@ public:
     enum Decision{IDLE, GO_LEFT,GO_RIGHT};
     void setPosition(sf::Vector2f position);
     bool update(float delta, Clock *c);
+    bool mobIsOnReproduceArea();
     void updateVisible(float delta);
     Mob * reproduce();
     std::vector<MobModule*>& getModules();
@@ -39,7 +40,9 @@ public:
     int _mobType;
     float _life;
     float _hunger;
+    float _age;
     float _timeToReproduce;
+    bool _focusDebug;
 private:
     sf::FloatRect getBoundingBox();
     Entity* _target;
@@ -65,6 +68,7 @@ private:
 
     int _keyframe;
     float _spriteTime;
+
 };
 
 

@@ -21,6 +21,8 @@ const sf::Keyboard::Key Inputs::_keyMap[NUM_KEYS] = {
         sf::Keyboard::Left,
         sf::Keyboard::Right,
         sf::Keyboard::LShift,
+        sf::Keyboard::LAlt,
+        sf::Keyboard::LControl,
         sf::Keyboard::Z,
         sf::Keyboard::X,
         sf::Keyboard::Return,

@@ -36,7 +36,7 @@ public:
     sf::Vector2f _positionCol;
     sf::Vector2i _sizeCol;
     std::string _typeModule;
-    sf::FloatRect getBoundingBox(sf::Vector2f position, float scale);
+    sf::FloatRect getBoundingBox(sf::Vector2f position, float scale,int direction);
     sf::Vector2f getOffset();
     float getScale();
 

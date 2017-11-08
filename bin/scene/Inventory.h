@@ -1,4 +1,4 @@
-
+#pragma once
 #include "entities/Item.h"
 class Inventory
 {
@@ -58,7 +58,7 @@ private:
 	void deleteItemTab(int x);
 	void deleteMouseItem();
 	void deleteItemInventory(int x, int y);
-	void inventoryClick(float x, float y, std::string key);
+	bool inventoryClick(float x, float y, std::string key);
 	void craftItem(std::string id_item);
 	int getTotalAmountInventory(std::string id_item);
 	int getTotalAmountTab(std::string id_item);

@@ -15,6 +15,8 @@
 #include "../Resources.h"
 #include "../Inputs.h"
 #include "../Debuger.h"
+#include "Scene.h"
+#include "../Settings.h"
 #include <string>
 #include <fstream>
 //#include "Game.h"
@@ -412,7 +414,7 @@ Item * Inventory::getItemAtTab() {
 	return tab[tab_item_selected];
 }
 
-void Inventory::inventoryClick(float x, float y, std::string key){
+bool Inventory::inventoryClick(float x, float y, std::string key){
 	int index_tab = getTabIndex(sf::Vector2f(x,y));
 	int index_craft = getCraftIndex(sf::Vector2f(x,y));
     int index_tool = getToolIndex(sf::Vector2f(x,y));
@@ -426,6 +428,7 @@ void Inventory::inventoryClick(float x, float y, std::string key){
         else if(index_tool != -1) mouseItem = moveItemTool(mouseItem);
         else if(index_armor != -1) mouseItem = moveItemArmor(mouseItem);
 		else if(index_craft != -1) craftItem(getIdCraftItem(index_craft));
+		else if(mouseItem != nullptr) return false;
 
 	} else if(key == "mouseRight"){
 		if(index_tab != -1){
@@ -558,6 +561,7 @@ void Inventory::inventoryClick(float x, float y, std::string key){
 			}
 		}
 	}
+	return true;
 }
 void Inventory::deleteMouseItem(){
 	delete mouseItem;
@@ -772,7 +776,19 @@ void Inventory::Update(sf::RenderWindow &window)
 	if(Inputs::MouseBreak(Inputs::M_LEFT)){
 		if(Inputs::KeyDown(Inputs::L_SHIFT)) inventoryClick(position.x, position.y, "shift+mouseLeft");
 
-		else inventoryClick(position.x, position.y, "mouseLeft");
+		else {
+			if(!inventoryClick(position.x, position.y, "mouseLeft")){
+				Player *p = Scene::getScene()->getPlayer();
+				Map *map = Scene::getScene()->getMap();
+				int chunkE = map->getChunkIndex(p->GetPosition().x);
+				int index_chunk = map->getIndexMatChunk(chunkE);
+				if(index_chunk != -1) {
+					map->_chunk_mat[index_chunk]->addFallingTile(mouseItem->id,mouseItem->id,p->GetPosition(),Settings::TILE_SIZE);
+				}
+				mouseItem->amount -=1;
+				if(mouseItem->amount <=0) deleteMouseItem();
+			}
+		}
 	}
 	else if(Inputs::MouseBreak(Inputs::M_RIGHT)){
 		inventoryClick(position.x, position.y, "mouseRight");

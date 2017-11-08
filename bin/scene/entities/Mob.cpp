@@ -15,6 +15,7 @@ Mob::Mob(): Entity("mob"),Colisionable(),_gens()
              {
     _target = nullptr;
     _dead = true;
+
     //_temperature = 0;
     //_humidity = 0;
     _position = sf::Vector2f(0,0);
@@ -29,10 +30,12 @@ Mob::Mob(): Entity("mob"),Colisionable(),_gens()
     _timeToReproduce = rand() % std::max(_gens._reproduceFactor,1) + 10;
     _life = rand() % std::max(_gens._health,1) + 10;
     _hunger = rand() % std::max(_gens._foodNeeds,1) + 10;
+    _age = rand() % std::max(_gens._age,1) + 10;
     _attackColdown = 0;
                  _mobType = -1;
     _keyframe =0;
                  _spriteTime = 0;
+                 _focusDebug = false;
 
 
 }
@@ -44,6 +47,7 @@ Mob::Mob(MobGenetics* t,int chunk, sf::Vector2f position): Entity("mob"),Colisio
     _target = nullptr;
     vx =0;
     vy = 0;
+    _focusDebug = false;
     _mobDirection = LEFT;
     _sizeCol = sf::Vector2i(64,64);
     position.y -=128;
@@ -53,6 +57,7 @@ Mob::Mob(MobGenetics* t,int chunk, sf::Vector2f position): Entity("mob"),Colisio
     _timeToReproduce = rand() % std::max(_gens._reproduceFactor,1) + 10;
     _life = rand() % std::max(_gens._health,1) + 10;
     _hunger = rand() % std::max(_gens._foodNeeds,1) + 10;
+    _age = rand() % std::max(_gens._age,1) + 10;
     _attackColdown = 0;
     _dead = false;
     _mobType = -1;
@@ -71,7 +76,7 @@ Mob::Mob(MobGenetics* t1, MobGenetics* t2,std::vector<MobModule*>& modulesPartne
     _mobDirection = LEFT;
     _mobDecision = IDLE;
     _sizeCol = sf::Vector2i(64,64);
-
+    _focusDebug = false;
     position.y -=128;
     setPosition(position);
     _positionSpawn = sf::Vector2i(_position.x,_position.y);
@@ -79,6 +84,7 @@ Mob::Mob(MobGenetics* t1, MobGenetics* t2,std::vector<MobModule*>& modulesPartne
     _timeToReproduce = rand() % std::max(_gens._reproduceFactor,1) + 10;
     _life = rand() % std::max(_gens._health,1) + 10;
     _hunger = rand() % std::max(_gens._foodNeeds,1) + 10;
+    _age = rand() % std::max(_gens._age,1) + 10;
     _attackColdown = 0;
     _dead = false;
     _mobType = -1;
@@ -253,6 +259,7 @@ void Mob::createRandomBody(){
 
     _sizeCol.x= boundBox.width-boundBox.left;
     _sizeCol.y= boundBox.height-boundBox.top;
+
 }
 
 void Mob::draw(sf::RenderTarget & renderTar) {
@@ -271,7 +278,48 @@ void Mob::draw(sf::RenderTarget & renderTar) {
             _spriteSpawn.setTextureRect(sf::IntRect(64*_keyframe,64*3,64,64));
             renderTar.draw(_spriteSpawn);
         }
+        if(_focusDebug){
+
+            sf::CircleShape circle1(_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB);
+            circle1.setFillColor(sf::Color(242,107,255,100));
+            circle1.setOutlineColor(sf::Color::Red);
+            circle1.setPointCount(256);
+            circle1.setOutlineThickness(2);
+            circle1.setPosition(_positionSpawn.x-circle1.getRadius(),_positionSpawn.y-circle1.getRadius());
+
+            sf::CircleShape circle2(_gens._distanceMaxMove*Settings::RADIUS_MOB_MULTIPLYER+_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB);
+            circle2.setFillColor(sf::Color(166,255,107,50));
+            circle2.setOutlineColor(sf::Color::Green);
+            circle2.setPointCount(256);
+            circle2.setOutlineThickness(3);
+            circle2.setPosition(_positionSpawn.x-circle2.getRadius(),_positionSpawn.y-circle2.getRadius());
+            renderTar.draw(circle1);
+            renderTar.draw(circle2);
+
+            sf::RectangleShape rectangle;
+            rectangle.setSize(sf::Vector2f(_sizeCol.x, _sizeCol.y));
+            rectangle.setOutlineColor(sf::Color::Red);
+            rectangle.setFillColor(sf::Color(150,150,150,100));
+            rectangle.setOutlineThickness(1);
+            rectangle.setPosition(_positionCol.x, _positionCol.y);
+            renderTar.draw(rectangle);
+            if(_target != nullptr){
+                sf::Vector2f origin(_positionCol.x+_sizeCol.x/2,_positionCol.y+_sizeCol.y/2);
+                sf::Vector2f dest(_target->getPositionCol().x+_target->_sizeCol.x/2,_target->getPositionCol().y+_target->_sizeCol.y/2);
+                sf::Vertex line[] =
+                        {
+                                sf::Vertex(origin),
+                                sf::Vertex(dest)
+                        };
+                if(_target->_typeEntity=="mob")line->color.Red;
+                else line->color.Green;
+                renderTar.draw(line,2,sf::Lines);
+            }
+
+
+        }
     }
+    _focusDebug = false;
 
 }
 void Mob::setPosition(sf::Vector2f position){
@@ -283,6 +331,7 @@ void Mob::setPosition(sf::Vector2f position){
 
     _sizeCol.x= boundBox.width-boundBox.left;
     _sizeCol.y= boundBox.height-boundBox.top;
+
 }
 void Mob::saveToFile(int chunk, std::ofstream &myfile){
     myfile << "mob" << " ";
@@ -290,10 +339,10 @@ void Mob::saveToFile(int chunk, std::ofstream &myfile){
     myfile << _position.x << " " << _position.y << " ";
     myfile << _positionSpawn.x << " " << _positionSpawn.y << " ";
     myfile << _sizeCol.x << " " << _sizeCol.y << " ";
-    myfile << _life << " " << _timeToReproduce << " " << _hunger << " " << _mobType << " ";
+    myfile << _life << " " << _timeToReproduce << " " << _hunger << " " << _age << " " << _mobType << " ";
     myfile << _gens._cold << " " << _gens._hot << " " << _gens._humidity << " ";
     myfile << _gens._health << " " << _gens._reproduceFactor << " " << _gens._strenghtGen << " ";
-    myfile << _gens._distanceMaxMove << " " << _gens._distanceMaxReproduce << " ";
+    myfile << _gens._distanceMaxMove << " " << _gens._distanceMaxReproduce << " " << _gens._age << " ";
     myfile << _gens._food.size() << " ";
     for(int i=0; i<_gens._food.size(); i++){
         myfile << _gens._food[i] << " ";
@@ -329,10 +378,10 @@ void Mob::loadFromFile(std::ifstream &myfile){
     myfile >> _positionSpawn.y;
     myfile >> _sizeCol.x;
     myfile >> _sizeCol.y;
-    myfile >> _life >> _timeToReproduce >> _hunger >> _mobType;
+    myfile >> _life >> _timeToReproduce >> _hunger >> _age >> _mobType;
     myfile >> _gens._cold >> _gens._hot >> _gens._humidity;
     myfile >> _gens._health >> _gens._reproduceFactor >> _gens._strenghtGen;
-    myfile >> _gens._distanceMaxMove >> _gens._distanceMaxReproduce;
+    myfile >> _gens._distanceMaxMove >> _gens._distanceMaxReproduce >> _gens._age;
     myfile >> num_food;
     for(int i=0; i<num_food; i++){
         myfile >> race;
@@ -367,8 +416,9 @@ void Mob::loadFromFile(std::ifstream &myfile){
     sf::FloatRect boundBox = getBoundingBox();
     _positionCol.x= boundBox.left;
     _positionCol.y= boundBox.top;
-    _sizeCol.x= boundBox.width;
-    _sizeCol.y= boundBox.height;
+    _sizeCol.x= boundBox.left-boundBox.width;
+    _sizeCol.y= boundBox.top-boundBox.height;
+
 
 }
 
@@ -392,7 +442,7 @@ int Mob::getRelationMob(int idRace){
 void Mob::searchNeighbors(std::vector<Mob*> &enemys,std::vector<Mob*> &friends,std::vector<Mob*> &neutral,std::vector<Mob*> &food){
     Scene* s = Scene::getScene();
     std::vector<Mob*> neighbours;
-    s->getMobsOnArea(neighbours,sf::Vector2i(_position),_gens._distanceMaxMove*100,_ecosystemIndex);
+    s->getMobsOnArea(neighbours,sf::Vector2i(_positionSpawn),_gens._distanceMaxMove*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB+_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER,_ecosystemIndex);
     for(int i=0; i<neighbours.size(); i++){
         int race = neighbours[i]->_gens._race;
         int relation = getRelationMob(race);
@@ -415,11 +465,11 @@ Entity* Mob::searchFoodTarget(){
     std::vector<AnimatedTile*> v;
     Entity* res = nullptr;
     float dist = -1;
-    s->getFallingTilesArea(v,sf::Vector2i(_position),_gens._distanceMaxMove*100);
+    s->getFallingTilesArea(v,sf::Vector2i(_positionSpawn),_gens._distanceMaxMove*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB+_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER);
     for(int i=0; i<v.size(); i++){
         sf::Vector2f posE = v[i]->getPositionCol();
         int distance = sqrt((posE.x-_positionCol.x)*(posE.x-_positionCol.x)+(posE.y-_positionCol.y)*(posE.y-_positionCol.y));
-        if(dist== -1 || distance < dist){
+        if(v[i]->id=="food" && (dist== -1 || distance < dist)){
             dist = distance;
             res = v[i];
         }
@@ -469,7 +519,8 @@ bool Mob::update(float delta, Clock *c){
         float tempDamage;
         if(totalTemp>0) tempDamage = totalTemp*(1-float(_gens._hot)/100)*delta;
         else tempDamage = -totalTemp*(1-float(_gens._cold)/100)*delta;
-        _life = std::max(0.f,_life-((tempDamage+humDamage+delta)/2000)*Settings::GEN_SPEED);
+        _age = std::max(0.f,_age-((tempDamage+humDamage+delta)/2000)*Settings::GEN_SPEED);
+        if(_age<=0) _life =0;
         std::vector<Mob*> enemys;
         std::vector<Mob*> friends;
         std::vector<Mob*> neutral;
@@ -483,7 +534,6 @@ bool Mob::update(float delta, Clock *c){
         else {
             _timeToReproduce -= (delta/10)*Settings::GEN_SPEED;
             if(_timeToReproduce <0) {
-
                 return true;
             }
             _hunger = std::max(-1.f,_hunger-(delta/10)*Settings::GEN_SPEED);
@@ -503,9 +553,15 @@ bool Mob::update(float delta, Clock *c){
                         if(m != nullptr) {
                             simulateCombat(m);
                             _hunger = _gens._foodNeeds;
+                            for(int i=0; i<friends.size();i++){
+                                friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,int(_gens._foodNeeds/friends.size()));
+                            }
                         }
                     } else {
                         _hunger = _gens._foodNeeds;
+                        for(int i=0; i<friends.size();i++){
+                            friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,int(_gens._foodNeeds/friends.size()));
+                        }
                         std::cout << "mob eating far away" << std::endl;
                     }
                 }
@@ -536,7 +592,7 @@ sf::FloatRect Mob::getBoundingBox(){
     float bot = _position.y+64;
     bool first = true;
     for(int i=0; i<_modules.size(); i++){
-        sf::FloatRect bb = _modules[i]->getBoundingBox(_position,_gens._size/80.f);
+        sf::FloatRect bb = _modules[i]->getBoundingBox(_position,_gens._size/80.f,_mobDirection);
         if(first){
             left = bb.left;
             right = bb.width;
@@ -605,8 +661,8 @@ void Mob::updateVisible(float delta){
         }
         if(_target == nullptr) newDecision = rand() % 1000;
         else {
-
-            if(_target->getPositionCol().x > getPositionCol().x) newDecision = 1;
+            if(_target->_removed) _target = nullptr;
+            else if(_target->getPositionCol().x > getPositionCol().x) newDecision = 1;
             else newDecision = 0;
         }
 
@@ -655,11 +711,19 @@ void Mob::updateVisible(float delta){
 
         sf::Vector2f newPosCol = evalCollisions(sf::Vector2f(x0,y0),sf::Vector2f(x,y),sf::Vector2f(_sizeCol.x,_sizeCol.y));
         int distance_from_base = sqrt((newPosCol.x-_positionSpawn.x)*(newPosCol.x-_positionSpawn.x)+(newPosCol.y-_positionSpawn.y)*(newPosCol.y-_positionSpawn.y));
-        if(distance_from_base< _gens._distanceMaxMove*100);
-        sf::Vector2f displacement(newPosCol.x-x0, newPosCol.y-y0);
-        sf::Vector2f newPos(_position.x+displacement.x, _position.y+displacement.y);
-        setPosition(newPos);
+        if(distance_from_base< _gens._distanceMaxMove*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB+_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER){
+            sf::Vector2f displacement(newPosCol.x-x0, newPosCol.y-y0);
+            sf::Vector2f newPos(_position.x+displacement.x, _position.y+displacement.y);
+            setPosition(newPos);
+        }
 
+
+
+}
+bool Mob::mobIsOnReproduceArea(){
+    float radius =_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB;
+    int distance = sqrt((_positionSpawn.x-_positionCol.x)*(_positionSpawn.x-_positionCol.x)+(_positionSpawn.y-_positionCol.y)*(_positionSpawn.y-_positionCol.y));
+    return distance<radius;
 
 }
 MobGenetics* Mob::getGenetics(){
@@ -670,16 +734,21 @@ Mob * Mob::reproduce(){
     std::vector<Mob*> neighbours;
     std::vector<sf::Vector2i> reproduce_spots;
     Mob *result = nullptr;
-    s->getPositionsOnArea(reproduce_spots,sf::Vector2i(_position),_gens._distanceMaxReproduce*100+256,_ecosystemIndex);
+    s->getPositionsOnArea(reproduce_spots,sf::Vector2i(_positionSpawn),_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB,_ecosystemIndex);
     if(reproduce_spots.size() >0){
-        s->getMobsOnArea(neighbours,sf::Vector2i(_position),_gens._distanceMaxReproduce*100+256,_ecosystemIndex);
-        sf::Vector2i position = reproduce_spots[rand() % reproduce_spots.size()];
-        //position.y -= Settings::TILE_SIZE;
-        Mob *partner = neighbours[rand() % neighbours.size()];
-        int chunk = Map::getChunkIndex(position.x);
-        result = new Mob(getGenetics(), partner->getGenetics(),getModules(),_mobType,partner->getModules(),partner->_mobType,chunk,sf::Vector2f(position),_ecosystemIndex);
-        _timeToReproduce = _gens._reproduceFactor+OFFSET_REPRODUCE;
-        partner->_timeToReproduce = partner->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        s->getMobsOnArea(neighbours,sf::Vector2i(_positionSpawn),_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB,_ecosystemIndex);
+        if(neighbours.size() >0){
+            sf::Vector2i position = reproduce_spots[rand() % reproduce_spots.size()];
+            //position.y -= Settings::TILE_SIZE;
+            Mob *partner = neighbours[rand() % neighbours.size()];
+            int chunk = Map::getChunkIndex(position.x);
+            result = new Mob(getGenetics(), partner->getGenetics(),getModules(),_mobType,partner->getModules(),partner->_mobType,chunk,sf::Vector2f(position),_ecosystemIndex);
+            _timeToReproduce = _gens._reproduceFactor+OFFSET_REPRODUCE;
+            partner->_timeToReproduce = partner->_gens._reproduceFactor+OFFSET_REPRODUCE;
+        }
+        else {
+            std::cout << "error on reproduce, mob on illegal area?" << std::endl;
+        }
     }
     return result;
 

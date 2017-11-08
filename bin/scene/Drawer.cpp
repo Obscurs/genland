@@ -72,8 +72,8 @@ void Drawer::DrawSceneTex(){
         int index_mat = map_curr->getIndexMatChunk(i);
         texture_scene.draw(map_curr->_chunk_mat[index_mat]->render_array, states);
     }
-    for(int i = first_chunk ; i<=last_chunk ; i = i +1) {
-        int index_mat = map_curr->getIndexMatChunk(i);
+    for(int c = first_chunk ; c<=last_chunk ; c = c +1) {
+        int index_mat = map_curr->getIndexMatChunk(c);
         for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_falling_tiles.size(); i++){
             map_curr->_chunk_mat[index_mat]->_falling_tiles[i]->Draw(texture_scene);
         }
@@ -81,9 +81,11 @@ void Drawer::DrawSceneTex(){
             map_curr->_chunk_mat[index_mat]->_entities[i]->draw(texture_scene);
         }
         map_curr->_chunk_mat[index_mat]->drawTreesSpawn(texture_scene);
-
-        for(int i = 0; i<map_curr->_chunk_mat[index_mat]->_mobs.size(); i++){
-            map_curr->_chunk_mat[index_mat]->_mobs[i]->draw(texture_scene);
+    }
+    for(int c = 0 ; c<3 ; c = c +1) {
+        for(int i = 0; i<map_curr->_chunk_mat[c]->_mobs.size(); i++){
+            //map_curr->_chunk_mat[c]->_mobs[i]->_focusDebug=true;
+            map_curr->_chunk_mat[c]->_mobs[i]->draw(texture_scene);
         }
     }
     Player* player = scene->getPlayer();

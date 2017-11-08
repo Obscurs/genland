@@ -17,6 +17,8 @@ public:
 		LEFT,
 		RIGHT,
         L_SHIFT,
+		L_ALT,
+        L_CONTR,
 		ACCEPT,
 		CANCEL,
 		ENTER,

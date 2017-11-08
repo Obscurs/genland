@@ -21,6 +21,7 @@ public:
 
     //GenFactors
     int _health;
+    int _age;
     int _reproduceFactor;
     int _strenghtGen;
     int _distanceMaxMove;
@@ -42,7 +43,7 @@ public:
 private:
     void mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float factor);
     void mutateRaces();
-    void valance(int (&amounts)[13]);
+    void valance(int (&amounts)[14]);
     void setRelatedFactors();
 
 };

@@ -22,6 +22,17 @@ Colisionable::~Colisionable(){
 
 }
 sf::Vector2f Colisionable::evalCollisions(sf::Vector2f posOld, sf::Vector2f posNew, sf::Vector2f size){
+    /*
+    float dist= sqrt((posNew.x-posOld.x)*(posNew.x-posOld.x)+(posNew.y-posOld.y)*(posNew.y-posOld.y));
+    while(dist>Settings::TILE_SIZE){
+        sf::Vector2f posOldOld = posOld;
+        float ratio = (Settings::TILE_SIZE-1)/dist;
+        sf::Vector2f newPosAux(((1-ratio)*posOld.x+ratio*posNew.x),((1-ratio)*posOld.y+ratio*posNew.y));
+        posOld = evalCollisions(posOld,newPosAux,size);
+        if(posOldOld == posOld) return posOld;
+        dist= sqrt((posNew.x-posOld.x)*(posNew.x-posOld.x)+(posNew.y-posOld.y)*(posNew.y-posOld.y));
+    }*/
+
     sf::Vector2f pos_aux(posNew.x, posNew.y);
     sf::Vector2f size_aux(size.x, size.y);
     Map* map = Scene::getScene()->getMap();
@@ -47,8 +58,12 @@ sf::Vector2f Colisionable::evalCollisions(sf::Vector2f posOld, sf::Vector2f posN
             FixColision(pos_aux, size_aux, t->GetPosition(), tile_size);
         }
         bool valid_move = true;
-        if(col_bottom && col_left && col_right && col_top) valid_move = false;
-        if(abs(posNew.x-posOld.x) > Settings::TILE_SIZE*5 || abs(posNew.y-posOld.y) > Settings::TILE_SIZE*5) valid_move = false;
+        if(bool(col_bottom) + bool(col_left) + bool(col_right) + bool(col_top) >=3) valid_move = false;
+        if(abs(posNew.x-posOld.x) > Settings::TILE_SIZE*3 || abs(posNew.y-posOld.y) > Settings::TILE_SIZE*3) {
+            //float dist= sqrt((posNew.x-posOld.x)*(posNew.x-posOld.x)+(posNew.y-posOld.y)*(posNew.y-posOld.y));
+
+            valid_move = false;
+        }
         if(col_bottom >= col_top){
             col_top = 0;
             posNew.y = posNew.y - col_bottom_dist;
@@ -67,7 +82,7 @@ sf::Vector2f Colisionable::evalCollisions(sf::Vector2f posOld, sf::Vector2f posN
         }
         if(valid_move) return posNew;
         else {
-            return posOld;
+            return evalCollisions(sf::Vector2f(posOld.x,posOld.y-32),sf::Vector2f(posOld.x,posOld.y-32),size);
         }
     }
     return posOld;

@@ -23,7 +23,8 @@ public:
 static const int TILE_SIZE_HIGH = 16;
 static const int TILE_SIZE_MED = 8;
 static const int TILE_SIZE_LOW = 4;
-
+static const int RADIUS_MOB_MULTIPLYER = 8;
+    static const int MIN_RADIUS_MOB = 256;
 static const int GAME_WIDTH_HIGH = 1536;
 static const int GAME_WIDTH_MED = 768;
 static const int GAME_WIDTH_LOW = 432;

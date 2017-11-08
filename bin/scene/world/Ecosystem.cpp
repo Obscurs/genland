@@ -67,7 +67,8 @@ void Ecosystem::update(float delta){
                 size = int(_mobs.size());
                 std::cout << "mob removed " << _mobs.size() << std::endl;
             } else {
-                if(_mobs[i]->update(delta, c)){
+                if(_mobs[i]->update(delta, c) && _mobs[i]->mobIsOnReproduceArea()){
+
                     Mob *res = _mobs[i]->reproduce();
                     if(res != nullptr && _mobs.size()< (_interval.y-_interval.x)*Settings::MAX_MOBS_ECO) {
 
@@ -148,7 +149,7 @@ void Ecosystem::updateWithElapsedTime(Date *d){
                     i--;
                     size = int(_mobs.size());
                 } else {
-                    if(_mobs[i]->update(Settings::SYNC_UPDATE_SPEED, c)){
+                    if(_mobs[i]->update(Settings::SYNC_UPDATE_SPEED, c) && _mobs[i]->mobIsOnReproduceArea()){
                         Mob *res = _mobs[i]->reproduce();
                         if(res != nullptr && _mobs.size()< (_interval.y-_interval.x)*Settings::MAX_MOBS_ECO) _mobs.push_back(res);
                     }

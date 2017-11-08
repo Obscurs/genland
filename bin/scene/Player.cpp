@@ -366,8 +366,10 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
 	float y = y0+vy*delta;
 
 
+    sf::Vector2f newPosDesired(x,y);
+    sf::Vector2f oldPos(x0,y0);
+	sf::Vector2f newPos = evalCollisions(oldPos,newPosDesired,sf::Vector2f(PLAYER_WIDTH,PLAYER_HEIGHT));
 
-	sf::Vector2f newPos = evalCollisions(sf::Vector2f(x0,y0),sf::Vector2f(x,y),sf::Vector2f(PLAYER_WIDTH,PLAYER_HEIGHT));
     SetPosition(newPos.x,newPos.y);
 
     //COMPROBA MAP
@@ -508,12 +510,15 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window)
         _attacking = false;
         _mining = false;
     }
-	AnimatedTile* at =map.collidesWithAnimatedTile(sf::FloatRect(GetPosition().x, GetPosition().y,PLAYER_WIDTH, PLAYER_HEIGHT));
-	if(at != nullptr){
-        if(giveItem(at->_id_pick, 1)){
-            at->deleted = 1;
+    if(Inputs::KeyDown(Inputs::L_CONTR)){
+        AnimatedTile* at =map.collidesWithAnimatedTile(sf::FloatRect(GetPosition().x, GetPosition().y,PLAYER_WIDTH, PLAYER_HEIGHT));
+        if(at != nullptr){
+            if(giveItem(at->_id_pick, 1)){
+                at->deleted = 1;
+            }
         }
-	}
+    }
+
 
 
 }
