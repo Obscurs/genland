@@ -34,7 +34,10 @@ Mob::Mob(): Entity("mob"),Colisionable(),_gens()
     _attackColdown = 0;
                  _mobType = -1;
     _keyframe =0;
+                 _currHurtAnim = 0;
+                 _keyframeHurt =0;
                  _spriteTime = 0;
+                 _spriteTimeHurt = 0;
                  _focusDebug = false;
 
 
@@ -42,6 +45,8 @@ Mob::Mob(): Entity("mob"),Colisionable(),_gens()
 //Random spawn creator
 Mob::Mob(MobGenetics* t,int chunk, sf::Vector2f position): Entity("mob"),Colisionable(){
     _keyframe =0;
+    _keyframeHurt =0;
+    _currHurtAnim = 0;
     _gens = *t;
     _chunk = chunk;
     _target = nullptr;
@@ -62,13 +67,17 @@ Mob::Mob(MobGenetics* t,int chunk, sf::Vector2f position): Entity("mob"),Colisio
     _dead = false;
     _mobType = -1;
     _spriteTime = 0;
+    _spriteTimeHurt = 0;
     createRandomBody();
 
 }
 //Reproduction spawn
 Mob::Mob(MobGenetics* t1, MobGenetics* t2,std::vector<MobModule*>& modulesPartner1, int typeMobPartner1,std::vector<MobModule*>& modulesPartner2, int typeMobPartner2,int chunk, sf::Vector2f position, int index): Entity("mob"),Colisionable(),_gens(t1,t2, (float)(t1->_strenghtGen)/100){
     _keyframe =0;
+    _keyframeHurt =0;
     _spriteTime = 0;
+    _spriteTimeHurt = 0;
+    _currHurtAnim = 0;
     _chunk = chunk;
     _target = nullptr;
     vx =0;
@@ -82,9 +91,9 @@ Mob::Mob(MobGenetics* t1, MobGenetics* t2,std::vector<MobModule*>& modulesPartne
     _positionSpawn = sf::Vector2i(_position.x,_position.y);
     setEcosystemIndex(index);
     _timeToReproduce = rand() % std::max(_gens._reproduceFactor,1) + 10;
-    _life = rand() % std::max(_gens._health,1) + 10;
-    _hunger = rand() % std::max(_gens._foodNeeds,1) + 10;
-    _age = rand() % std::max(_gens._age,1) + 10;
+    _life = _gens._health;
+    _hunger = _gens._foodNeeds;
+    _age = _gens._age;
     _attackColdown = 0;
     _dead = false;
     _mobType = -1;
@@ -277,6 +286,12 @@ void Mob::draw(sf::RenderTarget & renderTar) {
             _spriteSpawn.setPosition(_positionSpawn.x, _positionSpawn.y+_sizeCol.y);
             _spriteSpawn.setTextureRect(sf::IntRect(64*_keyframe,64*3,64,64));
             renderTar.draw(_spriteSpawn);
+        }
+        if(_hurted){
+            _spriteHurt.setPosition(_positionCol.x, _positionCol.y);
+
+            _spriteHurt.setTextureRect(sf::IntRect(64*_keyframeHurt,64*_currHurtAnim,64,64));
+            renderTar.draw(_spriteHurt);
         }
         if(_focusDebug){
 
@@ -493,6 +508,7 @@ Mob* Mob::searchMobTarget(std::vector<Mob*> &mobs){
 bool Mob::update(float delta, Clock *c){
 
     _spriteTime += delta;
+    if(_hurted)_spriteTimeHurt += delta;
     float maxtime = float(SPAWN_SPRITE_MAX_TIME)/10.0f;
     if(_spriteTime > maxtime && _keyframe <10){
         _spriteTime -= maxtime;
@@ -501,7 +517,18 @@ bool Mob::update(float delta, Clock *c){
         }
 
     }
-        _attackColdown = std::max(0.f,_attackColdown-delta*10);
+    if(_spriteTimeHurt > maxtime && _keyframeHurt <7){
+        _spriteTimeHurt -= maxtime;
+        {
+            _keyframeHurt +=1;
+        }
+
+    } else if(_keyframeHurt>=7){
+        _spriteTimeHurt =0;
+        _hurted = false;
+        _keyframeHurt =0;
+    }
+        _attackColdown = std::max(0.f,_attackColdown-delta*50);
         Map* map = Scene::getScene()->getMap();
         bool is_visible_chunk = map->getIndexMatChunk(map->getChunkIndex(_positionCol.x)) != -1;
         Simplex2d* base_noise_temperature = NoiseGenerator::getNoise("base_noise_temperature");
@@ -592,7 +619,8 @@ sf::FloatRect Mob::getBoundingBox(){
     float bot = _position.y+64;
     bool first = true;
     for(int i=0; i<_modules.size(); i++){
-        sf::FloatRect bb = _modules[i]->getBoundingBox(_position,_gens._size/80.f,_mobDirection);
+        float ageFactor = 1.f-_age/(float)_gens._age;
+        sf::FloatRect bb = _modules[i]->getBoundingBox(_position,_gens._size/80.f*ageFactor+0.1,_mobDirection);
         if(first){
             left = bb.left;
             right = bb.width;
@@ -625,12 +653,21 @@ void Mob::simulateCombat(Mob* m){
 void Mob::attack(Mob* m){
     m->_target = this;
     if(_attackColdown ==0){
-        m->_life -= _gens._strenght/10;
+        m->hurt(_gens._strenght/10);
         _attackColdown= 100-_gens._atackSpeed+10;
         std::cout << "mob atackking!!!!!!!!!!" << std::endl;
     }
-
 }
+void Mob::hurt(float amount){
+    sf::Texture *t = Resources::getTexture("entities");
+    _spriteHurt.setTexture(*t);
+    _currHurtAnim = (rand()%3+4);
+
+    _keyframeHurt=0;
+    _hurted = true;
+    _life -= amount;
+}
+
 void Mob::targetAction() {
     if(_target->_typeEntity=="mob"){
         Mob *m = static_cast<Mob*>(_target);
@@ -643,10 +680,13 @@ void Mob::targetAction() {
 }
 bool Mob::isNearTarget() {
     if(_target !=nullptr && !_target->_removed){
-        sf::Vector2f posE = _target->getPositionCol();
-        int distance = sqrt((posE.x-_positionCol.x)*(posE.x-_positionCol.x)+(posE.y-_positionCol.y)*(posE.y-_positionCol.y));
-        if(distance<DISTANCE_NEAR) return true;
-        return false;
+        sf::FloatRect boundBoxE = _target->getBoundingBox();
+        sf::FloatRect boundBox = getBoundingBox();
+        boundBoxE.width = boundBoxE.left-boundBoxE.width;
+        boundBoxE.height = boundBoxE.top-boundBoxE.height;
+        boundBox.width = boundBox.left-boundBox.width;
+        boundBox.height = boundBox.top-boundBox.height;
+        return boundBox.intersects(boundBoxE);
     } else _target = nullptr;
     return false;
 }
@@ -655,13 +695,15 @@ void Mob::updateVisible(float delta){
         int newDecision;
         //MODULES
         for(int i = 0; i<_modules.size(); i++){
-            if(_target != nullptr && _modules[i]->hasAnimation("attacking")) _modules[i]->update(delta,_position,_gens._size/80.f,"attacking",_mobDirection);
-            else if(vx !=0 && _modules[i]->hasAnimation("walking")) _modules[i]->update(delta,_position,_gens._size/80.f,"walking",_mobDirection);
-            else _modules[i]->update(delta,_position,_gens._size/80.f,"idle",_mobDirection);
+            float ageFactor = 1.f-_age/(float)_gens._age;
+            if(_target != nullptr && _modules[i]->hasAnimation("attacking")) _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.1,"attacking",_mobDirection);
+            else if(vx !=0 && _modules[i]->hasAnimation("walking")) _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.1,"walking",_mobDirection);
+            else _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.1,"idle",_mobDirection);
         }
         if(_target == nullptr) newDecision = rand() % 1000;
         else {
             if(_target->_removed) _target = nullptr;
+            else if(isNearTarget()) newDecision = 2;
             else if(_target->getPositionCol().x > getPositionCol().x) newDecision = 1;
             else newDecision = 0;
         }

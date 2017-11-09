@@ -28,6 +28,7 @@ public:
     virtual void draw(sf::RenderTarget & renderTar);
     virtual void saveToFile(int chunk, std::ofstream &myfile);
     virtual void loadFromFile(std::ifstream &myfile);
+    virtual sf::FloatRect getBoundingBox();
 protected:
     int _ecosystemIndex;
 };

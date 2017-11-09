@@ -50,3 +50,6 @@ sf::Vector2f Entity::getPosition(){
 sf::Vector2f Entity::getPositionCol(){
     return _positionCol;
 }
+sf::FloatRect Entity::getBoundingBox(){
+    return sf::FloatRect(_positionCol.x,_positionCol.y,_positionCol.x+_sizeCol.x+1,_positionCol.y+_sizeCol.y+1);
+}

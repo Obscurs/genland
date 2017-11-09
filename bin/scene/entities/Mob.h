@@ -36,6 +36,8 @@ public:
     void saveToFile(int chunk, std::ofstream &myfile);
     void loadFromFile(std::ifstream &myfile);
     void draw(sf::RenderTarget & renderTar);
+    void hurt(float amount);
+    sf::FloatRect getBoundingBox();
     bool _dead;
     int _mobType;
     float _life;
@@ -44,7 +46,7 @@ public:
     float _timeToReproduce;
     bool _focusDebug;
 private:
-    sf::FloatRect getBoundingBox();
+
     Entity* _target;
     int getRelationMob(int idRace);
     void searchNeighbors(std::vector<Mob*> &enemys,std::vector<Mob*> &friends,std::vector<Mob*> &neutral,std::vector<Mob*> &food);
@@ -61,13 +63,17 @@ private:
     sf::Vector2i _positionSpawn;
     MobGenetics _gens;
     sf::Sprite _spriteSpawn;
+    sf::Sprite _spriteHurt;
+    int _currHurtAnim;
     sf::Vector2f size;
     Decision _mobDecision;
     AnimationDirection _mobDirection;
     std::vector<MobModule*> _modules;
-
+    int _keyframeHurt;
     int _keyframe;
     float _spriteTime;
+    float _spriteTimeHurt;
+    bool _hurted;
 
 };
 

@@ -183,7 +183,10 @@ void MobGenetics::mutateRaces(){
         else if(dest==2) destVector = &_food;
         else if(dest==3) destVector = &_neutral;
         if(!fromVector->empty()){
-            destVector->push_back((*fromVector)[rand()%fromVector->size()]);
+            int index =rand()%fromVector->size();
+            int newRace = (*fromVector)[index];
+            (*fromVector).erase((*fromVector).begin()+index);
+            destVector->push_back(newRace);
         }
     }
 }
