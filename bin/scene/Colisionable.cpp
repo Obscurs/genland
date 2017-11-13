@@ -119,7 +119,7 @@ void Colisionable::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector
             if(t->id !="0"){
                 //Chunk* c2 = map->getChunk(center2.x, center2.y - Settings::TILE_SIZE);
                 Tile* t2 = map->getTile(center2.x, center2.y - Settings::TILE_SIZE, 1);
-                if(t2->id !="0"){
+                if(t2 == nullptr || t2->id !="0"){
                     if(col_left_dist < dist_left) col_left_dist = dist_left;
                     if(col_bottom_dist < dist_bottom) col_bottom_dist = dist_bottom;
                     ++col_bottom;
@@ -141,7 +141,7 @@ void Colisionable::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector
             if(t->id !="0"){
                 //Chunk* c2 =  map->getChunk(center2.x + Settings::TILE_SIZE, center2.y);
                 Tile* t2 = map->getTile(center2.x + Settings::TILE_SIZE, center2.y, 1);
-                if(t2->id !="0"){
+                if(t2 == nullptr || t2->id !="0"){
                     if(col_left_dist < dist_left) col_left_dist = dist_left;
                     if(col_bottom_dist < dist_bottom) col_bottom_dist = dist_bottom;
                     ++col_left;
@@ -174,7 +174,7 @@ void Colisionable::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector
             if(t->id !="0"){
                 //Chunk* c2 = map->getChunk(center2.x, center2.y - Settings::TILE_SIZE);
                 Tile* t2 = map->getTile(center2.x, center2.y - Settings::TILE_SIZE, 1);
-                if(t2->id !="0"){
+                if(t2 == nullptr || t2->id !="0"){
                     if(col_right_dist < dist_right) col_right_dist = dist_right;
                     if(col_bottom_dist < dist_bottom) col_bottom_dist = dist_bottom;
                     ++col_bottom;
@@ -196,7 +196,7 @@ void Colisionable::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector
             if(t->id !="0"){
                 //Chunk* c2 =  map->getChunk(center2.x - Settings::TILE_SIZE, center2.y);
                 Tile* t2 = map->getTile(center2.x - Settings::TILE_SIZE, center2.y, 1);
-                if(t2->id !="0"){
+                if(t2 == nullptr || t2->id !="0"){
                     if(col_right_dist < dist_right) col_right_dist = dist_right;
                     if(col_bottom_dist < dist_bottom) col_bottom_dist = dist_bottom;
                     ++col_right;
@@ -226,7 +226,7 @@ void Colisionable::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector
             if(t->id !="0"){
                 //Chunk* c2 = map->getChunk(center2.x, center2.y + Settings::TILE_SIZE);
                 Tile* t2 = map->getTile(center2.x, center2.y + Settings::TILE_SIZE, 1);
-                if(t2->id !="0"){
+                if(t2 == nullptr || t2->id !="0"){
                     if(col_right_dist < dist_right) col_right_dist = dist_right;
                     if(col_top_dist < dist_top) col_top_dist = dist_top;
                     ++col_top;
@@ -250,7 +250,7 @@ void Colisionable::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector
             if(t->id !="0"){
                 //Chunk* c2 = map->getChunk(center2.x - Settings::TILE_SIZE, center2.y);
                 Tile* t2 = map->getTile(center2.x - Settings::TILE_SIZE, center2.y, 1);
-                if(t2->id !="0"){
+                if(t2 == nullptr || t2->id !="0"){
                     if(col_right_dist < dist_right) col_right_dist = dist_right;
                     if(col_top_dist < dist_top) col_top_dist = dist_top;
                     ++col_right;
@@ -278,7 +278,7 @@ void Colisionable::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector
             if(t->id !="0"){
                 //Chunk* c2 = map->getChunk(center2.x, center2.y + Settings::TILE_SIZE);
                 Tile* t2 = map->getTile(center2.x, center2.y + Settings::TILE_SIZE, 1);
-                if(t2->id !="0"){
+                if(t2 == nullptr || t2->id !="0"){
                     if(col_left_dist < dist_left) col_left_dist = dist_left;
                     if(col_top_dist < dist_top) col_top_dist = dist_top;
                     ++col_top;
@@ -300,7 +300,7 @@ void Colisionable::FixColision(sf::Vector2f pos1, sf::Vector2f size1, sf::Vector
                 //Chunk* c2 = map->getChunk(center2.x + Settings::TILE_SIZE, center2.y);
                 Tile* t2 = map->getTile(center2.x + Settings::TILE_SIZE, center2.y, 1);
 
-                if(t2->id !="0"){
+                if(t2 == nullptr || t2->id !="0"){
                     if(col_left_dist < dist_left) col_left_dist = dist_left;
                     if(col_top_dist < dist_top) col_top_dist = dist_top;
                     ++col_left;

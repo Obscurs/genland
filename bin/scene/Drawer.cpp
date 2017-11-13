@@ -132,16 +132,20 @@ void Drawer::DrawRain() {
 
 
         sf::Vector2f pos = player->GetPosition();
-        Tile *t = map_curr->getTile(pos.x,pos.y,0);
-        int temperature = t->_temperature;
-        int humidity = t->_humidity;
+
+        float global_temp = Scene::getScene()->getTemperature(pos);
+        float local_temp = Scene::getScene()->getTemperatureGlobal(pos);
+        float global_hum = Scene::getScene()->getHumidity(pos);
+        float local_hum = Scene::getScene()->getHumidityGlobal(pos);
+        float temperature = global_temp + local_temp;
+        float humidity = global_hum+local_hum;
         sf::RenderStates states;
         texture_background.display();
         states.texture = &texture_background.getTexture();
         states.shader = rain_shader;
         if(temperature >10){
             if(temperature >25 && humidity<50){
-                float new_rain_factor = clock->_rainFactor-1-(humidity-50)/10;
+                float new_rain_factor = std::max(clock->_rainFactor-(1.f-(humidity*2)/100.f)*(temperature-25)/20.f,0.f);
                 rain_shader->setParameter("intensity",new_rain_factor);
             }
             rain_shader->setParameter("SCALE",512.0f);

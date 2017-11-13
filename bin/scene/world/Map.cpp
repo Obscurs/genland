@@ -753,6 +753,24 @@ AnimatedTile* Map::collidesWithAnimatedTile(sf::FloatRect rect){
     }
     return t;
 }
+void Map::checkIntegrity(Tile* tileOrigin){
+    Tile* addedTile0;
+    if(tileOrigin->layer==0) addedTile0 = tileOrigin;
+    else addedTile0 = tileOrigin->neighbors[8];
+
+    std::map<Tile*,bool> leftUpRight_evaluatedTiles;
+    leftUpRight_evaluatedTiles[addedTile0->neighbors[7]] = (addedTile0->neighbors[7] == nullptr);
+    leftUpRight_evaluatedTiles[addedTile0->neighbors[1]] = (addedTile0->neighbors[1] == nullptr);
+    leftUpRight_evaluatedTiles[addedTile0->neighbors[3]] = (addedTile0->neighbors[3] == nullptr);
+    leftUpRight_evaluatedTiles[addedTile0->neighbors[5]] = (addedTile0->neighbors[5] == nullptr);
+
+    calcPhysics2(tileOrigin, leftUpRight_evaluatedTiles);
+    for (auto& m : leftUpRight_evaluatedTiles) {
+        if(!m.second){
+            calcPhysics2(m.first, leftUpRight_evaluatedTiles);
+        }
+    }
+}
 void Map::removeTile2(Tile* removed_tile){
     //bool removed_reach_sun=removed_tile->reach_sun;
     //if(removed_tile->layer==0) removed_reach_sun = true;

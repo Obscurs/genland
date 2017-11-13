@@ -103,17 +103,25 @@ bool Inventory::isTabFull(){
 }
 int Inventory::stackItemTab(std::string id_item, int amount){
 	int i = 0;
+    int residue = amount;
 	while(i<TAB_SLOTS){
 		Item* current_item = tab[i];
 		if(current_item != nullptr){
 			if(current_item->id == id_item && current_item->amount < current_item->max_stack_amount){
-				bool residue = incrementItem(current_item, amount);
+                residue = incrementItem(current_item, amount);
 				return residue;
 			}
 		}
 		++i;
 	}
-	return -1;
+    //no existeix
+    if(residue>0){
+        //tab full
+        if(!isTabFull()){
+            residue = giveItemTab(id_item, amount);
+        }
+    }
+    return residue;
 }
 int Inventory::incrementItem(Item* current_item, int amount){
 	if(current_item->amount+amount > current_item->max_stack_amount){
@@ -190,7 +198,7 @@ int Inventory::stackItemInventory(std::string id_item, int amount){
 				Item* current_item = inventory[i][j];
 				if(current_item != nullptr){
 					if(current_item->id == id_item && current_item->amount < current_item->max_stack_amount){
-						bool residue = incrementItem(current_item, amount);
+						int residue = incrementItem(current_item, amount);
 						//sobra
 
 						if(residue == 0) return 0;
@@ -492,7 +500,7 @@ bool Inventory::inventoryClick(float x, float y, std::string key){
 			}
 		}
 	}
-	if(key == "shift+mouseLeft"){
+	if(key == "contr+mouseLeft"){
 		if(index_tab != -1){
 			Item* pos_item = tab[index_tab];
 			if(mouseItem == nullptr && pos_item != nullptr){
@@ -558,6 +566,29 @@ bool Inventory::inventoryClick(float x, float y, std::string key){
 						deleteMouseItem();
 					}
 				}
+			}
+		}
+	} else if(key == "shift+mouseLeft"){
+		if(index_tab != -1){
+			Item* pos_item = tab[index_tab];
+            if(pos_item != nullptr){
+                int residue = pos_item->amount;
+                residue = stackItemInventory(pos_item->id, residue);
+                pos_item->amount = residue;
+                if(residue<=0) deleteItemTab(index_tab);
+            }
+
+		}
+		else{
+			sf::Vector2i index_inventory = getInventoryIndex(sf::Vector2f(x,y));
+			if(index_inventory != sf::Vector2i(-1,-1)){
+				Item* pos_item = inventory[index_inventory.y][index_inventory.x];
+                if(pos_item != nullptr) {
+                    int residue = pos_item->amount;
+                    residue = stackItemTab(pos_item->id, residue);
+                    pos_item->amount = residue;
+                    if (residue <= 0) deleteItemInventory(index_inventory.x, index_inventory.y);
+                }
 			}
 		}
 	}
@@ -774,8 +805,8 @@ void Inventory::Update(sf::RenderWindow &window)
 
 
 	if(Inputs::MouseBreak(Inputs::M_LEFT)){
-		if(Inputs::KeyDown(Inputs::L_SHIFT)) inventoryClick(position.x, position.y, "shift+mouseLeft");
-
+		if(Inputs::KeyDown(Inputs::L_CONTR)) inventoryClick(position.x, position.y, "contr+mouseLeft");
+		else if(Inputs::KeyDown(Inputs::L_SHIFT)) inventoryClick(position.x, position.y, "shift+mouseLeft");
 		else {
 			if(!inventoryClick(position.x, position.y, "mouseLeft")){
 				Player *p = Scene::getScene()->getPlayer();

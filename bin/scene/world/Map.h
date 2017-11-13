@@ -33,6 +33,7 @@ public:
     int getIndexMatChunk(int chunk);
     void saveMap();
     void removeTile2(Tile* r_tile);
+	void checkIntegrity(Tile* tileOrigin);
 	void update(float delta, sf::Vector2f player_pos);
 	void checkLoadedChunks(float x, float y);
     void searchDeserts();

@@ -234,14 +234,15 @@ void Item::Reload(std::string new_id)
     else if(new_id == "A" || new_id == "a"){
         max_stack_amount= 20;
         amount = 0;
-        craft_cost["T"] = 10;
+        craft_cost["T"] = 5;
         id_set0="a";
         id_set1="A";
     }
     else if(new_id == "sword1"){
         max_stack_amount= 1;
         amount = 0;
-        craft_cost["F"] = 20;
+        craft_cost["T"] = 2;
+        craft_cost["F"] = 5;
         id_set0="-1";
         id_set1="-1";
         type = TOOL;
@@ -249,31 +250,37 @@ void Item::Reload(std::string new_id)
     else if(new_id == "pickaxe1"){
         max_stack_amount= 1;
         amount = 0;
-        craft_cost["F"] = 20;
+        craft_cost["T"] = 2;
+        craft_cost["F"] = 5;
         id_set0="-1";
         id_set1="-1";
         type = TOOL;
     }
-    else if(new_id == "armor1"){
+    else if(new_id == "armor3"){ //iron
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["I"] = 100;
+        craft_cost["Y"] = 1;
+        craft_cost["K"] = 50;
+        craft_cost["G"] = 10;
+        id_set0="-1";
+        id_set1="-1";
+        type = ARMOR;
+        _isEntity = true;
+    }else if(new_id == "armor2"){ //summer
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["F"] = 50;
+        id_set0="-1";
+        id_set1="-1";
+        type = ARMOR;
+        _isEntity = true;
+    }else if(new_id == "armor1"){ //winter
         max_stack_amount= 1;
         amount = 0;
         craft_cost["F"] = 100;
-        id_set0="-1";
-        id_set1="-1";
-        type = ARMOR;
-        _isEntity = true;
-    }else if(new_id == "armor2"){
-        max_stack_amount= 1;
-        amount = 0;
-        craft_cost["F"] = 10;
-        id_set0="-1";
-        id_set1="-1";
-        type = ARMOR;
-        _isEntity = true;
-    }else if(new_id == "armor3"){
-        max_stack_amount= 1;
-        amount = 0;
-        craft_cost["F"] = 10;
+        craft_cost["K"] = 10;
+        craft_cost["I"] = 5;
         id_set0="-1";
         id_set1="-1";
         type = ARMOR;
@@ -281,14 +288,16 @@ void Item::Reload(std::string new_id)
     }else if(new_id == "stairs"){
         max_stack_amount= 10;
         amount = 0;
-        craft_cost["F"] = 40;
+        craft_cost["F"] = 10;
+        craft_cost["T"] = 4;
         id_set0="-1";
         id_set1="stairs";
         _isEntity = true;
     }else if(new_id == "torch"){
         max_stack_amount= 10;
         amount = 0;
-        craft_cost["F"] = 10;
+        craft_cost["F"] = 5;
+        craft_cost["L"] = 3;
         id_set0="-1";
         id_set1="torch";
         _isEntity = true;

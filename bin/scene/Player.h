@@ -16,13 +16,13 @@ public:
     const static int PLAYER_WIDTH = 32;
     const static int PLAYER_HEIGHT = 48;
     const static int MAX_HEALTH = 100;
+	const static int MAX_HUNGER = 100;
     const static int MAX_TEMP_BASE = 35;
     const static int MIN_TEMP_BASE = 10;
-    enum ActionState{IDLE, WALKING,ATTACKING,STAIRS, FALLING};
+    enum ActionState{IDLE, WALKING,ATTACKING,STAIRS, FALLING,DEAD};
     enum AnimationDirection{LEFT,RIGHT};
     enum EquipTool {W_PICKAXE,W_SWORD, NONE_T};
     enum EquipArmor {NONE_A,ARMOR1,ARMOR2,ARMOR3};
-	void Load(std::string filename);
 	void Draw(sf::RenderWindow & window);
 	void Draw2(sf::RenderTexture & tex);
 	void DrawInventory(sf::RenderWindow & window);
@@ -40,7 +40,7 @@ private:
     void setAnimation(ActionState act);
     void updateSprite(float delta);
     void updateToolsAndArmors();
-    void updateHealth(float delta);
+    void updateStats(float delta);
 
 	sf::Sprite& GetSprite();
 	bool giveItem(std::string id, int amount);
@@ -48,6 +48,7 @@ private:
     //STATS
     int _resPhysics;
     float _health;
+	float _hunger;
     int _maxTemperatureSafe;
     int _minTemperatureSafe;
 	//PHYSICS
@@ -70,6 +71,8 @@ private:
     sf::Vector2f _colPosition;
     sf::Vector2f _colSize;
     float _spriteTime;
+    float _dieTime;
+    bool _dead;
     ActionState _animationId;
     AnimationDirection _playerDirection;
     EquipTool _tool;
