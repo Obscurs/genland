@@ -64,6 +64,7 @@ public:
     void addEntity(Entity *e);
     Entity *getEntity(sf::FloatRect pos);
     Ecosystem* getEcosystem(int index);
+    Player* getPlayerOnArea(sf::Vector2i center ,int radius);
     void getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius, int indexEcosystem);
     void getTreesOnArea(std::vector<Tree*> &trees, sf::Vector2i position, int radius, int indexEcosystem);
     void getEntityesArea(std::vector<Entity*> &entities, sf::Vector2i position, int radius, int indexEcosystem);

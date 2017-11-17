@@ -35,6 +35,7 @@ public:
     int _size;
 
     int _race;
+    bool _playerHostile;
     std::vector<int> _friends;
     std::vector<int> _enemys;
     std::vector<int> _food;

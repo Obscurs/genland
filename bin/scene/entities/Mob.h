@@ -45,13 +45,14 @@ public:
     float _age;
     float _timeToReproduce;
     bool _focusDebug;
+    Entity* _target;
 private:
 
-    Entity* _target;
+
     int getRelationMob(int idRace);
     void searchNeighbors(std::vector<Mob*> &enemys,std::vector<Mob*> &friends,std::vector<Mob*> &neutral,std::vector<Mob*> &food);
     void targetAction();
-    void attack(Mob* m);
+    void attackTarget();
     void simulateCombat(Mob* m);
     void createRandomBody();
     Entity* searchFoodTarget();

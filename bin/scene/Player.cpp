@@ -22,7 +22,7 @@
 #include "entities/Torch.h"
 
 
-Player::Player(): Colisionable()
+Player::Player(): Colisionable(), Entity("player")
 {
 	inventory = new Inventory();
 	_sprite.setPosition(0,0);
@@ -42,7 +42,7 @@ Player::Player(): Colisionable()
     _animationFrame = 0;
     _sprite.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*_animationFrame,PLAYER_SPRITE_SIZE*_animationId,PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
     _numFramesAnimation = 1;
-    _colPosition = sf::Vector2f(0,0);
+    _positionCol = sf::Vector2f(0,0);
     _playerDirection = LEFT;
     _armor = NONE_A;
     _tool = NONE_T;
@@ -51,6 +51,12 @@ Player::Player(): Colisionable()
     _mining = false;
     _dead = false;
     _dieTime = 100;
+    _spriteTimeHurt = 0;
+    _currHurtAnim = 0;
+    _keyframeHurt =0;
+    _sizeCol = sf::Vector2i(PLAYER_WIDTH,PLAYER_HEIGHT);
+    _attackColdown = 0;
+    _damage = 0;
 }
 
 
@@ -64,11 +70,23 @@ void Player::Draw(sf::RenderWindow & renderWindow)
 {
 	renderWindow.draw(_sprite);
     if(_tool != NONE_T) renderWindow.draw(_spriteTool);
+    if(_hurted){
+        _spriteHurt.setPosition(_positionCol.x, _positionCol.y);
+
+        _spriteHurt.setTextureRect(sf::IntRect(64*_keyframeHurt,64*_currHurtAnim,64,64));
+        renderWindow.draw(_spriteHurt);
+    }
 }
 void Player::Draw2(sf::RenderTexture & tex)
 {
 	tex.draw(_sprite);
     if(_tool != NONE_T) tex.draw(_spriteTool);
+    if(_hurted){
+        _spriteHurt.setPosition(_positionCol.x, _positionCol.y);
+
+        _spriteHurt.setTextureRect(sf::IntRect(64*_keyframeHurt,64*_currHurtAnim,64,64));
+        tex.draw(_spriteHurt);
+    }
 }
 void Player::DrawStats(sf::RenderTarget &target){
     sf::View currentView = target.getView();
@@ -160,7 +178,7 @@ void Player::setAnimation(ActionState act){
 void Player::updateSprite(float delta){
     _spriteTime += delta;
 
-    Entity *e = Scene::getScene()->getEntity(sf::FloatRect(_colPosition.x,_colPosition.y,PLAYER_WIDTH,PLAYER_HEIGHT));
+    Entity *e = Scene::getScene()->getEntity(sf::FloatRect(_positionCol.x,_positionCol.y,PLAYER_WIDTH,PLAYER_HEIGHT));
     if(_dead){
         setAnimation(DEAD);
         _tool = NONE_T;
@@ -192,6 +210,18 @@ void Player::updateSprite(float delta){
             }
         }
 
+    }
+    if(_hurted)_spriteTimeHurt += delta;
+    if(_spriteTimeHurt > maxtime && _keyframeHurt <7){
+        _spriteTimeHurt -= maxtime;
+        {
+            _keyframeHurt +=1;
+        }
+
+    } else if(_keyframeHurt>=7){
+        _spriteTimeHurt =0;
+        _hurted = false;
+        _keyframeHurt =0;
     }
     int armorOffset = _armor*6;
     _sprite.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*_animationFrame,PLAYER_SPRITE_SIZE*(_animationId+armorOffset),PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
@@ -290,14 +320,18 @@ void Player::updateToolsAndArmors() {
         if(currentTool->id == "pickaxe1"){
             _toolFactor = 2;
             _tool = W_PICKAXE;
+            _damage = 5;
         } else if(currentTool->id == "sword1"){
             _toolFactor = 1;
             _tool = W_SWORD;
+            _damage = 10;
         } else {
             _toolFactor = 1;
             _tool = NONE_T;
+            _damage = 2;
         }
     } else {
+        _damage = 2;
         _toolFactor = 1;
         _tool = NONE_T;
     }
@@ -326,8 +360,8 @@ void Player::updateToolsAndArmors() {
     }
 }
 void Player::updateStats(float delta){
-    float global_temp = Scene::getScene()->getTemperature(_colPosition);
-    float local_temp = Scene::getScene()->getTemperatureGlobal(_colPosition);
+    float global_temp = Scene::getScene()->getTemperature(_positionCol);
+    float local_temp = Scene::getScene()->getTemperatureGlobal(_positionCol);
     float total_temp = global_temp + local_temp;
     float damage = 0;
     if (total_temp>_maxTemperatureSafe){
@@ -337,6 +371,7 @@ void Player::updateStats(float delta){
         damage = delta/5;
     }
     if(_hunger==0) damage += delta;
+    _health = std::min(_health+delta/10.f,float(MAX_HEALTH));
     _health = std::max(_health-damage,0.f);
     _hunger = std::max(_hunger-delta/20.f,0.f);
     if(_health<=0) _dead = true;
@@ -344,6 +379,7 @@ void Player::updateStats(float delta){
 void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
     updateSprite(delta);
     if (!_dead) {
+        _attackColdown = std::max(0.f,_attackColdown-delta*50);
         Scene *scene = Scene::getScene();
         float zoom = scene->getZoom();
         inventory->Update(window);
@@ -397,8 +433,8 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
         }
 
         //std::cout << delta << std::endl;
-        float x0 = _colPosition.x;
-        float y0 = _colPosition.y;
+        float x0 = _positionCol.x;
+        float y0 = _positionCol.y;
         float x = x0 + vx * delta;
         float y = y0 + vy * delta;
 
@@ -424,15 +460,31 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
         if (Inputs::MouseDown(Inputs::M_LEFT) && !inventory->show_inventory && viewRect.contains(position.x, position.y)) {
             //std::cout << _position.x << " " << _position.y << std::endl;
             Entity *e = scene->getEntity(sf::FloatRect(position.x, position.y, 1, 1));
+
             if (e != nullptr) {
-                e->_removed = true;
-                Tile *t = map.getTile(position.x, position.y, 1);
-                int chunkE = map.getChunkIndex(t->GetPosition().x);
-                int index_chunk = map.getIndexMatChunk(chunkE);
-                if (index_chunk != -1) {
-                    map._chunk_mat[index_chunk]->addFallingTile(e->_typeEntity, e->_typeEntity, position,
-                                                                Settings::TILE_SIZE);
+                if(e->_typeEntity=="mob"){
+                    if(_attackColdown ==0){
+                        Mob *m = static_cast<Mob*>(e);
+                        m->hurt(_damage);
+                        m->_target = this;
+                        _attackColdown= 50;
+                        std::cout << "player atackking!!!!!!!!!!" << std::endl;
+                        _attacking = true;
+                        _mining = false;
+                    }
+                } else{
+                    e->_removed = true;
+                    Tile *t = map.getTile(position.x, position.y, 1);
+                    int chunkE = map.getChunkIndex(t->GetPosition().x);
+                    int index_chunk = map.getIndexMatChunk(chunkE);
+                    if (index_chunk != -1) {
+                        map._chunk_mat[index_chunk]->addFallingTile(e->_typeEntity, e->_typeEntity, position,
+                                                                    Settings::TILE_SIZE);
+                    }
+                    _mining = true;
+                    _attacking = false;
                 }
+
             } else {
                 Tile *t = map.getTile(position.x, position.y, 1);
                 //std::cout << t->id_temp << " " <<true_position.x << " " << true_position.y << std::endl;
@@ -559,6 +611,13 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
                 }
             }
         }
+        if (Inputs::KeyBreak(Inputs::E)) {
+            std::string idOfTabItem = inventory->getIdItemAtTab();
+            if(idOfTabItem=="food"){
+                _hunger = std::min(_hunger+10,float(MAX_HUNGER));
+                inventory->decrementItemAtTab();
+            }
+        }
     } else {
         _dieTime = std::max(0.f, _dieTime-delta*50);
     }
@@ -576,15 +635,17 @@ void Player::SetPosition(float x, float y)
 {
         if(_playerDirection==RIGHT) {
             _sprite.setScale(sf::Vector2f(1,1));
+            _position = sf::Vector2f(x-(PLAYER_SPRITE_SIZE-PLAYER_WIDTH-PLAYER_WIDTH/2),y-(PLAYER_SPRITE_SIZE-PLAYER_HEIGHT));
             _sprite.setPosition(x-(PLAYER_SPRITE_SIZE-PLAYER_WIDTH-PLAYER_WIDTH/2),y-(PLAYER_SPRITE_SIZE-PLAYER_HEIGHT));
         }
         else {
             _sprite.setScale(sf::Vector2f(-1,1));
+            _position = sf::Vector2f(x-(PLAYER_SPRITE_SIZE-PLAYER_WIDTH-PLAYER_WIDTH/2)+64,y-(PLAYER_SPRITE_SIZE-PLAYER_HEIGHT));
             _sprite.setPosition(x-(PLAYER_SPRITE_SIZE-PLAYER_WIDTH-PLAYER_WIDTH/2)+64,y-(PLAYER_SPRITE_SIZE-PLAYER_HEIGHT));
         }
         _spriteTool.setScale(_sprite.getScale());
         _spriteTool.setPosition(_sprite.getPosition());
-        _colPosition = sf::Vector2f(x,y);
+        _positionCol = sf::Vector2f(x,y);
 }
 void Player::SetSize(float x)
 {
@@ -595,10 +656,18 @@ void Player::SetSize(float x)
 
 sf::Vector2f Player::GetPosition() const
 {
-	return _colPosition;
+	return _positionCol;
 }
 
-
+void Player::hurt(float amount){
+    sf::Texture *t = Resources::getTexture("entities");
+    _spriteHurt.setTexture(*t);
+    _currHurtAnim = (rand()%3+4);
+    if(_armor==ARMOR3) amount = amount/3;
+    _keyframeHurt=0;
+    _hurted = true;
+    _health -= amount;
+}
 
 sf::Sprite& Player::GetSprite()
 {
@@ -613,8 +682,8 @@ void Player::saveStats(std::string pathGame){
 	route.append("/player_data");
 	std::ofstream myfile;
 	myfile.open(route);
-	std::string x = std::to_string(_colPosition.x);
-	std::string y = std::to_string(_colPosition.y);
+	std::string x = std::to_string(_positionCol.x);
+	std::string y = std::to_string(_positionCol.y);
 	myfile << x << " " << y << "\n";
     myfile << _health << "\n";
     myfile << _hunger << "\n";

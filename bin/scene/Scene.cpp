@@ -174,6 +174,12 @@ void Scene::checkEcosystems(){
     }
 
 }
+Player* Scene::getPlayerOnArea(sf::Vector2i position ,int radius){
+    sf::Vector2f posPl = _player.getPositionCol();
+    int distance = sqrt((posPl.x-position.x)*(posPl.x-position.x)+(posPl.y-position.y)*(posPl.y-position.y));
+    if(distance < radius) return &_player;
+    else return nullptr;
+}
 sf::RenderWindow* Scene::getWindowDebug(){
     return _winForDebug;
 }

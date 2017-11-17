@@ -24,6 +24,7 @@ MobGenetics::MobGenetics(){
     _foodNeeds = amounts[12];
     _age = amounts[13];
     _race = rand() % MOB_RACES;
+    _playerHostile = (rand() %2)==1;
     for(int i=0; i<MOB_RACES; i++){
         int place = rand() %4;
         if(place ==0 || i == _race){
@@ -42,8 +43,14 @@ MobGenetics::MobGenetics(){
 void MobGenetics::mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float factor){
     std::vector<std::pair<int, int> > nonShared1;
     std::vector<std::pair<int, int> > nonShared2;
-    if(factor >0.5) _race = t1->_race;
-    else _race = t2->_race;
+    if(factor >0.5) {
+        _race = t1->_race;
+        _playerHostile = t1->_playerHostile;
+    }
+    else {
+        _race = t2->_race;
+        _playerHostile = t2->_playerHostile;
+    }
     int auxEnemys[MOB_RACES] = {0};
     int auxFriends[MOB_RACES] = {0};
     int auxFood[MOB_RACES] = {0};
@@ -217,6 +224,10 @@ void MobGenetics::mutateRaces(){
             int newRace = (*fromVector)[index];
             (*fromVector).erase((*fromVector).begin()+index);
             destVector->push_back(newRace);
+        }
+        if(rand() % 8 ==0){
+            if(_playerHostile) _playerHostile = false;
+            else _playerHostile = true;
         }
         setFriendYourRace();
     }

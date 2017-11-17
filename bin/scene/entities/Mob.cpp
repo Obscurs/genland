@@ -355,7 +355,7 @@ void Mob::saveToFile(int chunk, std::ofstream &myfile){
     myfile << _positionSpawn.x << " " << _positionSpawn.y << " ";
     myfile << _sizeCol.x << " " << _sizeCol.y << " ";
     myfile << _life << " " << _timeToReproduce << " " << _hunger << " " << _age << " " << _mobType << " ";
-    myfile << _gens._cold << " " << _gens._hot << " " << _gens._humidity << " ";
+    myfile << _gens._cold << " " << _gens._hot << " " << _gens._humidity << " " << _gens._playerHostile << " ";
     myfile << _gens._health << " " << _gens._reproduceFactor << " " << _gens._strenghtGen << " ";
     myfile << _gens._distanceMaxMove << " " << _gens._distanceMaxReproduce << " " << _gens._age << " ";
     myfile << _gens._food.size() << " ";
@@ -394,7 +394,7 @@ void Mob::loadFromFile(std::ifstream &myfile){
     myfile >> _sizeCol.x;
     myfile >> _sizeCol.y;
     myfile >> _life >> _timeToReproduce >> _hunger >> _age >> _mobType;
-    myfile >> _gens._cold >> _gens._hot >> _gens._humidity;
+    myfile >> _gens._cold >> _gens._hot >> _gens._humidity >> _gens._playerHostile;
     myfile >> _gens._health >> _gens._reproduceFactor >> _gens._strenghtGen;
     myfile >> _gens._distanceMaxMove >> _gens._distanceMaxReproduce >> _gens._age;
     myfile >> num_food;
@@ -508,7 +508,7 @@ Mob* Mob::searchMobTarget(std::vector<Mob*> &mobs){
 bool Mob::update(float delta, Clock *c, int num_mobs_race, int size_eco){
 
     _spriteTime += delta;
-    if(_hurted)_spriteTimeHurt += delta;
+
     float maxtime = float(SPAWN_SPRITE_MAX_TIME)/10.0f;
     if(_spriteTime > maxtime && _keyframe <10){
         _spriteTime -= maxtime;
@@ -517,6 +517,7 @@ bool Mob::update(float delta, Clock *c, int num_mobs_race, int size_eco){
         }
 
     }
+    if(_hurted)_spriteTimeHurt += delta;
     if(_spriteTimeHurt > maxtime && _keyframeHurt <7){
         _spriteTimeHurt -= maxtime;
         {
@@ -629,7 +630,7 @@ sf::FloatRect Mob::getBoundingBox(){
     bool first = true;
     for(int i=0; i<_modules.size(); i++){
         float ageFactor = 1.f-_age/(float)_gens._age;
-        sf::FloatRect bb = _modules[i]->getBoundingBox(_position,_gens._size/80.f*ageFactor+0.1,_mobDirection);
+        sf::FloatRect bb = _modules[i]->getBoundingBox(_position,_gens._size/80.f*ageFactor+0.2,_mobDirection);
         if(first){
             left = bb.left;
             right = bb.width;
@@ -659,13 +660,25 @@ void Mob::simulateCombat(Mob* m){
         m->_life -= time2*dps1;
     }
 }
-void Mob::attack(Mob* m){
-    m->_target = this;
-    if(_attackColdown ==0){
-        m->hurt(_gens._strenght/10);
-        _attackColdown= 100-_gens._atackSpeed+10;
-        std::cout << "mob atackking!!!!!!!!!!" << std::endl;
+void Mob::attackTarget(){
+    if(_target->_typeEntity=="mob") {
+        Mob *m = static_cast<Mob*>(_target);
+        m->_target = this;
+        if(_attackColdown ==0){
+            m->hurt(_gens._strenght/10);
+            _attackColdown= 100-_gens._atackSpeed+10;
+            std::cout << "mob atackking!!!!!!!!!!" << std::endl;
+        }
+    } else if (_target->_typeEntity=="player"){
+        Player *p = static_cast<Player*>(_target);
+        if(_attackColdown ==0){
+            p->hurt(_gens._strenght/10);
+            _attackColdown= 100-_gens._atackSpeed+10;
+            std::cout << "playyerrr attack!!!!!!!!!!" << std::endl;
+        }
     }
+
+
 }
 void Mob::hurt(float amount){
     sf::Texture *t = Resources::getTexture("entities");
@@ -679,12 +692,14 @@ void Mob::hurt(float amount){
 
 void Mob::targetAction() {
     if(_target->_typeEntity=="mob"){
-        Mob *m = static_cast<Mob*>(_target);
-        attack(m);
-    } else{
+        attackTarget();
+    } else if(_target->_typeEntity=="food"){
         _target->_removed = true;
         _hunger = _gens._foodNeeds;
         std::cout << "mob eating" << std::endl;
+    } else{
+        attackTarget();
+        std::cout << "attacking player" << std::endl;
     }
 }
 bool Mob::isNearTarget() {
@@ -702,12 +717,13 @@ bool Mob::isNearTarget() {
 void Mob::updateVisible(float delta){
     //if(!_dying && !_dead && !_removed){
         int newDecision;
+
         //MODULES
         for(int i = 0; i<_modules.size(); i++){
             float ageFactor = 1.f-_age/(float)_gens._age;
-            if(_target != nullptr && _modules[i]->hasAnimation("attacking")) _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.1,"attacking",_mobDirection);
-            else if(vx !=0 && _modules[i]->hasAnimation("walking")) _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.1,"walking",_mobDirection);
-            else _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.1,"idle",_mobDirection);
+            if(_target != nullptr && _modules[i]->hasAnimation("attacking")) _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.2,"attacking",_mobDirection);
+            else if(vx !=0 && _modules[i]->hasAnimation("walking")) _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.2,"walking",_mobDirection);
+            else _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.2,"idle",_mobDirection);
         }
         if(_target == nullptr) newDecision = rand() % 1000;
         else {
@@ -767,7 +783,10 @@ void Mob::updateVisible(float delta){
             sf::Vector2f newPos(_position.x+displacement.x, _position.y+displacement.y);
             setPosition(newPos);
         }
-
+        Player *pl = Scene::getScene()->getPlayerOnArea(sf::Vector2i(_positionSpawn),_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB);
+        if(_gens._playerHostile && pl != nullptr) {
+            _target = pl;
+        }
 
 
 }

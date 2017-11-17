@@ -318,6 +318,9 @@ Entity *Ecosystem::getEntity(sf::FloatRect pos){
     for(int i=0; i<_entities.size(); ++i){
         if(_entities[i]->pointHitsEntity(pos) && !_entities[i]->_removed) return _entities[i];
     }
+    for(int i=0; i<_mobs.size(); ++i){
+        if(_mobs[i]->pointHitsEntity(pos) && !_mobs[i]->_removed) return _mobs[i];
+    }
     return nullptr;
 }
 void Ecosystem::saveEntities(){

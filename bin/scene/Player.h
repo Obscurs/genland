@@ -4,7 +4,7 @@
 #include "Inventory.h"
 #include "Colisionable.h"
 #include <vector>
-class Player: public Colisionable
+class Player: public Colisionable, public Entity
 {
 public:
 	Player();
@@ -19,6 +19,8 @@ public:
 	const static int MAX_HUNGER = 100;
     const static int MAX_TEMP_BASE = 35;
     const static int MIN_TEMP_BASE = 10;
+
+    const static int BASE_DAMAGE = 10;
     enum ActionState{IDLE, WALKING,ATTACKING,STAIRS, FALLING,DEAD};
     enum AnimationDirection{LEFT,RIGHT};
     enum EquipTool {W_PICKAXE,W_SWORD, NONE_T};
@@ -29,6 +31,7 @@ public:
     void DrawStats(sf::RenderTarget &target);
 	void Update(float delta, Map &map, sf::RenderWindow &window);
     int id;
+    void hurt(float amount);
 	void SetPosition(float x, float y);
 	void SetSize(float x);
 	void saveStats(std::string pathGame);
@@ -44,7 +47,7 @@ private:
 
 	sf::Sprite& GetSprite();
 	bool giveItem(std::string id, int amount);
-
+    float _damage;
     //STATS
     int _resPhysics;
     float _health;
@@ -58,7 +61,7 @@ private:
     bool _mining;
 	//INVENTORY
 	Inventory* inventory;
-
+    float _attackColdown;
 	//REMOVE AND PUT TILES;
 	Tile* tile_being_removed;
 
@@ -68,8 +71,6 @@ private:
     sf::Sprite _spriteTool;
 	sf::Texture _image;
 	std::string _filename;
-    sf::Vector2f _colPosition;
-    sf::Vector2f _colSize;
     float _spriteTime;
     float _dieTime;
     bool _dead;
@@ -80,5 +81,11 @@ private:
     int _animationFrame;
     int _numFramesAnimation;
     float _toolFactor;
+
+    float _spriteTimeHurt;
+    bool _hurted;
+    sf::Sprite _spriteHurt;
+    int _currHurtAnim;
+    int _keyframeHurt;
 
 };
