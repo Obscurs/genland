@@ -146,6 +146,12 @@ void Tile::reload(std::string new_id)
             id_pick = "A";
             ms_to_remove = 20;
         }
+        else if (new_id == "L" || new_id == "l") {
+            weight = 7;
+            max_tension = 80;
+            id_pick = "L";
+            ms_to_remove = 20;
+        }
         else {
             reload("0");
         }

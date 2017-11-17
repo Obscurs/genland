@@ -39,6 +39,7 @@ private:
     std::vector<Mob*> _mobs;
     std::vector<Entity*> _entities;
     sf::Vector2i _interval;
+    void drawDebugEntities();
     std::vector<std::vector<std::pair<int, bool> > > _surface;
     std::vector<std::vector<std::vector<int> > >_underground;
     int getSizeUnderground();
@@ -52,6 +53,7 @@ private:
     int __auxPos;
     bool _ecoReady;
     int _index;
+    int _mobsPerRace[MobGenetics::MOB_RACES];
 };
 
 

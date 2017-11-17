@@ -505,7 +505,7 @@ Mob* Mob::searchMobTarget(std::vector<Mob*> &mobs){
     return res;
 }
 
-bool Mob::update(float delta, Clock *c){
+bool Mob::update(float delta, Clock *c, int num_mobs_race, int size_eco){
 
     _spriteTime += delta;
     if(_hurted)_spriteTimeHurt += delta;
@@ -546,13 +546,20 @@ bool Mob::update(float delta, Clock *c){
         float tempDamage;
         if(totalTemp>0) tempDamage = totalTemp*(1-float(_gens._hot)/100)*delta;
         else tempDamage = -totalTemp*(1-float(_gens._cold)/100)*delta;
-        _age = std::max(0.f,_age-((tempDamage+humDamage+delta)/2000)*Settings::GEN_SPEED);
-        if(_age<=0) _life =0;
+
         std::vector<Mob*> enemys;
         std::vector<Mob*> friends;
         std::vector<Mob*> neutral;
         std::vector<Mob*> food;
         searchNeighbors(enemys, friends, neutral, food);
+        float comunityDamage = (float(num_mobs_race*num_mobs_race)/float(size_eco))*delta*10;
+        //if(friends.size() > 15) comunityDamage = 50*delta;
+        //else if(friends.size() > 10) comunityDamage = 25*delta;
+        //else if(friends.size() > 5) comunityDamage = 10*delta;
+        //else comunityDamage = 0;
+        //if(friends.size() > 5) _age = 0;
+        _age = std::max(0.f,_age-((tempDamage+humDamage+comunityDamage+delta)/2000)*Settings::GEN_SPEED);
+        if(_age<=0) _life =0;
         if(_life<=0) {
             std::cout << "a mob died" << std::endl;
             _dead = true;
@@ -563,7 +570,9 @@ bool Mob::update(float delta, Clock *c){
             if(_timeToReproduce <0) {
                 return true;
             }
-            _hunger = std::max(-1.f,_hunger-(delta/10)*Settings::GEN_SPEED);
+            if(num_mobs_race <5) _hunger = std::max(-1.f,_hunger-(delta/100)*Settings::GEN_SPEED);
+            else if(num_mobs_race <10) _hunger = std::max(-1.f,_hunger-(delta/10)*Settings::GEN_SPEED);
+            else _hunger = std::max(-1.f,_hunger-(delta/1)*Settings::GEN_SPEED);
 
             if(_hunger < 0){
                 Entity* foodTar = searchFoodTarget();
@@ -581,13 +590,13 @@ bool Mob::update(float delta, Clock *c){
                             simulateCombat(m);
                             _hunger = _gens._foodNeeds;
                             for(int i=0; i<friends.size();i++){
-                                friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,int(_gens._foodNeeds/friends.size()));
+                                friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,int(_gens._foodNeeds/(friends.size())));
                             }
                         }
                     } else {
                         _hunger = _gens._foodNeeds;
                         for(int i=0; i<friends.size();i++){
-                            friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,int(_gens._foodNeeds/friends.size()));
+                            friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,int(_gens._foodNeeds/(friends.size())));
                         }
                         std::cout << "mob eating far away" << std::endl;
                     }
@@ -806,7 +815,7 @@ void Mob::kill(){
     if(t != nullptr){
         int chunkE = map->getChunkIndex(t->GetPosition().x);
         int index_chunk = map->getIndexMatChunk(chunkE);
-        if(index_chunk != -1) {
+        if(index_chunk != -1 && _age >0) {
             map->_chunk_mat[index_chunk]->addFallingTile("food","food",_positionCol,Settings::TILE_SIZE);
         }
     }

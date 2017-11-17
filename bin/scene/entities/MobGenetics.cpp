@@ -26,10 +26,10 @@ MobGenetics::MobGenetics(){
     _race = rand() % MOB_RACES;
     for(int i=0; i<MOB_RACES; i++){
         int place = rand() %4;
-        if(place ==0){
-            _enemys.push_back(i);
-        } else if(place ==1){
+        if(place ==0 || i == _race){
             _friends.push_back(i);
+        } else if(place ==1){
+            _enemys.push_back(i);
         } else if(place ==2){
             _food.push_back(i);
         } else if(place ==3){
@@ -131,6 +131,35 @@ void MobGenetics::mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float fac
             _neutral.push_back(nonShared2[i].first);
         }
     }
+    setFriendYourRace();
+}
+void MobGenetics::setFriendYourRace(){
+    for(int i=0; i<_enemys.size(); ++i){
+        if(_enemys[i] == _race)  {
+            _enemys.erase(_enemys.begin()+i);
+            break;
+        }
+    }
+    for(int i=0; i<_food.size(); ++i){
+        if(_food[i] == _race)  {
+            _food.erase(_food.begin()+i);
+            break;
+        }
+    }
+    for(int i=0; i<_neutral.size(); ++i){
+        if(_neutral[i] == _race)  {
+            _neutral.erase(_neutral.begin()+i);
+            break;
+        }
+    }
+    bool is_friend_race = false;
+    for(int i=0; i<_friends.size(); ++i){
+        if(_friends[i] == _race)  {
+            is_friend_race = true;
+            break;
+        }
+    }
+    if(!is_friend_race) _friends.push_back(_race);
 }
 MobGenetics::MobGenetics(MobGenetics *t1, MobGenetics *t2, float factor){
     _cold = (int)(t1->_cold*factor+t2->_cold*(1-factor));
@@ -167,6 +196,7 @@ MobGenetics::MobGenetics(MobGenetics *t1, MobGenetics *t2, float factor){
     setRelatedFactors();
     mutate();
 
+
 }
 void MobGenetics::mutateRaces(){
     if(rand() % 2 ==0){
@@ -188,6 +218,7 @@ void MobGenetics::mutateRaces(){
             (*fromVector).erase((*fromVector).begin()+index);
             destVector->push_back(newRace);
         }
+        setFriendYourRace();
     }
 }
 void MobGenetics::mutate(){

@@ -69,7 +69,9 @@ public:
     void getEntityesArea(std::vector<Entity*> &entities, sf::Vector2i position, int radius, int indexEcosystem);
     void getPositionsOnArea(std::vector<sf::Vector2i> &positions,sf::Vector2i position, int radius, int indexEcosystem);
     void getFallingTilesArea(std::vector<AnimatedTile*> &entities, sf::Vector2i position, int radius);
+    sf::RenderWindow* getWindowDebug();
 private:
+    sf::RenderWindow* _winForDebug;
     std::string _seed;
     std::string _pathGame;
     MagicView _viewGame;

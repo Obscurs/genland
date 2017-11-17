@@ -174,8 +174,11 @@ void Scene::checkEcosystems(){
     }
 
 }
-
+sf::RenderWindow* Scene::getWindowDebug(){
+    return _winForDebug;
+}
 void Scene::draw(sf::RenderWindow &window){
+    _winForDebug = &window;
   const sf::View &aux = window.getView();
   window.setView(_viewGame);
   _drawer.Draw(window);
@@ -187,6 +190,7 @@ inline bool exists_file (const std::string& name) {
 }
 void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
     _seed = seed;
+    _winForDebug = nullptr;
     NoiseGenerator::init(_seed);
     _initialized = true;
     Player *newPlayer = new Player();

@@ -45,7 +45,7 @@ private:
     void mutateRaces();
     void valance(int (&amounts)[14]);
     void setRelatedFactors();
-
+    void setFriendYourRace();
 };
 
 

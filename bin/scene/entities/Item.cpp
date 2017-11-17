@@ -200,8 +200,8 @@ void Item::Reload(std::string new_id)
         max_stack_amount= 20;
         amount = 0;
         craft_cost["n"] = 2;
-        id_set0="i";
-        id_set1="I";
+        id_set0="l";
+        id_set1="L";
     }
     else if(new_id == "Y" || new_id == "y"){
         max_stack_amount= 20;

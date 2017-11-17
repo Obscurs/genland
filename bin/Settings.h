@@ -18,7 +18,7 @@ public:
     static const int DISTANCE_DAMAGE_TREE = 32;
     static constexpr float MIN_MOBS_ECO = 1.f;
     static constexpr float MIN_TREES_ECO = 0.5f;
-    static constexpr float MAX_MOBS_ECO = 4.f;
+    static constexpr float MAX_MOBS_ECO = 8.f;
     static constexpr float MAX_TREES_ECO = 4.f;
 static const int TILE_SIZE_HIGH = 16;
 static const int TILE_SIZE_MED = 8;

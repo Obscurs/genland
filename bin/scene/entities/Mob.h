@@ -26,7 +26,7 @@ public:
     enum AnimationDirection{LEFT,RIGHT};
     enum Decision{IDLE, GO_LEFT,GO_RIGHT};
     void setPosition(sf::Vector2f position);
-    bool update(float delta, Clock *c);
+    bool update(float delta, Clock *c, int num_mobs_race, int size_eco);
     bool mobIsOnReproduceArea();
     void updateVisible(float delta);
     Mob * reproduce();

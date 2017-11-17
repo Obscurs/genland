@@ -9,6 +9,8 @@
 #include "../entities/Stairs.h"
 #include "../entities/Torch.h"
 #include "../entities/Mob.h"
+#include "../../Resources.h"
+
 Ecosystem::Ecosystem(sf::Vector2i interval, int index):
     _threadSaveLoad(&Ecosystem::changeEcosystem,this){
     _interval = interval;
@@ -24,6 +26,7 @@ void Ecosystem::setInterval(sf::Vector2i new_int){
 }
 void Ecosystem::update(float delta){
     if(_ecoReady){
+
         Scene *s = Scene::getScene();
         Clock *c = s->getClock();
         Map *m = s->getMap();
@@ -57,6 +60,12 @@ void Ecosystem::update(float delta){
                 }
             }
         }
+        for(int i = 0; i< MobGenetics::MOB_RACES; ++i){
+            _mobsPerRace[i] = 0;
+        }
+        for(int i = 0; i < _mobs.size(); ++i){
+            ++_mobsPerRace[_mobs[i]->getGenetics()->_race];
+        }
         size = int(_mobs.size());
         for(int i = 0; i<size; i++){
             if(_mobs[i]->_dead){
@@ -67,7 +76,7 @@ void Ecosystem::update(float delta){
                 size = int(_mobs.size());
                 std::cout << "mob removed " << _mobs.size() << std::endl;
             } else {
-                if(_mobs[i]->update(delta, c) && _mobs[i]->mobIsOnReproduceArea()){
+                if(_mobs[i]->update(delta, c, _mobsPerRace[_mobs[i]->getGenetics()->_race], _interval.y-_interval.x) && _mobs[i]->mobIsOnReproduceArea()){
 
                     Mob *res = _mobs[i]->reproduce();
                     if(res != nullptr && _mobs.size()< (_interval.y-_interval.x)*Settings::MAX_MOBS_ECO) {
@@ -108,6 +117,114 @@ void Ecosystem::syncEntitiesWithChunk(Chunk *c, int index_in_mat_chunks){
 void Ecosystem::addEntity(Entity *e){
     _entities.push_back(e);
 }
+void Ecosystem::drawDebugEntities(){
+    sf::RenderWindow* target = Scene::getScene()->getWindowDebug();
+    if(target != nullptr && _interval.x != _interval.y){
+        sf::Event currentEvent;
+        while(target->pollEvent(currentEvent))
+        {
+
+        }
+        sf::View currentView = target->getView();
+        sf::Vector2f centerView = currentView.getCenter();
+        sf::Vector2f sizeView = currentView.getSize();
+
+        int posIniEco= _interval.x*Settings::TILE_SIZE*Chunk::N_TILES_X;
+        int posEndEco= _interval.y*Settings::TILE_SIZE*Chunk::N_TILES_X;
+        int distanceWorld = posEndEco-posIniEco;
+        float offset = float(sizeView.x)/float(distanceWorld);
+        float offsetY = float(sizeView.y/2)/float(Settings::TILE_SIZE*Chunk::N_TILES_Y);
+        sf::RectangleShape rectangle(sf::Vector2f(sizeView.x, sizeView.y/2-5));
+        rectangle.setFillColor(sf::Color(145, 145, 145));
+        rectangle.setOutlineThickness(1);
+        rectangle.setOutlineColor(sf::Color(0, 0, 0));
+        rectangle.setPosition(sf::Vector2f(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+sizeView.y*_index));
+
+        target->clear(sf::Color::Blue);
+        target->draw(rectangle);
+        for(int i=0; i< _trees.size(); i++){
+            rectangle.setSize(sf::Vector2f(3,3));
+            rectangle.setFillColor(sf::Color(0, 0, 0));
+            rectangle.setOutlineThickness(0);
+            rectangle.setOutlineColor(sf::Color(0, 0, 0));
+            rectangle.setPosition(sf::Vector2f(centerView.x-sizeView.x/2+(_trees[i]->getPosition().x-posIniEco)*offset, centerView.y-sizeView.y/2+sizeView.y*_index+(_trees[i]->getPosition().y)*offsetY));
+            target->draw(rectangle);
+        }
+        for(int i=0; i< _mobs.size(); i++){
+            rectangle.setSize(sf::Vector2f(5,5));
+
+            switch(_mobs[i]->getGenetics()->_race){
+                case 1:
+                    rectangle.setFillColor(sf::Color(0, 0, 255));
+                    break;
+                case 2:
+                    rectangle.setFillColor(sf::Color(0, 255, 0));
+                    break;
+                case 3:
+                    rectangle.setFillColor(sf::Color(0, 255, 255));
+                    break;
+                case 4:
+                    rectangle.setFillColor(sf::Color(255, 0, 0));
+                    break;
+                case 5:
+                    rectangle.setFillColor(sf::Color(255, 0, 255));
+                    break;
+                case 6:
+                    rectangle.setFillColor(sf::Color(255, 255, 0));
+                    break;
+                case 7:
+                    rectangle.setFillColor(sf::Color(255, 255, 255));
+                    break;
+                case 8:
+                    rectangle.setFillColor(sf::Color(0, 0, 100));
+                    break;
+                case 9:
+                    rectangle.setFillColor(sf::Color(0, 100, 0));
+                    break;
+                case 10:
+                    rectangle.setFillColor(sf::Color(0, 100, 100));
+                    break;
+                case 11:
+                    rectangle.setFillColor(sf::Color(100, 0, 0));
+                    break;
+                case 12:
+                    rectangle.setFillColor(sf::Color(100, 0, 100));
+                    break;
+                case 13:
+                    rectangle.setFillColor(sf::Color(100, 100, 0));
+                    break;
+                case 14:
+                    rectangle.setFillColor(sf::Color(100, 100, 100));
+                    break;
+                case 0:
+                    rectangle.setFillColor(sf::Color(50, 100, 200));
+                    break;
+                default:
+                    rectangle.setFillColor(sf::Color(50, 100, 200));
+                    break;
+            }
+            rectangle.setOutlineThickness(0);
+            rectangle.setOutlineColor(sf::Color(0, 0, 0));
+            rectangle.setPosition(sf::Vector2f(centerView.x-sizeView.x/2+(_mobs[i]->getPosition().x-posIniEco)*offset, centerView.y-sizeView.y/2+sizeView.y*_index+(_mobs[i]->getPosition().y)*offsetY));
+            target->draw(rectangle);
+        }
+        sf::Text text;
+        text.setCharacterSize(24);
+        text.setColor(sf::Color::Red);
+        text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+        text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+sizeView.y*_index);
+        sf::String str("Mob popluation: " +std::to_string(_mobs.size())+ "\n Tree population: "+std::to_string(_trees.size()));
+        text.setString(str);
+
+        text.setFont(*Resources::getFont("debugFont"));
+        target->draw(text);
+        target->display();
+        sf::sleep(sf::milliseconds(50));
+    }
+
+
+}
+
 void Ecosystem::updateWithElapsedTime(Date *d){
     if(_interval.x != _interval.y){
         Clock *cGame = Scene::getScene()->getClock();
@@ -116,6 +233,7 @@ void Ecosystem::updateWithElapsedTime(Date *d){
         c->min = d->min;
         c->hour = d->hour;
         while(c->day<cGame->day || c->hour<cGame->hour || c->min < cGame->min){
+            drawDebugEntities();
             c->_clockSpeed = 1;
             c->update(Settings::SYNC_UPDATE_SPEED);
             std::random_shuffle ( _trees.begin(), _trees.end());
@@ -140,7 +258,12 @@ void Ecosystem::updateWithElapsedTime(Date *d){
                     }
                 }
             }
-
+            for(int i = 0; i< MobGenetics::MOB_RACES; ++i){
+                _mobsPerRace[i] = 0;
+            }
+            for(int i = 0; i < _mobs.size(); ++i){
+                ++_mobsPerRace[_mobs[i]->getGenetics()->_race];
+            }
             size = int(_mobs.size());
             for(int i = 0; i<size; i++){
                 if(_mobs[i]->_dead){
@@ -149,7 +272,7 @@ void Ecosystem::updateWithElapsedTime(Date *d){
                     i--;
                     size = int(_mobs.size());
                 } else {
-                    if(_mobs[i]->update(Settings::SYNC_UPDATE_SPEED, c) && _mobs[i]->mobIsOnReproduceArea()){
+                    if(_mobs[i]->update(Settings::SYNC_UPDATE_SPEED, c,_mobsPerRace[_mobs[i]->getGenetics()->_race], _interval.y-_interval.x) && _mobs[i]->mobIsOnReproduceArea()){
                         Mob *res = _mobs[i]->reproduce();
                         if(res != nullptr && _mobs.size()< (_interval.y-_interval.x)*Settings::MAX_MOBS_ECO) _mobs.push_back(res);
                     }
