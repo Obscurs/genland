@@ -100,12 +100,13 @@ void AnimatedTile::Update(float elapsedTime)
 
         float x = x0+vx*elapsedTime;
         float y = y0+vy*elapsedTime;
-        SetPosition(x, y);
-        if(ColideWorld()){
+        if(!ColideWorld()) {
             //std::cout << "YAY" << std::endl;
+            SetPosition(x, y);
             deleted = 2;
         }
     } else if(deleted==1) _removed = true;
+    else if(deleted == 2 && !ColideWorld()) deleted = 0;
 
 }
 

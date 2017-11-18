@@ -39,6 +39,7 @@ public:
     void hurt(float amount);
     sf::FloatRect getBoundingBox();
     bool _dead;
+    bool _dying;
     int _mobType;
     float _life;
     float _hunger;
@@ -74,6 +75,7 @@ private:
     int _keyframe;
     float _spriteTime;
     float _spriteTimeHurt;
+    float _dieTime;
     bool _hurted;
 
 };

@@ -39,6 +39,8 @@ Mob::Mob(): Entity("mob"),Colisionable(),_gens()
                  _spriteTime = 0;
                  _spriteTimeHurt = 0;
                  _focusDebug = false;
+                 _dying = false;
+                 _dieTime = 10;
 
 
 }
@@ -68,6 +70,8 @@ Mob::Mob(MobGenetics* t,int chunk, sf::Vector2f position): Entity("mob"),Colisio
     _mobType = -1;
     _spriteTime = 0;
     _spriteTimeHurt = 0;
+    _dying = false;
+    _dieTime = 10;
     createRandomBody();
 
 }
@@ -97,6 +101,8 @@ Mob::Mob(MobGenetics* t1, MobGenetics* t2,std::vector<MobModule*>& modulesPartne
     _attackColdown = 0;
     _dead = false;
     _mobType = -1;
+    _dying = false;
+    _dieTime = 10;
     mixModules(modulesPartner1,typeMobPartner1,modulesPartner2,typeMobPartner2,t1,t2);
 
 }
@@ -529,95 +535,107 @@ bool Mob::update(float delta, Clock *c, int num_mobs_race, int size_eco){
         _hurted = false;
         _keyframeHurt =0;
     }
-        _attackColdown = std::max(0.f,_attackColdown-delta*50);
-        Map* map = Scene::getScene()->getMap();
+    if(_dying){
+        _dieTime = std::max(_dieTime-delta*10, 0.f);
+        for(int i=0; i <_modules.size(); ++i){
+            _modules[i]->_die_anim_percent = (10-_dieTime)/10.f;
+            _modules[i]->_y_floor_die = _positionCol.y+_sizeCol.y;
+        }
+        if(_dieTime <= 0) _dead = true;
+    }
+    else {
+        _attackColdown = std::max(0.f, _attackColdown - delta * 50);
+        Map *map = Scene::getScene()->getMap();
         bool is_visible_chunk = map->getIndexMatChunk(map->getChunkIndex(_positionCol.x)) != -1;
-        Simplex2d* base_noise_temperature = NoiseGenerator::getNoise("base_noise_temperature");
-        Simplex2d* noise_humidity = NoiseGenerator::getNoise("noise_humidity");
-        int y_pos = Chunk::N_TILES_Y-1-(_positionCol.y/Settings::TILE_SIZE);
-        float height_factor = float(y_pos)/float(Chunk::N_TILES_Y);
-        float heightTemp = (1-height_factor)*(Settings::MAX_TEMPERATURE-Settings::MIN_TEMPERATURE)+Settings::MIN_TEMPERATURE;
+        Simplex2d *base_noise_temperature = NoiseGenerator::getNoise("base_noise_temperature");
+        Simplex2d *noise_humidity = NoiseGenerator::getNoise("noise_humidity");
+        int y_pos = Chunk::N_TILES_Y - 1 - (_positionCol.y / Settings::TILE_SIZE);
+        float height_factor = float(y_pos) / float(Chunk::N_TILES_Y);
+        float heightTemp = (1 - height_factor) * (Settings::MAX_TEMPERATURE - Settings::MIN_TEMPERATURE) +
+                           Settings::MIN_TEMPERATURE;
 
         int valHumidity = int(noise_humidity->valSimplex2D(0, _positionCol.x));
-        int valTemperature = int(heightTemp)+int(base_noise_temperature->valSimplex2D(0, _positionCol.x));
+        int valTemperature = int(heightTemp) + int(base_noise_temperature->valSimplex2D(0, _positionCol.x));
 
         int totalTemp = valTemperature + c->_globalTemperature;
         int totalHum = valHumidity + c->_globalHumidity;
-        float humDamage = totalHum*(1-float(_gens._humidity)/100)*delta;
+        float humDamage = totalHum * (1 - float(_gens._humidity) / 100) * delta;
         float tempDamage;
-        if(totalTemp>0) tempDamage = totalTemp*(1-float(_gens._hot)/100)*delta;
-        else tempDamage = -totalTemp*(1-float(_gens._cold)/100)*delta;
+        if (totalTemp > 0) tempDamage = totalTemp * (1 - float(_gens._hot) / 100) * delta;
+        else tempDamage = -totalTemp * (1 - float(_gens._cold) / 100) * delta;
 
-        std::vector<Mob*> enemys;
-        std::vector<Mob*> friends;
-        std::vector<Mob*> neutral;
-        std::vector<Mob*> food;
+        std::vector<Mob *> enemys;
+        std::vector<Mob *> friends;
+        std::vector<Mob *> neutral;
+        std::vector<Mob *> food;
         searchNeighbors(enemys, friends, neutral, food);
-        float comunityDamage = (float(num_mobs_race*num_mobs_race)/float(size_eco))*delta*10;
+        float comunityDamage = (float(num_mobs_race * num_mobs_race) / float(size_eco)) * delta * 10;
         //if(friends.size() > 15) comunityDamage = 50*delta;
         //else if(friends.size() > 10) comunityDamage = 25*delta;
         //else if(friends.size() > 5) comunityDamage = 10*delta;
         //else comunityDamage = 0;
         //if(friends.size() > 5) _age = 0;
-        _age = std::max(0.f,_age-((tempDamage+humDamage+comunityDamage+delta)/2000)*Settings::GEN_SPEED);
-        if(_age<=0) _life =0;
-        if(_life<=0) {
+        _age = std::max(0.f, _age - ((tempDamage + humDamage + comunityDamage + delta) / 2000) * Settings::GEN_SPEED);
+        if (_age <= 0) _life = 0;
+        if (_life <= 0) {
             std::cout << "a mob died" << std::endl;
-            _dead = true;
+            _dying = true;
             return false;
         }
         else {
-            _timeToReproduce -= (delta/10)*Settings::GEN_SPEED;
-            if(_timeToReproduce <0) {
+            _timeToReproduce -= (delta / 10) * Settings::GEN_SPEED;
+            if (_timeToReproduce < 0) {
                 return true;
             }
-            if(num_mobs_race <5) _hunger = std::max(-1.f,_hunger-(delta/100)*Settings::GEN_SPEED);
-            else if(num_mobs_race <10) _hunger = std::max(-1.f,_hunger-(delta/10)*Settings::GEN_SPEED);
-            else _hunger = std::max(-1.f,_hunger-(delta/1)*Settings::GEN_SPEED);
+            if (num_mobs_race < 5) _hunger = std::max(-1.f, _hunger - (delta / 100) * Settings::GEN_SPEED);
+            else if (num_mobs_race < 10) _hunger = std::max(-1.f, _hunger - (delta / 10) * Settings::GEN_SPEED);
+            else _hunger = std::max(-1.f, _hunger - (delta / 1) * Settings::GEN_SPEED);
 
-            if(_hunger < 0){
-                Entity* foodTar = searchFoodTarget();
-                if(is_visible_chunk){
-                    if(foodTar == nullptr){
-                        Mob* m = searchMobTarget(food);
-                        if(m != nullptr) _target = m;
+            if (_hunger < 0) {
+                Entity *foodTar = searchFoodTarget();
+                if (is_visible_chunk) {
+                    if (foodTar == nullptr) {
+                        Mob *m = searchMobTarget(food);
+                        if (m != nullptr) _target = m;
                     } else {
                         _target = foodTar;
                     }
-                } else{
-                    if(foodTar == nullptr){
-                        Mob* m = searchMobTarget(food);
-                        if(m != nullptr) {
+                } else {
+                    if (foodTar == nullptr) {
+                        Mob *m = searchMobTarget(food);
+                        if (m != nullptr) {
                             simulateCombat(m);
                             _hunger = _gens._foodNeeds;
-                            for(int i=0; i<friends.size();i++){
-                                friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,int(_gens._foodNeeds/(friends.size())));
+                            for (int i = 0; i < friends.size(); i++) {
+                                friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,
+                                                               int(_gens._foodNeeds / (friends.size())));
                             }
                         }
                     } else {
                         _hunger = _gens._foodNeeds;
-                        for(int i=0; i<friends.size();i++){
-                            friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,int(_gens._foodNeeds/(friends.size())));
+                        for (int i = 0; i < friends.size(); i++) {
+                            friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,
+                                                           int(_gens._foodNeeds / (friends.size())));
                         }
                         std::cout << "mob eating far away" << std::endl;
                     }
                 }
 
-                _life = std::max(0.f,_life-(delta/10));
-            } else{
+                _life = std::max(0.f, _life - (delta / 10));
+            } else {
 
-                Mob* m = searchMobTarget(enemys);
-                if(is_visible_chunk) {
+                Mob *m = searchMobTarget(enemys);
+                if (is_visible_chunk) {
                     if (m != nullptr) _target = m;
-                } else{
+                } else {
                     if (m != nullptr) simulateCombat(m);
                 }
             }
         }
-        if(is_visible_chunk && isNearTarget()){
+        if (is_visible_chunk && isNearTarget()) {
             targetAction();
         }
-
+    }
 
 
     return false;
@@ -731,6 +749,10 @@ void Mob::updateVisible(float delta){
             else if(isNearTarget()) newDecision = 2;
             else if(_target->getPositionCol().x > getPositionCol().x) newDecision = 1;
             else newDecision = 0;
+        }
+        if(_dying) {
+            newDecision = 2;
+            _target = nullptr;
         }
 
 

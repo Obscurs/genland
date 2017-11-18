@@ -40,6 +40,9 @@ public:
     sf::Vector2f getOffset();
     float getScale();
 
+    float _y_floor_die;
+    float _die_anim_percent;
+
 private:
 
     int _idModule;

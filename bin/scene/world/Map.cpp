@@ -684,7 +684,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                         Tile *t1 = t->neighbors[8];
                         queue_final_tiles.pop();
                         Entity *e = scene->getEntity(sf::FloatRect(t->GetPosition().x,t->GetPosition().y,Settings::TILE_SIZE, Settings::TILE_SIZE));
-                        if(e != nullptr && !e->_removed){
+                        if(e != nullptr && e->_typeEntity != "mob" && !e->_removed){
                             e->_removed = true;
                             int chunkE = getChunkIndex(t->GetPosition().x);
                             int index_chunk = getIndexMatChunk(chunkE);

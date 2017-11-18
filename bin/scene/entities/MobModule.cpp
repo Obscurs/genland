@@ -34,6 +34,8 @@ MobModule::MobModule(std::string type, int id, sf::Vector2f offset, float localS
     _sprite.setPosition(_position.x,_position.y);
     _spriteTime = 0;
     _initialized = false;
+    _y_floor_die = 0;
+    _die_anim_percent = 0;
     setAnimations();
 }
 MobModule::~MobModule(){
@@ -54,6 +56,10 @@ void MobModule::addAnimation(std::string name, int frameIni, int numFrames){
 void MobModule::draw(sf::RenderTarget & renderTar){
     if(_initialized){
         _sprite.setTextureRect(sf::IntRect(MOB_SPRITE_SIZE*_keyframe,MOB_SPRITE_SIZE*_idModule,MOB_SPRITE_SIZE,MOB_SPRITE_SIZE));
+        sf::Vector2f pos = _sprite.getPosition();
+        float y_low = pos.y+_sizeCol.y;
+        pos.y += std::abs((_y_floor_die-y_low)*_die_anim_percent);
+        _sprite.setPosition(pos);
         renderTar.draw(_sprite);
     }
 
