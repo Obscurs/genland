@@ -6,6 +6,7 @@
 #include "../Inputs.h"
 #include "Scene.h"
 #include "NoiseGenerator.h"
+#include "../Resources.h"
 #include <iostream>
 Clock::Clock(){
     day=0;
@@ -78,6 +79,78 @@ float Clock::getFactorOfInterval(int (&interval)[5], float value){
     }
     amount = max-min;
     return real_value/amount;
+}
+void Clock::draw(sf::RenderTarget &target){
+    sf::View currentView = target.getView();
+    sf::Vector2f centerView = currentView.getCenter();
+    sf::Vector2f sizeView = currentView.getSize();
+
+    int widthBar = 256;
+    int heightBar = 256;
+    float xBar = centerView.x+sizeView.x/2-widthBar;
+    float yBar = centerView.y-sizeView.y/2;
+
+    sf::Vector2f pos_player = Scene::getScene()->getPlayer()->getPositionCol();
+    float global_temp = Scene::getScene()->getTemperature(pos_player);
+    float local_temp = Scene::getScene()->getTemperatureGlobal(pos_player);
+    int total_temp = global_temp + local_temp;
+    float global_hum = Scene::getScene()->getHumidity(pos_player);
+    float local_hum = Scene::getScene()->getHumidityGlobal(pos_player);
+    int total_hum = global_hum + local_hum;
+
+    sf::Sprite backgound(*Resources::getTexture("clock_background"));
+    backgound.setPosition(xBar,yBar);
+    sf::Sprite clock(*Resources::getTexture("clock_clock"));
+    clock.setPosition(xBar,yBar);
+    sf::Sprite aro(*Resources::getTexture("clock_circle"));
+    aro.setPosition(xBar,yBar);
+    sf::Sprite n_hour(*Resources::getTexture("clock_neddle_hour"));
+    n_hour.setPosition(xBar+136,yBar+96);
+    n_hour.setOrigin(sf::Vector2f(136,96));
+
+
+
+    float hmod = (((hour) %12)+(min/60.f))/12;
+    n_hour.rotate(hmod*360+180);
+    sf::Sprite n_temp(*Resources::getTexture("clock_neddle_temp"));
+    n_temp.setPosition(xBar,yBar-std::max((std::min(float((total_temp/50.f)*128),120.f)),-100.f));
+    sf::Sprite n_season(*Resources::getTexture("clock_neddle_season"));
+    n_season.setPosition(xBar+136,yBar+96);
+    n_season.setOrigin(sf::Vector2f(136,96));
+    float smod = (((day) %365)+(hour/24.f))/365;
+    n_season.rotate(smod*360);
+    target.draw(backgound);
+    target.draw(n_season);
+    target.draw(clock);
+    target.draw(n_hour);
+    target.draw(aro);
+    target.draw(n_temp);
+    sf::Text text;
+    text.setCharacterSize(24);
+    text.setColor(sf::Color::White);
+    text.setFont(*Resources::getFont("font"));
+    //_text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+    sf::String str(std::to_string(total_hum)+"%");
+    text.setString(str);
+    text.setPosition(xBar+45,yBar-5);
+    target.draw(text);
+
+    sf::String str2(std::to_string(total_temp));
+    text.setString(str2);
+    text.setPosition(xBar+192,yBar-5);
+    target.draw(text);
+
+
+
+    sf::String str3(std::to_string(day));
+    text.setCharacterSize(32);
+    text.setString(str3);
+    sf::FloatRect textRect = text.getLocalBounds();
+    text.setOrigin(textRect.left + textRect.width/2.0f,
+                   textRect.top  + textRect.height/2.0f);
+    text.setPosition(sf::Vector2f(xBar+136,yBar+96));
+    target.draw(text);
 }
 void Clock::UpdateDayTimeIntervals(){
     switch(_season){

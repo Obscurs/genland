@@ -314,6 +314,7 @@ void Drawer::Draw(sf::RenderWindow &window){
     Scene *scene = Scene::getScene();
     Map* map_curr = scene->getMap();
     Player* player = scene->getPlayer();
+    Clock* clock = scene->getClock();
     view_player.setCenter(player->GetPosition().x+Player::PLAYER_WIDTH/2, player->GetPosition().y+Player::PLAYER_HEIGHT/2);
 
     texture_back->setView(view_player);
@@ -323,6 +324,7 @@ void Drawer::Draw(sf::RenderWindow &window){
     texture_background.setView(view_player);
     black_texture.setView(view_player);
     DrawMap(window);
+    clock->draw(window);
     player->DrawInventory(window);
     player->DrawStats(window);
     map_curr->drawViewMap(window);

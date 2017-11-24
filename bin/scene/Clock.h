@@ -14,6 +14,7 @@ public:
     Clock();
     ~Clock();
     void update(float delta);
+    void draw(sf::RenderTarget &target);
     void setColorToShader(sf::Shader &shader);
     int day;
     int hour;

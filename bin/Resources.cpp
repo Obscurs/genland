@@ -30,6 +30,7 @@ void Resources::load() {
     firstTimeLoadingResources = false;
     //FONTS
     addFont( "debugFont", "resources/font1.ttf");
+    addFont( "font", "resources/font2.otf");
     //SHADERS
     addShader("sun_background_shader","resources/sun_background.frag");
     addShader("tile_shader","resources/light.frag");
@@ -46,6 +47,12 @@ void Resources::load() {
     addTexture("mobsComplements", "resources/mobsComplements.png");
     addTexture("mobsLegs", "resources/mobsLegs.png");
 
+    addTexture("clock_background", "resources/rellotge_background.png");
+    addTexture("clock_clock", "resources/rellotge.png");
+    addTexture("clock_circle", "resources/aro_rellotge.png");
+    addTexture("clock_neddle_hour", "resources/agulla_hora.png");
+    addTexture("clock_neddle_season", "resources/agulla_season.png");
+    addTexture("clock_neddle_temp", "resources/agulla_temp.png");
     addTextureManager("tileMap","resources/tiles5.png", 16, 16);
     TextureManager *texMan = getTextureManager("tileMap");
     texMan->insert_block_all_values("D", "d", sf::Vector2i(0,0),16);     //dirt
