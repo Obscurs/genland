@@ -20,6 +20,7 @@
 #include "../Debuger.h"
 #include "entities/Stairs.h"
 #include "entities/Torch.h"
+#include "../SoundManager.hpp"
 
 
 Player::Player(): Colisionable(), Entity("player")
@@ -112,6 +113,14 @@ void Player::DrawStats(sf::RenderTarget &target){
     rectangle.setOutlineThickness(0);
     target.draw(rectangle);
 
+    TextureManager *t = Resources::getTextureManager("tileMap");
+
+        sf::Sprite s;
+        sf::Vector2f pos_heart(xBar-20,yBar);
+        t->generateSprite("heart", pos_heart, s, sf::Vector2f(16,16));
+        target.draw(s);
+
+
     rectangle.setFillColor(sf::Color(145, 145, 145));
     rectangle.setOutlineThickness(2);
     rectangle.setOutlineColor(sf::Color(0, 0, 0));
@@ -123,6 +132,11 @@ void Player::DrawStats(sf::RenderTarget &target){
     rectangle.setFillColor(sf::Color(0, 170, 0));
     rectangle.setOutlineThickness(0);
     target.draw(rectangle);
+
+    sf::Sprite s2;
+    sf::Vector2f pos_food(xBar-20,yBar+heightBar+5);
+    t->generateSprite("food", pos_food, s2, sf::Vector2f(16,16));
+    target.draw(s2);
     if(_dead){
         sf::Text text;
         text.setFont(*Resources::getFont("debugFont"));
@@ -189,6 +203,15 @@ void Player::updateSprite(float delta){
         if(_animationId == STAIRS) _animationId = IDLE;
     }
     float maxtime = float(PLAYER_SPRITE_MAX_TIME)/10.0f;
+    if(_animationFrame==0){
+        switch(_animationId){
+            case ATTACKING:
+                //SoundManager::playSound("punch");
+                break;
+            default:
+                break;
+        }
+    }
     if(_spriteTime > maxtime){
         _spriteTime -= maxtime;
         if(_animationId==STAIRS){
@@ -278,6 +301,33 @@ void Player::updateSprite(float delta){
                     break;
             }
             _spriteTool.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*col,PLAYER_SPRITE_SIZE*row,PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
+
+        }
+            break;
+        case I_PICKAXE:
+        {
+            int row =2;
+            int col;
+            switch(_animationId){
+                case IDLE:
+                    col = 8;
+                    break;
+                case FALLING:
+                    col = 12;
+                    break;
+                case WALKING:
+                    col = 9 + (_animationFrame % 3);
+                    break;
+                case STAIRS:
+                    col = 7;
+                    break;
+                case ATTACKING:
+                    col = 13 + (_animationFrame % 3);
+                    break;
+                default:
+                    break;
+            }
+            _spriteTool.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*col,PLAYER_SPRITE_SIZE*row,PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
         }
             break;
         case W_SWORD:
@@ -305,6 +355,7 @@ void Player::updateSprite(float delta){
             }
             _spriteTool.setTextureRect(sf::IntRect(PLAYER_SPRITE_SIZE*col,PLAYER_SPRITE_SIZE*row,PLAYER_SPRITE_SIZE,PLAYER_SPRITE_SIZE));
         }
+
             break;
         case NONE_T:
             break;
@@ -321,6 +372,10 @@ void Player::updateToolsAndArmors() {
             _toolFactor = 2;
             _tool = W_PICKAXE;
             _damage = 5;
+        } else if(currentTool->id == "pickaxe2"){
+            _toolFactor = 4;
+            _tool = I_PICKAXE;
+            _damage = 7;
         } else if(currentTool->id == "sword1"){
             _toolFactor = 1;
             _tool = W_SWORD;
@@ -390,8 +445,11 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
         sf::Vector2f position_center = sf::Vector2f(GetPosition().x + PLAYER_WIDTH / 2, GetPosition().y + PLAYER_WIDTH / 2);
         sf::Vector2f position_zoomed = (position - position_center) / zoom + position_center;
         position = position_zoomed;
-
-
+        SoundManager::playSoundNoRestart("rain0");
+        if(_animationId == WALKING){
+            SoundManager::setVolumeSound(30,"step");
+            SoundManager::playSoundNoRestart("step");
+        }
         if (Inputs::KeyDown(Inputs::A) && !Debuger::isTerminalActive()) {
             vx = -PLAYER_SPEED_X;
         }
@@ -480,6 +538,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
                     if (index_chunk != -1) {
                         map._chunk_mat[index_chunk]->addFallingTile(e->_typeEntity, e->_typeEntity, position,
                                                                     Settings::TILE_SIZE);
+                        SoundManager::playSoundNoRestart("bubble");
                     }
                     _mining = true;
                     _attacking = false;
@@ -503,8 +562,10 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
                 if (t->id != "0" && t->id != "B" && t->id != "b") {
                     tile_being_removed = t;
                     if (tile_being_removed->being_removed) {
-                        tile_being_removed->ms_to_be_removed -= delta * 1000 * _toolFactor;
+
+                        tile_being_removed->ms_to_be_removed -= delta * 100 * _toolFactor;
                         if (tile_being_removed->ms_to_be_removed < 0) {
+                            t->reproduceSoundRemove();
                             map.removeTile2(t);
                             map.dirtyChunks();
 
@@ -516,7 +577,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
                     }
                     _mining = true;
                 }
-                _attacking = false;
+                //_attacking = false;
             }
 
 
@@ -563,6 +624,7 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
                                         scene->addEntity(st);
                                         int index_chunk = map.getIndexMatChunk(st->_chunk);
                                         if (index_chunk != -1) {
+                                            SoundManager::playSoundNoRestart("place");
                                             map._chunk_mat[index_chunk]->addEntityToChunk(st, index_chunk);
                                             map._chunk_mat[index_chunk]->_is_dirty = true;
                                         }
@@ -575,12 +637,14 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
                                         scene->addEntity(st);
                                         int index_chunk = map.getIndexMatChunk(st->_chunk);
                                         if (index_chunk != -1) {
+                                            SoundManager::playSoundNoRestart("place");
                                             map._chunk_mat[index_chunk]->addEntityToChunk(st, index_chunk);
                                             map._chunk_mat[index_chunk]->_is_dirty = true;
                                         }
                                     }
                                 }
                                 else {
+                                    SoundManager::playSound("placeBloc");
                                     t->reload(idItemInventory);
                                     map.checkIntegrity(t);
                                 }
@@ -618,10 +682,74 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
                 inventory->decrementItemAtTab();
             }
         }
+        if(_mining || _attacking){
+            if(_tool == NONE_T ) SoundManager::playSoundNoRestart("punch");
+            else if(_tool == W_PICKAXE || _tool == I_PICKAXE) SoundManager::playSoundNoRestart("pick");
+            else if(_tool == W_SWORD ) SoundManager::playSoundNoRestart("sword");
+        }
     } else {
         _dieTime = std::max(0.f, _dieTime-delta*50);
     }
+    float rainFactor = Scene::getScene()->getClock()->_rainFactor*100;
+    rainFactor = rainFactor*1.3f;
+    //if(rainFactor<25) rainFactor =0;
+    //else{
+    //    rainFactor = (rainFactor-25)*1.33;
+    //}
+    float lightFactor = Scene::getScene()->getClock()->_lightFactor*100;
+    float heightFactor = (1-_positionCol.y/(Settings::TILE_SIZE*Chunk::N_TILES_Y))*100;
+    float caveFactor = (_positionCol.y/(Settings::TILE_SIZE*Chunk::N_TILES_Y))*100;
+    if(heightFactor<50) heightFactor =0;
+    else{
+        heightFactor = (heightFactor-50)*2;
+    }
+    if(caveFactor<50) caveFactor =0;
+    else{
+        caveFactor = (caveFactor-50)*2;
+    }
+    float global_temp = Scene::getScene()->getTemperature(_positionCol);
+    float local_temp = Scene::getScene()->getTemperatureGlobal(_positionCol);
+    float total_temp = global_temp + local_temp;
+    if(total_temp<0) rainFactor = std::max(0.f,rainFactor+2*total_temp);
+    SoundManager::playSoundNoRestart("rain0");
+    SoundManager::playSoundNoRestart("rain1");
+    SoundManager::playSoundNoRestart("rain2");
+    SoundManager::playSoundNoRestart("rain3");
+    SoundManager::playSoundNoRestart("day");
+    SoundManager::playSoundNoRestart("night");
+    SoundManager::playSoundNoRestart("wind");
+    SoundManager::playSoundNoRestart("cave");
+    if(rainFactor<=25){
+        SoundManager::setVolumeSound(std::max(rainFactor*4-caveFactor,0.f),"rain0");
+        SoundManager::setVolumeSound(0,"rain1");
+        SoundManager::setVolumeSound(0,"rain2");
+        SoundManager::setVolumeSound(0,"rain3");
+    } else if(rainFactor<=50){
+        SoundManager::setVolumeSound(100,"rain0");
+        SoundManager::setVolumeSound(std::max((rainFactor-25)*4-caveFactor,0.f),"rain1");
+        SoundManager::setVolumeSound(0,"rain2");
+        SoundManager::setVolumeSound(0,"rain3");
+    } else if(rainFactor<=75){
+        SoundManager::setVolumeSound(100,"rain1");
+        SoundManager::setVolumeSound(std::max((rainFactor-50)*4-caveFactor,0.f),"rain2");
+        SoundManager::setVolumeSound(std::max(100-(rainFactor-50)*4-caveFactor,0.f),"rain0");
+        SoundManager::setVolumeSound(0,"rain3");
+    } else if(rainFactor<=75){
+        SoundManager::setVolumeSound(std::max(100-caveFactor,0.f),"rain2");
+        SoundManager::setVolumeSound(std::max((rainFactor-75)*4-caveFactor,0.f),"rain3");
+        SoundManager::setVolumeSound(0,"rain0");
+        SoundManager::setVolumeSound(std::max(100-(rainFactor-75)*4-caveFactor,0.f),"rain1");
+    }
+    if(lightFactor <50){
+        SoundManager::setVolumeSound(std::max(100-lightFactor*2-rainFactor,0.f),"night");
+        SoundManager::setVolumeSound(std::max(lightFactor-rainFactor-heightFactor-caveFactor,0.f),"day");
 
+    } else if(lightFactor >=50){
+        SoundManager::setVolumeSound(std::max(lightFactor-rainFactor-heightFactor-caveFactor,0.f),"day");
+        SoundManager::setVolumeSound(0,"night");
+    }
+    SoundManager::setVolumeSound(heightFactor,"wind");
+    SoundManager::setVolumeSound(caveFactor,"cave");
 
 }
 bool Player::giveItem(std::string id_item, int amount_item){
@@ -667,6 +795,8 @@ void Player::hurt(float amount){
     _keyframeHurt=0;
     _hurted = true;
     _health -= amount;
+    int num = std::rand()%3+1;
+    SoundManager::playSound("p_hurt_"+std::to_string(num));
 }
 
 sf::Sprite& Player::GetSprite()

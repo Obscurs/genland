@@ -3,6 +3,7 @@
 //
 
 #include "Button.h"
+#include "../SoundManager.hpp"
 #include <iostream>
 
 Button::Button(sf::Vector2f pos, sf::Vector2f s, std::string txt, int t)
@@ -33,7 +34,7 @@ void Button::Draw(sf::RenderWindow &window, sf::Font font){
     sf::RectangleShape rectangle(sf::Vector2f(0,0));
     rectangle.setPosition(sf::Vector2f(position.x, position.y));
     rectangle.setSize(sf::Vector2f(size.x, size.y));
-    if(mouseOver)rectangle.setFillColor(sf::Color(200, 200, 200));
+    if(mouseOver) rectangle.setFillColor(sf::Color(200, 200, 200));
     else rectangle.setFillColor(sf::Color(100, 100, 100));
     window.draw(rectangle);
     window.draw(sftext);
@@ -44,5 +45,7 @@ void Button::update(sf::Vector2f mousePos){
             position.y,
             size.x,
             size.y);
+    bool lastOver = mouseOver;
     mouseOver = buttonRect.contains(mousePos.x, mousePos.y);
+    if(!lastOver && mouseOver) SoundManager::playSound("click");
 }

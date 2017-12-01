@@ -20,7 +20,6 @@ public:
     bool mouseOver;
     void Draw(sf::RenderWindow &window,sf::Font font);
     void update(sf::Vector2f mousePos);
-
 };
 
 

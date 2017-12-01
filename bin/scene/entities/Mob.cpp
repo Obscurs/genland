@@ -9,6 +9,7 @@
 #include "../world/Chunk.h"
 #include "../Scene.h"
 #include "../../Resources.h"
+#include "../../SoundManager.hpp"
 
 //Load from file
 Mob::Mob(): Entity("mob"),Colisionable(),_gens()
@@ -679,10 +680,19 @@ void Mob::simulateCombat(Mob* m){
     }
 }
 void Mob::attackTarget(){
+
     if(_target->_typeEntity=="mob") {
         Mob *m = static_cast<Mob*>(_target);
         m->_target = this;
         if(_attackColdown ==0){
+            sf::Vector2f posPlayer = Scene::getScene()->getPlayer()->getPositionCol();
+            float distance_form_player = sqrt((posPlayer.x-_positionCol.x)*(posPlayer.x-_positionCol.x)+(posPlayer.y-_positionCol.y)*(posPlayer.y-_positionCol.y));
+            if(distance_form_player < Settings::TILE_SIZE*200){
+                int num = std::rand()%3+1;
+                float volume =(Settings::TILE_SIZE*200-distance_form_player)/(Settings::TILE_SIZE*200)*100;
+                SoundManager::setVolumeSound(volume/1.5f,"m_attack_"+std::to_string(num));
+                SoundManager::playSound("m_attack_"+std::to_string(num));
+            }
             m->hurt(_gens._strenght/10);
             _attackColdown= 100-_gens._atackSpeed+10;
             std::cout << "mob atackking!!!!!!!!!!" << std::endl;
@@ -690,6 +700,8 @@ void Mob::attackTarget(){
     } else if (_target->_typeEntity=="player"){
         Player *p = static_cast<Player*>(_target);
         if(_attackColdown ==0){
+            int num = std::rand()%3+1;
+            SoundManager::playSound("m_attack_"+std::to_string(num));
             p->hurt(_gens._strenght/10);
             _attackColdown= 100-_gens._atackSpeed+10;
             std::cout << "playyerrr attack!!!!!!!!!!" << std::endl;

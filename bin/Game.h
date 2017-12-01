@@ -38,6 +38,7 @@ private:
 	sf::RenderWindow _window;
     sf::Font _font;
 	bool _resize;
+	float _timerMusic;
     sf::Clock _clock;
 
 

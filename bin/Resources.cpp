@@ -99,9 +99,11 @@ void Resources::load() {
     texMan->insert_map_value("tool",sf::Vector2i(144,16));
     texMan->insert_map_value("sword1",sf::Vector2i(160,16));
     texMan->insert_map_value("pickaxe1",sf::Vector2i(176,16));
+    texMan->insert_map_value("pickaxe2",sf::Vector2i(192,16));
     texMan->insert_map_value("stairs",sf::Vector2i(144,32));
     texMan->insert_map_value("torch",sf::Vector2i(160,32));
     texMan->insert_map_value("food",sf::Vector2i(176,32));
+    texMan->insert_map_value("heart",sf::Vector2i(192,32));
     std::cout << " Resources Loaded " << std::endl;
 }
 

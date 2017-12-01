@@ -256,6 +256,15 @@ void Item::Reload(std::string new_id)
         id_set1="-1";
         type = TOOL;
     }
+    else if(new_id == "pickaxe2"){
+        max_stack_amount= 1;
+        amount = 0;
+        craft_cost["I"] = 5;
+        craft_cost["F"] = 5;
+        id_set0="-1";
+        id_set1="-1";
+        type = TOOL;
+    }
     else if(new_id == "armor3"){ //iron
         max_stack_amount= 1;
         amount = 0;

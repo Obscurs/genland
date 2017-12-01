@@ -17,6 +17,7 @@
 #include "../Debuger.h"
 #include "Scene.h"
 #include "../Settings.h"
+#include "../SoundManager.hpp"
 #include <string>
 #include <fstream>
 //#include "Game.h"
@@ -28,13 +29,14 @@ Inventory::Inventory()
 	show_tab = true;
 	show_craft_list = false;
 	Item* craft1 = new Item("pickaxe1");
-	Item* craft2 = new Item("armor1");
-	Item* craft3 = new Item("sword1");
-    Item* craft4 = new Item("stairs");
-    Item* craft5 = new Item("torch");
-    Item* craft6 = new Item("A");
-	Item* craft7 = new Item("armor2");
-	Item* craft8 = new Item("armor3");
+	Item* craft2 = new Item("pickaxe2");
+	Item* craft3 = new Item("armor1");
+	Item* craft4 = new Item("sword1");
+    Item* craft5 = new Item("stairs");
+    Item* craft6 = new Item("torch");
+    Item* craft7 = new Item("A");
+	Item* craft8 = new Item("armor2");
+	Item* craft9 = new Item("armor3");
 	craft1->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft2->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft3->SetSize(SLOT_SIZE-GRID_THICKNESS);
@@ -43,6 +45,7 @@ Inventory::Inventory()
     craft6->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft7->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft8->SetSize(SLOT_SIZE-GRID_THICKNESS);
+	craft9->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft_list [0] = craft1;
 	craft_list [1] = craft2;
 	craft_list [2] = craft3;
@@ -51,6 +54,7 @@ Inventory::Inventory()
     craft_list [5] = craft6;
 	craft_list [6] = craft7;
 	craft_list [7] = craft8;
+	craft_list [8] = craft9;
 	tab_item_selected = 0;
 
 }
@@ -405,6 +409,7 @@ void Inventory::craftItem(std::string id_item){
 				int aux_amount_need  = it.second;
 				int aux_res = decrementItem(aux_id, aux_amount_need);
 			}
+			SoundManager::playSoundNoRestart("craft");
 			int res = stackItem(id_item,1);
 		}
 
@@ -814,6 +819,7 @@ void Inventory::Update(sf::RenderWindow &window)
 				int chunkE = map->getChunkIndex(p->GetPosition().x);
 				int index_chunk = map->getIndexMatChunk(chunkE);
 				if(index_chunk != -1) {
+					SoundManager::playSoundNoRestart("bubble");
 					map->_chunk_mat[index_chunk]->addFallingTile(mouseItem->id,mouseItem->id,p->GetPosition(),Settings::TILE_SIZE);
 				}
 				mouseItem->amount -=1;

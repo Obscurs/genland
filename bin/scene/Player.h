@@ -9,7 +9,7 @@ class Player: public Colisionable, public Entity
 public:
 	Player();
 	~Player();
-	const static int PLAYER_SPEED_X = 500;
+	const static int PLAYER_SPEED_X = 200;
 	const static int PLAYER_SPEED_Y = 600;
     const static int PLAYER_SPRITE_SIZE = 64;
     const static int PLAYER_SPRITE_MAX_TIME = 1;
@@ -23,7 +23,7 @@ public:
     const static int BASE_DAMAGE = 10;
     enum ActionState{IDLE, WALKING,ATTACKING,STAIRS, FALLING,DEAD};
     enum AnimationDirection{LEFT,RIGHT};
-    enum EquipTool {W_PICKAXE,W_SWORD, NONE_T};
+    enum EquipTool {W_PICKAXE,W_SWORD,I_PICKAXE, NONE_T};
     enum EquipArmor {NONE_A,ARMOR1,ARMOR2,ARMOR3};
 	void Draw(sf::RenderWindow & window);
 	void Draw2(sf::RenderTexture & tex);

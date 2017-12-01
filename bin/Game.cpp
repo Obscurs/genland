@@ -19,6 +19,7 @@
 #include "Settings.h"
 #include "Inputs.h"
 #include "functions.h"
+#include "SoundManager.hpp"
 
 
 Game::Game():
@@ -27,6 +28,7 @@ Game::Game():
     _resize = false;
     _gameState = Uninitialized;
     _true_exit=false;
+    _timerMusic =0;
     if (!_font.loadFromFile("resources/font1.ttf"))
     {
         std::cout << "font error" << std::endl;
@@ -172,9 +174,15 @@ void Game::Events(){
 }
 void Game::GameLoop()
 {
+    if(_timerMusic<=0){
+        SoundManager::playMusicNoRestart("ambient1");
+        _timerMusic = (std::rand()%3+1)*60;
+    }
+
     Scene* scene = Scene::getScene();
     sf::Time deltatime = _clock.restart();
     Debuger::Update(deltatime);
+    _timerMusic -= deltatime.asSeconds();
     float delta = deltatime.asSeconds();
     Inputs::Update();
     Events();

@@ -14,6 +14,7 @@
 #include "Chunk.h"
 #include "../../Settings.h"
 #include "../../Resources.h"
+#include "../../SoundManager.hpp"
 
 
 Tile::Tile(int l){
@@ -28,6 +29,7 @@ Tile::Tile(int l){
     _leaveDensity = "";
     _reach_sun = false;
     _isTree = false;
+    _soundRemove = "";
 }
 
 
@@ -54,6 +56,11 @@ void Tile::reloadLeave(std::string id,std::string density, std::string type){
     _leaveDensity = density;
     _leaveType = type;
 }
+void Tile::reproduceSoundRemove(){
+    if(_soundRemove != ""){
+        SoundManager::playSound(_soundRemove);
+    }
+}
 void Tile::reload(std::string new_id)
 {
     _isTree = false;
@@ -75,57 +82,68 @@ void Tile::reload(std::string new_id)
             max_tension = 50;
             id_pick = "D";
             ms_to_remove = 100;
+            _soundRemove = "dirt";
         }else if (new_id == "C" || new_id == "c") {
             weight = 20;
             max_tension = 300;
             id_pick = "C";
             ms_to_remove = 200;
+            _soundRemove = "stones";
         }else if (new_id == "K" || new_id == "k") {
             weight = 20;
             max_tension = 300;
             id_pick = "K";
             ms_to_remove = 400;
+            _soundRemove = "stones";
         }else if (new_id == "G" || new_id == "g") {
             weight = 20;
             max_tension = 300;
             id_pick = "G";
             ms_to_remove = 400;
+            _soundRemove = "stones";
         }else if (new_id == "I" || new_id == "i") {
             weight = 20;
             max_tension = 300;
             id_pick = "I";
             ms_to_remove = 400;
+            _soundRemove = "stones";
         }else if (new_id == "Y" || new_id == "y") {
             weight = 20;
             max_tension = 300;
             id_pick = "Y";
             ms_to_remove = 500;
+            _soundRemove = "stones";
         }else if (new_id == "B" || new_id == "b") {
             weight = 20;
             max_tension = 300;
             rigid = true;
             id_pick = "B";
             ms_to_remove = 500;
+            _soundRemove = "stones";
         }else if (new_id == "N" || new_id == "n") {
             weight = 10;
             max_tension = 5;
             id_pick = "N";
             ms_to_remove = 50;
+            _soundRemove = "stones";
         }else if (new_id == "W" || new_id == "w") {
             weight = 5;
             max_tension = 7;
             id_pick = "D";
             ms_to_remove = 50;
+            _soundRemove = "dirt";
         }else if (new_id == "R" || new_id == "r") {
             weight = 20;
             max_tension = 300;
             id_pick = "C";
             ms_to_remove = 100;
+            _soundRemove = "stones";
         }else if (new_id == "J" || new_id == "j") {
             weight = 10;
             max_tension = 50;
             id_pick = "D";
             ms_to_remove = 100;
+            _soundRemove = "dirt";
         }
         else if (new_id == "T" || new_id == "t") {
             weight = 7;
@@ -133,24 +151,28 @@ void Tile::reload(std::string new_id)
             id_pick = "T";
             ms_to_remove = 100;
             _isTree = true;
+            _soundRemove = "dirt";
         }
         else if (new_id == "F" || new_id == "f") {
             weight = 1;
             max_tension = 4;
             id_pick = "F";
             ms_to_remove = 20;
+            _soundRemove = "leaf";
         }
         else if (new_id == "A" || new_id == "a") {
             weight = 7;
             max_tension = 80;
             id_pick = "A";
             ms_to_remove = 20;
+            _soundRemove = "dirt";
         }
         else if (new_id == "L" || new_id == "l") {
             weight = 7;
             max_tension = 80;
             id_pick = "L";
             ms_to_remove = 20;
+            _soundRemove = "stones";
         }
         else {
             reload("0");

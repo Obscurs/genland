@@ -207,7 +207,7 @@ void Debuger::DrawWorldStats(){
     _text.setPosition(centerView.x-sizeView.x/2, centerView.y-sizeView.y/2+_displace);
     std::stringstream buffer;
     Clock* clk = scene->getClock();
-    buffer << "Day: " << clk->day << " Hour: " << clk->hour <<" Min: " << int(clk->min) <<  " DayTime: " << clk->_dayTime << " "<< clk->_dayTimeFactor<< " Season: " << clk->_season<< " "<< clk->_seasonFactor;
+    buffer << "Day: " << clk->day << " Hour: " << clk->hour <<" Min: " << int(clk->min) <<  " DayTime: " << clk->_dayTime << " "<< clk->_dayTimeFactor<< " Season: " << clk->_season<< " "<< clk->_seasonFactor << " Rain factor: " << clk->_rainFactor;
     std::string string(buffer.str());
     sf::String str(string);
     _text.setString(str);

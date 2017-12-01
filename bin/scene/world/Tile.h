@@ -16,7 +16,7 @@ public:
 		PLAINS,
 		NUM_BIOMS
 	};
-
+	void reproduceSoundRemove();
 	void reload(std::string id);
 	void reloadLeave(std::string id,std::string density, std::string type);
 	void draw(sf::VertexArray &vertexArray);
@@ -63,6 +63,7 @@ private:
     void drawIns(sf::VertexArray &vertexArray);
     void drawAmbientOclusion(sf::VertexArray &vertexArray);
 	void drawLeaves(sf::VertexArray &vertexArray);
+	std::string _soundRemove;
 	sf::Vector2f position;
 	sf::Vector2f size;
 

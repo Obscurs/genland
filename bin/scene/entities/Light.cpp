@@ -5,6 +5,9 @@
 #include <iostream>
 #include "Light.h"
 #include "../../Resources.h"
+#include "../../Settings.h"
+#include "../../SoundManager.hpp"
+#include "../Scene.h"
 
 #include <random>
 Light::Light(sf::Vector2f pos, float rad_min, float rad_max, float exp, sf::Color c) {
@@ -53,6 +56,12 @@ void Light::Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::Ren
         tex_front->clear(sf::Color(0,0,0,0));
         tex_front->draw(map_without_lights, states);
         tex_front->display();
+    sf::Vector2f posPlayer = Scene::getScene()->getPlayer()->getPositionCol();
+    float distance_form_player = sqrt((posPlayer.x-position.x)*(posPlayer.x-position.x)+(posPlayer.y-position.y)*(posPlayer.y-position.y));
+    if(distance_form_player < Settings::TILE_SIZE*10){
+        SoundManager::setVolumeSound((Settings::TILE_SIZE*10-distance_form_player)/(Settings::TILE_SIZE*10)*100,"fire");
+        SoundManager::playSoundNoRestart("fire");
+    }
 
 
 }

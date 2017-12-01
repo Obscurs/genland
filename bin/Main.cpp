@@ -14,6 +14,7 @@
 #include "Game.h"
 #include "Settings.h"
 #include "Resources.h"
+#include "SoundManager.hpp"
 
 
 sf::Clock deltaClock;
@@ -26,6 +27,7 @@ int Settings::GAME_HEIGHT = 0;
 int main(int argc, char** argv)
 {
     Resources::load();
+    SoundManager::load();
     bool true_exit = false;
     while(!true_exit) {
         std::ifstream myfile("config/config");
@@ -53,5 +55,6 @@ int main(int argc, char** argv)
         g->Start();
         true_exit = g->_true_exit;
     }
+    SoundManager::clean();
   return 0;
 }

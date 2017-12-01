@@ -6,6 +6,7 @@
 #include "../Settings.h"
 #include "NoiseGenerator.h"
 #include "../Inputs.h"
+#include "../SoundManager.hpp"
 
 Scene::Scene()
     : _map_curr(),
