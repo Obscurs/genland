@@ -91,11 +91,20 @@ void Debuger::interpInstruction(std::string s){
                 d->min = c->min;
                 d->hour = c->hour;
                 c->day = stoi(args[1]);
-                scene->getEcosystem(0)->updateWithElapsedTime(d);
-                scene->getEcosystem(1)->updateWithElapsedTime(d);
+                scene->getEcosystem(0)->updateWithElapsedTime(d,true);
+                scene->getEcosystem(1)->updateWithElapsedTime(d,true);
                 scene->getMap()->_chunk_mat[0]->_is_dirty = true;
                 scene->getMap()->_chunk_mat[1]->_is_dirty = true;
                 scene->getMap()->_chunk_mat[2]->_is_dirty = true;
+            } else if(args[0]== "set_hour"){
+                Scene *scene = Scene::getScene();
+                Clock *c = scene->getClock();
+                c->hour = stoi(args[1]);
+            } else if(args[0]== "give_item" && args.size()==3){
+                std::string item = args[1];
+                int amount = stoi(args[2]);
+                Player *p = Scene::getScene()->getPlayer();
+                p->giveItem(item,amount);
             }
         }
     }
@@ -106,6 +115,7 @@ void Debuger::Update(const sf::Time& deltatime){
     if(_is_init){
         if(Inputs::KeyBreak(Inputs::TAB)) {
             activated = !activated;
+            _terminal.disable();
         }
         if(activated){
             _displace = 0;
@@ -252,7 +262,7 @@ void Debuger::DrawEntitiesStats(int eco){
         _displace = _displace + DISPLACEMENT;
 
         std::stringstream buffer3;
-        buffer3 << "Race: " << mobs[0]->getGenetics()->_race << " Life: " << mobs[0]->_life << "/" << mobs[0]->getGenetics()->_health << " Hunger: " << mobs[0]->_hunger << "/" << mobs[0]->getGenetics()->_foodNeeds << " Age: " << mobs[0]->_age << "/" << mobs[0]->getGenetics()->_age;
+        buffer3 << "Race: " << mobs[0]->getGenetics()->_race << " Life: " << mobs[0]->_life << "/" << mobs[0]->getGenetics()->_health << " Hunger: " << mobs[0]->_hunger << "/" << mobs[0]->getGenetics()->_foodNeeds << " Age: " << mobs[0]->_age << "/" << mobs[0]->getGenetics()->_age << " Target: " << (mobs[0]->_target !=nullptr);
         std::string string3(buffer3.str());
         sf::String str3(string3);
         _text.setString(str3);

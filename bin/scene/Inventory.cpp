@@ -37,6 +37,7 @@ Inventory::Inventory()
     Item* craft7 = new Item("A");
 	Item* craft8 = new Item("armor2");
 	Item* craft9 = new Item("armor3");
+    Item* craft10 = new Item("hammer");
 	craft1->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft2->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft3->SetSize(SLOT_SIZE-GRID_THICKNESS);
@@ -46,6 +47,7 @@ Inventory::Inventory()
 	craft7->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft8->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft9->SetSize(SLOT_SIZE-GRID_THICKNESS);
+    craft10->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft_list [0] = craft1;
 	craft_list [1] = craft2;
 	craft_list [2] = craft3;
@@ -55,6 +57,7 @@ Inventory::Inventory()
 	craft_list [6] = craft7;
 	craft_list [7] = craft8;
 	craft_list [8] = craft9;
+    craft_list [9] = craft10;
 	tab_item_selected = 0;
 
 }
@@ -807,8 +810,19 @@ void Inventory::Update(sf::RenderWindow &window)
 	//_position.x += centerView.x-sizeView.x/2;
 	//_position.y += centerView.y-sizeView.y/2;
 
+    if(Inputs::KeyBreak(Inputs::E)){
+        Item* tabI = getItemAtTab();
+        if(tabI !=nullptr){
+            if(tabI->type == Item::TOOL){
+                tab[tab_item_selected] = getItemTool();
+                toolItem = tabI;
+            } else if(tabI->type == Item::ARMOR){
+                tab[tab_item_selected] = getItemArmor();
+                armorItem = tabI;
+            }
+        }
 
-
+    }
 	if(Inputs::MouseBreak(Inputs::M_LEFT)){
 		if(Inputs::KeyDown(Inputs::L_CONTR)) inventoryClick(position.x, position.y, "contr+mouseLeft");
 		else if(Inputs::KeyDown(Inputs::L_SHIFT)) inventoryClick(position.x, position.y, "shift+mouseLeft");
@@ -840,13 +854,15 @@ void Inventory::Update(sf::RenderWindow &window)
 			show_craft_list = true;
 		}
 	}
-
-	int tab_selection_delta = Inputs::GetWheel();
-	tab_item_selected = (tab_item_selected - tab_selection_delta);
-	while (tab_item_selected < 0) {
-		tab_item_selected += TAB_SLOTS;
+	if(!Inputs::KeyDown(Inputs::L_CONTR)){
+		int tab_selection_delta = Inputs::GetWheel();
+		tab_item_selected = (tab_item_selected - tab_selection_delta);
+		while (tab_item_selected < 0) {
+			tab_item_selected += TAB_SLOTS;
+		}
+		tab_item_selected %= TAB_SLOTS;
 	}
-	tab_item_selected %= TAB_SLOTS;
+
 
 	for (unsigned int i = 1; i <= Inventory::TAB_SLOTS; ++i) {
 		if (Inputs::KeyDown(static_cast<Inputs::Key>(Inputs::Key::N0 +i))) tab_item_selected = i-1;

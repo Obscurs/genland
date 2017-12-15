@@ -6,14 +6,19 @@
 #define GENLAND_MOB_H
 
 
+#include <functional>
 #include "Entity.h"
 #include "../Clock.h"
 #include "MobGenetics.h"
 #include "../Colisionable.h"
 #include "MobModule.h"
+#include "AnimatedTile.h"
+//#include "../Player.h"
+
 
 class Mob : public Entity, public Colisionable {
 public:
+
     static const int OFFSET_REPRODUCE = 50;
     static const int DISTANCE_NEAR = 128;
     static const int SPAWN_SPRITE_MAX_TIME = 1;
@@ -24,7 +29,7 @@ public:
     Mob(MobGenetics* t1, MobGenetics* t2,std::vector<MobModule*>& modulesPartner1, int typeMobPartner1,std::vector<MobModule*>& modsPartner2,int typeMobPartner2,int chunk, sf::Vector2f position, int index);
     void mixModules(std::vector<MobModule*>& modu1, int typeMobPartner1,std::vector<MobModule*>& modu2, int typeMobPartner2,MobGenetics* t1, MobGenetics* t2);
     enum AnimationDirection{LEFT,RIGHT};
-    enum Decision{IDLE, GO_LEFT,GO_RIGHT};
+    enum Decision{IDLE, GO_LEFT,GO_RIGHT,GO_UP,GO_DOWN};
     void setPosition(sf::Vector2f position);
     bool update(float delta, Clock *c, int num_mobs_race, int size_eco);
     bool mobIsOnReproduceArea();
@@ -37,6 +42,7 @@ public:
     void loadFromFile(std::ifstream &myfile);
     void draw(sf::RenderTarget & renderTar);
     void hurt(float amount);
+    void setEnemy(int race);
     sf::FloatRect getBoundingBox();
     bool _dead;
     bool _dying;
@@ -48,16 +54,18 @@ public:
     bool _focusDebug;
     Entity* _target;
 private:
-
-
+    std::pair<Entity*,Decision> getTargetUsingBfs(std::vector<Entity*> &targets, float radius);
+    std::vector<sf::Vector2i> __auxRoute;
+    sf::Vector2i __positionMob;
+    sf::Vector2i __positionTarget;
     int getRelationMob(int idRace);
     void searchNeighbors(std::vector<Mob*> &enemys,std::vector<Mob*> &friends,std::vector<Mob*> &neutral,std::vector<Mob*> &food);
-    void targetAction();
+    void targetAction(bool visible, std::vector<Mob*> & friends);
     void attackTarget();
     void simulateCombat(Mob* m);
     void createRandomBody();
-    Entity* searchFoodTarget();
-    Mob* searchMobTarget(std::vector<Mob*> &mobs);
+    bool searchFoodTarget(std::vector<AnimatedTile*> &foods);
+    bool searchMobTarget(std::vector<Mob*> &mobs);
     bool isNearTarget();
     float vx;
     float vy;
@@ -77,6 +85,7 @@ private:
     float _spriteTimeHurt;
     float _dieTime;
     bool _hurted;
+    int _bfsCounter;
 
 };
 

@@ -35,6 +35,7 @@ const sf::Keyboard::Key Inputs::_keyMap[NUM_KEYS] = {
         sf::Keyboard::D,
         sf::Keyboard::Q,
         sf::Keyboard::E,
+        sf::Keyboard::Z,
         sf::Keyboard::Space,
         sf::Keyboard::Num0,
         sf::Keyboard::Num1,

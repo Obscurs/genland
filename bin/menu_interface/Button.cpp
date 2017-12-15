@@ -26,14 +26,26 @@ void Button::Draw(sf::RenderWindow &window, sf::Font font){
     sf::Text sftext;
     sftext.setCharacterSize(size.y/2);
     sftext.setColor(sf::Color::Black);
-    sftext.setPosition(sf::Vector2f(position.x, position.y));
-    sftext.setString(text);
+
     sftext.setFont(font); // font is a sf::Font
+    sftext.setString(text);
+    sftext.setPosition(sf::Vector2f(position.x, position.y));
+    sf::FloatRect textRect = sftext.getLocalBounds();
+    sftext.setOrigin(textRect.left + textRect.width/2.0f,
+                   textRect.top  + textRect.height/2.0f);
+    sftext.setPosition(sf::Vector2f(position.x+(size.x)/2.0f,position.y+(size.y)/2.0f));
+
+
+    //
+
+
 
 
     sf::RectangleShape rectangle(sf::Vector2f(0,0));
     rectangle.setPosition(sf::Vector2f(position.x, position.y));
     rectangle.setSize(sf::Vector2f(size.x, size.y));
+    rectangle.setOutlineColor(sf::Color::Black);
+    rectangle.setOutlineThickness(4.0);
     if(mouseOver) rectangle.setFillColor(sf::Color(200, 200, 200));
     else rectangle.setFillColor(sf::Color(100, 100, 100));
     window.draw(rectangle);

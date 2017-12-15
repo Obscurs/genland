@@ -535,7 +535,6 @@ void Chunk::calcLateralNeighborsTiles(int lateral){
         setTileNeighbors(x,y);
     }
 }
-
 Tile* Chunk::getTile(float x, float y, int z){
     sf::Vector2i position = getIndexFromGlobalPosition(sf::Vector2f(x,y));
     return tile_mat[position.y][position.x][z];

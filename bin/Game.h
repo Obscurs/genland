@@ -36,10 +36,11 @@ private:
 
 	GameState _gameState;
 	sf::RenderWindow _window;
+	WorldBackground _backgrounds;
     sf::Font _font;
 	bool _resize;
 	float _timerMusic;
     sf::Clock _clock;
-
+    float _counter;
 
 };

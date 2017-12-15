@@ -35,12 +35,6 @@ void Map::init(int pos)
 {
 
     _initialized = true;
-    Light l1(sf::Vector2f(+500.0,2000.0),95.0,105.0,100.0, sf::Color::Green);
-    Light l2(sf::Vector2f(+550.0,2000.0),95.0,105.0,100.0, sf::Color::Red);
-    Light l3(sf::Vector2f(0,0),78.0,80.0,100.0, sf::Color::Yellow);
-    lights.push_back(l1);
-    lights.push_back(l2);
-    lights.push_back(l3);
 
 
     _posMap = pos;
@@ -706,7 +700,7 @@ void Map::calcPhysics2(Tile* first_tile, std::map<Tile*,bool> conected_bfs) {
                             if(fallingChunk != nullptr) fallingChunk->_falling_tiles.push_back(falling_t);
                         }
                         if (t1->id != "0") {
-                            AnimatedTile *falling_t = new AnimatedTile(t1->id, t->id_pick);
+                            AnimatedTile *falling_t = new AnimatedTile(t1->id, t1->id_pick);
                             falling_t->wall_left = wall_left;
                             falling_t->wall_right = wall_right;
                             sf::Vector2f tpos = t1->GetPosition();
@@ -955,12 +949,7 @@ void Map::update(float delta, sf::Vector2f player_pos)
         for(int i = 0; i<N_CHUNKS_X; i++){
             _chunk_mat[i]->update(delta);
         }
-        for(int i=0; i<lights.size(); i++){
-            lights[i].Update(delta);
-        }
-        player_pos.x+=16;
-        player_pos.y+=16;
-        lights[2].position=player_pos;
+
 
     } else std::cout << "canot update, map no _initialized " <<  std::endl;
 

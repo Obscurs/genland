@@ -11,6 +11,21 @@
 class Entity {
 
 public:
+    static bool pairSortCompare(const std::pair<Entity*,int>& firstElem, const std::pair<Entity*,int>& secondElem) {
+        return firstElem.second < secondElem.second;
+    }
+    static void sortEntities(std::vector<Entity*> &vec, sf::Vector2f position){
+        std::vector<std::pair<Entity*,int> > vecAux;
+        for(int i=0; i<vec.size(); i++){
+            sf::Vector2f posE = vec[i]->getPositionCol();
+            int distance = sqrt((posE.x-position.x)*(posE.x-position.x)+(posE.y-position.y)*(posE.y-position.y));
+            vecAux.push_back(std::pair<Entity*,int>(vec[i],distance));
+        }
+        std::sort(vecAux.begin(), vecAux.end(),pairSortCompare);
+        for(int i=0; i<vec.size(); i++){
+            vec[i] = vecAux[i].first;
+        }
+    }
     Entity(std::string type);
     int _chunk;
     sf::Vector2f _position;

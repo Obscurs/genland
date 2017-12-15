@@ -31,6 +31,7 @@ public:
         D,
         Q,
 		E,
+		Z,
         SPACE,
         N0,
         N1,

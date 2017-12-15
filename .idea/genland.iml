@@ -2,32 +2,22 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/bin/Debuger.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/TextureManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/functions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/Mouse.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Inputs.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/TextInput.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/TextInput.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/InterfaceList.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuMain.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/Button.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/NewGameMenu.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuMain.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/InterfaceList.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuConfigGame.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuLoadGame.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/Button.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuLoadGame.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/NewGameMenu.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuConfigGame.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/Debuger.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/ConfigStarter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/Mouse.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/MagicView.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/ConfigStarter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/MagicView.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/TextureManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Debuger.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Resources.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/TextureManager.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/Game.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Settings.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/Game.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/Utils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Clock.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Colisionable.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Inventory.h" isTestSource="false" />
@@ -81,12 +71,24 @@
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Player.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Inventory.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/SoundManager.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/ConfigStarter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/SoundManager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Game.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Resources.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/Utils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/TextInput.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/TextInput.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/InterfaceList.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuMain.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/Button.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/NewGameMenu.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuMain.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/InterfaceList.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuConfigGame.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuLoadGame.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/Button.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuLoadGame.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/NewGameMenu.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuConfigGame.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Terminal.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Inputs.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Terminal.h" isTestSource="false" />

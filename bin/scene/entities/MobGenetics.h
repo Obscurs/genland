@@ -41,6 +41,7 @@ public:
     std::vector<int> _food;
     std::vector<int> _neutral;
     void mutate();
+    void setEnemy(int race);
 private:
     void mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float factor);
     void mutateRaces();

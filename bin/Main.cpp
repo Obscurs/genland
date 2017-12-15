@@ -15,6 +15,7 @@
 #include "Settings.h"
 #include "Resources.h"
 #include "SoundManager.hpp"
+#include "Mouse.h"
 
 
 sf::Clock deltaClock;
@@ -27,6 +28,7 @@ int Settings::GAME_HEIGHT = 0;
 int main(int argc, char** argv)
 {
     Resources::load();
+    Mouse::load();
     SoundManager::load();
     bool true_exit = false;
     while(!true_exit) {

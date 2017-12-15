@@ -40,6 +40,36 @@ MobGenetics::MobGenetics(){
     setRelatedFactors();
 
 }
+void MobGenetics::setEnemy(int race){
+    bool alreadyEnemy = false;
+    for(int i=0; i<_enemys.size(); ++i){
+        if(_enemys[i] == race)  {
+            alreadyEnemy = true;
+            break;
+
+        }
+    }
+    if(!alreadyEnemy){
+        _enemys.push_back(race);
+    }
+    for(int i=0; i<_food.size(); ++i){
+        if(_food[i] == race)  {
+            _food.erase(_food.begin()+i);
+            break;
+        }
+    }
+    for(int i=0; i<_neutral.size(); ++i){
+        if(_neutral[i] == race)  {
+            _neutral.erase(_neutral.begin()+i);
+            break;
+        }
+    }
+    for(int i=0; i<_friends.size(); ++i){
+        if(_friends[i] == race)  {
+            break;
+        }
+    }
+}
 void MobGenetics::mixRacePreferences(MobGenetics *t1, MobGenetics *t2, float factor){
     std::vector<std::pair<int, int> > nonShared1;
     std::vector<std::pair<int, int> > nonShared2;

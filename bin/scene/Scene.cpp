@@ -11,7 +11,7 @@
 Scene::Scene()
     : _map_curr(),
       _player(),
-      _backgrounds(),
+      _backgrounds(false),
       _clock(),
       _drawer(&_map_curr,&_player,&_backgrounds, &_clock),
       _viewGame()
@@ -43,7 +43,7 @@ void Scene::update(sf::RenderWindow &window,float delta){
 
     _player.Update(delta, _map_curr, window);
 
-    _backgrounds.Update(_player.GetPosition(),_clock);
+    _backgrounds.Update(_player.GetPosition(),_clock.hour+_clock.min/60);
     _map_curr.update(delta, _player.GetPosition());
 
     _clock.update(delta);
@@ -212,7 +212,7 @@ void Scene::init(std::string path, sf::RenderWindow &window, std::string seed){
     int chunk_player = (int)round(player_pos.x/(Settings::TILE_SIZE*Chunk::N_TILES_X));
     _map_curr.init(chunk_player);
 
-    WorldBackground *newBack = new WorldBackground();
+    WorldBackground *newBack = new WorldBackground(false);
     _backgrounds = *newBack;
     Clock *newClock = new Clock();
     _clock = *newClock;

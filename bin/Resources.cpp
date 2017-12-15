@@ -39,6 +39,7 @@ void Resources::load() {
     addShader("mix_back_terr_shader","resources/mix_background_terrain.frag");
     addShader("rain_shader","resources/rain.frag");
     //TEXTURES
+    addTexture("cursors", "resources/cursors.png");
     addTexture("playerSprite", "resources/player.png");
     addTexture("entities", "resources/entities.png");
     addTexture("mobsBodies", "resources/mobsBodies.png");
@@ -100,6 +101,7 @@ void Resources::load() {
     texMan->insert_map_value("sword1",sf::Vector2i(160,16));
     texMan->insert_map_value("pickaxe1",sf::Vector2i(176,16));
     texMan->insert_map_value("pickaxe2",sf::Vector2i(192,16));
+    texMan->insert_map_value("hammer",sf::Vector2i(208,16));
     texMan->insert_map_value("stairs",sf::Vector2i(144,32));
     texMan->insert_map_value("torch",sf::Vector2i(160,32));
     texMan->insert_map_value("food",sf::Vector2i(176,32));

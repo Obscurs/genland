@@ -5,7 +5,7 @@
 #include "../../Resources.h"
 #include "Torch.h"
 Torch::Torch(): Entity("torch"),
-                _light(sf::Vector2f(0,0),95.0,105.0,100.0, sf::Color::Green){
+                _light(sf::Vector2f(0,0),95.0,105.0,100.0, sf::Color::Green, false){
     _positionCol = _position;
     _sizeCol = sf::Vector2i(16,16);
     _numFramesAnimation = 3;

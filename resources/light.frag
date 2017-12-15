@@ -24,16 +24,19 @@ void main(void)
             vec4 light_with_color = mix(color,tex_current,0.8);
             vec4 light_with_color2 = mix( light_with_color,tex_old, min(factor,1.0));
             colorEnd = max(tex_old,light_with_color2);
+
         }
         else
         {
             vec4 light_with_color = mix(color,tex_current,0.8);
             colorEnd = max(tex_old,light_with_color);
+
         }
 
 
 
         gl_FragColor = colorEnd;
+
     }
 
 

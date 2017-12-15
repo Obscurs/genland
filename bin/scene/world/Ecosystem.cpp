@@ -225,7 +225,7 @@ void Ecosystem::drawDebugEntities(){
 
 }
 
-void Ecosystem::updateWithElapsedTime(Date *d){
+void Ecosystem::updateWithElapsedTime(Date *d, bool debug){
     if(_interval.x != _interval.y){
         Clock *cGame = Scene::getScene()->getClock();
         Clock *c = new Clock();
@@ -233,7 +233,7 @@ void Ecosystem::updateWithElapsedTime(Date *d){
         c->min = d->min;
         c->hour = d->hour;
         while(c->day<cGame->day || c->hour<cGame->hour || c->min < cGame->min){
-            drawDebugEntities();
+            if(debug) drawDebugEntities();
             c->_clockSpeed = 1;
             c->update(Settings::SYNC_UPDATE_SPEED);
             std::random_shuffle ( _trees.begin(), _trees.end());
@@ -637,7 +637,7 @@ void Ecosystem::loadEntities(){
             Date *d = (*lastUpdate)[i];
             if(d->interval == sf::Vector2i(_interval.x,_interval.y)){
 
-                updateWithElapsedTime(d);
+                updateWithElapsedTime(d, false);
                 d->day = c->day;
                 d->min = c->min;
                 d->hour = c->hour;

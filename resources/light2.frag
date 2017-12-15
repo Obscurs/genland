@@ -30,6 +30,7 @@ void main(void)
         {
             vec4 light_with_color = mix(color,tex_current,0.9);
             gl_FragColor = max(tex_old,light_with_color);
+
         }
 
 }

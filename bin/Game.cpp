@@ -20,15 +20,17 @@
 #include "Inputs.h"
 #include "functions.h"
 #include "SoundManager.hpp"
+#include "Mouse.h"
 
 
 Game::Game():
-        _window()
+        _window(),
+        _backgrounds(true)
 {
-    _resize = false;
     _gameState = Uninitialized;
     _true_exit=false;
     _timerMusic =0;
+    _counter = 0;
     if (!_font.loadFromFile("resources/font1.ttf"))
     {
         std::cout << "font error" << std::endl;
@@ -50,9 +52,15 @@ void Game::LoadData(){
         route.append("/data");
         if(exists_file(route)) {
             std::ifstream myfile(route);
-            std::string data_seed= "def", data_name = "def";
-            myfile >> data_seed >> data_name;
-            MenuLoadGame::save_list.insertElement(data_name);
+            std::string data_seed= "def", data_name = "def", data_day = "def";
+            myfile >> data_seed >> data_name >> data_day;
+            int len = data_day.length();
+            std::string aux = "";
+            for(int j = 5; j>len; --j){
+                aux.append("0");
+            }
+            aux.append(data_day);
+            MenuLoadGame::save_list.insertElement("Day: "+ aux +"   |   "+data_name);
             myfile.close();
         }
         else std::cout << "ERROR: could not read file " << route << std::endl;
@@ -71,6 +79,12 @@ void Game::Start(void)
     NewGameMenu::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     MenuLoadGame::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     MenuConfigGame::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
+    Scene* scene = Scene::getScene();
+    if(scene->isInit()) scene->updateView();
+    MenuMain::view.update();
+    MenuConfigGame::view.update();
+    MenuLoadGame::view.update();
+    NewGameMenu::view.update();
     while(!IsExiting())
     {
         _window.clear(sf::Color(0,255,0));
@@ -102,9 +116,12 @@ void Game::Events(){
         }
         else if (currentEvent.type == sf::Event::Resized){
             std::cout << "res" << std::endl;
-            _resize = true;
             Scene* scene = Scene::getScene();
             if(scene->isInit()) scene->updateView();
+            MenuMain::view.update();
+            MenuConfigGame::view.update();
+            MenuLoadGame::view.update();
+            NewGameMenu::view.update();
         }
         else if (currentEvent.type == sf::Event::Closed)
         {
@@ -186,10 +203,13 @@ void Game::GameLoop()
     float delta = deltatime.asSeconds();
     Inputs::Update();
     Events();
+    Mouse::setCursor("default",0);
+    Mouse::setScale(1.f);
     switch(_gameState)
     {
         case Game::Playing:
         {
+            Mouse::setScale(0.3f);
             if(Inputs::KeyBreak(Inputs::ESC)) _gameState = Game::ShowingMenu;
             Debuger::InsertClockMark("PreLoop");
             scene->update(_window,delta);
@@ -202,10 +222,8 @@ void Game::GameLoop()
         }
         case Game::ShowingMenu:
         {
-            if(_resize){
-                MenuMain::view.update();
-                _resize = false;
-            }
+            _counter +=delta*100;
+            _backgrounds.Update(sf::Vector2f(_counter,-2000),0);
             if(Inputs::KeyBreak(Inputs::ESC) && scene->isInit()) _gameState = Game::Playing;
             if(MenuMain::newGameClicked()) _gameState = NewGame;
             else if(MenuMain::exitClicked()) {
@@ -215,16 +233,20 @@ void Game::GameLoop()
             else if(MenuMain::loadClicked()) _gameState = LoadGame;
             else if(MenuMain::configClicked()) _gameState = Config;
             MenuMain::Update();
+            sf::View v = _window.getView();
+            sf::View v2 = _window.getView();
+            v2.setCenter(sf::Vector2f(v.getCenter().x,v.getCenter().y-2000));
+            _window.setView(v2);
+            _backgrounds.Draw(_window);
+            _window.setView(v);
             MenuMain::Draw(_window, _font);
+
             break;
         }
         case Game::NewGame:
         {
-
-            if(_resize){
-                NewGameMenu::view.update();
-                _resize = false;
-            }
+            _counter +=delta*100;
+            _backgrounds.Update(sf::Vector2f(_counter,-2000),0);
             if(NewGameMenu::backClicked()) _gameState = ShowingMenu;
             else if(NewGameMenu::seedClicked()){
                 NewGameMenu::disSelectAll();
@@ -237,7 +259,7 @@ void Game::GameLoop()
             else if(NewGameMenu::startClicked() && NewGameMenu::seed.text != "") {
                 std::vector<std::string> out;
                 GetFilesInDirectory(out,"save");
-                if(out.size()<100) {
+                if(out.size()<10) {
 
 
                     std::string new_game_path = "save/s";
@@ -252,15 +274,20 @@ void Game::GameLoop()
 
 
             NewGameMenu::Update();
+            sf::View v = _window.getView();
+            sf::View v2 = _window.getView();
+            v2.setCenter(sf::Vector2f(v.getCenter().x,v.getCenter().y-2000));
+            _window.setView(v2);
+            _backgrounds.Draw(_window);
+            _window.setView(v);
             NewGameMenu::Draw(_window, _font);
             break;
         }
         case Game::LoadGame:
         {
-            if(_resize){
-                MenuLoadGame::view.update();
-                _resize = false;
-            }
+
+            _counter +=delta*100;
+            _backgrounds.Update(sf::Vector2f(_counter,-2000),0);
             if(MenuLoadGame::backClicked()) _gameState = ShowingMenu;
 
             else if(MenuLoadGame::loadClicked() && !MenuLoadGame::save_list.elements.empty()) {
@@ -268,7 +295,7 @@ void Game::GameLoop()
                 std::string folder_save = "s";
                 int slot = MenuLoadGame::save_list.selected_slot;
                 if(slot<10) folder_save.append("0");
-                if(slot <100){
+                if(slot <10){
                     folder_save.append(std::to_string(slot));
                     std::vector<std::string> out;
                     GetFilesInDirectory(out,"save");
@@ -303,7 +330,7 @@ void Game::GameLoop()
                 std::string folder_save = "s";
                 int slot = MenuLoadGame::save_list.selected_slot;
                 if(slot<10) folder_save.append("0");
-                if(slot <100){
+                if(slot <10){
                     folder_save.append(std::to_string(slot));
                     std::vector<std::string> out;
                     GetFilesInDirectory(out,"save");
@@ -315,6 +342,12 @@ void Game::GameLoop()
                 } else std::cout << "slot demasiado grande" << std::endl;
             }
             MenuLoadGame::Update();
+            sf::View v = _window.getView();
+            sf::View v2 = _window.getView();
+            v2.setCenter(sf::Vector2f(v.getCenter().x,v.getCenter().y-2000));
+            _window.setView(v2);
+            _backgrounds.Draw(_window);
+            _window.setView(v);
             MenuLoadGame::Draw(_window, _font);
             break;
 
@@ -322,10 +355,8 @@ void Game::GameLoop()
 
         case Game::Config:
         {
-            if(_resize){
-                MenuConfigGame::view.update();
-                _resize = false;
-            }
+            _counter +=delta*100;
+            _backgrounds.Update(sf::Vector2f(_counter,-2000),0);
             if(MenuConfigGame::backClicked() && !MenuConfigGame::resolution_visible) _gameState = ShowingMenu;
             else if(MenuConfigGame::resolution_visible && Inputs::KeyBreak(Inputs::ENTER)){
                 MenuConfigGame::resolution_visible = false;
@@ -352,6 +383,12 @@ void Game::GameLoop()
             }
 
             MenuConfigGame::Update();
+            sf::View v = _window.getView();
+            sf::View v2 = _window.getView();
+            v2.setCenter(sf::Vector2f(v.getCenter().x,v.getCenter().y-2000));
+            _window.setView(v2);
+            _backgrounds.Draw(_window);
+            _window.setView(v);
             MenuConfigGame::Draw(_window, _font);
             break;
 
@@ -362,7 +399,9 @@ void Game::GameLoop()
         case Game::Exiting: {
             break;
         }
+
     }
+    Mouse::draw(_window);
 }
 
 

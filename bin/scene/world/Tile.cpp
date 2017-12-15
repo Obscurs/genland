@@ -154,8 +154,8 @@ void Tile::reload(std::string new_id)
             _soundRemove = "dirt";
         }
         else if (new_id == "F" || new_id == "f") {
-            weight = 1;
-            max_tension = 4;
+            weight = 0;
+            max_tension = 0;
             id_pick = "F";
             ms_to_remove = 20;
             _soundRemove = "leaf";

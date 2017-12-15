@@ -8,15 +8,16 @@
 #include "../Clock.h"
 class WorldBackground {
 public:
-    WorldBackground();
+    WorldBackground(bool isMenu);
     ~WorldBackground();
 
-    void Update(sf::Vector2f player_pos, Clock &clock);
-    void Draw(sf::RenderTexture &texture_plain_sprite);
-
+    void Update(sf::Vector2f player_pos, float time);
+    void Draw(sf::RenderTarget &texture_plain_sprite);
+    sf::RenderTexture* getRainTexture();
 private:
-    std::vector<Background> _backgrounds;
+    std::vector<Background*> _backgrounds;
     sf::CircleShape _sun_sprite;
+    Background* _rainBackground;
 };
 
 

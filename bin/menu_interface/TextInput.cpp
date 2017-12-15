@@ -42,6 +42,8 @@ void TextInput::Draw(sf::RenderWindow &window, sf::Font font){
         sf::RectangleShape rectangle(sf::Vector2f(0,0));
         rectangle.setPosition(sf::Vector2f(position.x, position.y));
         rectangle.setSize(sf::Vector2f(size.x, size.y));
+        rectangle.setOutlineColor(sf::Color::Black);
+        rectangle.setOutlineThickness(4.0);
         if(selected)rectangle.setFillColor(sf::Color(200, 200, 200));
         else rectangle.setFillColor(sf::Color(100, 100, 100));
         window.draw(rectangle);

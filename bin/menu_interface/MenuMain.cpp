@@ -14,7 +14,7 @@ void MenuMain::Draw(sf::RenderWindow &window, const sf::Font& font)
     window.setView(view);
     new_game.Draw(window, font);
     load.Draw(window, font);
-    config.Draw(window, font);
+    //config.Draw(window, font);
     exit.Draw(window, font);
     window.setView(*oldView);
 }
@@ -23,7 +23,7 @@ void MenuMain::Update()
     sf::Vector2f mousePos = view.getMouseCoord();
     new_game.update(mousePos);
     load.update(mousePos);
-    config.update(mousePos);
+    //config.update(mousePos);
     exit.update(mousePos);
 }
 Button MenuMain::new_game(sf::Vector2f(850,800),

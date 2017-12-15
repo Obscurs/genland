@@ -42,7 +42,7 @@ Mob::Mob(): Entity("mob"),Colisionable(),_gens()
                  _focusDebug = false;
                  _dying = false;
                  _dieTime = 10;
-
+                 _bfsCounter = 0;
 
 }
 //Random spawn creator
@@ -73,6 +73,7 @@ Mob::Mob(MobGenetics* t,int chunk, sf::Vector2f position): Entity("mob"),Colisio
     _spriteTimeHurt = 0;
     _dying = false;
     _dieTime = 10;
+    _bfsCounter = 0;
     createRandomBody();
 
 }
@@ -104,6 +105,7 @@ Mob::Mob(MobGenetics* t1, MobGenetics* t2,std::vector<MobModule*>& modulesPartne
     _mobType = -1;
     _dying = false;
     _dieTime = 10;
+    _bfsCounter = 0;
     mixModules(modulesPartner1,typeMobPartner1,modulesPartner2,typeMobPartner2,t1,t2);
 
 }
@@ -482,38 +484,220 @@ void Mob::searchNeighbors(std::vector<Mob*> &enemys,std::vector<Mob*> &friends,s
         }
     }
 }
-Entity* Mob::searchFoodTarget(){
-    Scene* s = Scene::getScene();
-    std::vector<AnimatedTile*> v;
-    Entity* res = nullptr;
-    float dist = -1;
-    s->getFallingTilesArea(v,sf::Vector2i(_positionSpawn),_gens._distanceMaxMove*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB+_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER);
+std::pair<Entity*,Mob::Decision> Mob::getTargetUsingBfs(std::vector<Entity*> &targets, float radius){
+    Map* map = Scene::getScene()->getMap();
+    Player* player = Scene::getScene()->getPlayer();
+    sf::Vector2f first_pos( _positionSpawn.x-radius, _positionSpawn.y-radius);
+    sf::Vector2f last_pos( _positionSpawn.x+radius, _positionSpawn.y+radius);
+    int cols = 0;
+    int rows = 0;
+    //CREAMOS LA ESTRUCTURA DEL MAPA A VISITAR
+    //std::vector<std::vector<std::pair<bool, Entity*> > > bfsMap;
+    for(float i = first_pos.x; i<last_pos.x; i+=Settings::TILE_SIZE){
+        rows = 0;
+        for(float j = first_pos.y; j < last_pos.y; j+=Settings::TILE_SIZE){
+            ++rows;
+        }
+        ++cols;
+    }
+    std::pair<bool, Entity*> bfsMap2[rows][cols];
+    /*
+    for(int i = 0; i<rows; ++i){
+
+        for(int j = 0; j < cols; ++j){
+            Tile* t =map->getTile(j,i,1);
+            int distance = sqrt((i-_positionCol.x)*(i-_positionCol.x)+(j-_positionCol.y)*(j-_positionCol.y))+Settings::TILE_SIZE;
+            //PONEMOS SI EL BLOQUE ES TRAVESABLE O NO
+            bool currentValueMap(t != nullptr && t->id =="0" && distance<radius);
+            bfsMap2[i][j] = std::pair<bool, Entity*>(currentValueMap, nullptr);
+
+        }
+
+    }
+     */
+    int ii = 0;
+    for(float i = first_pos.x; i<last_pos.x; i+=Settings::TILE_SIZE){
+        int jj=0;
+        for(float j = first_pos.y; j < last_pos.y; j+=Settings::TILE_SIZE){
+            Tile* t =map->getTile(i,j,1);
+            int distance = sqrt((i-_positionCol.x)*(i-_positionCol.x)+(j-_positionCol.y)*(j-_positionCol.y))+Settings::TILE_SIZE;
+            //PONEMOS SI EL BLOQUE ES TRAVESABLE O NO
+            bool currentValueMap(t != nullptr && t->id =="0" && distance<radius);
+            bfsMap2[jj][ii] = std::pair<bool, Entity*>(currentValueMap, nullptr);
+            ++jj;
+        }
+        ++ii;
+    }
+    /*
+    for(float i = first_pos.x; i<last_pos.x; i+=Settings::TILE_SIZE){
+        std::vector<std::pair<bool, Entity*> > currentRow;
+        cols = 0;
+        for(float j = first_pos.y; j < last_pos.y; j+=Settings::TILE_SIZE){
+            std::pair<bool, Entity*> currentElement;
+            currentElement.second = nullptr;
+            Tile* t =map->getTile(i,j,1);
+            int distance = sqrt((i-_positionCol.x)*(i-_positionCol.x)+(j-_positionCol.y)*(j-_positionCol.y))+Settings::TILE_SIZE;
+            //PONEMOS SI EL BLOQUE ES TRAVESABLE O NO
+            bool currentValueMap(t != nullptr && t->id =="0" && distance<radius);
+            currentElement.first = currentValueMap;
+            currentRow.push_back(currentElement);
+            ++cols;
+        }
+        bfsMap.push_back(currentRow);
+        ++rows;
+    }
+    */
+    //ELIMINAMOS LAS POSICIONES INVIABLES DEVIDO EL TAMAÑO DEL MOB
+    sf::Vector2i sizeMob(std::ceil(_sizeCol.x/float(Settings::TILE_SIZE))-1,std::ceil(_sizeCol.y/float(Settings::TILE_SIZE))-1);
+    for(int i = 0; i< rows; ++i){
+        for(int j = 0; j< cols; ++j){
+            if(bfsMap2[i][j].first){
+                if(i+sizeMob.x>=cols || j+sizeMob.y>=rows){
+                    bfsMap2[i][j].first = false;
+                } else{
+                    bool fits = true;
+                    for(int ii=i; ii< i+sizeMob.x+1 && fits; ++ii){
+                        for(int jj=j; jj< j+sizeMob.y+1 && fits; ++jj){
+                            if(!bfsMap2[ii][jj].first) {
+                                bfsMap2[i][j].first = false;
+                                fits = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //METEMOS LAS ENTIDADES EN LA ESTRUCTURA
+    for(int m = 0; m<targets.size(); ++m){
+        int aux1 =targets[m]->getPositionCol().x;
+        int aux2 = int(targets[m]->getPositionCol().x-first_pos.x);
+        int aux3 = int(targets[m]->getPositionCol().x-first_pos.x)/Settings::TILE_SIZE;
+        sf::Vector2i indexMatEntity(int(targets[m]->getPositionCol().x-first_pos.x)/Settings::TILE_SIZE,int(targets[m]->getPositionCol().y-first_pos.y)/Settings::TILE_SIZE);
+        sf::FloatRect bb = targets[m]->getBoundingBox();
+        sf::Vector2f sizeEntityF(bb.width-bb.left,bb.height-bb.top);
+        sf::Vector2i sizeEntity(std::ceil(sizeEntityF.x/float(Settings::TILE_SIZE))-1,std::ceil(sizeEntityF.y/float(Settings::TILE_SIZE))-1);
+        __positionTarget = indexMatEntity;
+        /*
+        for(int i = indexMatEntity.y-sizeMob.y+1; i< indexMatEntity.y + sizeEntity.y+1; ++i){
+            for(int j = indexMatEntity.x-sizeMob.x-1; j< indexMatEntity.x+sizeEntity.x+1; ++j){
+                if(j <cols && i <rows && j>=0 && i >= 0){
+                    bfsMap2[i][j].second = targets[m];
+                }
+            }
+        } */
+        for(int i = indexMatEntity.y-sizeMob.y; i< indexMatEntity.y + sizeEntity.y; ++i){
+            for(int j = indexMatEntity.x-sizeMob.x+1; j< indexMatEntity.x+sizeEntity.x; ++j){
+                if(j <cols && i <rows && j>=0 && i >= 0){
+                    bfsMap2[i][j].second = targets[m];
+                }
+            }
+        }
+    }
+    sf::Vector2i indexMatMob(int(_positionCol.x-first_pos.x)/Settings::TILE_SIZE,int(_positionCol.y-first_pos.y)/Settings::TILE_SIZE);
+    __positionMob = indexMatMob;
+    //BFS
+    bool visited[rows][cols] = { false };
+    int distance[rows][cols] = { -1 };
+    sf::Vector2i father[rows][cols] = {sf::Vector2i(-1,-1)}; //man what to do with this
+    for(int i=0; i<rows; ++i){
+        for(int j=0; j<cols; ++j){
+            father[i][j] = sf::Vector2i(-1,-1);
+            distance[i][j] = -1;
+        }
+    }
+    visited[indexMatMob.y][indexMatMob.x] = true;
+    distance[indexMatMob.y][indexMatMob.x] = 0;
+    //father[indexMatMob.y][indexMatMob.x] = {sf::Vector2i(-1,-1)};
+
+    std::queue<sf::Vector2i >cuaBfs;
+    cuaBfs.push(sf::Vector2i(indexMatMob.x,indexMatMob.y));
+
+    int positionAuxX[4] = {-1,1,0,0};
+    int positionAuxY[4] = {0,0,1,-1};
+    while(!cuaBfs.empty()){
+        sf::Vector2i currPos = cuaBfs.front();
+        cuaBfs.pop();
+        for(int i=0; i<4; ++i){
+            sf::Vector2i neighbor(currPos.x+positionAuxX[i],currPos.y+positionAuxY[i]);
+            if(neighbor.x <cols && neighbor.y <rows && neighbor.x>=0 && neighbor.y >= 0){
+                if(!visited[neighbor.y][neighbor.x] && bfsMap2[neighbor.y][neighbor.x].first){
+                    visited[neighbor.y][neighbor.x] = true;
+                    distance[neighbor.y][neighbor.x] = distance[currPos.y][currPos.x] + 1;
+                    father[neighbor.y][neighbor.x] = currPos;
+                    cuaBfs.push(neighbor);
+                }
+            }
+        }
+    }
+    int min_dist = -1;
+    sf::Vector2i min_pos(-1,-1);
+    for(int i = 0; i< rows; ++i){
+        for(int j = 0; j< cols; ++j){
+            if(bfsMap2[i][j].second !=nullptr){
+                if(distance[i][j] != -1 && (distance[i][j] < min_dist || min_dist == -1)){
+                    min_dist = distance[i][j];
+                    min_pos = sf::Vector2i(j,i);
+                }
+            }
+        }
+    }
+    Decision result = IDLE;
+    Entity* target = nullptr;
+    sf::Vector2i targetPos = min_pos;
+    if(min_dist != -1){
+        target = bfsMap2[min_pos.y][min_pos.x].second;
+        __auxRoute.clear();
+        __auxRoute.push_back(min_pos);
+        while(min_pos != indexMatMob && father[min_pos.y][min_pos.x] != indexMatMob){
+            min_pos = father[min_pos.y][min_pos.x];
+            __auxRoute.push_back(min_pos);
+        }
+        if(min_pos.x>indexMatMob.x) result = GO_RIGHT;
+        else if(min_pos.x<indexMatMob.x) result = GO_LEFT;
+        else if(min_pos.y<indexMatMob.y) result = GO_UP;
+        else if(min_pos.y>indexMatMob.y) result = GO_DOWN;
+        else result = IDLE;
+    }
+    return std::pair<Entity*,Decision>(target,result);
+
+}
+/*
+bool Mob::searchFoodTarget(std::vector<AnimatedTile*> &v){
+    std::vector<std::pair<AnimatedTile*,int> > vecAux;
     for(int i=0; i<v.size(); i++){
         sf::Vector2f posE = v[i]->getPositionCol();
         int distance = sqrt((posE.x-_positionCol.x)*(posE.x-_positionCol.x)+(posE.y-_positionCol.y)*(posE.y-_positionCol.y));
-        if(v[i]->id=="food" && (dist== -1 || distance < dist)){
-            dist = distance;
-            res = v[i];
-        }
+        vecAux.push_back(std::pair<AnimatedTile*,int>(v[i],distance));
     }
-    return res;
+    std::sort(vecAux.begin(), vecAux.end(),pairSortCompare);
+    for(int i=0; i<v.size(); i++){
+        v[i] = vecAux[i].first;
+    }
+    return (v.size()>0);
 }
-Mob* Mob::searchMobTarget(std::vector<Mob*> &mobs){
-    Mob* res = nullptr;
-    float dist = -1;
+
+bool Mob::searchMobTarget(std::vector<Mob*> &mobs){
+    std::vector<std::pair<Mob*,int> > vecAux;
     for(int i=0; i<mobs.size(); i++){
         sf::Vector2f posE = mobs[i]->getPositionCol();
         int distance = sqrt((posE.x-_positionCol.x)*(posE.x-_positionCol.x)+(posE.y-_positionCol.y)*(posE.y-_positionCol.y));
-        if(dist== -1 || distance < dist){
-            dist = distance;
-            res = mobs[i];
-        }
+        vecAux.push_back(std::pair<Mob*,int>(mobs[i],distance));
     }
-    return res;
-}
+    std::sort(vecAux.begin(), vecAux.end(),pairSortCompare);
+    for(int i=0; i<mobs.size(); i++){
+        mobs[i] = vecAux[i].first;
+    }
+    return (mobs.size()>0);
+} */
 
 bool Mob::update(float delta, Clock *c, int num_mobs_race, int size_eco){
-
+    if(_bfsCounter<=0){
+        _target = nullptr;
+    } else{
+        _bfsCounter = std::max(0, _bfsCounter-1);
+    }
     _spriteTime += delta;
 
     float maxtime = float(SPAWN_SPRITE_MAX_TIME)/10.0f;
@@ -571,11 +755,7 @@ bool Mob::update(float delta, Clock *c, int num_mobs_race, int size_eco){
         std::vector<Mob *> food;
         searchNeighbors(enemys, friends, neutral, food);
         float comunityDamage = (float(num_mobs_race * num_mobs_race) / float(size_eco)) * delta * 10;
-        //if(friends.size() > 15) comunityDamage = 50*delta;
-        //else if(friends.size() > 10) comunityDamage = 25*delta;
-        //else if(friends.size() > 5) comunityDamage = 10*delta;
-        //else comunityDamage = 0;
-        //if(friends.size() > 5) _age = 0;
+
         _age = std::max(0.f, _age - ((tempDamage + humDamage + comunityDamage + delta) / 2000) * Settings::GEN_SPEED);
         if (_age <= 0) _life = 0;
         if (_life <= 0) {
@@ -592,50 +772,44 @@ bool Mob::update(float delta, Clock *c, int num_mobs_race, int size_eco){
             else if (num_mobs_race < 10) _hunger = std::max(-1.f, _hunger - (delta / 10) * Settings::GEN_SPEED);
             else _hunger = std::max(-1.f, _hunger - (delta / 1) * Settings::GEN_SPEED);
 
+            std::vector<Entity*> targets;
+            for(int i=0; i<enemys.size(); ++i){
+                targets.push_back(enemys[i]);
+            }
+            sf::Vector2f posPlayer = Scene::getScene()->getPlayer()->_positionCol;
+            float distance_form_player = sqrt((posPlayer.x-_positionSpawn.x)*(posPlayer.x-_positionSpawn.x)+(posPlayer.y-_positionSpawn.y)*(posPlayer.y-_positionSpawn.y));
+            if(distance_form_player <_gens._distanceMaxMove*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB+_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER){
+                targets.push_back(Scene::getScene()->getPlayer());
+            }
             if (_hunger < 0) {
-                Entity *foodTar = searchFoodTarget();
-                if (is_visible_chunk) {
-                    if (foodTar == nullptr) {
-                        Mob *m = searchMobTarget(food);
-                        if (m != nullptr) _target = m;
-                    } else {
-                        _target = foodTar;
-                    }
-                } else {
-                    if (foodTar == nullptr) {
-                        Mob *m = searchMobTarget(food);
-                        if (m != nullptr) {
-                            simulateCombat(m);
-                            _hunger = _gens._foodNeeds;
-                            for (int i = 0; i < friends.size(); i++) {
-                                friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,
-                                                               int(_gens._foodNeeds / (friends.size())));
-                            }
-                        }
-                    } else {
-                        _hunger = _gens._foodNeeds;
-                        for (int i = 0; i < friends.size(); i++) {
-                            friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,
-                                                           int(_gens._foodNeeds / (friends.size())));
-                        }
-                        std::cout << "mob eating far away" << std::endl;
-                    }
+                for(int i=0; i< food.size(); i++){
+                    targets.push_back(food[i]);
                 }
+
+                Scene* s = Scene::getScene();
+                std::vector<AnimatedTile*> v;
+                s->getFallingTilesArea(v,sf::Vector2i(_positionSpawn),_gens._distanceMaxMove*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB+_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER);
+                for(int i=0; i<v.size(); i++){
+                    targets.push_back(v[i]);
+                }
+
 
                 _life = std::max(0.f, _life - (delta / 10));
-            } else {
-
-                Mob *m = searchMobTarget(enemys);
-                if (is_visible_chunk) {
-                    if (m != nullptr) _target = m;
-                } else {
-                    if (m != nullptr) simulateCombat(m);
+            }
+            if(is_visible_chunk && targets.size() >0){
+                if(_bfsCounter<=0){
+                    _target = nullptr;
+                    std::pair<Entity*,Decision> target = getTargetUsingBfs(targets,_gens._distanceMaxMove*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB+_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER);
+                    _target = target.first;
+                    _mobDecision = target.second;
+                    _bfsCounter = 100;
                 }
             }
+            if (_target != nullptr && (is_visible_chunk || isNearTarget())) {
+                targetAction(is_visible_chunk, friends);
+            }
         }
-        if (is_visible_chunk && isNearTarget()) {
-            targetAction();
-        }
+
     }
 
 
@@ -679,12 +853,16 @@ void Mob::simulateCombat(Mob* m){
         m->_life -= time2*dps1;
     }
 }
+void Mob::setEnemy(int race){
+    _gens.setEnemy(race);
+}
 void Mob::attackTarget(){
 
     if(_target->_typeEntity=="mob") {
         Mob *m = static_cast<Mob*>(_target);
-        m->_target = this;
+
         if(_attackColdown ==0){
+            m->setEnemy(_gens._race);
             sf::Vector2f posPlayer = Scene::getScene()->getPlayer()->getPositionCol();
             float distance_form_player = sqrt((posPlayer.x-_positionCol.x)*(posPlayer.x-_positionCol.x)+(posPlayer.y-_positionCol.y)*(posPlayer.y-_positionCol.y));
             if(distance_form_player < Settings::TILE_SIZE*200){
@@ -720,26 +898,52 @@ void Mob::hurt(float amount){
     _life -= amount;
 }
 
-void Mob::targetAction() {
-    if(_target->_typeEntity=="mob"){
-        attackTarget();
-    } else if(_target->_typeEntity=="food"){
-        _target->_removed = true;
-        _hunger = _gens._foodNeeds;
-        std::cout << "mob eating" << std::endl;
+void Mob::targetAction(bool visible, std::vector<Mob*> & friends) {
+    if(visible){
+        if(isNearTarget()){
+            if(_target->_typeEntity=="mob"){
+                attackTarget();
+            } else if(_target->_typeEntity=="fallingTile"){
+                _target->_removed = true;
+                _hunger = _gens._foodNeeds;
+                std::cout << "mob eating" << std::endl;
+            } else{
+                attackTarget();
+                std::cout << "attacking player" << std::endl;
+            }
+        }
+
     } else{
-        attackTarget();
-        std::cout << "attacking player" << std::endl;
+        if(_target->_typeEntity=="mob"){
+            simulateCombat(static_cast<Mob*>(_target));
+            if(_life>0){
+                _hunger = _gens._foodNeeds;
+                for (int i = 0; i < friends.size(); i++) {
+                    friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,
+                                                   int(_gens._foodNeeds / (friends.size())));
+                }
+                std::cout << "mob combat and eating far" << std::endl;
+            }
+        } else if(_target->_typeEntity=="fallingTile"){
+            _target->_removed = true;
+            _hunger = _gens._foodNeeds;
+            for (int i = 0; i < friends.size(); i++) {
+                friends[i]->_hunger = std::min(friends[i]->getGenetics()->_foodNeeds,
+                                               int(_gens._foodNeeds / (friends.size())));
+            }
+            std::cout << "mob eating far" << std::endl;
+        }
     }
+
 }
 bool Mob::isNearTarget() {
     if(_target !=nullptr && !_target->_removed){
         sf::FloatRect boundBoxE = _target->getBoundingBox();
         sf::FloatRect boundBox = getBoundingBox();
-        boundBoxE.width = boundBoxE.left-boundBoxE.width;
-        boundBoxE.height = boundBoxE.top-boundBoxE.height;
-        boundBox.width = boundBox.left-boundBox.width;
-        boundBox.height = boundBox.top-boundBox.height;
+        boundBoxE.width = boundBoxE.width-boundBoxE.left;
+        boundBoxE.height = boundBoxE.height-boundBoxE.top;
+        boundBox.width = boundBox.width-boundBox.left;
+        boundBox.height = boundBox.height-boundBox.top;
         return boundBox.intersects(boundBoxE);
     } else _target = nullptr;
     return false;
@@ -755,45 +959,70 @@ void Mob::updateVisible(float delta){
             else if(vx !=0 && _modules[i]->hasAnimation("walking")) _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.2,"walking",_mobDirection);
             else _modules[i]->update(delta,_position,_gens._size/80.f*ageFactor+0.2,"idle",_mobDirection);
         }
-        if(_target == nullptr) newDecision = rand() % 1000;
+        if(_target == nullptr) {
+            newDecision = rand() % 1000;
+
+            if(newDecision ==0){
+                _mobDecision = GO_LEFT;
+            }
+            else if(newDecision ==1){
+                _mobDecision = GO_RIGHT;
+            }
+            else if(newDecision ==2){
+                _mobDecision = IDLE;
+            }
+        }
         else {
             if(_target->_removed) _target = nullptr;
-            else if(isNearTarget()) newDecision = 2;
-            else if(_target->getPositionCol().x > getPositionCol().x) newDecision = 1;
-            else newDecision = 0;
+            //else if(isNearTarget()) newDecision = 2;
+            //else if(_target->getPositionCol().x > getPositionCol().x) newDecision = 1;
+            //else newDecision = 0;
         }
         if(_dying) {
-            newDecision = 2;
+            _mobDecision = IDLE;
             _target = nullptr;
         }
 
+        if(_target == nullptr){
+            if (_mobDecision == GO_LEFT){
+                vx = -100;
+            }
+            else if (_mobDecision == GO_RIGHT){
+                vx = 100;
+            } else vx =0;
 
-        if(newDecision ==0){
-            _mobDecision = GO_LEFT;
+            if(col_bottom==0){
+                vy = (float)9.8*delta*100 + vy;
+            } else if(col_bottom>0 && col_left>0 && _mobDecision == GO_LEFT){
+                vy = -400;
+            } else if(col_bottom>0 && col_right>0 && _mobDecision == GO_RIGHT){
+                vy = -400;
+            }
+            else{
+                vy = 0;
+            }
+        } else {
+            if(col_bottom==0) {
+                vy = (float) 9.8 * delta * 100 + vy;
+            } else vy = 0;
+            if (_mobDecision == GO_LEFT){
+                vx = -100;
+            }
+            else if (_mobDecision == GO_RIGHT){
+                vx = 100;
+            } else if(_mobDecision == GO_UP){
+                vx = 0;
+                if(col_bottom>0) {
+                    vy = -400;
+                }
+            } else if(_mobDecision == GO_DOWN){
+                vx = 0;
+            }
+            else if(_mobDecision == IDLE){
+                vx = 0;
+            }
         }
-        else if(newDecision ==1){
-            _mobDecision = GO_RIGHT;
-        }
-        else if(newDecision ==2){
-            _mobDecision = IDLE;
-        }
-        if (_mobDecision == GO_LEFT){
-            vx = -100;
-        }
-        else if (_mobDecision == GO_RIGHT){
-            vx = 100;
-        } else vx =0;
 
-        if(col_bottom==0){
-            vy = (float)9.8*delta*100 + vy;
-        } else if(col_bottom>0 && col_left>0 && _mobDecision == GO_LEFT){
-            vy = -400;
-        } else if(col_bottom>0 && col_right>0 && _mobDecision == GO_RIGHT){
-            vy = -400;
-        }
-        else{
-            vy = 0;
-        }
 
 
         if(col_top != 0){
@@ -819,7 +1048,7 @@ void Mob::updateVisible(float delta){
         }
         Player *pl = Scene::getScene()->getPlayerOnArea(sf::Vector2i(_positionSpawn),_gens._distanceMaxReproduce*Settings::RADIUS_MOB_MULTIPLYER+Settings::MIN_RADIUS_MOB);
         if(_gens._playerHostile && pl != nullptr) {
-            _target = pl;
+            //_target = pl;
         }
 
 

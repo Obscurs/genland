@@ -11,7 +11,7 @@
 #include "../../TextureManager.h"
 class Light {
 public:
-    Light(sf::Vector2f pos, float rad_min, float rad_max, float exp, sf::Color c);
+    Light(sf::Vector2f pos, float rad_min, float rad_max, float exp, sf::Color c, bool isPlayer);
     ~Light();
     sf::Vector2f position;
     float radius_min;
@@ -19,6 +19,7 @@ public:
     float expand;
     sf::Color color;
     float radius;
+    bool player;
     void Update(float deltatime);
     void Draw(sf::Vector2f pos_light, sf::Sprite &map_without_lights, sf::RenderTexture *tex_front, sf::RenderTexture *tex_back,sf::RenderTexture &tex_sun);
 };

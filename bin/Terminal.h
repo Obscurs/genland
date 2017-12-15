@@ -19,6 +19,7 @@ public:
     bool isActive();
     void setText(std::string s);
     void sendTerminalInstruction();
+    void disable();
     std::string getText();
 private:
     std::vector<std::string> _commands;

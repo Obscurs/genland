@@ -120,11 +120,16 @@ void Drawer::DrawRain() {
     Clock* clock = scene->getClock();
     Map* map_curr = scene->getMap();
     Player* player = scene->getPlayer();
+    sf::RenderTexture* rain_texture = scene->getBackgrounds()->getRainTexture();
+    rain_texture->clear(sf::Color(0,0,0,0));
+    sf::VertexArray quad(sf::Quads, 4);
+
+
     if(clock->_rainFactor >0){
         sf::Shader *rain_shader = Resources::getShader("rain_shader");
-        sf::Sprite background_sprite(texture_background.getTexture());
+        sf::Sprite background_sprite(rain_texture->getTexture());
         sf::Vector2f pos_sprite = GetPosSprite();
-        background_sprite.setPosition(pos_sprite);
+        background_sprite.setPosition(sf::Vector2f(0,0));
         rain_shader->setParameter("time",timer.getElapsedTime().asSeconds());
 
         rain_shader->setParameter("intensity",clock->_rainFactor);
@@ -140,8 +145,8 @@ void Drawer::DrawRain() {
         float temperature = global_temp + local_temp;
         float humidity = global_hum+local_hum;
         sf::RenderStates states;
-        texture_background.display();
-        states.texture = &texture_background.getTexture();
+        rain_texture->display();
+        states.texture = &rain_texture->getTexture();
         states.shader = rain_shader;
         if(temperature >10){
             if(temperature >25 && humidity<50){
@@ -153,16 +158,17 @@ void Drawer::DrawRain() {
             rain_shader->setParameter("LENGTH_SCALE",0.8f);
             rain_shader->setParameter("SPEED",10.0f);
             rain_shader->setParameter("ALPHA",1.f);
-            texture_background.draw(background_sprite, states);
-            texture_background.display();
+            rain_texture->draw(background_sprite, states);
+            rain_texture->display();
         } else if(temperature < -10){
             rain_shader->setParameter("SCALE",256.0f);
             rain_shader->setParameter("LENGTH",2.0f);
             rain_shader->setParameter("LENGTH_SCALE",0.8f);
             rain_shader->setParameter("SPEED",1.0f);
             rain_shader->setParameter("ALPHA",1.f);
-            texture_background.draw(background_sprite, states);
-            texture_background.display();
+            rain_shader->setParameter("is_snow",true);
+            rain_texture->draw(background_sprite, states);
+            rain_texture->display();
         } else{
             float factor = float(temperature-(-10))/20.0f;
             rain_shader->setParameter("SCALE",256.0f);
@@ -170,16 +176,18 @@ void Drawer::DrawRain() {
             rain_shader->setParameter("LENGTH_SCALE",0.8f);
             rain_shader->setParameter("SPEED",1.0f);
             rain_shader->setParameter("ALPHA",1.0f-factor);
-            texture_background.draw(background_sprite, states);
-            texture_background.display();
+            rain_shader->setParameter("is_snow",true);
+            rain_texture->draw(background_sprite, states);
+            rain_texture->display();
 
             rain_shader->setParameter("SCALE",512.0f);
             rain_shader->setParameter("LENGTH",64.0f);
             rain_shader->setParameter("LENGTH_SCALE",0.8f);
             rain_shader->setParameter("SPEED",10.0f);
             rain_shader->setParameter("ALPHA",factor);
-            texture_background.draw(background_sprite, states);
-            texture_background.display();
+            rain_shader->setParameter("is_snow",false);
+            rain_texture->draw(background_sprite, states);
+            rain_texture->display();
         }
     }
 
@@ -248,7 +256,8 @@ void Drawer::DrawLights(){
     //texture_back->setView(currentView);
     //texture_front->setView(currentView);
 
-
+    Light *l = new Light(sf::Vector2f(player->getPositionCol().x+Player::PLAYER_WIDTH/2,player->getPositionCol().y+Player::PLAYER_HEIGHT/2),25.0,35.0,30.0, sf::Color::Yellow, true);
+    addLight(l);
     for(int i = 0; i<_lights.size(); i++){
         //for(int i = 0; i<4; i++){
         float radius = _lights[i]->radius;

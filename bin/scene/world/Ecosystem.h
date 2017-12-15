@@ -30,7 +30,7 @@ public:
     void getMobsOnArea(std::vector<Mob*> &mobs, sf::Vector2i position, int radius);
     void getEntitiesOnArea(std::vector<Entity*> &mobs, sf::Vector2i position, int radius);
     void getPositionsOnArea(std::vector<sf::Vector2i> &positions,sf::Vector2i position, int radius);
-    void updateWithElapsedTime(Date *d);
+    void updateWithElapsedTime(Date *d, bool debug);
     sf::Vector3i getMobPopulationAndTreshold();
     sf::Vector3i getTreePopulationAndTreshold();
     Entity *getEntity(sf::FloatRect pos);

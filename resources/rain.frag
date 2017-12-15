@@ -10,8 +10,9 @@ uniform float LENGTH_SCALE;   // how much the drop length changes every layer
 
 uniform float ALPHA;
 uniform float SPEED;          // how fast the drops fall
-
+uniform bool is_snow;
 const vec3 DROP_COLOR = vec3(0.30, 0.5, 0.64);
+const vec3 DROP_COLOR2 = vec3(0.8, 0.8, 0.9);
 const float FADE = 0.6;           // how much the drops fade every layer
 
 float rand(vec2 co)
@@ -59,8 +60,9 @@ void main(void)
         for (int i = 0; i < LAYERS; i++)
         {
             float f = rainFactor(uv, SCALE, dropLength, vec2(SCALE * float(i), time * SPEED), 1.0-intensity*0.1/2.0);
-
-            vec4 color = vec4(DROP_COLOR, f* alpha-1.0+ALPHA);
+            vec4 color;
+            if(is_snow) color = vec4(DROP_COLOR2, f* alpha-1.0+ALPHA);
+            else color = vec4(DROP_COLOR, f* alpha-1.0+ALPHA);
 
             finalColor = over(finalColor, color);
 

@@ -34,10 +34,14 @@ std::string Terminal::getText(){
 bool Terminal::isActive(){
     return _active;
 }
+void Terminal::disable(){
+    _active = false;
+}
 void Terminal::Update(){
     if(Inputs::KeyBreak(Inputs::F1)) {
         _active = !_active;
     }
+
     if(_active){
         _instructionBox.update(sf::Vector2f(0,0));
     }
