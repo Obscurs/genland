@@ -16,13 +16,13 @@ void NewGameMenu::Draw(sf::RenderWindow &window, sf::Font font)
     name.Draw(window, font);
     window.setView(*oldView);
 }
-void NewGameMenu::Update()
+void NewGameMenu::Update(float delta)
 {
     sf::Vector2f mousePos = view.getMouseCoord();
     start.update(mousePos);
     back.update(mousePos);
-    seed.update(mousePos);
-    name.update(mousePos);
+    seed.update(mousePos, delta);
+    name.update(mousePos, delta);
 }
 
 bool NewGameMenu::startClicked(){

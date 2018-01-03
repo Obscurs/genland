@@ -37,13 +37,13 @@ bool Terminal::isActive(){
 void Terminal::disable(){
     _active = false;
 }
-void Terminal::Update(){
+void Terminal::Update(float delta){
     if(Inputs::KeyBreak(Inputs::F1)) {
         _active = !_active;
     }
 
     if(_active){
-        _instructionBox.update(sf::Vector2f(0,0));
+        _instructionBox.update(sf::Vector2f(0,0), delta);
     }
 }
 void Terminal::draw(sf::RenderWindow &_window, sf::Text &text){

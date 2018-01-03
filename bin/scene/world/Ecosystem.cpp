@@ -10,6 +10,8 @@
 #include "../entities/Torch.h"
 #include "../entities/Mob.h"
 #include "../../Resources.h"
+#include "../entities/Picture.h"
+#include "../entities/Table.h"
 
 Ecosystem::Ecosystem(sf::Vector2i interval, int index):
     _threadSaveLoad(&Ecosystem::changeEcosystem,this){
@@ -596,7 +598,21 @@ void Ecosystem::loadEntities(){
                     e->setEcosystemIndex(_index);
                     _entities.push_back(e);
                 } else if(entity == "torch"){
-                    Torch *e = new Torch();
+                    int typeTorx;
+                    myfile >> typeTorx;
+                    Torch *e = new Torch(typeTorx);
+                    e->loadFromFile(myfile);
+                    e->setEcosystemIndex(_index);
+                    _entities.push_back(e);
+                }
+                else if(entity == "picture"){
+                    Picture *e = new Picture();
+                    e->loadFromFile(myfile);
+                    e->setEcosystemIndex(_index);
+                    _entities.push_back(e);
+                }
+                else if(entity == "table"){
+                    Table *e = new Table();
                     e->loadFromFile(myfile);
                     e->setEcosystemIndex(_index);
                     _entities.push_back(e);

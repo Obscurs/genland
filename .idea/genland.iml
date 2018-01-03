@@ -2,7 +2,7 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/bin/TextureManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/Terminal.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/functions.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Mouse.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Inputs.cpp" isTestSource="false" />
@@ -27,26 +27,32 @@
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/NoiseGenerator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Stairs.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Stairs.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobModule.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobGenetics.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Tree.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Table.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Tree.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Item.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Mob.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Light.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Torch.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobGenetics.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/AnimatedTile.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobGenetics.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Mob.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/AnimatedTile.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobModule.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/TreeGenetics.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Item.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Entity.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/TreeGenetics.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/MobModule.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Table.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Picture.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Entity.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Torch.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Tree.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Chair.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Item.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Tree.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Light.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Entity.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Torch.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/AnimatedTile.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Picture.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/scene/entities/Chair.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Clock.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Drawer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/scene/Scene.cpp" isTestSource="false" />
@@ -91,7 +97,7 @@
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuConfigGame.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Terminal.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Inputs.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/Terminal.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/TextureManager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cmake_modules/FindSFML.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
     </content>

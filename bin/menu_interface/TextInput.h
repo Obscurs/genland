@@ -20,11 +20,12 @@ public:
     int type;
     bool mouseOver;
     void Draw(sf::RenderWindow &window,sf::Font font);
-    void update(sf::Vector2f mousePos);
+    void update(sf::Vector2f mousePos, float delta);
     std::string getText();
     void setText(std::string new_text);
     bool selected;
 private:
+    float counter;
 };
 
 

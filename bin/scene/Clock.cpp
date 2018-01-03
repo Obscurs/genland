@@ -19,10 +19,10 @@ Clock::Clock(){
     _lightFactor = 0;
     _rainFactor = 0;
     UpdateDayTimeIntervals();
-    _seasonTimeIntervals[0] =70;
-    _seasonTimeIntervals[1] =160;
-    _seasonTimeIntervals[2] =250;
-    _seasonTimeIntervals[3] =340;
+    _seasonTimeIntervals[0] =79;
+    _seasonTimeIntervals[1] =170;
+    _seasonTimeIntervals[2] =261;
+    _seasonTimeIntervals[3] =352;
     _seasonTimeIntervals[4] =360;
     _globalHumidity = 0;
     _globalTemperature = 0;
@@ -155,32 +155,32 @@ void Clock::draw(sf::RenderTarget &target){
 void Clock::UpdateDayTimeIntervals(){
     switch(_season){
         case WINTER:
-            _dayTimeIntervals[0] = 5;
-            _dayTimeIntervals[1] = 12;
+            _dayTimeIntervals[0] = 7;
+            _dayTimeIntervals[1] = 13;
             _dayTimeIntervals[2] = 17;
-            _dayTimeIntervals[3] = 21;
-            _dayTimeIntervals[4] = 24;
+            _dayTimeIntervals[3] = 19;
+            _dayTimeIntervals[4] = 22;
             break;
         case SPRING:
             _dayTimeIntervals[0] = 5;
-            _dayTimeIntervals[1] = 12;
-            _dayTimeIntervals[2] = 17;
+            _dayTimeIntervals[1] = 13;
+            _dayTimeIntervals[2] = 18;
             _dayTimeIntervals[3] = 21;
             _dayTimeIntervals[4] = 24;
             break;
         case SUMMER:
-            _dayTimeIntervals[0] = 5;
-            _dayTimeIntervals[1] = 12;
-            _dayTimeIntervals[2] = 17;
-            _dayTimeIntervals[3] = 21;
+            _dayTimeIntervals[0] = 4;
+            _dayTimeIntervals[1] = 13;
+            _dayTimeIntervals[2] = 20;
+            _dayTimeIntervals[3] = 22;
             _dayTimeIntervals[4] = 24;
             break;
         case AUTUMN:
-            _dayTimeIntervals[0] = 5;
+            _dayTimeIntervals[0] = 6;
             _dayTimeIntervals[1] = 12;
-            _dayTimeIntervals[2] = 17;
-            _dayTimeIntervals[3] = 21;
-            _dayTimeIntervals[4] = 24;
+            _dayTimeIntervals[2] = 18;
+            _dayTimeIntervals[3] = 19;
+            _dayTimeIntervals[4] = 23;
             break;
         default:
             _dayTimeIntervals[0] = 5;
@@ -247,7 +247,7 @@ void Clock::update(float delta){
     float seasonFactorAux = 1-std::abs((_seasonFactor-float(0.5))*2);
     switch(_season){
         case WINTER:
-            _globalTemperature = -20*seasonFactorAux;
+            _globalTemperature = -5*seasonFactorAux;
             _globalHumidity = 0*seasonFactorAux;
             break;
         case SPRING:
@@ -255,19 +255,19 @@ void Clock::update(float delta){
             _globalHumidity = 15*seasonFactorAux;
             break;
         case SUMMER:
-            _globalTemperature = 20*seasonFactorAux;
+            _globalTemperature = 10*seasonFactorAux;
             _globalHumidity = 0*seasonFactorAux;
             break;
         case AUTUMN:
             _globalTemperature = 0*seasonFactorAux;
-            _globalHumidity = -5*seasonFactorAux;
+            _globalHumidity = 0*seasonFactorAux;
             break;
         default:
             _globalTemperature = 0;
             _globalHumidity = 0;
             break;
     }
-    _globalTemperature += ((1-_lightFactor*14))-7;
+    _globalTemperature += ((1-_lightFactor*10))-5;
 
     float valRain = (NoiseGenerator::getNoise("rainSimplex")->valSimplex2D(0, min+60*hour+24*60*day)+_globalHumidity/100);
     _rainFactor = std::max((valRain-0.7f)*3.3f,0.0f);

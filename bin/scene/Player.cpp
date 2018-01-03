@@ -22,6 +22,8 @@
 #include "entities/Torch.h"
 #include "../SoundManager.hpp"
 #include "../Mouse.h"
+#include "entities/Picture.h"
+#include "entities/Table.h"
 
 
 Player::Player(): Colisionable(), Entity("player")
@@ -457,7 +459,7 @@ void Player::updateToolsAndArmors() {
             _armor = ARMOR1;
         } else if(currentArmor->id == "armor3"){ //iron
             _maxTemperatureSafe = MAX_TEMP_BASE - 15;
-            _minTemperatureSafe = MIN_TEMP_BASE - 10;
+            _minTemperatureSafe = MIN_TEMP_BASE - 25;
             _armor = ARMOR3;
         }else {
             _maxTemperatureSafe = MAX_TEMP_BASE;
@@ -552,7 +554,59 @@ void Player::build(Tile *t, float delta, int position_tile){
                                 }
                             }
                             else if (idItemInventory == "torch") {
-                                Torch *st = new Torch();
+                                Torch *st = new Torch(0);
+                                st->setPosition(t->GetPosition().x, t->GetPosition().y);
+                                st->setPositionCol(t->GetPosition().x, t->GetPosition().y);
+                                st->_chunk = map->getChunkIndex(t->GetPosition().x);
+                                scene->addEntity(st);
+                                int index_chunk = map->getIndexMatChunk(st->_chunk);
+                                if (index_chunk != -1) {
+                                    SoundManager::playSoundNoRestart("place");
+                                    map->_chunk_mat[index_chunk]->addEntityToChunk(st, index_chunk);
+                                    map->_chunk_mat[index_chunk]->_is_dirty = true;
+                                }
+                            }
+                            else if (idItemInventory == "fireplace") {
+                                Torch *st = new Torch(1);
+                                st->setPosition(t->GetPosition().x, t->GetPosition().y);
+                                st->setPositionCol(t->GetPosition().x, t->GetPosition().y);
+                                st->_chunk = map->getChunkIndex(t->GetPosition().x);
+                                scene->addEntity(st);
+                                int index_chunk = map->getIndexMatChunk(st->_chunk);
+                                if (index_chunk != -1) {
+                                    SoundManager::playSoundNoRestart("place");
+                                    map->_chunk_mat[index_chunk]->addEntityToChunk(st, index_chunk);
+                                    map->_chunk_mat[index_chunk]->_is_dirty = true;
+                                }
+                            }
+                            else if (idItemInventory == "fireplaceCamp") {
+                                Torch *st = new Torch(2);
+                                st->setPosition(t->GetPosition().x, t->GetPosition().y);
+                                st->setPositionCol(t->GetPosition().x, t->GetPosition().y);
+                                st->_chunk = map->getChunkIndex(t->GetPosition().x);
+                                scene->addEntity(st);
+                                int index_chunk = map->getIndexMatChunk(st->_chunk);
+                                if (index_chunk != -1) {
+                                    SoundManager::playSoundNoRestart("place");
+                                    map->_chunk_mat[index_chunk]->addEntityToChunk(st, index_chunk);
+                                    map->_chunk_mat[index_chunk]->_is_dirty = true;
+                                }
+                            }
+                            else if (idItemInventory == "picture") {
+                                Picture *st = new Picture();
+                                st->setPosition(t->GetPosition().x, t->GetPosition().y);
+                                st->setPositionCol(t->GetPosition().x, t->GetPosition().y);
+                                st->_chunk = map->getChunkIndex(t->GetPosition().x);
+                                scene->addEntity(st);
+                                int index_chunk = map->getIndexMatChunk(st->_chunk);
+                                if (index_chunk != -1) {
+                                    SoundManager::playSoundNoRestart("place");
+                                    map->_chunk_mat[index_chunk]->addEntityToChunk(st, index_chunk);
+                                    map->_chunk_mat[index_chunk]->_is_dirty = true;
+                                }
+                            }
+                            else if (idItemInventory == "table") {
+                                Table *st = new Table();
                                 st->setPosition(t->GetPosition().x, t->GetPosition().y);
                                 st->setPositionCol(t->GetPosition().x, t->GetPosition().y);
                                 st->_chunk = map->getChunkIndex(t->GetPosition().x);
@@ -733,7 +787,13 @@ void Player::Update(float delta, Map &map, sf::RenderWindow &window) {
                         int chunkE = map.getChunkIndex(t->GetPosition().x);
                         int index_chunk = map.getIndexMatChunk(chunkE);
                         if (index_chunk != -1) {
-                            map._chunk_mat[index_chunk]->addFallingTile(e->_typeEntity, e->_typeEntity, position,
+                            std::string idFalling = e->_typeEntity;
+                            if(e->_typeEntity=="torch"){
+                                int type = static_cast<Torch*>(e)->_typeTorx;
+                                if(type==1) idFalling = "fireplace";
+                                else if(type==2) idFalling = "fireplaceCamp";
+                            }
+                            map._chunk_mat[index_chunk]->addFallingTile(idFalling, idFalling, position,
                                                                         Settings::TILE_SIZE);
                             SoundManager::playSoundNoRestart("bubble");
                         }

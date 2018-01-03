@@ -69,9 +69,14 @@ void Resources::load() {
     texMan->insert_block_all_values("R", "r", sf::Vector2i(0,160),16);    //ice rock
     texMan->insert_block_all_values("J", "j", sf::Vector2i(0,176),16);    //jungle dirt
 
+
+
     texMan->insert_block_all_values("F", "f", sf::Vector2i(0,192),16);      //fulles
     texMan->insert_block_all_values("T", "t", sf::Vector2i(0,208),16);      //arbre
     texMan->insert_block_all_values("A", "a", sf::Vector2i(0,224),16);      //arbre
+
+    texMan->insert_block_all_values("M", "m", sf::Vector2i(0,240),16);    //briks
+    texMan->insert_block_all_values("P", "p", sf::Vector2i(0,256),16);    //Stone briks
 
     texMan->insert_map_value("0",sf::Vector2i(64,32));
     texMan->insert_map_value("s",sf::Vector2i(96,32));
@@ -106,6 +111,12 @@ void Resources::load() {
     texMan->insert_map_value("torch",sf::Vector2i(160,32));
     texMan->insert_map_value("food",sf::Vector2i(176,32));
     texMan->insert_map_value("heart",sf::Vector2i(192,32));
+    texMan->insert_map_value("logs",sf::Vector2i(208,32));
+    texMan->insert_map_value("fireplace",sf::Vector2i(224,32));
+    texMan->insert_map_value("fireplaceCamp",sf::Vector2i(240,32));
+    texMan->insert_map_value("picture",sf::Vector2i(224,16));
+    texMan->insert_map_value("table",sf::Vector2i(224,0));
+    texMan->insert_map_value("chair",sf::Vector2i(240,0));
     std::cout << " Resources Loaded " << std::endl;
 }
 

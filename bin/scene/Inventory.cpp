@@ -38,6 +38,12 @@ Inventory::Inventory()
 	Item* craft8 = new Item("armor2");
 	Item* craft9 = new Item("armor3");
     Item* craft10 = new Item("hammer");
+	Item* craft11 = new Item("M");
+	Item* craft12 = new Item("P");
+	Item* craft13 = new Item("fireplaceCamp");
+	Item* craft14 = new Item("fireplace");
+    Item* craft15 = new Item("picture");
+    Item* craft16 = new Item("table");
 	craft1->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft2->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft3->SetSize(SLOT_SIZE-GRID_THICKNESS);
@@ -48,6 +54,12 @@ Inventory::Inventory()
 	craft8->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft9->SetSize(SLOT_SIZE-GRID_THICKNESS);
     craft10->SetSize(SLOT_SIZE-GRID_THICKNESS);
+	craft11->SetSize(SLOT_SIZE-GRID_THICKNESS);
+	craft12->SetSize(SLOT_SIZE-GRID_THICKNESS);
+	craft13->SetSize(SLOT_SIZE-GRID_THICKNESS);
+	craft14->SetSize(SLOT_SIZE-GRID_THICKNESS);
+    craft15->SetSize(SLOT_SIZE-GRID_THICKNESS);
+    craft16->SetSize(SLOT_SIZE-GRID_THICKNESS);
 	craft_list [0] = craft1;
 	craft_list [1] = craft2;
 	craft_list [2] = craft3;
@@ -58,6 +70,12 @@ Inventory::Inventory()
 	craft_list [7] = craft8;
 	craft_list [8] = craft9;
     craft_list [9] = craft10;
+	craft_list [10] = craft11;
+	craft_list [11] = craft12;
+	craft_list [12] = craft13;
+	craft_list [13] = craft14;
+    craft_list [14] = craft15;
+    craft_list [15] = craft16;
 	tab_item_selected = 0;
 
 }
@@ -649,7 +667,7 @@ void Inventory::Draw(sf::RenderWindow& renderWindow)
 	x_tab = centerView.x-SLOT_SIZE*TAB_SLOTS/2;
 	y_tab = centerView.y+sizeView.y/2 - SLOT_SIZE*1.5;
 	x_craft_list = centerView.x-sizeView.x/2+SLOT_SIZE; 
-	y_craft_list = centerView.y-SLOT_SIZE*Y_SLOTS/2;
+	y_craft_list = centerView.y-sizeView.y/2+SLOT_SIZE/2;
 
 	sf::RectangleShape rectangle(sf::Vector2f(0, 0));
 

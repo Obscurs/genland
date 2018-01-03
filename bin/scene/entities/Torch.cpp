@@ -4,13 +4,31 @@
 #include <fstream>
 #include "../../Resources.h"
 #include "Torch.h"
-Torch::Torch(): Entity("torch"),
+Torch::Torch(int type): Entity("torch"),
                 _light(sf::Vector2f(0,0),95.0,105.0,100.0, sf::Color::Green, false){
     _positionCol = _position;
     _sizeCol = sf::Vector2i(16,16);
     _numFramesAnimation = 3;
     _animationFrame = 0;
     _spriteTime = 0;
+    _typeTorx = type;
+    if(_typeTorx==0) _animationId = 64;
+    else if(_typeTorx==1) {
+        _animationId = 448;
+        _light.radius = 200;
+        _light.radius_min = 195;
+        _light.radius_max = 205;
+        _light.color = sf::Color::Yellow;
+    }
+    else if(_typeTorx==2) {
+        _animationId = 512;
+        _light.radius = 200;
+        _light.radius_min = 195;
+        _light.radius_max = 205;
+        _light.color = sf::Color::Yellow;
+    }
+    else _animationId = 0;
+
 }
 void Torch::setPosition(int x, int y)
 {
@@ -37,6 +55,7 @@ void Torch::draw(sf::RenderTarget & renderTar) {
 void Torch::saveToFile(int chunk, std::ofstream &myfile){
     if(!_removed){
         myfile << "torch" << " ";
+        myfile << _typeTorx << " ";
         myfile << chunk << " ";
         myfile << _position.x << " " << _position.y << " ";
         myfile << _positionCol.x << " " << _positionCol.y << " ";
@@ -65,5 +84,5 @@ void Torch::update(float delta){
             _animationFrame = 0;
         }
     }
-    _sprite.setTextureRect(sf::IntRect(64*_animationFrame,64,64,64));
+    _sprite.setTextureRect(sf::IntRect(64*_animationFrame,_animationId,64,64));
 }

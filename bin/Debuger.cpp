@@ -122,7 +122,7 @@ void Debuger::Update(const sf::Time& deltatime){
             UpdateFpsText(deltatime);
             _clockMarks.clear();
             _clockNames.clear();
-            _terminal.Update();
+            _terminal.Update(deltatime.asSeconds());
             _clock.restart();
         }
 

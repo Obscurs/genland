@@ -13,6 +13,7 @@ TextInput::TextInput(sf::Vector2f pos, sf::Vector2f s, int tp, std::string text_
     mouseOver =false;
     label = lab;
     selected = false;
+    counter = 0;
 }
 
 TextInput::~TextInput()
@@ -28,6 +29,8 @@ void TextInput::setText(std::string new_text){
 void TextInput::Draw(sf::RenderWindow &window, sf::Font font){
 
     if(type==0){
+        std::string barra = "";
+        if(counter <0.75 && selected) barra = "_";
         std::string final_text = label;
         final_text.append(": ");
         final_text.append(text);
@@ -35,7 +38,7 @@ void TextInput::Draw(sf::RenderWindow &window, sf::Font font){
         sftext.setCharacterSize(size.y/2);
         sftext.setColor(sf::Color::Black);
         sftext.setPosition(sf::Vector2f(position.x, position.y));
-        sftext.setString(final_text);
+        sftext.setString(final_text+barra);
         sftext.setFont(font); // font is a sf::Font
 
 
@@ -51,7 +54,9 @@ void TextInput::Draw(sf::RenderWindow &window, sf::Font font){
     }
 
 }
-void TextInput::update(sf::Vector2f mousePos){
+void TextInput::update(sf::Vector2f mousePos, float delta){
+    counter -= delta;
+    if(counter <=0) counter =1.5;
     sf::FloatRect buttonRect(
             position.x,
             position.y,

@@ -47,9 +47,16 @@ void InterfaceList::Draw(sf::RenderWindow &window, sf::Font font){
         rectangle.setSize(sf::Vector2f(size.x - GRID_THICKNESS, size.y - GRID_THICKNESS));
 
         for (int i = -1; i < visible_slots; i = ++i) {
+            if(i == -1){
+                rectangle.setFillColor(sf::Color(179, 145, 81));
+            }
+            else rectangle.setFillColor(sf::Color(255, 211, 124));
+
             rectangle.setPosition(sf::Vector2f(position.x, i * size.y + position.y));
             window.draw(rectangle);
             if(i != -1){
+                rectangle.setFillColor(sf::Color(179, 145, 81));
+
                 rectangle.setSize(sf::Vector2f(100, rectangle.getSize().y));
                 window.draw(rectangle);
                 rectangle.setSize(sf::Vector2f(size.x - GRID_THICKNESS, size.y - GRID_THICKNESS));

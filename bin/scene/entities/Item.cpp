@@ -232,16 +232,32 @@ void Item::Reload(std::string new_id)
         id_set1="J";
     }
     else if(new_id == "A" || new_id == "a"){
-        max_stack_amount= 20;
+        max_stack_amount= 100;
         amount = 0;
-        craft_cost["T"] = 5;
+        craft_cost["logs"] = 5;
         id_set0="a";
         id_set1="A";
+    }
+    else if(new_id == "M" || new_id == "m"){
+        max_stack_amount= 100;
+        amount = 0;
+        id_set0="m";
+        id_set1="M";
+        craft_cost["D"] = 5;
+        craft_cost["C"] = 1;
+        craft_cost["L"] = 1;
+    }
+    else if(new_id == "P" || new_id == "p"){
+        max_stack_amount= 100;
+        amount = 0;
+        id_set0="p";
+        id_set1="P";
+        craft_cost["C"] = 5;
     }
     else if(new_id == "sword1"){
         max_stack_amount= 1;
         amount = 0;
-        craft_cost["T"] = 2;
+        craft_cost["logs"] = 2;
         craft_cost["F"] = 5;
         id_set0="-1";
         id_set1="-1";
@@ -250,7 +266,7 @@ void Item::Reload(std::string new_id)
     else if(new_id == "pickaxe1"){
         max_stack_amount= 1;
         amount = 0;
-        craft_cost["T"] = 2;
+        craft_cost["logs"] = 2;
         craft_cost["F"] = 5;
         id_set0="-1";
         id_set1="-1";
@@ -307,7 +323,7 @@ void Item::Reload(std::string new_id)
         max_stack_amount= 10;
         amount = 0;
         craft_cost["F"] = 10;
-        craft_cost["T"] = 4;
+        craft_cost["logs"] = 4;
         id_set0="-1";
         id_set1="stairs";
         _isEntity = true;
@@ -325,6 +341,58 @@ void Item::Reload(std::string new_id)
         craft_cost["F"] = 10;
         id_set0="-1";
         id_set1="-1";
+        _isEntity = true;
+    }
+    else if(new_id == "logs"){
+        max_stack_amount= 100;
+        amount = 0;
+        id_set0="-1";
+        id_set1="-1";
+        _isEntity = true;
+    }
+    else if(new_id == "fireplace"){
+        max_stack_amount= 5;
+        amount = 0;
+        craft_cost["M"] = 10;
+        craft_cost["logs"] = 10;
+        craft_cost["L"] = 5;
+        id_set0="-1";
+        id_set1="fireplace";
+        _isEntity = true;
+    }
+    else if(new_id == "fireplaceCamp"){
+        max_stack_amount= 1;
+        amount = 0;
+
+        craft_cost["logs"] = 10;
+        craft_cost["L"] = 5;
+        id_set0="-1";
+        id_set1="fireplaceCamp";
+        _isEntity = true;
+    }
+    else if(new_id == "table"){
+        max_stack_amount= 5;
+        amount = 0;
+        craft_cost["logs"] = 5;
+        id_set0="-1";
+        id_set1="table";
+        _isEntity = true;
+    }
+    else if(new_id == "chair"){
+        max_stack_amount= 5;
+        amount = 0;
+        craft_cost["logs"] = 5;
+        id_set0="-1";
+        id_set1="chair";
+        _isEntity = true;
+    }
+    else if(new_id == "picture"){
+        max_stack_amount= 5;
+        amount = 0;
+        craft_cost["logs"] = 3;
+        craft_cost["F"] = 5;
+        id_set0="-1";
+        id_set1="picture";
         _isEntity = true;
     }
 	else{

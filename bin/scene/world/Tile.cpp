@@ -148,7 +148,7 @@ void Tile::reload(std::string new_id)
         else if (new_id == "T" || new_id == "t") {
             weight = 7;
             max_tension = 60;
-            id_pick = "T";
+            id_pick = "logs";
             ms_to_remove = 100;
             _isTree = true;
             _soundRemove = "dirt";
@@ -166,6 +166,20 @@ void Tile::reload(std::string new_id)
             id_pick = "A";
             ms_to_remove = 20;
             _soundRemove = "dirt";
+        }
+        else if (new_id == "M" || new_id == "m") {
+            weight = 20;
+            max_tension = 300;
+            id_pick = "M";
+            ms_to_remove = 200;
+            _soundRemove = "stones";
+        }
+        else if (new_id == "P" || new_id == "p") {
+            weight = 20;
+            max_tension = 300;
+            id_pick = "P";
+            ms_to_remove = 200;
+            _soundRemove = "stones";
         }
         else if (new_id == "L" || new_id == "l") {
             weight = 7;

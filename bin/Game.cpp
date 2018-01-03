@@ -273,7 +273,7 @@ void Game::GameLoop()
             }
 
 
-            NewGameMenu::Update();
+            NewGameMenu::Update(delta);
             sf::View v = _window.getView();
             sf::View v2 = _window.getView();
             v2.setCenter(sf::Vector2f(v.getCenter().x,v.getCenter().y-2000));

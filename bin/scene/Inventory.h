@@ -12,7 +12,7 @@ public:
 	const static int SLOT_SIZE = 50;
 	const static int GRID_THICKNESS = 2;
 	const static int GRID_SELECTED_THICKNESS = 4;
-	const static int N_CRAFT_ITEMS = 10;
+	const static int N_CRAFT_ITEMS = 16;
 
 
 

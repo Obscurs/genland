@@ -11,7 +11,7 @@
 class NewGameMenu {
 public:
     static void Draw(sf::RenderWindow &window, sf::Font font);
-    static void Update();
+    static void Update(float delta);
     static bool startClicked();
     static bool backClicked();
     static bool seedClicked();

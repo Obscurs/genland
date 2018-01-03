@@ -14,7 +14,7 @@ class Terminal {
 public:
     Terminal();
     ~Terminal();
-    void Update();
+    void Update(float delta);
     void draw(sf::RenderWindow &_window, sf::Text &text);
     bool isActive();
     void setText(std::string s);
