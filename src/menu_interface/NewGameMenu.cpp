@@ -41,13 +41,13 @@ void NewGameMenu::disSelectAll(){
     seed.selected = false;
     name.selected = false;
 }
-Button NewGameMenu::start(sf::Vector2f(10,1800),
+Button NewGameMenu::back(sf::Vector2f(10,1800),
                           sf::Vector2f(300,90),
-                          "START",
-                          0);
-Button NewGameMenu::back(sf::Vector2f(1700,1800),
-                         sf::Vector2f(300,90),
                           "BACK",
+                          0);
+Button NewGameMenu::start(sf::Vector2f(1700,1800),
+                         sf::Vector2f(300,90),
+                          "START",
                           0);
 TextInput NewGameMenu::seed(sf::Vector2f(850,500),
                          sf::Vector2f(300,90),

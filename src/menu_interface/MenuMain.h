@@ -15,10 +15,14 @@ public:
     static bool newGameClicked();
     static bool loadClicked();
     static bool configClicked();
+    static bool helpClicked();
+    static bool aboutClicked();
     static bool exitClicked();
     static Button new_game;
     static Button load;
     static Button config;
+    static Button about;
+    static Button help;
     static Button exit;
     static MagicView view;
 };

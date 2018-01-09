@@ -32,7 +32,7 @@ private:
     void CreateNewGame(std::string path, std::string seed,std::string name);
     void DeleteGame(int index,std::string path);
 	enum GameState { Uninitialized, NewGame, LoadGame,
-					ShowingMenu, Playing, Exiting, Config };
+					ShowingMenu, Playing, Exiting, Config, Help, About };
 
 	GameState _gameState;
 	sf::RenderWindow _window;

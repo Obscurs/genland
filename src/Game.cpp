@@ -21,6 +21,8 @@
 #include "functions.h"
 #include "SoundManager.hpp"
 #include "Mouse.h"
+#include "menu_interface/MenuAbout.h"
+#include "menu_interface/MenuHelp.h"
 
 
 Game::Game():
@@ -79,12 +81,16 @@ void Game::Start(void)
     NewGameMenu::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     MenuLoadGame::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     MenuConfigGame::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
+    MenuAbout::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
+    MenuHelp::view = MagicView(&_window,MagicView::expanded,sf::Vector2i(2000,2000));
     Scene* scene = Scene::getScene();
     if(scene->isInit()) scene->updateView();
     MenuMain::view.update();
     MenuConfigGame::view.update();
     MenuLoadGame::view.update();
     NewGameMenu::view.update();
+    MenuAbout::view.update();
+    MenuHelp::view.update();
     while(!IsExiting())
     {
         _window.clear(sf::Color(0,255,0));
@@ -122,6 +128,8 @@ void Game::Events(){
             MenuConfigGame::view.update();
             MenuLoadGame::view.update();
             NewGameMenu::view.update();
+            MenuAbout::view.update();
+            MenuHelp::view.update();
         }
         else if (currentEvent.type == sf::Event::Closed)
         {
@@ -232,6 +240,8 @@ void Game::GameLoop()
             }
             else if(MenuMain::loadClicked()) _gameState = LoadGame;
             else if(MenuMain::configClicked()) _gameState = Config;
+            else if(MenuMain::helpClicked()) _gameState = Help;
+            else if(MenuMain::aboutClicked()) _gameState = About;
             MenuMain::Update();
             sf::View v = _window.getView();
             sf::View v2 = _window.getView();
@@ -382,6 +392,7 @@ void Game::GameLoop()
 
             }
 
+
             MenuConfigGame::Update();
             sf::View v = _window.getView();
             sf::View v2 = _window.getView();
@@ -390,6 +401,39 @@ void Game::GameLoop()
             _backgrounds.Draw(_window);
             _window.setView(v);
             MenuConfigGame::Draw(_window, _font);
+            break;
+
+        }
+        case Game::Help:
+        {
+            _counter +=delta*100;
+            _backgrounds.Update(sf::Vector2f(_counter,-2000),0);
+            if(MenuHelp::backClicked()) _gameState = ShowingMenu;
+            if(MenuHelp::nextClicked()) MenuHelp::nextImage();
+            MenuHelp::Update();
+            sf::View v = _window.getView();
+            sf::View v2 = _window.getView();
+            v2.setCenter(sf::Vector2f(v.getCenter().x,v.getCenter().y-2000));
+            _window.setView(v2);
+            _backgrounds.Draw(_window);
+            _window.setView(v);
+            MenuHelp::Draw(_window, _font);
+            break;
+
+        }
+        case Game::About:
+        {
+            _counter +=delta*100;
+            _backgrounds.Update(sf::Vector2f(_counter,-2000),0);
+            if(MenuAbout::backClicked()) _gameState = ShowingMenu;
+            MenuAbout::Update();
+            sf::View v = _window.getView();
+            sf::View v2 = _window.getView();
+            v2.setCenter(sf::Vector2f(v.getCenter().x,v.getCenter().y-2000));
+            _window.setView(v2);
+            _backgrounds.Draw(_window);
+            _window.setView(v);
+            MenuAbout::Draw(_window, _font);
             break;
 
         }

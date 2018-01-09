@@ -37,13 +37,13 @@ bool MenuLoadGame::loadClicked(){
 bool MenuLoadGame::backClicked(){
     return (Inputs::MouseBreak(Inputs::M_LEFT) && back.mouseOver);
 }
-Button MenuLoadGame::load(sf::Vector2f(10,1800),
+Button MenuLoadGame::back(sf::Vector2f(10,1800),
                           sf::Vector2f(300,90),
-                          "LOAD",
+                          "BACK",
                           0);
-Button MenuLoadGame::back(sf::Vector2f(1700,1800),
+Button MenuLoadGame::load(sf::Vector2f(1700,1800),
                          sf::Vector2f(300,90),
-                         "BACK",
+                         "LOAD",
                          0);
 Button MenuLoadGame::del(sf::Vector2f(850,1800),
                           sf::Vector2f(300,90),

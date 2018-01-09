@@ -54,6 +54,16 @@ void Resources::load() {
     addTexture("clock_neddle_hour", "resources/agulla_hora.png");
     addTexture("clock_neddle_season", "resources/agulla_season.png");
     addTexture("clock_neddle_temp", "resources/agulla_temp.png");
+    addTexture("about", "resources/about.png");
+    addTexture("title2", "resources/title2.png");
+    addTexture("help1", "resources/help1.png");
+    addTexture("help2", "resources/help2.png");
+    addTexture("help3", "resources/help3.png");
+    addTexture("help4", "resources/help4.png");
+    addTexture("help5", "resources/help5.png");
+    addTexture("help6", "resources/help6.png");
+    addTexture("help7", "resources/help7.png");
+
     addTextureManager("tileMap","resources/tiles5.png", 16, 16);
     TextureManager *texMan = getTextureManager("tileMap");
     texMan->insert_block_all_values("D", "d", sf::Vector2i(0,0),16);     //dirt

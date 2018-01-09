@@ -85,15 +85,19 @@
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/TextInput.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/InterfaceList.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuMain.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/Button.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuAbout.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuAbout.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/NewGameMenu.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuMain.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/InterfaceList.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/Button.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuConfigGame.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuLoadGame.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/Button.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuHelp.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuLoadGame.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/NewGameMenu.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuHelp.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/menu_interface/MenuConfigGame.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Terminal.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bin/Inputs.h" isTestSource="false" />
